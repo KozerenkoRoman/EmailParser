@@ -9,42 +9,49 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Translate.Lang, Vcl.ExtCtrls, DebugWriter,
   Common.Types, System.IniFiles, System.IOUtils, Global.Resources, Utils, MessageDialog, System.Threading,
   HtmlLib, CustomForms, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
-  Vcl.CategoryButtons, Frame.Custom, Frame.RegExpParameters, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
-  Vcl.Buttons, Vcl.ToolWin, Performer, Vcl.AppEvnts, SplashScreen;
+  Vcl.CategoryButtons, Frame.Custom, Frame.RegExpParameters,Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
+  Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.Settings, Global.Types;
 {$ENDREGION}
 
 type
   TfrmSettings = class(TCustomForm)
-    aEditRegExpParameters: TAction;
-    alSettings: TActionList;
-    aPathsFindFiles: TAction;
-    aToggleSplitPanel: TAction;
-    catMenuItems: TCategoryButtons;
-    crdPathsToFindScripts: TCard;
-    crdRegExpParameters: TCard;
-    framePathes: TframePathes;
-    frameRegExpParameters: TframeRegExpParameters;
-    imgMenu: TImage;
-    lblTitle: TLabel;
-    pnlCard: TCardPanel;
-    pnlTop: TPanel;
-    splView: TSplitView;
-    btnSearch: TSpeedButton;
-    aSearch: TAction;
-    crdCommonParams: TCard;
-    aEditCommonParameters: TAction;
-    srchBox: TSearchBox;
-    ApplicationEvents: TApplicationEvents;
+    aEditCommonParameters : TAction;
+    aEditRegExpParameters : TAction;
+    alSettings            : TActionList;
+    aPathsFindFiles       : TAction;
+    ApplicationEvents     : TApplicationEvents;
+    aSearch               : TAction;
+    aToggleSplitPanel     : TAction;
+    catMenuItems          : TCategoryButtons;
+    crdCommonParams       : TCard;
+    crdPathsToFindScripts : TCard;
+    crdRegExpParameters   : TCard;
+    crdSearch             : TCard;
+    framePathes           : TframePathes;
+    frameRegExpParameters : TframeRegExpParameters;
+    frameResultView       : TframeResultView;
+    frameSettings         : TframeSettings;
+    imgMenu               : TImage;
+    lblTitle              : TLabel;
+    pnlCard               : TCardPanel;
+    pnlTop                : TPanel;
+    sbMain                : TStatusBar;
+    splView               : TSplitView;
+    srchBox               : TSearchBox;
+    aSaveCommonSettings: TAction;
+    procedure aEditCommonParametersExecute(Sender: TObject);
     procedure aEditRegExpParametersExecute(Sender: TObject);
     procedure aPathsFindFilesExecute(Sender: TObject);
-    procedure aToggleSplitPanelExecute(Sender: TObject);
-    procedure aSearchExecute(Sender: TObject);
-    procedure aEditCommonParametersExecute(Sender: TObject);
-    procedure srchBoxInvokeSearch(Sender: TObject);
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
+    procedure aSaveCommonSettingsExecute(Sender: TObject);
+    procedure aSearchExecute(Sender: TObject);
+    procedure aToggleSplitPanelExecute(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure srchBoxInvokeSearch(Sender: TObject);
   public
     procedure Initialize;
     procedure Deinitialize;
+    procedure Translate;
     class function ShowDocument: Boolean;
   end;
 
@@ -76,21 +83,37 @@ end;
 
 procedure TfrmSettings.Initialize;
 begin
+  TLang.Lang.Language := TLanguage(TGeneral.XMLFile.ReadInteger('Language', C_SECTION_MAIN, 0));
   frameRegExpParameters.Initialize;
   framePathes.Initialize;
+  frameResultView.Initialize;
+  frameSettings.Initialize;
   pnlTop.Color                := C_TOP_COLOR;
   catMenuItems.HotButtonColor := C_TOP_COLOR;
+  Translate;
+end;
 
-  aPathsFindFiles.Caption       := TLang.Lang.Translate('PathsToFindFiles');
-  aEditRegExpParameters.Caption := TLang.Lang.Translate('EditRegExpParameters');
-  lblTitle.Caption              := TLang.Lang.Translate('PathsToFindFiles');
+procedure TfrmSettings.Translate;
+begin
   aEditCommonParameters.Caption := TLang.Lang.Translate('EditCommonParameters');
+  aEditRegExpParameters.Caption := TLang.Lang.Translate('EditRegExpParameters');
+  aPathsFindFiles.Caption       := TLang.Lang.Translate('PathsToFindFiles');
+  aSearch.Caption               := TLang.Lang.Translate('StartSearch');
+  lblTitle.Caption              := TLang.Lang.Translate('PathsToFindFiles');
 end;
 
 procedure TfrmSettings.Deinitialize;
 begin
   frameRegExpParameters.Deinitialize;
   framePathes.Deinitialize;
+  frameResultView.Deinitialize;
+  frameSettings.Deinitialize;
+end;
+
+procedure TfrmSettings.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  inherited;
+  Deinitialize;
 end;
 
 procedure TfrmSettings.aToggleSplitPanelExecute(Sender: TObject);
@@ -129,13 +152,28 @@ var
 begin
   TfrmSplashScreen.HideSplash;
   StackTrace := E.StackTrace;
+  LogWriter.Write(ddError, E.Message + sLineBreak + StackTrace);
   TMessageDialog.ShowError(E.Message, StackTrace);
+end;
+
+procedure TfrmSettings.aSaveCommonSettingsExecute(Sender: TObject);
+begin
+  inherited;
+  frameSettings.SaveToXML;
+  TLang.Lang.Language := TLanguage(TGeneral.XMLFile.ReadInteger('Language', C_SECTION_MAIN, 0));
+
+  Translate;
+  frameRegExpParameters.Translate;
+  framePathes.Translate;
+  frameResultView.Translate;
+  frameSettings.Translate;
 end;
 
 procedure TfrmSettings.aSearchExecute(Sender: TObject);
 begin
   inherited;
-  TfrmPerformer.ShowDocument;
+  lblTitle.Caption := TAction(Sender).Caption;
+  pnlCard.ActiveCard := crdSearch;
 end;
 
 procedure TfrmSettings.srchBoxInvokeSearch(Sender: TObject);

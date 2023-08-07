@@ -44,13 +44,14 @@ type
     destructor Destroy; override;
     procedure Initialize; override;
     procedure Deinitialize; override;
+    procedure Translate; override;
     procedure SearchText(const aText: string); override;
   end;
 
 implementation
 
 {$R *.dfm}
-{ TframeActiveOrders }
+{ TframeRegExpParameters }
 
 constructor TframeRegExpParameters.Create(AOwner: TComponent);
 begin
@@ -74,6 +75,12 @@ begin
   inherited Initialize;
   LoadFromXML;
   vstTree.FullExpand;
+  Translate;
+end;
+
+procedure TframeRegExpParameters.Translate;
+begin
+  inherited;
   vstTree.Header.Columns[COL_PARAM_NAME].Text      := TLang.Lang.Translate('ParameterName');
   vstTree.Header.Columns[COL_REGEXP_TEMPLATE].Text := TLang.Lang.Translate('RegExpTemplate');
 end;

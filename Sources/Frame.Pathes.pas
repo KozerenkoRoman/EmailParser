@@ -1,4 +1,4 @@
-unit Frame.Pathes;
+﻿unit Frame.Pathes;
 
 interface
 
@@ -47,6 +47,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Translate; override;
     procedure Initialize; override;
     procedure Deinitialize; override;
     procedure SearchText(const aText: string); override;
@@ -80,6 +81,12 @@ begin
   inherited Initialize;
   LoadFromXML;
   vstTree.FullExpand;
+  Translate;
+end;
+
+procedure TframePathes.Translate;
+begin
+  inherited;
   vstTree.Header.Columns[COL_INFO].Text        := TLang.Lang.Translate('Info');
   vstTree.Header.Columns[COL_PATH].Text        := TLang.Lang.Translate('Path');
   vstTree.Header.Columns[COL_WITH_SUBDIR].Text := TLang.Lang.Translate('WithSubdir');
@@ -229,12 +236,13 @@ begin
   inherited;
   if Assigned(vstTree.FocusedNode) and (vstTree.FocusedColumn = COL_OPEN_DIALOG) then
   begin
-    OpenDialog.DefaultFolder := TDirectory.GetCurrentDirectory;
+    Data := vstTree.FocusedNode.GetData;
+    if TDirectory.Exists(Data^.Path) then
+      OpenDialog.DefaultFolder := Data^.Path
+    else
+      OpenDialog.DefaultFolder := TDirectory.GetCurrentDirectory;
     if OpenDialog.Execute then
-    begin
-      Data := vstTree.FocusedNode.GetData;
-      Data.Path := OpenDialog.FileName;
-    end;
+      Data^.Path := OpenDialog.FileName;
   end;
 end;
 
@@ -337,5 +345,7 @@ begin
     vstTree.EndUpdate;
   end;
 end;
+
+
 
 end.

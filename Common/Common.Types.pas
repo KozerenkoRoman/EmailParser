@@ -1,4 +1,4 @@
-unit Common.Types;
+﻿unit Common.Types;
 
 interface
 
