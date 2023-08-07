@@ -1,4 +1,4 @@
-unit Global.Types;
+﻿unit Global.Types;
 
 interface
 
@@ -7,21 +7,12 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
-  System.IOUtils, Vcl.Forms, ArrayHelper, Data.DB, System.Win.Registry, Common.Types, Translate.Lang;
+  System.IOUtils, Vcl.Forms, ArrayHelper, Data.DB, System.Win.Registry, Common.Types, Translate.Lang,
+  System.IniFiles;
 {$ENDREGION}
 
 type
   TNodeType = (ntNode, ntGroup);
-  TAliasSettings = record
-    Server: string;
-    DataBase: string;
-    ODBCAlias: string;
-    UserName: string;
-    Password: string;
-    function CheckData: Boolean;
-    function ToString: string;
-    procedure Clear;
-  end;
 
   PRegExpData = ^TRegExpData;
   TRegExpData = record
@@ -39,6 +30,18 @@ type
   end;
   TParamPathArray = TArrayRecord<TParamPath>;
 
+  PResultData = ^TResultData;
+  TResultData = record
+    ShortName : string;
+    FileName  : TFileName;
+    MessageId : string;
+    Subject   : string;
+    Attach    : Integer;
+    TimeStamp : TDateTime;
+    procedure Clear;
+    procedure Assign(const aData: TResultData);
+  end;
+
   TGeneral = record
   public
     class function XMLFile: TXMLFile; static;
@@ -46,6 +49,9 @@ type
     class function GetPathList: TArray<TParamPath>; static;
     class function GetRegExpParametersList: TArray<TRegExpData>; static;
   end;
+
+const
+  C_SECTION_MAIN = 'Main';
 
 var
   General: TGeneral;
@@ -55,24 +61,6 @@ implementation
 var
   FXMLFile: TXMLFile = nil;
   FXMLParams: TXMLFile = nil;
-
-{ TAliasSettings }
-
-function TAliasSettings.CheckData: Boolean;
-begin
-   Result := (not Self.ODBCAlias.IsEmpty) and
-             (not Self.UserName.IsEmpty);
-end;
-
-function TAliasSettings.ToString: string;
-begin
-  Result := Format(rsTitle, [Self.ODBCAlias, Self.UserName]);
-end;
-
-procedure TAliasSettings.Clear;
-begin
-  Self := Default(TAliasSettings);
-end;
 
 { TGeneral }
 
@@ -126,7 +114,7 @@ begin
         Data.WithSubdir := XmlParams.Attributes.GetAttributeValue('WithSubdir', True);
         Data.Path       := XmlParams.Attributes.GetAttributeValue('Path', '');
         Data.Info       := XmlParams.Attributes.GetAttributeValue('Info', '');
-        Result[i] := Data;
+        Result[i]       := Data;
         Inc(i);
       end;
       XmlParams.NextKey;
@@ -155,6 +143,23 @@ end;
 procedure TRegExpData.Clear;
 begin
   Self := Default(TRegExpData);
+end;
+
+{ TResultData }
+
+procedure TResultData.Assign(const aData: TResultData);
+begin
+  Self.ShortName := aData.ShortName;
+  Self.FileName  := aData.FileName;
+  Self.MessageId := aData.MessageId;
+  Self.Subject   := aData.Subject;
+  Self.Attach    := aData.Attach;
+  Self.TimeStamp := aData.TimeStamp;
+end;
+
+procedure TResultData.Clear;
+begin
+  Self := Default(TResultData);
 end;
 
 initialization

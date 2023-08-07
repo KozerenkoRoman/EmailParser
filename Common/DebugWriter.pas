@@ -1,4 +1,4 @@
-unit DebugWriter;
+﻿unit DebugWriter;
 
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}

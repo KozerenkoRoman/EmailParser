@@ -1,4 +1,4 @@
-unit MessageDialog;
+﻿unit MessageDialog;
 {$WARN SYMBOL_PLATFORM OFF}
 
 interface

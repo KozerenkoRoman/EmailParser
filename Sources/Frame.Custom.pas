@@ -1,4 +1,4 @@
-unit Frame.Custom;
+﻿unit Frame.Custom;
 
 interface
 
@@ -14,36 +14,36 @@ uses
 
 type
   TframeCustom = class(TFrame)
-    aAdd: TAction;
-    aCollapseAll: TAction;
-    aDelete: TAction;
-    aEdit: TAction;
-    aExpandAll: TAction;
-    aExportToCSV: TAction;
-    aExportToExcel: TAction;
-    alFrame: TActionList;
-    aPrint: TAction;
-    aRefresh: TAction;
-    aSave: TAction;
-    btnAdd: TToolButton;
-    btnDelete: TToolButton;
-    btnEdit: TToolButton;
-    btnExportToCSV: TToolButton;
-    btnExportToExcel: TToolButton;
-    btnPrint: TToolButton;
-    btnRefresh: TToolButton;
-    btnSave: TToolButton;
-    btnSep01: TToolButton;
-    btnSep02: TToolButton;
-    miAdd: TMenuItem;
-    miCollapseAll: TMenuItem;
-    miDelete: TMenuItem;
-    miEdit: TMenuItem;
-    miExpandAll: TMenuItem;
-    miSep01: TMenuItem;
-    pmFrame: TPopupMenu;
-    tbMain: TToolBar;
-    vstTree: TVirtualStringTree;
+    aAdd             : TAction;
+    aCollapseAll     : TAction;
+    aDelete          : TAction;
+    aEdit            : TAction;
+    aExpandAll       : TAction;
+    aExportToCSV     : TAction;
+    aExportToExcel   : TAction;
+    alFrame          : TActionList;
+    aPrint           : TAction;
+    aRefresh         : TAction;
+    aSave            : TAction;
+    btnAdd           : TToolButton;
+    btnDelete        : TToolButton;
+    btnEdit          : TToolButton;
+    btnExportToCSV   : TToolButton;
+    btnExportToExcel : TToolButton;
+    btnPrint         : TToolButton;
+    btnRefresh       : TToolButton;
+    btnSave          : TToolButton;
+    btnSep01         : TToolButton;
+    btnSep02         : TToolButton;
+    miAdd            : TMenuItem;
+    miCollapseAll    : TMenuItem;
+    miDelete         : TMenuItem;
+    miEdit           : TMenuItem;
+    miExpandAll      : TMenuItem;
+    miSep01          : TMenuItem;
+    pmFrame          : TPopupMenu;
+    tbMain           : TToolBar;
+    vstTree          : TVirtualStringTree;
     procedure aCollapseAllExecute(Sender: TObject);
     procedure aExpandAllExecute(Sender: TObject);
     procedure aExportToCSVExecute(Sender: TObject);
@@ -60,6 +60,7 @@ type
     function GetIdentityName: string; virtual;
     procedure Deinitialize; virtual;
     procedure Initialize; virtual;
+    procedure Translate; virtual;
     procedure SaveToXML; virtual; abstract;
     procedure LoadFromXML; virtual; abstract;
     procedure SearchText(const aText: string); virtual; abstract;
@@ -114,6 +115,11 @@ begin
   miDelete.Caption      := aDelete.Hint;
   miEdit.Caption        := aEdit.Hint;
   miExpandAll.Caption   := aExpandAll.Hint;
+end;
+
+procedure TframeCustom.Translate;
+begin
+
 end;
 
 procedure TframeCustom.Deinitialize;

@@ -1,4 +1,4 @@
-{****************************************************************************************}
+п»ї{****************************************************************************************}
 {                                                                                        }
 { Example of an xml file with UsedAttribute = [uaTimeChange, uaValue]:                   }
 {<?xml version="1.0" encoding="windows-1251" ?>                                          }
@@ -935,7 +935,7 @@ var
 begin
   Result := '';
   for i := 1 to aNodeName.Length do
-    if CharInSet(aNodeName[i], ['_', '.', 'a' .. 'z', 'A' .. 'Z', '0' .. '9', 'А' .. 'Я', 'а' .. 'я']) then
+    if CharInSet(aNodeName[i], ['_', '.', 'a' .. 'z', 'A' .. 'Z', '0' .. '9', 'Рђ' .. 'РЇ', 'Р°' .. 'СЏ']) then
       Result := Concat(Result, aNodeName[i])
     else
       Result := Concat(Result, FormatFloat('-0000', Ord(aNodeName[i])));

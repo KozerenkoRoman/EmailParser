@@ -1,4 +1,4 @@
-unit Translate.Lang;
+﻿unit Translate.Lang;
 
 interface
 
@@ -91,6 +91,5 @@ initialization
 finalization
   if Assigned(TLang.FLang) then
     FreeAndNil(TLang.FLang);
-
 
 end.

@@ -1,4 +1,4 @@
-unit SplashScreen;
+﻿unit SplashScreen;
 
 interface
 

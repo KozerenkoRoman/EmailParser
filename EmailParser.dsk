@@ -1,67 +1,56 @@
 ﻿[Closed Files]
-File_0=TSourceModule,'D:\Work\EmailParser\Sources\Frame.LogView.pas',0,1,90,1,112,0,0,{{5,0},{13,11},{'Region uses'}},
-File_1=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\Indy10\Protocols\IdMessageParts.pas',0,1,94,18,82,0,0,,
-File_2=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\Indy10\Protocols\IdCoderMIME.pas',0,1,157,1,178,0,0,,
-File_3=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\Indy10\Protocols\IdMessageClient.pas',0,1,1529,1,1552,0,0,,
-File_4=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.pas',0,1,1326,12,1348,0,0,,
-File_5=TSourceModule,'D:\Components\VirtualTreeView\Source\VirtualTrees.pas',0,1,15166,85,15194,0,0,,
-File_6=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Classes.pas',0,1,737,1,633,0,0,,
-File_7=TSourceModule,'D:\Work\EmailParser\Sources\Performer.dfm',0,1,1,1,1,0,0,,
-File_8=TSourceModule,'D:\Work\EmailParser\Sources\Performer.pas',0,1,1,1,1,0,0,,
-File_9=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.IOUtils.pas',0,1,1325,37,1353,0,0,,
-File_10=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.Types.pas',0,1,43,1,65,0,0,,
-File_11=TSourceModule,'D:\Work\EmailParser\Common\ArrayHelper.pas',0,1,107,1,114,0,0,{{50,0}
-File_12=TSourceModule,'D:\Work\NewTableAtm\TableAtm\Sources\Performer.pas',0,1,147,1,1,0,0,{{5,0}
-File_13=TSourceModule,'D:\Work\NewTableAtm\TableAtm\Sources\Settings.pas',0,1,91,28,112,0,0,{{5,0}
-File_14=TSourceModule,'D:\Work\EmailParser\Common\Common.Types.pas',0,1,1,26,28,0,0,{{5,0}
+File_0=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Classes.pas',0,1,15953,33,15970,0,0,,
+File_1=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.pas',0,1,42285,16,42307,0,0,,
+File_2=TSourceModule,'D:\Work\EmailParser\Common\MessageDialog.pas',0,1,67,1,40,0,0,{{6,0},{10,11},{'Region uses'}},
+File_3=TSourceModule,'D:\Work\EmailParser\Common\Common.Types.pas',0,1,1,65,11,0,0,{{5,0},{8,11},{'Region uses'}},
+File_4=TSourceModule,'D:\Work\EmailParser\Common\DebugWriter.pas',0,1,71,46,89,0,0,{{8,0},{13,11},{'Region uses'}},
+File_5=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Threading.pas',0,1,1394,1,1415,0,0,,
+File_6=TSourceModule,'D:\Work\EmailParser\Sources\Performer_.pas',0,1,10,1,37,0,0,,
+File_7=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.IOUtils.pas',0,1,19,38,38,0,0,,
+File_8=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.SysUtils.pas',0,1,6805,1,6765,0,0,,
+File_9=TSourceModule,'D:\Work\EmailParser\Sources\Settings.dfm',0,1,1,1,1,0,0,,
+File_10=TSourceModule,'D:\Work\EmailParser\Translate\Translate.Lang.pas',0,1,1,1,1,0,0,{{5,0}
+File_11=TSourceModule,'D:\Work\EmailParser\Sources\SplashScreen.pas',0,1,1,42,30,0,0,{{5,0}
+File_12=TSourceModule,'D:\Work\EmailParser\Resources\Global.Resources.pas',0,1,1,1,7,0,0,,
+File_13=TSourceModule,'D:\Work\EmailParser\Sources\VirtualTrees.ExportHelper.pas',0,1,1,1,1,0,0,{{9,0}
 
 [Modules]
-Module0=D:\Work\EmailParser\Sources\Performer.pas
-Module1=D:\Work\EmailParser\Sources\Settings.pas
-Module2=c:\program files (x86)\embarcadero\studio\22.0\source\Indy10\Protocols\IdMessage.pas
-Module3=D:\Work\EmailParser\Translate\Translate.Resources.pas
-Module4=D:\Work\EmailParser\Sources\Global.Types.pas
-Module5=D:\Work\EmailParser\Sources\Frame.RegExpParameters.pas
-Module6=D:\Work\EmailParser\Sources\Frame.Custom.pas
-Module7=D:\Work\EmailParser\Sources\Frame.Pathes.pas
-Count=8
+Module0=D:\Work\EmailParser\Sources\Settings.pas
+Module1=D:\Work\EmailParser\Sources\Frame.Custom.pas
+Module2=D:\Work\EmailParser\Translate\Translate.Resources.pas
+Module3=D:\Work\EmailParser\Sources\Frame.ResultView.pas
+Module4=D:\Work\EmailParser\Sources\Performer.pas
+Module5=D:\Work\EmailParser\Sources\Global.Types.pas
+Count=6
 EditWindowCount=1
 
-[D:\Work\EmailParser\Sources\Performer.pas]
-ModuleType=TSourceModule
-
 [D:\Work\EmailParser\Sources\Settings.pas]
-ModuleType=TSourceModule
-
-[c:\program files (x86)\embarcadero\studio\22.0\source\Indy10\Protocols\IdMessage.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Translate\Translate.Resources.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Global.Types.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Frame.RegExpParameters.pas]
 ModuleType=TSourceModule
 
 [D:\Work\EmailParser\Sources\Frame.Custom.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\Sources\Frame.Pathes.pas]
+[D:\Work\EmailParser\Translate\Translate.Resources.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\Frame.ResultView.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\Performer.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\Global.Types.pas]
 ModuleType=TSourceModule
 
 [EditWindow0]
-ViewCount=8
-CurrentEditView=D:\Work\EmailParser\Sources\Performer.pas
+ViewCount=6
+CurrentEditView=D:\Work\EmailParser\Sources\Settings.pas
 View0=0
 View1=1
 View2=2
 View3=3
 View4=4
 View5=5
-View6=6
-View7=7
 PercentageSizes=1
 Create=1
 Visible=1
@@ -80,104 +69,82 @@ BorlandEditorCodeExplorer=BorlandEditorCodeExplorer@EditWindow0
 TopPanelSize=0
 LeftPanelSize=1896
 LeftPanelClients=PropertyInspector,DockSite3
-LeftPanelData=00000800010100000000910E00000000000001680700000000000001000000002308000009000000446F636B53697465330100000000E61900001100000050726F7065727479496E73706563746F72FFFFFFFF
-RightPanelSize=1453
+LeftPanelData=000008000101000000000B1300000000000001680700000000000001000000002308000009000000446F636B53697465330100000000DB2100001100000050726F7065727479496E73706563746F72FFFFFFFF
+RightPanelSize=2000
 RightPanelClients=DockSite2,DockSite4
-RightPanelData=0000080001010100000009000000446F636B5369746534910E00000000000001AD050000000000000100000000E619000009000000446F636B5369746532FFFFFFFF
-BottomPanelSize=1963
+RightPanelData=0000080001010100000009000000446F636B53697465340B1300000000000001D0070000000000000100000000DB21000009000000446F636B5369746532FFFFFFFF
+BottomPanelSize=0
 BottomPanelClients=MessageView,DockSite1
-BottomPanelData=0000080001020100000009000000446F636B5369746531DE4400000000000002AB070000000000000100000000DE4400000F0000004D65737361676556696577466F726DFFFFFFFF
+BottomPanelData=000008000102020000000F0000004D65737361676556696577466F726D09000000446F636B5369746531DE44000000000000021406000000000000FFFFFFFF
 BottomMiddlePanelSize=0
 BottomMiddlePanelClients=DockSite0,GraphDrawingModel
 BottomMiddelPanelData=0000080001020200000009000000446F636B536974653010000000477261706844726177696E67566965773C29000000000000024B06000000000000FFFFFFFF
 
 [View0]
 CustomEditViewType=TEditView
+Module=D:\Work\EmailParser\Sources\Global.Types.pas
+CursorX=1
+CursorY=71
+TopLine=62
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=D:\Work\EmailParser\Sources\Global.Types.pas
+
+[View1]
+CustomEditViewType=TEditView
+Module=D:\Work\EmailParser\Sources\Performer.pas
+CursorX=45
+CursorY=87
+TopLine=20
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=D:\Work\EmailParser\Sources\Performer.pas
+
+[View2]
+CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\Settings.pas
 CursorX=1
-CursorY=1
+CursorY=170
+TopLine=164
+LeftCol=1
+Elisions={{5,0},{14,11},{'Region uses'}}
+Bookmarks=
+EditViewName=Borland.FormDesignerView
+
+[View3]
+CustomEditViewType=TEditView
+Module=D:\Work\EmailParser\Sources\Frame.ResultView.pas
+CursorX=36
+CursorY=17
 TopLine=1
 LeftCol=1
 Elisions=
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Settings.pas
+EditViewName=D:\Work\EmailParser\Sources\Frame.ResultView.pas
 
-[View1]
+[View4]
+CustomEditViewType=TEditView
+Module=D:\Work\EmailParser\Sources\Frame.Custom.pas
+CursorX=1
+CursorY=16
+TopLine=1
+LeftCol=1
+Elisions={{5,0},{13,11},{'Region uses'}}
+Bookmarks=
+EditViewName=Borland.FormDesignerView
+
+[View5]
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Translate\Translate.Resources.pas
-CursorX=67
-CursorY=97
-TopLine=101
+CursorX=82
+CursorY=216
+TopLine=195
 LeftCol=1
 Elisions=
 Bookmarks=
 EditViewName=D:\Work\EmailParser\Translate\Translate.Resources.pas
-
-[View2]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Performer.pas
-CursorX=46
-CursorY=164
-TopLine=141
-LeftCol=1
-Elisions=
-Bookmarks={1,161,25}
-EditViewName=D:\Work\EmailParser\Sources\Performer.pas
-
-[View3]
-CustomEditViewType=TEditView
-Module=c:\program files (x86)\embarcadero\studio\22.0\source\Indy10\Protocols\IdMessage.pas
-CursorX=36
-CursorY=461
-TopLine=444
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=c:\program files (x86)\embarcadero\studio\22.0\source\Indy10\Protocols\IdMessage.pas
-
-[View4]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Global.Types.pas
-CursorX=1
-CursorY=112
-TopLine=96
-LeftCol=1
-Elisions={{5,0},{11,11},{'Region uses'}}
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Global.Types.pas
-
-[View5]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Frame.Pathes.pas
-CursorX=20
-CursorY=52
-TopLine=33
-LeftCol=1
-Elisions={{5,0},{13,11},{'Region uses'}}
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Frame.Pathes.pas
-
-[View6]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Frame.RegExpParameters.pas
-CursorX=1
-CursorY=152
-TopLine=166
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Frame.RegExpParameters.pas
-
-[View7]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Frame.Custom.pas
-CursorX=22
-CursorY=46
-TopLine=1
-LeftCol=1
-Elisions={{5,0},{13,11},{'Region uses'}}
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Frame.Custom.pas
 
 [Watches]
 Count=0
@@ -219,7 +186,7 @@ Visible=1
 Docked=0
 State=2
 Left=-42
-Top=-77
+Top=0
 Width=6734
 Height=7048
 MaxLeft=-5
@@ -240,12 +207,12 @@ Docked=1
 State=0
 Left=0
 Top=0
-Width=1453
-Height=6346
+Width=2000
+Height=8462
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=1453
-ClientHeight=6346
+ClientWidth=2000
+ClientHeight=8462
 TBDockHeight=5904
 LRDockWidth=2349
 Dockable=1
@@ -254,18 +221,18 @@ StayOnTop=0
 [MessageView]
 PercentageSizes=1
 Create=1
-Visible=1
+Visible=0
 Docked=1
 State=0
 Left=0
 Top=28
-Width=9917
-Height=1769
+Width=2771
+Height=1346
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=9917
-ClientHeight=1769
-TBDockHeight=1769
+ClientWidth=2771
+ClientHeight=1346
+TBDockHeight=1346
 LRDockWidth=2771
 Dockable=1
 StayOnTop=0
@@ -298,21 +265,21 @@ State=0
 Left=0
 Top=253
 Width=1896
-Height=4452
+Height=6567
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=1896
-ClientHeight=4452
-TBDockHeight=8731
+ClientHeight=6567
+TBDockHeight=3221
 LRDockWidth=1896
 Dockable=1
 StayOnTop=0
-SplitPos=174
+SplitPos=111
 
 [PropInspDesignerSelection]
 ArrangeBy=Name
-SelectedItem=HelpContext,
-ExpandedItems=Anchors=0,BorderIcons=0,Constraints=0,Images=0,"LiveBindings Designer=0",Font=0,LiveBindings=0,Margins=0,From=0,ReceiptRecipient=0,Sender=0,BevelEdges=0,ClipboardFormats=0,Colors=0,CustomCheckImages=0,DragOperations=0,Header=0,"LiveBindings Designer.Element Layers=0",EditMargins=0,StyleElements=0,Touch=0,CustomTitleBar=0,GlassFrame=0,HorzScrollBar=0,Padding=0,VertScrollBar=0
+SelectedItem=Alignment,CustomHint
+ExpandedItems=Anchors=0,Constraints=0,Font=0,LiveBindings=0,"LiveBindings Designer=0",Margins=0,Images=0,EdgeBorders=0,BevelEdges=0,Padding=0,StyleElements=0,Touch=0,MenuAnimation=0
 
 [frmDesignPreview]
 PercentageSizes=1
@@ -640,6 +607,44 @@ LRDockWidth=1896
 Dockable=1
 StayOnTop=0
 
+[fmGrepResults]
+PercentageSizes=1
+Create=1
+Visible=0
+Docked=0
+State=0
+Left=0
+Top=0
+Width=2146
+Height=3615
+MaxLeft=-5
+MaxTop=-10
+ClientWidth=2062
+ClientHeight=3240
+TBDockHeight=3615
+LRDockWidth=2146
+Dockable=1
+StayOnTop=0
+
+[fmMacroLibrary]
+PercentageSizes=1
+Create=1
+Visible=0
+Docked=0
+State=0
+Left=0
+Top=0
+Width=1719
+Height=2471
+MaxLeft=-5
+MaxTop=-10
+ClientWidth=1635
+ClientHeight=2096
+TBDockHeight=2471
+LRDockWidth=1719
+Dockable=1
+StayOnTop=0
+
 [ModelViewTool]
 PercentageSizes=1
 Create=1
@@ -713,7 +718,7 @@ Create=1
 Visible=0
 Docked=1
 State=0
-Left=952
+Left=0
 Top=28
 Width=3823
 Height=1423
@@ -739,14 +744,14 @@ Docked=1
 State=0
 Left=0
 Top=28
-Width=1453
-Height=6615
+Width=2000
+Height=8731
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=1453
-ClientHeight=6615
+ClientWidth=2000
+ClientHeight=8731
 TBDockHeight=8731
-LRDockWidth=1453
+LRDockWidth=2000
 Dockable=1
 StayOnTop=0
 TabPosition=1
@@ -769,7 +774,7 @@ MaxLeft=-1
 MaxTop=-1
 ClientWidth=1896
 ClientHeight=1817
-TBDockHeight=8731
+TBDockHeight=3221
 LRDockWidth=1896
 Dockable=1
 StayOnTop=0

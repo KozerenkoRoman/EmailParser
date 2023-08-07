@@ -1,4 +1,4 @@
-unit Utils.VerInfo;
+﻿unit Utils.VerInfo;
 
 interface
 
