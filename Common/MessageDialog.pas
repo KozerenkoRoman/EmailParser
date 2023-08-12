@@ -152,17 +152,17 @@ end;
 
 procedure TMessageDialog.DoSave(aText: string);
 begin
-  with TSaveTextFileDialog.Create(nil) do
-  try
-    DefaultExt := 'txt';
-    Filter := '*.txt';
-    FileName := 'Technical InformationDialog.txt';
-    if Execute then
-      TFile.WriteAllText(FileName, aText);
-  finally
-    Free;
-  end;
+  if not Application.Terminated then
+    with TSaveTextFileDialog.Create(nil) do
+      try
+        DefaultExt := 'txt';
+        Filter := '*.txt';
+        FileName := 'Technical InformationDialog.txt';
+        if Execute then
+          TFile.WriteAllText(FileName, aText);
+      finally
+        Free;
+      end;
 end;
 
 end.
-

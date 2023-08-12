@@ -1,36 +1,33 @@
 object frameCustom: TframeCustom
   Left = 0
   Top = 0
-  Width = 566
-  Height = 377
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -13
-  Font.Name = 'Tahoma'
-  Font.Style = []
-  ParentFont = False
-  ParentShowHint = False
-  ShowHint = True
+  Width = 849
+  Height = 566
   TabOrder = 0
   object vstTree: TVirtualStringTree
     Left = 0
-    Top = 44
-    Width = 566
-    Height = 333
+    Top = 46
+    Width = 849
+    Height = 520
     Align = alClient
     CustomCheckImages = DMImage.ilCustomCheckImages
+    DefaultNodeHeight = 27
     Header.AutoSizeIndex = -1
-    Header.Height = 18
+    Header.Height = 20
     Header.MainColumn = -1
+    Header.MaxHeight = 15000
+    Header.MinHeight = 20
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowHint, hoShowImages, hoShowSortGlyphs, hoVisible, hoHeaderClickAutoSort]
+    IncrementalSearch = isVisibleOnly
+    Indent = 0
     LineStyle = lsSolid
-    ParentShowHint = False
+    Margin = 6
     PopupMenu = pmFrame
-    ShowHint = True
     TabOrder = 0
+    TextMargin = 6
     TreeOptions.AutoOptions = [toAutoDropExpand, toAutoExpand, toAutoSort, toAutoTristateTracking, toAutoChangeScale]
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toEditable, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toEditOnClick, toEditOnDblClick]
-    TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowRoot, toShowTreeLines, toShowVertGridLines, toThemeAware, toUseBlendedSelection, toShowFilteredNodes]
+    TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowTreeLines, toShowVertGridLines, toThemeAware, toUseBlendedSelection, toShowFilteredNodes]
     TreeOptions.SelectionOptions = [toExtendedFocus, toAlwaysSelectNode]
     OnColumnResize = vstTreeColumnResize
     OnFreeNode = vstTreeFreeNode
@@ -38,17 +35,18 @@ object frameCustom: TframeCustom
     OnMeasureItem = vstTreeMeasureItem
     Touch.InteractiveGestures = [igPan, igPressAndTap]
     Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
+    ExplicitTop = 38
+    ExplicitHeight = 528
     Columns = <>
   end
   object tbMain: TToolBar
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 560
-    Height = 38
-    AutoSize = True
-    ButtonHeight = 38
-    ButtonWidth = 39
+    Width = 843
+    Height = 40
+    ButtonHeight = 40
+    ButtonWidth = 40
     EdgeInner = esNone
     EdgeOuter = esNone
     Images = DMImage.vil32
@@ -58,58 +56,112 @@ object frameCustom: TframeCustom
     object btnAdd: TToolButton
       Left = 0
       Top = 0
+      Margins.Left = 5
+      Margins.Top = 5
+      Margins.Right = 5
+      Margins.Bottom = 5
       Action = aAdd
     end
     object btnEdit: TToolButton
-      Left = 39
+      Left = 40
       Top = 0
+      Margins.Left = 5
+      Margins.Top = 5
+      Margins.Right = 5
+      Margins.Bottom = 5
       Action = aEdit
     end
     object btnDelete: TToolButton
-      Left = 78
+      Left = 80
       Top = 0
+      Margins.Left = 5
+      Margins.Top = 5
+      Margins.Right = 5
+      Margins.Bottom = 5
       Action = aDelete
     end
     object btnSave: TToolButton
-      Left = 117
+      Left = 120
       Top = 0
+      Margins.Left = 5
+      Margins.Top = 5
+      Margins.Right = 5
+      Margins.Bottom = 5
       Action = aSave
     end
     object btnSep01: TToolButton
-      Left = 156
+      Left = 160
       Top = 0
-      Width = 8
+      Width = 10
+      Margins.Left = 5
+      Margins.Top = 5
+      Margins.Right = 5
+      Margins.Bottom = 5
       ImageIndex = 16
       ImageName = 'ExportToXLS_32x32'
       Style = tbsSeparator
     end
     object btnRefresh: TToolButton
-      Left = 164
+      Left = 170
       Top = 0
+      Margins.Left = 5
+      Margins.Top = 5
+      Margins.Right = 5
+      Margins.Bottom = 5
       Action = aRefresh
     end
     object btnSep02: TToolButton
-      Left = 203
+      Left = 210
       Top = 0
-      Width = 8
+      Width = 10
+      Margins.Left = 5
+      Margins.Top = 5
+      Margins.Right = 5
+      Margins.Bottom = 5
       ImageIndex = 33
       ImageName = 'Download_32x32'
       Style = tbsSeparator
     end
     object btnExportToExcel: TToolButton
-      Left = 211
+      Left = 220
       Top = 0
+      Margins.Left = 5
+      Margins.Top = 5
+      Margins.Right = 5
+      Margins.Bottom = 5
       Action = aExportToExcel
     end
     object btnExportToCSV: TToolButton
-      Left = 250
+      Left = 260
       Top = 0
+      Margins.Left = 5
+      Margins.Top = 5
+      Margins.Right = 5
+      Margins.Bottom = 5
       Action = aExportToCSV
     end
     object btnPrint: TToolButton
-      Left = 289
+      Left = 300
       Top = 0
+      Margins.Left = 5
+      Margins.Top = 5
+      Margins.Right = 5
+      Margins.Bottom = 5
       Action = aPrint
+    end
+    object btnSep03: TToolButton
+      Left = 340
+      Top = 0
+      Width = 10
+      Caption = 'btnSep03'
+      ImageIndex = 16
+      ImageName = 'ExportToXLS_32x32'
+      Style = tbsSeparator
+    end
+    object btnColumnSettings: TToolButton
+      Left = 350
+      Top = 0
+      Action = aColumnSettings
     end
   end
   object alFrame: TActionList
@@ -127,6 +179,12 @@ object frameCustom: TframeCustom
       ImageIndex = 17
       ImageName = 'ExportToCSV_32x32'
       OnExecute = aExportToCSVExecute
+    end
+    object aExportToHTML: TAction
+      Hint = 'Export To HTML'
+      ImageIndex = 66
+      ImageName = 'ExportToHTML_32x32'
+      OnExecute = aExportToHTMLExecute
     end
     object aPrint: TAction
       Hint = 'Print'
@@ -172,6 +230,12 @@ object frameCustom: TframeCustom
       ImageIndex = 67
       ImageName = 'HideDetail_32x32'
       OnExecute = aCollapseAllExecute
+    end
+    object aColumnSettings: TAction
+      Hint = 'Column Settings'
+      ImageIndex = 63
+      ImageName = 'PageSetup_32x32'
+      OnExecute = aColumnSettingsExecute
     end
   end
   object pmFrame: TPopupMenu

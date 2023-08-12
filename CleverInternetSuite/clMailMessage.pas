@@ -434,7 +434,7 @@ type
     procedure BuildMessage(const AText: string; const Attachments: array of string); overload;
     procedure BuildMessage(const AText, AHtml: string); overload;
 
-    procedure LoadMessage(const AFileName: string); overload;
+    procedure LoadMessage(const AFileName: string); overload; virtual;
     procedure LoadMessage(const AFileName, ACharSet: string); overload;
     procedure LoadMessage(AStream: TStream); overload;
     procedure LoadMessage(AStream: TStream; const ACharSet: string); overload;
@@ -1158,11 +1158,8 @@ begin
   Src := nil;
   stringsUtils := nil;
   try
-    Src := ABody.GetData();
-
     stringsUtils := TclStringsUtils.Create(ASource);
     stringsUtils.OnProgress := ABody.DoOnEncoderProgress;
-    
     stringsUtils.AddTextStream(Src);
   finally
     stringsUtils.Free();

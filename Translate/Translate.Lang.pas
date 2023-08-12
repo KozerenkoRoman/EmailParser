@@ -13,7 +13,7 @@ type
   TLanguage = (lgUk, lgEn);
   TLanguageHelper = record helper for TLanguage
   private const
-    LanguageString: array [TLanguage] of string = ('Ukrainian', 'English');
+    LanguageString: array [TLanguage] of string = ('Українська', 'English');
   public
     function ToString: string;
   end;

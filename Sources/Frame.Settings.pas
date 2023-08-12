@@ -8,19 +8,30 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Frame.Custom, Vcl.Menus, System.Actions, Vcl.ActnList, Vcl.ComCtrls,
   Vcl.ToolWin, VirtualTrees, Vcl.StdCtrls, Vcl.ExtCtrls, System.Generics.Defaults,Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
-  System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Global.Types;
+  System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Global.Types, Vcl.FileCtrl;
 {$ENDREGION}
 
 
 type
   TframeSettings = class(TframeCustom)
-    cbLanguage      : TComboBox;
-    edtExtensions   : TEdit;
-    grdCommonParams : TGridPanel;
-    Label5          : TLabel;
-    Label7          : TLabel;
-    lblExtensions   : TLabel;
-    lblLanguage     : TLabel;
+    aAttachmentsMain      : TAction;
+    aAttachmentsSub       : TAction;
+    aPathForAttachments   : TAction;
+    cbLanguage            : TComboBox;
+    dlgAttachmments       : TFileOpenDialog;
+    edtExtensions         : TEdit;
+    edtPathForAttachments : TButtonedEdit;
+    grdCommonParams       : TGridPanel;
+    Label7                : TLabel;
+    lblExtensions         : TLabel;
+    lblLanguage           : TLabel;
+    lblPathForAttachments : TLabel;
+    miAttachmentsMain     : TMenuItem;
+    miAttachmentsSub      : TMenuItem;
+    miPathForAttachments  : TMenuItem;
+    procedure aAttachmentsMainExecute(Sender: TObject);
+    procedure aAttachmentsSubExecute(Sender: TObject);
+    procedure aPathForAttachmentsExecute(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
   private const
     C_IDENTITY_NAME = 'frameSettings';
@@ -62,13 +73,15 @@ begin
   inherited Initialize;
   LoadFromXML;
   Translate;
+  dlgAttachmments.Title := Application.Title;
 end;
 
 procedure TframeSettings.Translate;
 begin
   inherited;
-  lblLanguage.Caption   := TLang.Lang.Translate('Language');
-  lblExtensions.Caption := TLang.Lang.Translate('FileExtensions');
+  lblExtensions.Caption         := TLang.Lang.Translate('FileExtensions');
+  lblLanguage.Caption           := TLang.Lang.Translate('Language');
+  lblPathForAttachments.Caption := TLang.Lang.Translate('PathForAttachments');
 end;
 
 procedure TframeSettings.Deinitialize;
@@ -87,15 +100,37 @@ begin
   cbLanguage.Items.Clear;
   for var lang := Low(TLanguage) to High(TLanguage) do
     cbLanguage.Items.Add(lang.ToString);
-  cbLanguage.ItemIndex := TGeneral.XMLFile.ReadInteger('Language', C_SECTION_MAIN, 0);
-  edtExtensions.Text   := TGeneral.XMLFile.ReadString('Extensions', C_SECTION_MAIN, '*.eml');
+  cbLanguage.ItemIndex       := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0);
+  edtExtensions.Text         := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
+  edtPathForAttachments.Text := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
 end;
 
 procedure TframeSettings.SaveToXML;
 begin
   inherited;
-  TGeneral.XMLFile.WriteInteger('Language', C_SECTION_MAIN, cbLanguage.ItemIndex, cbLanguage.Text);
-  TGeneral.XMLFile.WriteString('Extensions', C_SECTION_MAIN, edtExtensions.Text, lblExtensions.Caption);
+  TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'Language', cbLanguage.ItemIndex, cbLanguage.Text);
+  TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'Extensions', edtExtensions.Text, lblExtensions.Caption);
+  TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'PathForAttachments', edtPathForAttachments.Text, lblPathForAttachments.Caption);
+  TGeneral.XMLParams.Save;
+end;
+
+procedure TframeSettings.aAttachmentsMainExecute(Sender: TObject);
+begin
+  inherited;
+  edtPathForAttachments.Text := C_ATTACHMENTS_DIR;
+end;
+
+procedure TframeSettings.aAttachmentsSubExecute(Sender: TObject);
+begin
+  inherited;
+  edtPathForAttachments.Text := C_ATTACHMENTS_SUB_DIR;
+end;
+
+procedure TframeSettings.aPathForAttachmentsExecute(Sender: TObject);
+begin
+  inherited;
+  if dlgAttachmments.Execute then
+    edtPathForAttachments.Text := dlgAttachmments.FileName;
 end;
 
 procedure TframeSettings.aRefreshExecute(Sender: TObject);

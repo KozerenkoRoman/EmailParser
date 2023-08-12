@@ -12,32 +12,44 @@ uses
 {$ENDREGION}
 
 type
-  TNodeType = (ntNode, ntGroup);
-
   PRegExpData = ^TRegExpData;
   TRegExpData = record
-    ParameterName: string;
-    RegExpTemplate: string;
+    ParameterName  : string;
+    RegExpTemplate : string;
     procedure Clear;
   end;
 
   PParamPath = ^TParamPath;
   TParamPath = record
-    Path: string;
-    Info: string;
-    WithSubdir: Boolean;
+    Path       : string;
+    Info       : string;
+    WithSubdir : Boolean;
     procedure Clear;
   end;
   TParamPathArray = TArrayRecord<TParamPath>;
 
+  PAttachments = ^TAttachments;
+  TAttachments = record
+    FileName    : string;
+    ContentID   : string;
+    ContentType : string;
+    Stream      : TStream;
+    procedure Clear;
+  end;
+  TAttachmentsArray = TArray<TAttachments>;
+
   PResultData = ^TResultData;
   TResultData = record
-    ShortName : string;
-    FileName  : TFileName;
-    MessageId : string;
-    Subject   : string;
-    Attach    : Integer;
-    TimeStamp : TDateTime;
+    Position    : Integer;
+    Attachments : TAttachmentsArray;
+    Body        : string;
+    FileName    : TFileName;
+    From        : string;
+    MessageId   : string;
+    ShortName   : string;
+    Subject     : string;
+    TimeStamp   : TDateTime;
+    ContentType : string;
     procedure Clear;
     procedure Assign(const aData: TResultData);
   end;
@@ -45,13 +57,21 @@ type
   TGeneral = record
   public
     class function XMLFile: TXMLFile; static;
-    class function XmlParams: TXMLFile; static;
+    class function XMLParams: TXMLFile; static;
     class function GetPathList: TArray<TParamPath>; static;
     class function GetRegExpParametersList: TArray<TRegExpData>; static;
   end;
 
-const
-  C_SECTION_MAIN = 'Main';
+  TAttachmentsDir = (adAttachments, adSubAttachments, adUserDefined);
+  TAttachmentsDirHelper = record helper for TAttachmentsDir
+    function FromString(aDir: string): TAttachmentsDir;
+  end;
+
+resourcestring
+  C_SECTION_MAIN          = 'Main';
+  C_IDENTITY_COLUMNS_NAME = '.Columns';
+  C_ATTACHMENTS_DIR       = '#Attachments';
+  C_ATTACHMENTS_SUB_DIR   = '#Sub#Attachments';
 
 var
   General: TGeneral;
@@ -64,10 +84,13 @@ var
 
 { TGeneral }
 
-class function TGeneral.XmlParams: TXMLFile;
+class function TGeneral.XMLParams: TXMLFile;
 begin
   if not Assigned(FXMLParams) then
+  begin
     FXMLParams := TXmlFile.Create(TPath.ChangeExtension(TPath.GetFullPath(Application.ExeName), '.xml'));
+    FXMLParams.UsedAttributes := [uaComment, uaValue];
+  end;
   Result := FXMLParams;
 end;
 
@@ -76,24 +99,24 @@ var
   Data: TRegExpData;
   i: Integer;
 begin
-  XmlParams.Open;
-  XmlParams.CurrentSection := 'RegExpParameters';
+  XMLParams.Open;
+  XMLParams.CurrentSection := 'RegExpParameters';
   try
     i := 0;
-    SetLength(Result, XmlParams.ChildCount);
-     while not XmlParams.IsLastKey do
+    SetLength(Result, XMLParams.ChildCount);
+     while not XMLParams.IsLastKey do
     begin
-      if XmlParams.ReadAttributes then
+      if XMLParams.ReadAttributes then
       begin
-        Data.ParameterName  := XmlParams.Attributes.GetAttributeValue('ParameterName', '');
-        Data.RegExpTemplate := XmlParams.Attributes.GetAttributeValue('RegExpTemplate', '');
+        Data.ParameterName  := XMLParams.Attributes.GetAttributeValue('ParameterName', '');
+        Data.RegExpTemplate := XMLParams.Attributes.GetAttributeValue('RegExpTemplate', '');
         Result[i] := Data;
         Inc(i);
       end;
-      XmlParams.NextKey;
+      XMLParams.NextKey;
     end;
   finally
-    XmlParams.CurrentSection := '';
+    XMLParams.CurrentSection := '';
   end;
 end;
 
@@ -102,25 +125,25 @@ var
   Data: TParamPath;
   i: Integer;
 begin
-  XmlParams.Open;
-  XmlParams.CurrentSection := 'Path';
+  XMLParams.Open;
+  XMLParams.CurrentSection := 'Path';
   try
     i := 0;
-    SetLength(Result, XmlParams.ChildCount);
-    while not XmlParams.IsLastKey do
+    SetLength(Result, XMLParams.ChildCount);
+    while not XMLParams.IsLastKey do
     begin
-      if XmlParams.ReadAttributes then
+      if XMLParams.ReadAttributes then
       begin
-        Data.WithSubdir := XmlParams.Attributes.GetAttributeValue('WithSubdir', True);
-        Data.Path       := XmlParams.Attributes.GetAttributeValue('Path', '');
-        Data.Info       := XmlParams.Attributes.GetAttributeValue('Info', '');
+        Data.WithSubdir := XMLParams.Attributes.GetAttributeValue('WithSubdir', True);
+        Data.Path       := XMLParams.Attributes.GetAttributeValue('Path', '');
+        Data.Info       := XMLParams.Attributes.GetAttributeValue('Info', '');
         Result[i]       := Data;
         Inc(i);
       end;
-      XmlParams.NextKey;
+      XMLParams.NextKey;
     end;
   finally
-    XmlParams.CurrentSection := '';
+    XMLParams.CurrentSection := '';
   end;
 end;
 
@@ -149,28 +172,66 @@ end;
 
 procedure TResultData.Assign(const aData: TResultData);
 begin
-  Self.ShortName := aData.ShortName;
-  Self.FileName  := aData.FileName;
-  Self.MessageId := aData.MessageId;
-  Self.Subject   := aData.Subject;
-  Self.Attach    := aData.Attach;
-  Self.TimeStamp := aData.TimeStamp;
+  Self.Position    := aData.Position;
+  Self.ShortName   := aData.ShortName;
+  Self.FileName    := aData.FileName;
+  Self.MessageId   := aData.MessageId;
+  Self.Subject     := aData.Subject;
+  Self.Attachments := aData.Attachments;
+  Self.TimeStamp   := aData.TimeStamp;
+  Self.Body        := aData.Body;
+  Self.From        := aData.From;
+  Self.ContentType := aData.ContentType;
+  SetLength(Self.Attachments, Length(aData.Attachments));
+  for var att := Low(Self.Attachments) to High(Self.Attachments) do
+  begin
+    Self.Attachments[att].FileName        := aData.Attachments[att].FileName;
+    Self.Attachments[att].ContentID       := aData.Attachments[att].ContentID;
+    Self.Attachments[att].ContentType     := aData.Attachments[att].ContentType;
+    Self.Attachments[att].Stream.Position := 0;
+    Self.Attachments[att].Stream.CopyFrom(aData.Attachments[att].Stream, aData.Attachments[att].Stream.Size);
+  end;
 end;
 
 procedure TResultData.Clear;
 begin
+  for var att := Low(Self.Attachments) to High(Self.Attachments) do
+    Self.Attachments[att].Clear;
   Self := Default(TResultData);
+end;
+
+{ TAttachments }
+
+procedure TAttachments.Clear;
+begin
+  Self.Stream.Size := 0;
+  Self := Default (TAttachments);
+end;
+
+{ TAttachmentsDirHelper }
+
+function TAttachmentsDirHelper.FromString(aDir: string): TAttachmentsDir;
+begin
+  if aDir.IsEmpty then
+    Result := adSubAttachments
+  else if aDir.Equals(C_ATTACHMENTS_DIR) then
+    Result := adAttachments
+  else if aDir.Equals(C_ATTACHMENTS_SUB_DIR) then
+    Result := adSubAttachments
+  else
+    Result := adUserDefined;
 end;
 
 initialization
 
 finalization
-
-  if Assigned(FXmlFile) then
+  if Assigned(FXMLFile) then
   begin
-    FXmlFile.Save;
-    FreeAndNil(FXmlFile);
+    FXMLFile.Save;
+    FreeAndNil(FXMLFile);
   end;
 
+  if Assigned(FXMLParams) then
+    FreeAndNil(FXMLParams);
 
 end.

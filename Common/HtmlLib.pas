@@ -224,7 +224,7 @@ begin
     else
     begin
       case aValue[i] of
-       ' '  : sTmp := Concat(sTmp, '&nbsp;');        // space
+       ' '  : sTmp := Concat(sTmp, '&nbsp;');   // space
        '<'  : sTmp := Concat(sTmp, '&lt;');     // <
        '>'  : sTmp := Concat(sTmp, '&gt;');     // >
        '&'  : sTmp := Concat(sTmp, '&amp;');    // &

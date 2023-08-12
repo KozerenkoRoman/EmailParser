@@ -20,6 +20,7 @@ type
     alSettings            : TActionList;
     aPathsFindFiles       : TAction;
     ApplicationEvents     : TApplicationEvents;
+    aSaveCommonSettings   : TAction;
     aSearch               : TAction;
     aToggleSplitPanel     : TAction;
     catMenuItems          : TCategoryButtons;
@@ -38,7 +39,6 @@ type
     sbMain                : TStatusBar;
     splView               : TSplitView;
     srchBox               : TSearchBox;
-    aSaveCommonSettings: TAction;
     procedure aEditCommonParametersExecute(Sender: TObject);
     procedure aEditRegExpParametersExecute(Sender: TObject);
     procedure aPathsFindFilesExecute(Sender: TObject);
@@ -83,7 +83,7 @@ end;
 
 procedure TfrmSettings.Initialize;
 begin
-  TLang.Lang.Language := TLanguage(TGeneral.XMLFile.ReadInteger('Language', C_SECTION_MAIN, 0));
+  TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
   frameRegExpParameters.Initialize;
   framePathes.Initialize;
   frameResultView.Initialize;
@@ -99,7 +99,13 @@ begin
   aEditRegExpParameters.Caption := TLang.Lang.Translate('EditRegExpParameters');
   aPathsFindFiles.Caption       := TLang.Lang.Translate('PathsToFindFiles');
   aSearch.Caption               := TLang.Lang.Translate('StartSearch');
-  lblTitle.Caption              := TLang.Lang.Translate('PathsToFindFiles');
+
+  crdCommonParams.Caption       := TLang.Lang.Translate('EditCommonParameters');
+  crdPathsToFindScripts.Caption := TLang.Lang.Translate('PathsToFindFiles');
+  crdRegExpParameters.Caption   := TLang.Lang.Translate('EditRegExpParameters');
+  crdSearch.Caption             := TLang.Lang.Translate('StartSearch');
+
+  lblTitle.Caption := pnlCard.ActiveCard.Caption;
 end;
 
 procedure TfrmSettings.Deinitialize;
@@ -153,14 +159,15 @@ begin
   TfrmSplashScreen.HideSplash;
   StackTrace := E.StackTrace;
   LogWriter.Write(ddError, E.Message + sLineBreak + StackTrace);
-  TMessageDialog.ShowError(E.Message, StackTrace);
+  if not Application.Terminated then
+    TMessageDialog.ShowError(E.Message, StackTrace);
 end;
 
 procedure TfrmSettings.aSaveCommonSettingsExecute(Sender: TObject);
 begin
   inherited;
   frameSettings.SaveToXML;
-  TLang.Lang.Language := TLanguage(TGeneral.XMLFile.ReadInteger('Language', C_SECTION_MAIN, 0));
+  TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
 
   Translate;
   frameRegExpParameters.Translate;

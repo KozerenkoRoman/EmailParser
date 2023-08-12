@@ -36,6 +36,7 @@ uses
   function VarToIntDef(const Value: Variant; DefValue: Integer = 0): Integer; inline;
   procedure SetFocusSafely(const aControl: TWinControl); inline;
   procedure ShellOpen(const aUrl: string; const aParams: string = '');
+  function GetFileName(const aFileName: string): string;
 
   function IsInternetConnected: Boolean;
 
@@ -332,6 +333,15 @@ begin
   else
     LenghtValue := NextSwitchIndex - SepIndex - 1;
   Result := Copy(aCmdLine, SepIndex + 2, LenghtValue).Trim;
+end;
+
+function GetFileName(const aFileName: string): string;
+const
+  ForbiddenChars: array [0 .. 9] of Char = ('<', '>', '|', '"', ';', '\', '/', ':', '*', '?');
+begin
+   Result := aFileName;
+  for var i := Low(ForbiddenChars) to High(ForbiddenChars) do
+    Result := Result.Replace(ForbiddenChars[i], '');
 end;
 
 end.

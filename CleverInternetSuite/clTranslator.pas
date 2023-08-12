@@ -582,7 +582,7 @@ begin
     finally
       enc.Free();
     end;
-    
+
     Exit;
   except
     on EEncodingError do;
@@ -725,7 +725,7 @@ var
   enc: TEncoding;
   cnt: Integer;
   buf: TBytes;
-{$ENDIF}
+  {$ENDIF}
 begin
   if (ACount = 0) then
   begin
@@ -733,7 +733,7 @@ begin
     Exit;
   end;
 
-{$IFDEF DELPHI2009}
+  {$IFDEF DELPHI2009}
   try
     enc := GetEncoding(ACharSet);
     try
@@ -748,9 +748,7 @@ begin
       begin
         Move(ABytes[0], buf[0], cnt);
       end;
-
       Result := enc.GetString(buf, 0, cnt);
-
       if (cnt > 0) and (Result = '') then
       begin
         raise EEncodingError.Create('Data source invalid');
@@ -758,19 +756,15 @@ begin
     finally
       enc.Free();
     end;
-
     Exit;
   except
     on EEncodingError do;
   end;
-{$ENDIF}
+  {$ENDIF}
   if SameText('utf-8', ACharSet) then
-  begin
-    Result := GetString_(WideStringToString(TranslateFromUtf8(system.Copy(string(ABytes), 1, ACount)), CP_ACP));
-  end else
-  begin
-    Result := TranslateFrom(ACharSet, system.Copy(string(ABytes), 1, ACount));
-  end;
+    Result := GetString_(WideStringToString(TranslateFromUtf8(System.Copy(string(ABytes), 1, ACount)), CP_ACP))
+  else
+    Result := TranslateFrom(ACharSet, System.Copy(string(ABytes), 1, ACount));
 end;
 
 class function TclTranslator.GetStringFromUtf8(const ABytes: TclByteArray): WideString;
@@ -805,9 +799,12 @@ end;
 class function TclTranslator.GetString(const ABytes: TclByteArray; AIndex, ACount: Integer; const ACharSet: string): string;
 begin
   if (ACount > 0) then
-  begin
-    Result := GetString(PclChar(@ABytes[AIndex]), ACount, ACharSet);
-  end else
+    try
+      Result := GetString(PclChar(@ABytes[AIndex]), ACount, ACharSet);
+    except
+      Result := '';
+    end
+  else
   begin
     Result := '';
   end;

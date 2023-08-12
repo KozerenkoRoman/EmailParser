@@ -92,20 +92,20 @@ procedure TframeRegExpParameters.SaveToXML;
     Data: PRegExpData;
   begin
     Data := aNode^.GetData;
-    TGeneral.XmlParams.Attributes.AddNode;
-    TGeneral.XmlParams.Attributes.SetAttributeValue('ParameterName', Data.ParameterName);
-    TGeneral.XmlParams.Attributes.SetAttributeValue('RegExpTemplate', Data.RegExpTemplate);
-    TGeneral.XmlParams.WriteAttributes;
+    TGeneral.XMLParams.Attributes.AddNode;
+    TGeneral.XMLParams.Attributes.SetAttributeValue('ParameterName', Data.ParameterName);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('RegExpTemplate', Data.RegExpTemplate);
+    TGeneral.XMLParams.WriteAttributes;
   end;
 
 var
   Node: PVirtualNode;
 begin
   inherited;
-  TGeneral.XmlParams.Open;
+  TGeneral.XMLParams.Open;
   try
-    TGeneral.XmlParams.EraseSection('RegExpParameters');
-    TGeneral.XmlParams.CurrentSection := 'RegExpParameters';
+    TGeneral.XMLParams.EraseSection('RegExpParameters');
+    TGeneral.XMLParams.CurrentSection := 'RegExpParameters';
     Node := vstTree.GetFirst;
     while Assigned(Node) do
     begin
@@ -113,8 +113,8 @@ begin
       Node := Node.NextSibling;
     end;
   finally
-    TGeneral.XmlParams.CurrentSection := '';
-    TGeneral.XmlParams.Save;
+    TGeneral.XMLParams.CurrentSection := '';
+    TGeneral.XMLParams.Save;
   end;
 end;
 

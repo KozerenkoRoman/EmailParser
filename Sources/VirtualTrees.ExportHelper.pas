@@ -7,12 +7,11 @@
 interface
 
 {$REGION 'Region uses'}
-
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.Win.ComObj, Winapi.ActiveX,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, DebugWriter, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} System.IOUtils,
   VirtualTrees, VirtualTrees.Classes, Global.Types, XmlFiles, System.Generics.Collections, System.Generics.Defaults,
-  System.Types, Utils, VirtualTrees.Types;
+  System.Types, Utils, VirtualTrees.Types, Column.Types;
 {$ENDREGION}
 
 type
@@ -34,12 +33,11 @@ type
 
   TStoreHelper = class
   const
-    C_ATTR_INDEX = 'Index';
-    C_ATTR_NAME = 'Name';
+    C_ATTR_INDEX    = 'Index';
+    C_ATTR_NAME     = 'Name';
     C_ATTR_POSITION = 'Position';
-    C_ATTR_VISIBLE = 'Visible';
-    C_ATTR_WIDTH = 'Width';
-    C_ATTR_TAG = 'Tag';
+    C_ATTR_VISIBLE  = 'Visible';
+    C_ATTR_WIDTH    = 'Width';
   public
     class function GetColumnSettings(const aTree: TVirtualStringTree; const aIdentityName: string): string;
     class procedure LoadColumnSettings(const aTree: TVirtualStringTree; const aIdentityName: string; const aXmlText: string);
@@ -196,10 +194,10 @@ begin
           for var i := VarArrayLowBound(VArray, 1) to VarArrayHighBound(VArray, 1) do
           begin
             for var j := VarArrayLowBound(VArray, col) to VarArrayHighBound(VArray, col) do
-              str := Concat(str, '"', VarToStr(VArray[i, j]), '",');
+              str := Concat(str, '"', VarToStr(VArray[i, j]), '";');
             str := Concat(str, sLineBreak);
           end;
-          TFile.WriteAllText(SaveDialog.FileName, str);
+          TFile.WriteAllText(SaveDialog.FileName, str, TEncoding.UTF8);
         end;
       end;
 
@@ -314,7 +312,6 @@ begin
       General.XMLFile.Attributes.SetAttributeValue(C_ATTR_NAME, Column.Text);
       General.XMLFile.Attributes.SetAttributeValue(C_ATTR_WIDTH, Column.Width);
       General.XMLFile.Attributes.SetAttributeValue(C_ATTR_VISIBLE, coVisible in Column.Options);
-      General.XMLFile.Attributes.SetAttributeValue(C_ATTR_TAG, Column.Tag);
       General.XMLFile.WriteAttributes;
       ColumnIndex := aTree.Header.Columns.GetNextColumn(ColumnIndex);
       if (ColumnIndex > -1) then
@@ -347,7 +344,6 @@ begin
           begin
             Column.Position := General.XMLFile.Attributes.GetAttributeValue(C_ATTR_POSITION, Column.Position);
             Column.Width    := General.XMLFile.Attributes.GetAttributeValue(C_ATTR_WIDTH, Column.Width);
-            Column.Tag      := General.XMLFile.Attributes.GetAttributeValue(C_ATTR_TAG, Column.Tag);
             if StrToBool(General.XMLFile.Attributes.GetAttributeValue(C_ATTR_VISIBLE, True)) then
               Column.Options := Column.Options + [coVisible]
             else

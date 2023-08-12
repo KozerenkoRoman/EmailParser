@@ -8,6 +8,8 @@ uses
   Vcl.Forms,
   System.SysUtils,
   ArrayHelper in 'Common\ArrayHelper.pas',
+  Column.Settings in 'Sources\Column.Settings.pas' {frmColumnSettings},
+  Column.Types in 'Sources\Column.Types.pas',
   Common.Types in 'Common\Common.Types.pas',
   CustomForms in 'Sources\CustomForms.pas' {CustomForm},
   DaImages in 'DataModules\DaImages.pas' {DMImage: TDataModule},
@@ -22,6 +24,7 @@ uses
   HtmlConsts in 'Common\HtmlConsts.pas',
   HtmlLib in 'Common\HtmlLib.pas',
   InformationDialog in 'Sources\InformationDialog.pas' {InformationDialog},
+  MailMessage.Helper in 'CleverInternetSuite\MailMessage.Helper.pas',
   MessageDialog in 'Common\MessageDialog.pas',
   Performer in 'Sources\Performer.pas',
   Settings in 'Sources\Settings.pas' {frmSettings},
@@ -33,6 +36,7 @@ uses
   Utils.LocalInformation in 'Common\Utils.LocalInformation.pas',
   Utils.VerInfo in 'Common\Utils.VerInfo.pas',
   VirtualTrees.ExportHelper in 'Sources\VirtualTrees.ExportHelper.pas',
+  VirtualTrees.Helper in 'Sources\VirtualTrees.Helper.pas',
   XmlFiles in 'Common\XmlFiles.pas';
 
 {$R *.res}
@@ -42,10 +46,12 @@ begin
     Application.Initialize;
     Application.MainFormOnTaskbar := True;
     try
+      {$IFNDEF DEBUG}
       TfrmSplashScreen.ShowSplashScreen;
+      {$ENDIF}
       Application.CreateForm(TDMImage, DMImage);
-  Application.CreateForm(TfrmSettings, frmSettings);
-  frmSettings.Initialize;
+      Application.CreateForm(TfrmSettings, frmSettings);
+      frmSettings.Initialize;
     finally
       TfrmSplashScreen.HideSplashScreen;
     end;
@@ -59,4 +65,5 @@ begin
         LogWriter.Write(ddError, E.Message);
     end;
   end;
+
 end.

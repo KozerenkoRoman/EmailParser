@@ -1,6 +1,7 @@
 object DMImage: TDMImage
-  Height = 334
-  Width = 437
+  Height = 501
+  Width = 656
+  PixelsPerInch = 144
   object vil32: TVirtualImageList
     Images = <
       item
@@ -387,8 +388,8 @@ object DMImage: TDMImage
     Scaled = False
     Width = 32
     Height = 32
-    Left = 208
-    Top = 24
+    Left = 312
+    Top = 36
   end
   object ImCollection32: TImageCollection
     Images = <
@@ -4720,8 +4721,8 @@ object DMImage: TDMImage
               FEF0C9BB88F83A0DFF2FC00063AA87551CBC577B0000000049454E44AE426082}
           end>
       end>
-    Left = 208
-    Top = 80
+    Left = 312
+    Top = 120
   end
   object vil16: TVirtualImageList
     Images = <
@@ -5107,8 +5108,8 @@ object DMImage: TDMImage
       end>
     ImageCollection = ImCollection16
     Scaled = False
-    Left = 280
-    Top = 24
+    Left = 420
+    Top = 36
   end
   object ImCollection16: TImageCollection
     Images = <
@@ -7465,12 +7466,12 @@ object DMImage: TDMImage
               A5CB34F9578001006E57F8526146E6ED0000000049454E44AE426082}
           end>
       end>
-    Left = 280
-    Top = 80
+    Left = 420
+    Top = 120
   end
   object ilCustomCheckImages: TImageList
-    Left = 61
-    Top = 102
+    Left = 92
+    Top = 153
     Bitmap = {
       494C010119002800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070

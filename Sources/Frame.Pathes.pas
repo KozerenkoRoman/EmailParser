@@ -104,21 +104,21 @@ procedure TframePathes.SaveToXML;
     Data: PParamPath;
   begin
     Data := aNode^.GetData;
-    TGeneral.XmlParams.Attributes.AddNode;
-    TGeneral.XmlParams.Attributes.SetAttributeValue('Path', Data.Path);
-    TGeneral.XmlParams.Attributes.SetAttributeValue('Info', Data.Info);
-    TGeneral.XmlParams.Attributes.SetAttributeValue('WithSubdir', Data.WithSubdir);
-    TGeneral.XmlParams.WriteAttributes;
+    TGeneral.XMLParams.Attributes.AddNode;
+    TGeneral.XMLParams.Attributes.SetAttributeValue('Path', Data.Path);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('Info', Data.Info);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('WithSubdir', Data.WithSubdir);
+    TGeneral.XMLParams.WriteAttributes;
   end;
 
 var
   Node: PVirtualNode;
 begin
   inherited;
-  TGeneral.XmlParams.Open;
+  TGeneral.XMLParams.Open;
   try
-    TGeneral.XmlParams.EraseSection('Path');
-    TGeneral.XmlParams.CurrentSection := 'Path';
+    TGeneral.XMLParams.EraseSection('Path');
+    TGeneral.XMLParams.CurrentSection := 'Path';
     Node := vstTree.GetFirst;
     while Assigned(Node) do
     begin
@@ -126,8 +126,8 @@ begin
       Node := Node.NextSibling;
     end;
   finally
-    TGeneral.XmlParams.CurrentSection := '';
-    TGeneral.XmlParams.Save;
+    TGeneral.XMLParams.CurrentSection := '';
+    TGeneral.XMLParams.Save;
   end;
 end;
 
