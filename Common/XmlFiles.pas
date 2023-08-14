@@ -1238,7 +1238,7 @@ var
   NodeRoot    : IXMLNode;
   NodeSection : IXMLNode;
 begin
-  //check if file has not yet been converted
+  //check if file has not yet been converted _
   aItems := nil;
   aIniFile := nil;
   if not FileExists(aIniFileName) then

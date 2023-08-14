@@ -8,27 +8,27 @@ uses
   Vcl.Forms,
   System.SysUtils,
   ArrayHelper in 'Common\ArrayHelper.pas',
-  Column.Settings in 'Sources\Column.Settings.pas' {frmColumnSettings},
+  Column.Settings in 'Sources\Column.Settings.pas' {frmColumnSettings} ,
   Column.Types in 'Sources\Column.Types.pas',
   Common.Types in 'Common\Common.Types.pas',
-  CustomForms in 'Sources\CustomForms.pas' {CustomForm},
-  DaImages in 'DataModules\DaImages.pas' {DMImage: TDataModule},
+  CustomForms in 'Sources\CustomForms.pas' {CustomForm} ,
+  DaImages in 'DataModules\DaImages.pas' {DMImage: TDataModule} ,
   DebugWriter in 'Common\DebugWriter.pas',
-  Frame.Custom in 'Sources\Frame.Custom.pas' {frameCustom: TFrame},
-  Frame.Pathes in 'Sources\Frame.Pathes.pas' {framePathes: TFrame},
-  Frame.RegExpParameters in 'Sources\Frame.RegExpParameters.pas' {frameRegExpParameters: TFrame},
-  Frame.ResultView in 'Sources\Frame.ResultView.pas' {frameResultView: TFrame},
-  Frame.Settings in 'Sources\Frame.Settings.pas' {frameSettings: TFrame},
+  Frame.Custom in 'Sources\Frame.Custom.pas' {frameCustom: TFrame} ,
+  Frame.Pathes in 'Sources\Frame.Pathes.pas' {framePathes: TFrame} ,
+  Frame.RegExpParameters in 'Sources\Frame.RegExpParameters.pas' {frameRegExpParameters: TFrame} ,
+  Frame.ResultView in 'Sources\Frame.ResultView.pas' {frameResultView: TFrame} ,
+  Frame.Settings in 'Sources\Frame.Settings.pas' {frameSettings: TFrame} ,
   Global.Resources in 'Resources\Global.Resources.pas',
   Global.Types in 'Sources\Global.Types.pas',
   HtmlConsts in 'Common\HtmlConsts.pas',
   HtmlLib in 'Common\HtmlLib.pas',
-  InformationDialog in 'Sources\InformationDialog.pas' {InformationDialog},
+  InformationDialog in 'Sources\InformationDialog.pas' {InformationDialog} ,
   MailMessage.Helper in 'CleverInternetSuite\MailMessage.Helper.pas',
   MessageDialog in 'Common\MessageDialog.pas',
   Performer in 'Sources\Performer.pas',
-  Settings in 'Sources\Settings.pas' {frmSettings},
-  SplashScreen in 'Sources\SplashScreen.pas' {frmSplashScreen},
+  Settings in 'Sources\Settings.pas' {frmSettings} ,
+  SplashScreen in 'Sources\SplashScreen.pas' {frmSplashScreen} ,
   Translate.Lang in 'Translate\Translate.Lang.pas',
   Translate.Resources in 'Translate\Translate.Resources.pas',
   Utils in 'Common\Utils.pas',
@@ -42,11 +42,12 @@ uses
 {$R *.res}
 
 begin
+  ReportMemoryLeaksOnShutdown := {$IFDEF DEBUG} True {$ELSE} False {$ENDIF DEBUG};
   try
     Application.Initialize;
     Application.MainFormOnTaskbar := True;
     try
-      {$IFNDEF DEBUG}
+      {$IFDEF RELEASE}
       TfrmSplashScreen.ShowSplashScreen;
       {$ENDIF}
       Application.CreateForm(TDMImage, DMImage);

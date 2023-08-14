@@ -1,12 +1,12 @@
 inherited frameResultView: TframeResultView
   Width = 1009
-  Height = 606
+  Height = 657
   ExplicitWidth = 1009
-  ExplicitHeight = 606
+  ExplicitHeight = 657
   PixelsPerInch = 144
   object splInfo: TSplitter [0]
     Left = 0
-    Top = 560
+    Top = 611
     Width = 1009
     Height = 5
     Cursor = crVSplit
@@ -17,7 +17,7 @@ inherited frameResultView: TframeResultView
   end
   inherited vstTree: TVirtualStringTree
     Width = 1009
-    Height = 314
+    Height = 346
     Colors.GridLineColor = cl3DLight
     DefaultNodeHeight = 20
     Header.Height = 25
@@ -118,23 +118,17 @@ inherited frameResultView: TframeResultView
       Top = 0
       Action = aOpenLogFile
     end
-    object ToolButton1: TToolButton
-      Left = 510
-      Top = 0
-      Caption = 'ToolButton1'
-      ImageIndex = 71
-      ImageName = 'email'
-    end
   end
   object pnlBottom: TPanel [3]
     Left = 0
-    Top = 565
+    Top = 616
     Width = 1009
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
     Visible = False
+    ExplicitTop = 565
     DesignSize = (
       1009
       41)
@@ -173,10 +167,10 @@ inherited frameResultView: TframeResultView
   end
   object pcInfo: TPageControl [4]
     Left = 0
-    Top = 360
+    Top = 392
     Width = 1009
-    Height = 200
-    ActivePage = tsHtmlText
+    Height = 219
+    ActivePage = tsAttachments
     Align = alBottom
     TabOrder = 3
     OnChange = pcInfoChange
@@ -186,7 +180,7 @@ inherited frameResultView: TframeResultView
         Left = 0
         Top = 0
         Width = 1001
-        Height = 170
+        Height = 189
         Align = alClient
         BevelInner = bvNone
         BevelOuter = bvNone
@@ -194,6 +188,7 @@ inherited frameResultView: TframeResultView
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 0
+        ExplicitHeight = 170
       end
     end
     object tsHtmlText: TTabSheet
@@ -203,13 +198,13 @@ inherited frameResultView: TframeResultView
         Left = 0
         Top = 0
         Width = 1001
-        Height = 170
+        Height = 189
         Align = alClient
         TabOrder = 0
         OnBeforeNavigate2 = wbBodyBeforeNavigate2
         ExplicitHeight = 190
         ControlData = {
-          4C00000075670000921100000000000000000000000000000000000000000000
+          4C00000075670000891300000000000000000000000000000000000000000000
           000000004C000000000000000000000001000000E0D057007335CF11AE690800
           2B2E126208000000000000004C0000000114020000000000C000000000000046
           8000000000000000000000000000000000000000000000000000000000000000

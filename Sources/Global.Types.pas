@@ -30,10 +30,11 @@ type
 
   PAttachments = ^TAttachments;
   TAttachments = record
+    ShortName   : string;
     FileName    : string;
     ContentID   : string;
     ContentType : string;
-    Stream      : TStream;
+//    Stream      : TStream;
     procedure Clear;
   end;
   TAttachmentsArray = TArray<TAttachments>;
@@ -185,11 +186,13 @@ begin
   SetLength(Self.Attachments, Length(aData.Attachments));
   for var att := Low(Self.Attachments) to High(Self.Attachments) do
   begin
+    Self.Attachments[att].ShortName       := aData.Attachments[att].ShortName;
     Self.Attachments[att].FileName        := aData.Attachments[att].FileName;
     Self.Attachments[att].ContentID       := aData.Attachments[att].ContentID;
     Self.Attachments[att].ContentType     := aData.Attachments[att].ContentType;
-    Self.Attachments[att].Stream.Position := 0;
-    Self.Attachments[att].Stream.CopyFrom(aData.Attachments[att].Stream, aData.Attachments[att].Stream.Size);
+
+//    Self.Attachments[att].Stream.Position := 0;
+//    Self.Attachments[att].Stream.CopyFrom(aData.Attachments[att].Stream, aData.Attachments[att].Stream.Size);
   end;
 end;
 
@@ -204,7 +207,7 @@ end;
 
 procedure TAttachments.Clear;
 begin
-  Self.Stream.Size := 0;
+//  Self.Stream.Size := 0;
   Self := Default (TAttachments);
 end;
 

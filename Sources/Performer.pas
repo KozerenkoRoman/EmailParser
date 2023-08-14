@@ -22,13 +22,15 @@ type
 
   TPerformer = class
   private
-    FAttachmentsDir : TAttachmentsDir;
-    FPathList       : TArray<TParamPath>;
-    FRegExpList     : TArray<TRegExpData>;
-    FUserDefinedDir : string;
+    FAttachmentsDir    : TAttachmentsDir;
+    FDeleteAttachments : Boolean;
+    FPathList          : TArray<TParamPath>;
+    FRegExpList        : TArray<TRegExpData>;
+    FUserDefinedDir    : string;
     function GetAttchmentPath(const aFileName: TFileName): string;
-    procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aData: TStream; var Handled: Boolean);
-    procedure ParseEmail(const aFileName: TFileName; out Data: TResultData);
+    procedure DeleteAttachmentFiles(const aData: PResultData);
+    procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
+    procedure ParseEmail(const aFileName: TFileName; out aData: PResultData);
     procedure ParseFile(const aFileName: TFileName);
   public
     OnStartProgressEvent : TStartProgressEvent;
@@ -51,12 +53,13 @@ begin
   if not Assigned(OnCompletedItem) then
     Exit;
 
-  FRegExpList     := TGeneral.GetRegExpParametersList;
-  FPathList       := TGeneral.GetPathList;
-  FileList        := [];
-  FileExt         := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
-  FUserDefinedDir := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
-  FAttachmentsDir := FAttachmentsDir.FromString(FUserDefinedDir);
+  FRegExpList        := TGeneral.GetRegExpParametersList;
+  FPathList          := TGeneral.GetPathList;
+  FileList           := [];
+  FileExt            := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
+  FUserDefinedDir    := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
+  FAttachmentsDir    := FAttachmentsDir.FromString(FUserDefinedDir);
+  FDeleteAttachments := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
 
   for var Dir in FPathList do
     if Dir.WithSubdir then
@@ -91,7 +94,7 @@ end;
 
 procedure TPerformer.ParseFile(const aFileName: TFileName);
 var
-  Data: TResultData;
+  Data: PResultData;
 begin
   if (not Assigned(OnCompletedItem)) or (Length(FRegExpList) = 0) then
     Exit;
@@ -107,8 +110,10 @@ begin
   TThread.Queue(nil,
     procedure
     begin
-      OnCompletedItem(Data);
+      OnCompletedItem(Data^);
     end);
+  if Assigned(Data) then
+    FreeMem(Data);
 end;
 
 function TPerformer.GetAttchmentPath(const aFileName: TFileName): string;
@@ -139,54 +144,69 @@ begin
     end;
 end;
 
-procedure TPerformer.ParseEmail(const aFileName: TFileName; out Data: TResultData);
+procedure TPerformer.ParseEmail(const aFileName: TFileName; out aData: PResultData);
 var
   MailMessage: TclMailMessage;
 begin
-  Data.ShortName := TPath.GetFileNameWithoutExtension(aFileName);
-  Data.FileName  := aFileName;
+  New(aData);
+  aData.ShortName := TPath.GetFileNameWithoutExtension(aFileName);
+  aData.FileName  := aFileName;
 
   MailMessage := TclMailMessage.Create(nil);
   MailMessage.OnSaveAttachment := DoSaveAttachment;
   try
     try
-      MailMessage.ResultData := Data;
+      MailMessage.ResultData := aData;
       MailMessage.LoadMessage(aFileName);
-
-      Data.MessageId   := MailMessage.MessageId;
-      Data.Subject     := MailMessage.Subject;
-      Data.TimeStamp   := MailMessage.Date;
-      Data.From        := MailMessage.From.FullAddress;
-      Data.ContentType := MailMessage.ContentType;
+      aData.MessageId   := MailMessage.MessageId;
+      aData.Subject     := MailMessage.Subject;
+      aData.TimeStamp   := MailMessage.Date;
+      aData.From        := MailMessage.From.FullAddress;
+      aData.ContentType := MailMessage.ContentType;
 
       if (MailMessage.ContentType = 'text/calendar') then
       begin
         if Assigned(MailMessage.Calendar) then
-          Data.Body := MailMessage.Calendar.Strings.Text
+          aData.Body := MailMessage.Calendar.Strings.Text
         else
-          Data.Body := 'Empty'
+          aData.Body := 'Empty'
       end
       else
       begin
         if Assigned(MailMessage.MessageText) then
-          Data.Body := MailMessage.MessageText.Text
+          aData.Body := MailMessage.MessageText.Text
         else if Assigned(MailMessage.Html) then
-          Data.Body := MailMessage.Html.Strings.Text
+          aData.Body := MailMessage.Html.Strings.Text
         else
-          Data.Body := 'Empty';
+          aData.Body := 'Empty';
       end
     except
       on E: Exception do
-        LogWriter.Write(ddError, E.Message + sLineBreak + Data.FileName);
+        LogWriter.Write(ddError, E.Message + sLineBreak + aData.FileName);
     end;
+
+    DeleteAttachmentFiles(aData);
   finally
     FreeAndNil(MailMessage);
   end;
 end;
 
-procedure TPerformer.DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aData: TStream; var Handled: Boolean);
+procedure TPerformer.DeleteAttachmentFiles(const aData: PResultData);
+begin
+  if FDeleteAttachments then
+    for var i := Low(aData.Attachments) to High(aData.Attachments) do
+      if TFile.Exists(aData.Attachments[i].FileName) then
+        try
+          TFile.Delete(aData.Attachments[i].FileName);
+        except
+          on E: EInOutError do
+            LogWriter.Write(ddError, E.Message + sLineBreak + aData.Attachments[i].FileName);
+        end;
+end;
+
+procedure TPerformer.DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
 var
-  Data: TResultData;
+  Data: PResultData;
   Path: string;
 begin
   if not(aBody is TclAttachmentBody) then
@@ -198,7 +218,7 @@ begin
 
   if not TPath.HasValidFileNameChars(aFileName, False) then
   begin
-    aFileName := Concat('[', Data.ShortName, '] ', GetFileName(aFileName));
+    aFileName := Concat('[', Data.ShortName, '] ', GetCorrectFileName(aFileName));
     LogWriter.Write(ddText, 'DoSaveAttachment',
                             'Email file name - '      + Data.FileName  + sLineBreak +
                             'Email short name - '     + Data.ShortName + sLineBreak +
@@ -215,10 +235,11 @@ begin
     end;
   end;
   aBody.FileName := aFileName;
-  Data.Attachments[High(Data.Attachments)].FileName    := aFileName;
+  Data.Attachments[High(Data.Attachments)].ShortName   := aFileName;
+  Data.Attachments[High(Data.Attachments)].FileName    := TPath.Combine(Path, aFileName);
   Data.Attachments[High(Data.Attachments)].ContentID   := aBody.ContentID;
   Data.Attachments[High(Data.Attachments)].ContentType := aBody.ContentType;
-  aData := TFileStream.Create(TPath.Combine(Path, aFileName), fmCreate or fmOpenReadWrite);
+  aStreamData := TFileStream.Create(Data.Attachments[High(Data.Attachments)].FileName, fmCreate or fmOpenReadWrite);
   Handled := True;
 end;
 

@@ -15,25 +15,25 @@ type
   TclMailMessageHelper = class helper for TclMailMessage
   private
     class var FData: PResultData;
-    function GetResultData: TResultData;
-    procedure SetResultData(const Value: TResultData);
+    function GetResultData: PResultData;
+    procedure SetResultData(const Value: PResultData);
   public
-    property ResultData: TResultData read GetResultData write SetResultData;
+    property ResultData: PResultData read GetResultData write SetResultData;
   end;
 
 implementation
 
 { TclMailMessageHelper }
 
-function TclMailMessageHelper.GetResultData: TResultData;
+function TclMailMessageHelper.GetResultData: PResultData;
 begin
   Assert(FData <> nil, 'ResultData cannot be nil');
-  Result := FData^;
+  Result := FData;
 end;
 
-procedure TclMailMessageHelper.SetResultData(const Value: TResultData);
+procedure TclMailMessageHelper.SetResultData(const Value: PResultData);
 begin
-  FData := @Value;
+  FData := Value;
 end;
 
 end.

@@ -6,12 +6,13 @@ interface
 uses
   System.SysUtils, System.Variants, System.Classes, System.Generics.Defaults, System.Generics.Collections,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Winapi.Windows, System.DateUtils, System.IniFiles,
-  Vcl.Controls, Winapi.ShellAPI;
+  Vcl.Controls, Winapi.ShellAPI, System.IOUtils;
 {$ENDREGION}
 
   function BoolToChar(const aValue: Boolean): string; inline;
   function FloatToStrEx(Value: Double): string;
   function GetCmdLineValue(aCmdLine, aArg: string; aSwitch, aSeparator: Char): string;
+  function GetCorrectFileName(const aFileName: string): string; inline;
   function GetDateFromHistoricalChart(aDate: string): TDateTime;
   function GetExpiryDate(aDate: string): TDateTime;
   function GetLeftPadString(aText: string; aLength: Integer): string;
@@ -36,7 +37,6 @@ uses
   function VarToIntDef(const Value: Variant; DefValue: Integer = 0): Integer; inline;
   procedure SetFocusSafely(const aControl: TWinControl); inline;
   procedure ShellOpen(const aUrl: string; const aParams: string = '');
-  function GetFileName(const aFileName: string): string;
 
   function IsInternetConnected: Boolean;
 
@@ -335,13 +335,11 @@ begin
   Result := Copy(aCmdLine, SepIndex + 2, LenghtValue).Trim;
 end;
 
-function GetFileName(const aFileName: string): string;
-const
-  ForbiddenChars: array [0 .. 9] of Char = ('<', '>', '|', '"', ';', '\', '/', ':', '*', '?');
+function GetCorrectFileName(const aFileName: string): string;
 begin
-   Result := aFileName;
-  for var i := Low(ForbiddenChars) to High(ForbiddenChars) do
-    Result := Result.Replace(ForbiddenChars[i], '');
+  Result := aFileName;
+  for var i := Low(TPath.GetInvalidFileNameChars) to High(TPath.GetInvalidFileNameChars) do
+    Result := Result.Replace(TPath.GetInvalidFileNameChars[i], '');
 end;
 
 end.

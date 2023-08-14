@@ -28,6 +28,9 @@ inherited frameSettings: TframeSettings
     Width = 858
     Height = 509
     Align = alClient
+    BevelKind = bkFlat
+    BevelOuter = bvNone
+    Color = clWindow
     ColumnCollection = <
       item
         SizeStyle = ssAbsolute
@@ -54,7 +57,7 @@ inherited frameSettings: TframeSettings
       end
       item
         Column = 0
-        Control = Label7
+        Control = lblDeleteAttachments
         Row = 3
       end
       item
@@ -71,12 +74,18 @@ inherited frameSettings: TframeSettings
         Column = 1
         Control = edtPathForAttachments
         Row = 2
+      end
+      item
+        Column = 1
+        Control = cbDeleteAttachments
+        Row = 3
       end>
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
     Font.Name = 'Segoe UI'
     Font.Style = []
+    ParentBackground = False
     ParentFont = False
     RowCollection = <
       item
@@ -102,30 +111,34 @@ inherited frameSettings: TframeSettings
     TabOrder = 2
     object lblLanguage: TLabel
       AlignWithMargins = True
-      Left = 191
-      Top = 4
+      Left = 190
+      Top = 3
       Width = 57
       Height = 29
       Align = alRight
       Caption = 'Language'
       Layout = tlCenter
+      ExplicitLeft = 191
+      ExplicitTop = 4
       ExplicitHeight = 17
     end
     object lblExtensions: TLabel
       AlignWithMargins = True
-      Left = 106
-      Top = 39
+      Left = 105
+      Top = 38
       Width = 142
       Height = 29
       Align = alRight
       Caption = 'File extensions to search'
       Layout = tlCenter
+      ExplicitLeft = 106
+      ExplicitTop = 39
       ExplicitHeight = 17
     end
     object lblPathForAttachments: TLabel
       AlignWithMargins = True
-      Left = 81
-      Top = 74
+      Left = 80
+      Top = 73
       Width = 167
       Height = 29
       Align = alRight
@@ -137,16 +150,18 @@ inherited frameSettings: TframeSettings
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
+      ExplicitLeft = 81
+      ExplicitTop = 74
       ExplicitHeight = 17
     end
-    object Label7: TLabel
+    object lblDeleteAttachments: TLabel
       AlignWithMargins = True
-      Left = 210
-      Top = 109
-      Width = 38
+      Left = 56
+      Top = 108
+      Width = 191
       Height = 29
       Align = alRight
-      Caption = 'Label7'
+      Caption = 'Delete attachments after analysis'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -154,12 +169,14 @@ inherited frameSettings: TframeSettings
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
+      ExplicitLeft = 210
+      ExplicitTop = 109
       ExplicitHeight = 17
     end
     object cbLanguage: TComboBox
       AlignWithMargins = True
-      Left = 261
-      Top = 4
+      Left = 260
+      Top = 3
       Width = 134
       Height = 25
       Margins.Left = 10
@@ -169,8 +186,8 @@ inherited frameSettings: TframeSettings
     end
     object edtExtensions: TEdit
       AlignWithMargins = True
-      Left = 261
-      Top = 39
+      Left = 260
+      Top = 38
       Width = 50
       Height = 29
       Margins.Left = 10
@@ -181,8 +198,8 @@ inherited frameSettings: TframeSettings
     end
     object edtPathForAttachments: TButtonedEdit
       AlignWithMargins = True
-      Left = 261
-      Top = 74
+      Left = 260
+      Top = 73
       Width = 436
       Height = 29
       Margins.Left = 10
@@ -196,6 +213,16 @@ inherited frameSettings: TframeSettings
       Text = '#Attachments'
       OnRightButtonClick = aPathForAttachmentsExecute
       ExplicitHeight = 25
+    end
+    object cbDeleteAttachments: TCheckBox
+      AlignWithMargins = True
+      Left = 260
+      Top = 108
+      Width = 50
+      Height = 29
+      Margins.Left = 10
+      Align = alLeft
+      TabOrder = 3
     end
   end
   inherited alFrame: TActionList

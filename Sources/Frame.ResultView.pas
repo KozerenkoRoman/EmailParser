@@ -31,7 +31,6 @@ type
     tsHtmlText     : TTabSheet;
     tsPlainText    : TTabSheet;
     wbBody         : TWebBrowser;
-    ToolButton1: TToolButton;
     procedure aOpenEmailExecute(Sender: TObject);
     procedure aOpenEmailUpdate(Sender: TObject);
     procedure aOpenLogFileExecute(Sender: TObject);

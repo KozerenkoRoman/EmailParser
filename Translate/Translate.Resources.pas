@@ -37,6 +37,7 @@ resourcestring
   en_ContentType          = 'Content Type';
   en_Date                 = 'Date';
   en_Delete               = 'Delete';
+  en_DeleteAttachments    = 'Delete attachments after analysis';
   en_DirectoryNotFound    = 'Directory "%s" not found';
   en_Disabled             = 'Disabled';
   en_Edit                 = 'Edit';
@@ -70,8 +71,8 @@ resourcestring
   en_ParameterName        = 'Parameter name';
   en_Parameters           = 'Parameters';
   en_Path                 = 'Path';
-  en_PathsToFindFiles     = 'Paths to find files';
   en_PathForAttachments   = 'Paths for saving attachments';
+  en_PathsToFindFiles     = 'Paths to find files';
   en_Position             = 'Position';
   en_Print                = 'Print';
   en_ProgramShutdown      = 'Program shutdown';
@@ -110,6 +111,7 @@ resourcestring
   uk_ContentType          = 'Тип контенту';
   uk_Date                 = 'Дата';
   uk_Delete               = 'Видалити';
+  uk_DeleteAttachments    = 'Видалити вкладення після аналізу';
   uk_DirectoryNotFound    = 'Каталог "%s" не знайдено';
   uk_Disabled             = 'Вимкнено';
   uk_Edit                 = 'Редагувати';
@@ -143,8 +145,8 @@ resourcestring
   uk_ParameterName        = 'Назва параметра';
   uk_Parameters           = 'Параметри';
   uk_Path                 = 'Шлях';
-  uk_PathsToFindFiles     = 'Шляхи для пошуку файлів';
   uk_PathForAttachments   = 'Шляхи для збереження вкладень';
+  uk_PathsToFindFiles     = 'Шляхи для пошуку файлів';
   uk_Position             = 'Позиція';
   uk_Print                = 'Друк';
   uk_ProgramShutdown      = 'Закриття програми';
@@ -167,7 +169,7 @@ resourcestring
   uk_WithSubdir           = 'З підкаталогами';
 
 const
-   ArrayMessages: array[1 .. 71] of TMessageItem = (
+   ArrayMessages: array[1 .. 72] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
     (Key: 'Backup'               ; En: en_Backup;               Uk: uk_Backup),
@@ -184,6 +186,7 @@ const
     (Key: 'ContentType'          ; En: en_ContentType;          Uk: uk_ContentType),
     (Key: 'Date'                 ; En: en_Date;                 Uk: uk_Date),
     (Key: 'Delete'               ; En: en_Delete;               Uk: uk_Delete),
+    (Key: 'DeleteAttachments'    ; En: en_DeleteAttachments;    Uk: uk_DeleteAttachments),
     (Key: 'DirectoryNotFound'    ; En: en_DirectoryNotFound;    Uk: uk_DirectoryNotFound),
     (Key: 'Disabled'             ; En: en_Disabled;             Uk: uk_Disabled),
     (Key: 'Edit'                 ; En: en_Edit;                 Uk: uk_Edit),

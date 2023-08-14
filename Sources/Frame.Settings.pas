@@ -11,18 +11,18 @@ uses
   System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Global.Types, Vcl.FileCtrl;
 {$ENDREGION}
 
-
 type
   TframeSettings = class(TframeCustom)
     aAttachmentsMain      : TAction;
     aAttachmentsSub       : TAction;
     aPathForAttachments   : TAction;
+    cbDeleteAttachments   : TCheckBox;
     cbLanguage            : TComboBox;
     dlgAttachmments       : TFileOpenDialog;
     edtExtensions         : TEdit;
     edtPathForAttachments : TButtonedEdit;
     grdCommonParams       : TGridPanel;
-    Label7                : TLabel;
+    lblDeleteAttachments  : TLabel;
     lblExtensions         : TLabel;
     lblLanguage           : TLabel;
     lblPathForAttachments : TLabel;
@@ -79,6 +79,7 @@ end;
 procedure TframeSettings.Translate;
 begin
   inherited;
+  lblDeleteAttachments.Caption  := TLang.Lang.Translate('DeleteAttachments');
   lblExtensions.Caption         := TLang.Lang.Translate('FileExtensions');
   lblLanguage.Caption           := TLang.Lang.Translate('Language');
   lblPathForAttachments.Caption := TLang.Lang.Translate('PathForAttachments');
@@ -100,14 +101,16 @@ begin
   cbLanguage.Items.Clear;
   for var lang := Low(TLanguage) to High(TLanguage) do
     cbLanguage.Items.Add(lang.ToString);
-  cbLanguage.ItemIndex       := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0);
-  edtExtensions.Text         := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
-  edtPathForAttachments.Text := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
+  cbDeleteAttachments.Checked := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
+  cbLanguage.ItemIndex        := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0);
+  edtExtensions.Text          := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
+  edtPathForAttachments.Text  := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
 end;
 
 procedure TframeSettings.SaveToXML;
 begin
   inherited;
+  TGeneral.XMLParams.WriteBool(C_SECTION_MAIN, 'DeleteAttachments', cbDeleteAttachments.Checked, lblDeleteAttachments.Caption);
   TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'Language', cbLanguage.ItemIndex, cbLanguage.Text);
   TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'Extensions', edtExtensions.Text, lblExtensions.Caption);
   TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'PathForAttachments', edtPathForAttachments.Text, lblPathForAttachments.Caption);
