@@ -10,7 +10,7 @@ uses
   Common.Types, System.IniFiles, System.IOUtils, Global.Resources, Utils, MessageDialog, System.Threading,
   HtmlLib, CustomForms, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExpParameters,Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
-  Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.Settings, Global.Types;
+  Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.CommonSettings, Global.Types;
 {$ENDREGION}
 
 type
@@ -28,10 +28,10 @@ type
     crdPathsToFindScripts : TCard;
     crdRegExpParameters   : TCard;
     crdSearch             : TCard;
+    frameCommonSettings   : TframeCommonSettings;
     framePathes           : TframePathes;
     frameRegExpParameters : TframeRegExpParameters;
     frameResultView       : TframeResultView;
-    frameSettings         : TframeSettings;
     imgMenu               : TImage;
     lblTitle              : TLabel;
     pnlCard               : TCardPanel;
@@ -87,7 +87,7 @@ begin
   frameRegExpParameters.Initialize;
   framePathes.Initialize;
   frameResultView.Initialize;
-  frameSettings.Initialize;
+  frameCommonSettings.Initialize;
   pnlTop.Color                := C_TOP_COLOR;
   catMenuItems.HotButtonColor := C_TOP_COLOR;
   Translate;
@@ -113,7 +113,7 @@ begin
   frameRegExpParameters.Deinitialize;
   framePathes.Deinitialize;
   frameResultView.Deinitialize;
-  frameSettings.Deinitialize;
+  frameCommonSettings.Deinitialize;
 end;
 
 procedure TfrmSettings.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -166,14 +166,14 @@ end;
 procedure TfrmSettings.aSaveCommonSettingsExecute(Sender: TObject);
 begin
   inherited;
-  frameSettings.SaveToXML;
+  frameCommonSettings.SaveToXML;
   TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
 
   Translate;
   frameRegExpParameters.Translate;
   framePathes.Translate;
   frameResultView.Translate;
-  frameSettings.Translate;
+  frameCommonSettings.Translate;
 end;
 
 procedure TfrmSettings.aSearchExecute(Sender: TObject);

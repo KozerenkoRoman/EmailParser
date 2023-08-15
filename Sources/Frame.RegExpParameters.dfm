@@ -4,15 +4,8 @@ inherited frameRegExpParameters: TframeRegExpParameters
   ExplicitWidth = 765
   ExplicitHeight = 436
   inherited vstTree: TVirtualStringTree
-    Width = 765
-    Height = 392
-    Colors.GridLineColor = cl3DLight
-    DefaultNodeHeight = 20
-    Header.Height = 25
     Header.MainColumn = 1
     Images = DMImage.vil16
-    ParentFont = False
-    ParentShowHint = True
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toEditable, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toVariableNodeHeight, toFullRowDrag, toEditOnClick, toEditOnDblClick]
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowRoot, toShowVertGridLines, toThemeAware, toShowFilteredNodes]
     OnCompareNodes = vstTreeCompareNodes
@@ -20,8 +13,6 @@ inherited frameRegExpParameters: TframeRegExpParameters
     OnEditing = vstTreeEditing
     OnGetText = vstTreeGetText
     OnNewText = vstTreeNewText
-    ExplicitWidth = 765
-    ExplicitHeight = 392
     Columns = <
       item
         CaptionAlignment = taCenter
@@ -39,8 +30,6 @@ inherited frameRegExpParameters: TframeRegExpParameters
       end>
   end
   inherited tbMain: TToolBar
-    Width = 759
-    ExplicitWidth = 759
   end
   inherited alFrame: TActionList
     inherited aRefresh: TAction

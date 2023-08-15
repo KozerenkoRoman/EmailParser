@@ -6,13 +6,12 @@ interface
 uses
   System.SysUtils, System.Variants, System.Classes, System.Generics.Defaults, System.Generics.Collections,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Winapi.Windows, System.DateUtils, System.IniFiles,
-  Vcl.Controls, Winapi.ShellAPI, System.IOUtils;
+  Vcl.Controls, Winapi.ShellAPI, System.IOUtils, Vcl.Forms;
 {$ENDREGION}
 
   function BoolToChar(const aValue: Boolean): string; inline;
   function FloatToStrEx(Value: Double): string;
   function GetCmdLineValue(aCmdLine, aArg: string; aSwitch, aSeparator: Char): string;
-  function GetCorrectFileName(const aFileName: string): string; inline;
   function GetDateFromHistoricalChart(aDate: string): TDateTime;
   function GetExpiryDate(aDate: string): TDateTime;
   function GetLeftPadString(aText: string; aLength: Integer): string;
@@ -21,6 +20,7 @@ uses
   function GetUniqueList(List: string; Delimiter: Char = ','): string; inline;
   function IntToStrEx(Value: Integer): string;
   function IsFloat(str: string): Boolean;
+  function IsInternetConnected: Boolean;
   function IsNumber(str: string): Boolean;
   function LeftStr(const aText: string; aLength: Word): string;
   function NullIf(Value, Value1: Integer): Variant; overload;
@@ -36,9 +36,6 @@ uses
   function VarToInt64Def(const Value: Variant; DefValue: Int64 = 0): Int64; inline;
   function VarToIntDef(const Value: Variant; DefValue: Integer = 0): Integer; inline;
   procedure SetFocusSafely(const aControl: TWinControl); inline;
-  procedure ShellOpen(const aUrl: string; const aParams: string = '');
-
-  function IsInternetConnected: Boolean;
 
 const
   C_ROUND_SEC = 2;
@@ -81,11 +78,6 @@ begin
   DecodeTime(aTime, Hour, Min, Sec, MSec);
   Sec := (Sec div aRoundInterval) * aRoundInterval;
   Result := Trunc(aTime) + EncodeTime(Hour, Min, Sec, 0);
-end;
-
-procedure ShellOpen(const aUrl: string; const aParams: string = '');
-begin
-  Winapi.ShellAPI.ShellExecute(0, 'Open', PChar(aUrl), PChar(aParams), nil, SW_SHOWNORMAL);
 end;
 
 function StrToIntEx(const str : string) : Integer;
@@ -333,13 +325,6 @@ begin
   else
     LenghtValue := NextSwitchIndex - SepIndex - 1;
   Result := Copy(aCmdLine, SepIndex + 2, LenghtValue).Trim;
-end;
-
-function GetCorrectFileName(const aFileName: string): string;
-begin
-  Result := aFileName;
-  for var i := Low(TPath.GetInvalidFileNameChars) to High(TPath.GetInvalidFileNameChars) do
-    Result := Result.Replace(TPath.GetInvalidFileNameChars[i], '');
 end;
 
 end.

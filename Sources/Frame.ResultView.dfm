@@ -1,27 +1,20 @@
 inherited frameResultView: TframeResultView
-  Width = 1009
-  Height = 657
-  ExplicitWidth = 1009
-  ExplicitHeight = 657
-  PixelsPerInch = 144
+  Width = 671
+  Height = 516
+  Margins.Left = 0
+  Margins.Top = 0
+  Margins.Right = 0
+  Margins.Bottom = 0
   object splInfo: TSplitter [0]
     Left = 0
-    Top = 611
-    Width = 1009
-    Height = 5
+    Top = 212
+    Width = 671
+    Height = 4
     Cursor = crVSplit
     Align = alBottom
-    ExplicitLeft = -277
-    ExplicitTop = 491
-    ExplicitWidth = 1100
   end
   inherited vstTree: TVirtualStringTree
-    Width = 1009
-    Height = 346
-    Colors.GridLineColor = cl3DLight
-    DefaultNodeHeight = 20
-    Header.Height = 25
-    Header.MainColumn = 2
+    Header.MainColumn = 0
     Images = DMImage.vil16
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toVariableNodeHeight, toFullRowDrag]
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowVertGridLines, toThemeAware, toShowFilteredNodes]
@@ -29,80 +22,106 @@ inherited frameResultView: TframeResultView
     OnDblClick = aOpenEmailExecute
     OnFocusChanged = vstTreeFocusChanged
     OnGetText = vstTreeGetText
-    ExplicitTop = 46
-    ExplicitWidth = 1009
-    ExplicitHeight = 314
     Columns = <
       item
         CaptionAlignment = taCenter
+        MaxWidth = 1000
+        MinWidth = 7
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 0
         Text = '#'
+        Width = 33
       end
       item
         CaptionAlignment = taCenter
+        MaxWidth = 1000
+        MinWidth = 100
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 1
         Text = 'File Name'
-        Width = 107
+        Width = 100
       end
       item
         CaptionAlignment = taCenter
+        MaxWidth = 1000
+        MinWidth = 100
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 2
         Text = 'Path'
-        Width = 280
+        Width = 187
       end
       item
         CaptionAlignment = taCenter
+        MaxWidth = 1000
+        MinWidth = 100
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 3
         Text = 'Message ID'
-        Width = 172
+        Width = 115
       end
       item
         CaptionAlignment = taCenter
+        MaxWidth = 1000
+        MinWidth = 100
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 4
         Text = 'Date'
-        Width = 120
+        Width = 100
       end
       item
         CaptionAlignment = taCenter
+        MaxWidth = 1000
+        MinWidth = 100
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 5
         Text = 'Subject'
-        Width = 72
+        Width = 100
       end
       item
         CaptionAlignment = taCenter
+        MaxWidth = 1000
+        MinWidth = 100
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 6
         Text = 'Attach'
-        Width = 75
+        Width = 100
       end
       item
         CaptionAlignment = taCenter
+        MaxWidth = 1000
+        MinWidth = 100
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 7
         Text = 'Body'
+        Width = 100
       end
       item
         CaptionAlignment = taCenter
+        MaxWidth = 1000
+        MinWidth = 100
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 8
         Text = 'From'
+        Width = 100
       end
       item
         CaptionAlignment = taCenter
+        MaxWidth = 1000
+        MinWidth = 100
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 9
         Text = 'Content Type'
+        Width = 100
       end>
   end
   inherited tbMain: TToolBar
-    Width = 1003
-    ExplicitWidth = 1003
+    Left = 0
+    Top = 0
+    Width = 671
+    Margins.Left = 0
+    Margins.Top = 0
+    Margins.Right = 0
+    Margins.Bottom = 0
     object btnSearch: TToolButton
       Left = 390
       Top = 0
@@ -121,55 +140,41 @@ inherited frameResultView: TframeResultView
   end
   object pnlBottom: TPanel [3]
     Left = 0
-    Top = 616
-    Width = 1009
-    Height = 41
+    Top = 496
+    Width = 671
+    Height = 20
+    Margins.Left = 0
+    Margins.Top = 0
+    Margins.Right = 0
+    Margins.Bottom = 0
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
     Visible = False
-    ExplicitTop = 565
-    DesignSize = (
-      1009
-      41)
     object gProgress: TGauge
-      Left = 7
-      Top = 9
-      Width = 881
+      Left = 0
+      Top = 0
+      Width = 671
       Height = 20
-      Anchors = [akLeft, akTop, akRight]
+      Align = alClient
       BorderStyle = bsNone
       Color = clBtnFace
       ForeColor = 1986047
-      MaxValue = 2
+      MaxValue = 0
       ParentColor = False
       Progress = 0
       ShowText = False
-      ExplicitWidth = 553
-    end
-    object btnBreak: TBitBtn
-      Left = 894
-      Top = 1
-      Width = 110
-      Height = 40
-      Anchors = [akTop, akRight]
-      Caption = 'Break'
-      Default = True
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      Images = DMImage.vil32
-      ParentFont = False
-      TabOrder = 0
     end
   end
   object pcInfo: TPageControl [4]
     Left = 0
-    Top = 392
-    Width = 1009
-    Height = 219
+    Top = 216
+    Width = 671
+    Height = 280
+    Margins.Left = 2
+    Margins.Top = 2
+    Margins.Right = 2
+    Margins.Bottom = 2
     ActivePage = tsAttachments
     Align = alBottom
     TabOrder = 3
@@ -179,8 +184,8 @@ inherited frameResultView: TframeResultView
       object memTextPlain: TMemo
         Left = 0
         Top = 0
-        Width = 1001
-        Height = 189
+        Width = 663
+        Height = 250
         Align = alClient
         BevelInner = bvNone
         BevelOuter = bvNone
@@ -188,7 +193,6 @@ inherited frameResultView: TframeResultView
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 0
-        ExplicitHeight = 170
       end
     end
     object tsHtmlText: TTabSheet
@@ -197,14 +201,13 @@ inherited frameResultView: TframeResultView
       object wbBody: TWebBrowser
         Left = 0
         Top = 0
-        Width = 1001
-        Height = 189
+        Width = 663
+        Height = 250
         Align = alClient
         TabOrder = 0
         OnBeforeNavigate2 = wbBodyBeforeNavigate2
-        ExplicitHeight = 190
         ControlData = {
-          4C00000075670000891300000000000000000000000000000000000000000000
+          4C00000086440000D71900000000000000000000000000000000000000000000
           000000004C000000000000000000000001000000E0D057007335CF11AE690800
           2B2E126208000000000000004C0000000114020000000000C000000000000046
           8000000000000000000000000000000000000000000000000000000000000000
@@ -214,6 +217,78 @@ inherited frameResultView: TframeResultView
     object tsAttachments: TTabSheet
       Caption = 'Attachments'
       ImageIndex = 2
+      inline frameAttachments: TframeAttachments
+        Left = 0
+        Top = 0
+        Width = 663
+        Height = 250
+        Margins.Left = 0
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Align = alClient
+        TabOrder = 0
+        inherited vstTree: TVirtualStringTree
+        end
+        inherited tbMain: TToolBar
+          Width = 663
+          ExplicitWidth = 663
+          inherited btnAdd: TToolButton
+          end
+          inherited btnEdit: TToolButton
+          end
+          inherited btnDelete: TToolButton
+           end
+          inherited btnSave: TToolButton
+  
+          end
+          inherited btnSep01: TToolButton
+            Width = 15
+
+          end
+          inherited btnRefresh: TToolButton
+            Left = 175
+
+          end
+          inherited btnSep02: TToolButton
+            Left = 215
+ 
+          end
+          inherited btnExportToExcel: TToolButton
+            Left = 230
+
+          end
+          inherited btnExportToCSV: TToolButton
+            Left = 270
+   
+          end
+          inherited btnPrint: TToolButton
+            Left = 310
+  
+          end
+          inherited btnSep03: TToolButton
+            Left = 350
+            Width = 5
+
+          end
+          inherited btnColumnSettings: TToolButton
+            Left = 365
+
+          end
+          inherited btnOpenAttachFile: TToolButton
+            Left = 405
+    
+          end
+        end
+        inherited alFrame: TActionList
+          Left = 336
+          Top = 96
+        end
+        inherited pmFrame: TPopupMenu
+          Left = 392
+          Top = 96
+        end
+      end
     end
   end
   inherited alFrame: TActionList
@@ -232,18 +307,18 @@ inherited frameResultView: TframeResultView
     inherited aSave: TAction
       Visible = False
     end
-    object aOpenLogFile: TAction [10]
+    object aOpenLogFile: TAction
       Hint = 'Open Log File'
       ImageIndex = 70
       ImageName = 'file_extension_log'
       OnExecute = aOpenLogFileExecute
     end
-    object aSearch: TAction [11]
+    object aSearch: TAction
       ImageIndex = 21
       ImageName = 'Zoom_32x32'
       OnExecute = aSearchExecute
     end
-    object aOpenEmail: TAction [12]
+    object aOpenEmail: TAction
       Hint = 'Open Email'
       ImageIndex = 75
       ImageName = 'email_open'

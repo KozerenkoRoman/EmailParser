@@ -1,18 +1,10 @@
 inherited framePathes: TframePathes
   Width = 848
   Height = 436
-  ExplicitWidth = 848
-  ExplicitHeight = 436
   inherited vstTree: TVirtualStringTree
-    Width = 848
-    Height = 392
     Colors.GridLineColor = cl3DLight
-    DefaultNodeHeight = 20
-    Header.Height = 25
-    Header.MainColumn = 3
+    Header.MainColumn = 0
     Images = DMImage.vil16
-    ParentFont = False
-    ParentShowHint = True
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toEditable, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toFullRowDrag, toEditOnClick, toEditOnDblClick]
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowRoot, toShowVertGridLines, toThemeAware, toShowFilteredNodes]
     OnChecked = vstTreeChecked
@@ -23,8 +15,6 @@ inherited framePathes: TframePathes
     OnGetText = vstTreeGetText
     OnGetImageIndex = vstTreeGetImageIndex
     OnNewText = vstTreeNewText
-    ExplicitWidth = 848
-    ExplicitHeight = 392
     Columns = <
       item
         BiDiMode = bdLeftToRight
@@ -56,8 +46,6 @@ inherited framePathes: TframePathes
       end>
   end
   inherited tbMain: TToolBar
-    Width = 842
-    ExplicitWidth = 842
   end
   inherited alFrame: TActionList
     inherited aRefresh: TAction

@@ -1,4 +1,4 @@
-﻿unit Frame.Settings;
+﻿unit Frame.CommonSettings;
 
 interface
 
@@ -12,7 +12,7 @@ uses
 {$ENDREGION}
 
 type
-  TframeSettings = class(TframeCustom)
+  TframeCommonSettings = class(TframeCustom)
     aAttachmentsMain      : TAction;
     aAttachmentsSub       : TAction;
     aPathForAttachments   : TAction;
@@ -34,7 +34,7 @@ type
     procedure aPathForAttachmentsExecute(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
   private const
-    C_IDENTITY_NAME = 'frameSettings';
+    C_IDENTITY_NAME = 'frameCommonSettings';
   protected
     function GetIdentityName: string; override;
     procedure LoadFromXML; override;
@@ -47,28 +47,25 @@ type
     procedure SaveToXML; override;
   end;
 
-var
-  frameSettings: TframeSettings;
-
 implementation
 
 {$R *.dfm}
 
 { TframeSettings }
 
-constructor TframeSettings.Create(AOwner: TComponent);
+constructor TframeCommonSettings.Create(AOwner: TComponent);
 begin
   inherited;
 
 end;
 
-destructor TframeSettings.Destroy;
+destructor TframeCommonSettings.Destroy;
 begin
 
   inherited;
 end;
 
-procedure TframeSettings.Initialize;
+procedure TframeCommonSettings.Initialize;
 begin
   inherited Initialize;
   LoadFromXML;
@@ -76,7 +73,7 @@ begin
   dlgAttachmments.Title := Application.Title;
 end;
 
-procedure TframeSettings.Translate;
+procedure TframeCommonSettings.Translate;
 begin
   inherited;
   lblDeleteAttachments.Caption  := TLang.Lang.Translate('DeleteAttachments');
@@ -85,17 +82,17 @@ begin
   lblPathForAttachments.Caption := TLang.Lang.Translate('PathForAttachments');
 end;
 
-procedure TframeSettings.Deinitialize;
+procedure TframeCommonSettings.Deinitialize;
 begin
   inherited Deinitialize;
 end;
 
-function TframeSettings.GetIdentityName: string;
+function TframeCommonSettings.GetIdentityName: string;
 begin
   Result := C_IDENTITY_NAME;
 end;
 
-procedure TframeSettings.LoadFromXML;
+procedure TframeCommonSettings.LoadFromXML;
 begin
   inherited;
   cbLanguage.Items.Clear;
@@ -107,7 +104,7 @@ begin
   edtPathForAttachments.Text  := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
 end;
 
-procedure TframeSettings.SaveToXML;
+procedure TframeCommonSettings.SaveToXML;
 begin
   inherited;
   TGeneral.XMLParams.WriteBool(C_SECTION_MAIN, 'DeleteAttachments', cbDeleteAttachments.Checked, lblDeleteAttachments.Caption);
@@ -117,26 +114,26 @@ begin
   TGeneral.XMLParams.Save;
 end;
 
-procedure TframeSettings.aAttachmentsMainExecute(Sender: TObject);
+procedure TframeCommonSettings.aAttachmentsMainExecute(Sender: TObject);
 begin
   inherited;
   edtPathForAttachments.Text := C_ATTACHMENTS_DIR;
 end;
 
-procedure TframeSettings.aAttachmentsSubExecute(Sender: TObject);
+procedure TframeCommonSettings.aAttachmentsSubExecute(Sender: TObject);
 begin
   inherited;
   edtPathForAttachments.Text := C_ATTACHMENTS_SUB_DIR;
 end;
 
-procedure TframeSettings.aPathForAttachmentsExecute(Sender: TObject);
+procedure TframeCommonSettings.aPathForAttachmentsExecute(Sender: TObject);
 begin
   inherited;
   if dlgAttachmments.Execute then
     edtPathForAttachments.Text := dlgAttachmments.FileName;
 end;
 
-procedure TframeSettings.aRefreshExecute(Sender: TObject);
+procedure TframeCommonSettings.aRefreshExecute(Sender: TObject);
 begin
   inherited;
   LoadFromXML;

@@ -34,7 +34,7 @@ type
     FileName    : string;
     ContentID   : string;
     ContentType : string;
-//    Stream      : TStream;
+    ParsedText  : string;
     procedure Clear;
   end;
   TAttachmentsArray = TArray<TAttachments>;
@@ -51,16 +51,17 @@ type
     Subject     : string;
     TimeStamp   : TDateTime;
     ContentType : string;
+    ParsedText  : string;
     procedure Clear;
     procedure Assign(const aData: TResultData);
   end;
 
   TGeneral = record
   public
-    class function XMLFile: TXMLFile; static;
-    class function XMLParams: TXMLFile; static;
     class function GetPathList: TArray<TParamPath>; static;
     class function GetRegExpParametersList: TArray<TRegExpData>; static;
+    class function XMLFile: TXMLFile; static;
+    class function XMLParams: TXMLFile; static;
   end;
 
   TAttachmentsDir = (adAttachments, adSubAttachments, adUserDefined);
@@ -68,11 +69,15 @@ type
     function FromString(aDir: string): TAttachmentsDir;
   end;
 
+const
+  C_ICON_SIZE = 39;
+
 resourcestring
-  C_SECTION_MAIN          = 'Main';
-  C_IDENTITY_COLUMNS_NAME = '.Columns';
   C_ATTACHMENTS_DIR       = '#Attachments';
   C_ATTACHMENTS_SUB_DIR   = '#Sub#Attachments';
+  C_IDENTITY_COLUMNS_NAME = '.Columns';
+  C_SECTION_MAIN          = 'Main';
+
 
 var
   General: TGeneral;
@@ -183,16 +188,15 @@ begin
   Self.Body        := aData.Body;
   Self.From        := aData.From;
   Self.ContentType := aData.ContentType;
+  Self.ParsedText  := aData.ParsedText;
   SetLength(Self.Attachments, Length(aData.Attachments));
   for var att := Low(Self.Attachments) to High(Self.Attachments) do
   begin
-    Self.Attachments[att].ShortName       := aData.Attachments[att].ShortName;
-    Self.Attachments[att].FileName        := aData.Attachments[att].FileName;
-    Self.Attachments[att].ContentID       := aData.Attachments[att].ContentID;
-    Self.Attachments[att].ContentType     := aData.Attachments[att].ContentType;
-
-//    Self.Attachments[att].Stream.Position := 0;
-//    Self.Attachments[att].Stream.CopyFrom(aData.Attachments[att].Stream, aData.Attachments[att].Stream.Size);
+    Self.Attachments[att].ShortName   := aData.Attachments[att].ShortName;
+    Self.Attachments[att].FileName    := aData.Attachments[att].FileName;
+    Self.Attachments[att].ContentID   := aData.Attachments[att].ContentID;
+    Self.Attachments[att].ContentType := aData.Attachments[att].ContentType;
+    Self.Attachments[att].ParsedText  := aData.Attachments[att].ParsedText;
   end;
 end;
 
@@ -207,7 +211,6 @@ end;
 
 procedure TAttachments.Clear;
 begin
-//  Self.Stream.Size := 0;
   Self := Default (TAttachments);
 end;
 

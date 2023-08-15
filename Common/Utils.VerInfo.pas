@@ -41,7 +41,7 @@ type
     property FixedFileInfo      : PVSFixedFileInfo             read FFixInfo;
     property OsVerInfo          : TOSVersionInfo               read FOsVerInfo;
     property OSVersion          : string                       read GetOSVersion;
-    property StringFileInfo[Idx : TStringFileInfoType]: string read GetStrFileInfo;
+    property StringFileInfo[Idx: TStringFileInfoType]: string  read GetStrFileInfo;
   end;
 
 implementation

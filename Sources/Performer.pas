@@ -9,8 +9,8 @@ uses
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
   System.IOUtils, Vcl.Forms, ArrayHelper, Common.Types, Translate.Lang, System.IniFiles, Global.Types,
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
-  clHtmlParser, clMailMessage, MailMessage.Helper, Utils,
-  Winapi.GDIPAPI, Winapi.GDIPOBJ;
+  clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
+  Winapi.GDIPAPI, Winapi.GDIPOBJ, Files.Utils;
 {$ENDREGION}
 
 type
@@ -28,9 +28,10 @@ type
     FRegExpList        : TArray<TRegExpData>;
     FUserDefinedDir    : string;
     function GetAttchmentPath(const aFileName: TFileName): string;
-    procedure DeleteAttachmentFiles(const aData: PResultData);
+    function GetTextFromPDFFile(const aFileName: TFileName): string;
     procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
-    procedure ParseEmail(const aFileName: TFileName; out aData: PResultData);
+    procedure ParseAttachmentFiles(aData: PResultData);
+    procedure ParseEmail(const aFileName: TFileName);
     procedure ParseFile(const aFileName: TFileName);
   public
     OnStartProgressEvent : TStartProgressEvent;
@@ -93,27 +94,17 @@ begin
 end;
 
 procedure TPerformer.ParseFile(const aFileName: TFileName);
-var
-  Data: PResultData;
 begin
   if (not Assigned(OnCompletedItem)) or (Length(FRegExpList) = 0) then
     Exit;
 
-  ParseEmail(aFileName, Data);
+  ParseEmail(aFileName);
   if Assigned(OnProgressEvent) then
     TThread.Queue(nil,
       procedure
       begin
         OnProgressEvent;
       end);
-
-  TThread.Queue(nil,
-    procedure
-    begin
-      OnCompletedItem(Data^);
-    end);
-  if Assigned(Data) then
-    FreeMem(Data);
 end;
 
 function TPerformer.GetAttchmentPath(const aFileName: TFileName): string;
@@ -144,64 +135,105 @@ begin
     end;
 end;
 
-procedure TPerformer.ParseEmail(const aFileName: TFileName; out aData: PResultData);
+procedure TPerformer.ParseEmail(const aFileName: TFileName);
 var
   MailMessage: TclMailMessage;
+  Data: PResultData;
 begin
-  New(aData);
-  aData.ShortName := TPath.GetFileNameWithoutExtension(aFileName);
-  aData.FileName  := aFileName;
+  New(Data);
+  Data.ShortName := TPath.GetFileNameWithoutExtension(aFileName);
+  Data.FileName  := aFileName;
 
   MailMessage := TclMailMessage.Create(nil);
   MailMessage.OnSaveAttachment := DoSaveAttachment;
   try
     try
-      MailMessage.ResultData := aData;
+      MailMessage.ResultData := Data;
       MailMessage.LoadMessage(aFileName);
-      aData.MessageId   := MailMessage.MessageId;
-      aData.Subject     := MailMessage.Subject;
-      aData.TimeStamp   := MailMessage.Date;
-      aData.From        := MailMessage.From.FullAddress;
-      aData.ContentType := MailMessage.ContentType;
+      Data.MessageId   := MailMessage.MessageId;
+      Data.Subject     := MailMessage.Subject;
+      Data.TimeStamp   := MailMessage.Date;
+      Data.From        := MailMessage.From.FullAddress;
+      Data.ContentType := MailMessage.ContentType;
 
       if (MailMessage.ContentType = 'text/calendar') then
       begin
         if Assigned(MailMessage.Calendar) then
-          aData.Body := MailMessage.Calendar.Strings.Text
+          Data.Body := MailMessage.Calendar.Strings.Text
         else
-          aData.Body := 'Empty'
+          Data.Body := 'Empty'
       end
       else
       begin
         if Assigned(MailMessage.MessageText) then
-          aData.Body := MailMessage.MessageText.Text
+          Data.Body := MailMessage.MessageText.Text
         else if Assigned(MailMessage.Html) then
-          aData.Body := MailMessage.Html.Strings.Text
+          Data.Body := MailMessage.Html.Strings.Text
         else
-          aData.Body := 'Empty';
+          Data.Body := 'Empty';
       end
     except
       on E: Exception do
-        LogWriter.Write(ddError, E.Message + sLineBreak + aData.FileName);
+        LogWriter.Write(ddError, E.Message + sLineBreak + Data.FileName);
     end;
 
-    DeleteAttachmentFiles(aData);
+    TTask.Create(
+      procedure()
+      begin
+        TThread.NameThreadForDebugging('TPerformer.ParseEmail');
+        ParseAttachmentFiles(Data);
+        TThread.Queue(nil,
+          procedure
+          begin
+            OnCompletedItem(Data^);
+          end);
+      end).Start;
+
   finally
     FreeAndNil(MailMessage);
   end;
 end;
 
-procedure TPerformer.DeleteAttachmentFiles(const aData: PResultData);
+procedure TPerformer.ParseAttachmentFiles(aData: PResultData);
 begin
-  if FDeleteAttachments then
-    for var i := Low(aData.Attachments) to High(aData.Attachments) do
-      if TFile.Exists(aData.Attachments[i].FileName) then
+  for var i := Low(aData.Attachments) to High(aData.Attachments) do
+    if TFile.Exists(aData.Attachments[i].FileName) then
+      try
         try
-          TFile.Delete(aData.Attachments[i].FileName);
-        except
-          on E: EInOutError do
-            LogWriter.Write(ddError, E.Message + sLineBreak + aData.Attachments[i].FileName);
+          case TFileUtils.GetSignature(aData.Attachments[i].FileName) of
+            fsPDF:
+              begin
+                aData.Attachments[i].ParsedText  := GetTextFromPDFFile(aData^.Attachments[i].FileName);
+                aData.Attachments[i].ContentType := 'application/pdf';
+              end;
+            fsPng:
+              begin
+                aData.Attachments[i].ParsedText  := 'png';
+                aData.Attachments[i].ContentType := 'image/png';
+              end;
+            fsGif:
+              begin
+                aData.Attachments[i].ParsedText  := 'gif';
+                aData.Attachments[i].ContentType := 'image/gif';
+              end;
+            fsJpg:
+              begin
+                aData.Attachments[i].ParsedText  := 'jpg';
+                aData.Attachments[i].ContentType := 'image/jpeg';
+              end;
+            fsUnknown:
+              aData.Attachments[i].ParsedText := '';
+          end;
+        finally
+          if FDeleteAttachments then
+            TFile.Delete(aData.Attachments[i].FileName);
         end;
+      except
+        on E: Exception do
+          LogWriter.Write(ddError, E.Message + sLineBreak +
+                                   'Email name - ' + aData.FileName + sLineBreak +
+                                   'File name - '  + aData.Attachments[i].FileName);
+      end;
 end;
 
 procedure TPerformer.DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
@@ -218,7 +250,7 @@ begin
 
   if not TPath.HasValidFileNameChars(aFileName, False) then
   begin
-    aFileName := Concat('[', Data.ShortName, '] ', GetCorrectFileName(aFileName));
+    aFileName := Concat('[', Data.ShortName, '] ', TFileUtils.GetCorrectFileName(aFileName));
     LogWriter.Write(ddText, 'DoSaveAttachment',
                             'Email file name - '      + Data.FileName  + sLineBreak +
                             'Email short name - '     + Data.ShortName + sLineBreak +
@@ -241,6 +273,25 @@ begin
   Data.Attachments[High(Data.Attachments)].ContentType := aBody.ContentType;
   aStreamData := TFileStream.Create(Data.Attachments[High(Data.Attachments)].FileName, fmCreate or fmOpenReadWrite);
   Handled := True;
+end;
+
+function TPerformer.GetTextFromPDFFile(const aFileName: TFileName): string;
+var
+  PDFCtrl: TPdfControl;
+begin
+  Result := '';
+  PDFCtrl := TPdfControl.Create(nil);
+  try
+    PDFCtrl.Visible := False;
+    PDFCtrl.LoadFromFile(aFileName);
+    for var i := 0 to PDFCtrl.Document.PageCount - 1 do
+    begin
+      PDFCtrl.PageIndex := i;
+      Result := Result + PDFCtrl.Document.Pages[i].ReadText(0, 10000);
+    end;
+  finally
+    FreeAndNil(PDFCtrl);
+  end;
 end;
 
 end.

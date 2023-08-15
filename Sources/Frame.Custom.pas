@@ -15,14 +15,11 @@ uses
 type
   TframeCustom = class(TFrame)
     aAdd              : TAction;
-    aCollapseAll      : TAction;
     aColumnSettings   : TAction;
     aDelete           : TAction;
     aEdit             : TAction;
-    aExpandAll        : TAction;
     aExportToCSV      : TAction;
     aExportToExcel    : TAction;
-    aExportToHTML     : TAction;
     alFrame           : TActionList;
     aPrint            : TAction;
     aRefresh          : TAction;
@@ -40,10 +37,8 @@ type
     btnSep02          : TToolButton;
     btnSep03          : TToolButton;
     miAdd             : TMenuItem;
-    miCollapseAll     : TMenuItem;
     miDelete          : TMenuItem;
     miEdit            : TMenuItem;
-    miExpandAll       : TMenuItem;
     miSep01           : TMenuItem;
     pmFrame           : TPopupMenu;
     tbMain            : TToolBar;
@@ -95,20 +90,20 @@ end;
 procedure TframeCustom.Initialize;
 begin
   TStoreHelper.LoadFromXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
-  miAdd.Caption         := aAdd.Hint;
-  miCollapseAll.Caption := aCollapseAll.Hint;
-  miDelete.Caption      := aDelete.Hint;
-  miEdit.Caption        := aEdit.Hint;
-  miExpandAll.Caption   := aExpandAll.Hint;
+  miAdd.Caption    := aAdd.Hint;
+  miDelete.Caption := aDelete.Hint;
+  miEdit.Caption   := aEdit.Hint;
+  tbMain.ButtonHeight := C_ICON_SIZE;
+  tbMain.ButtonWidth  := C_ICON_SIZE;
+  tbMain.Height       := C_ICON_SIZE + 2;
+  vstTree.FullExpand;
 end;
 
 procedure TframeCustom.Translate;
 begin
   aAdd.Hint           := TLang.Lang.Translate('Add');
-  aCollapseAll.Hint   := TLang.Lang.Translate('CollapseAll');
   aDelete.Hint        := TLang.Lang.Translate('Delete');
   aEdit.Hint          := TLang.Lang.Translate('Edit');
-  aExpandAll.Hint     := TLang.Lang.Translate('ExpandAll');
   aExportToCSV.Hint   := TLang.Lang.Translate('ExportToCSV');
   aExportToExcel.Hint := TLang.Lang.Translate('ExportToExcel');
   aPrint.Hint         := TLang.Lang.Translate('Print');

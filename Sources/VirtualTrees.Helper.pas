@@ -28,9 +28,9 @@ begin
   Sender.Colors.GridLineColor           := clSilver;
   Sender.Colors.SelectionTextColor      := clBlack;
   Sender.Colors.UnfocusedSelectionColor := clWebLightSteelBlue;
-
-  Sender.Header.Height      := 20;
-  Sender.Header.MinHeight   := 20;
+  Sender.TextMargin := 2;
+  Sender.Header.Height      := 17;
+  Sender.Header.MinHeight   := 17;
   Sender.Header.Font.Height := -13;
   Sender.Header.Options     := [hoColumnResize, hoDblClickResize, hoDrag, hoShowHint, hoShowImages, hoShowSortGlyphs, hoVisible, hoHeaderClickAutoSort];
   Sender.TreeOptions.AutoOptions      := Sender.TreeOptions.AutoOptions + [toAutoDropExpand, toAutoExpand, toAutoTristateTracking, toAutoChangeScale];

@@ -1,4 +1,4 @@
-inherited frameSettings: TframeSettings
+inherited frameCommonSettings: TframeCommonSettings
   Width = 858
   Height = 555
   ExplicitWidth = 858
@@ -118,8 +118,6 @@ inherited frameSettings: TframeSettings
       Align = alRight
       Caption = 'Language'
       Layout = tlCenter
-      ExplicitLeft = 191
-      ExplicitTop = 4
       ExplicitHeight = 17
     end
     object lblExtensions: TLabel
@@ -131,8 +129,6 @@ inherited frameSettings: TframeSettings
       Align = alRight
       Caption = 'File extensions to search'
       Layout = tlCenter
-      ExplicitLeft = 106
-      ExplicitTop = 39
       ExplicitHeight = 17
     end
     object lblPathForAttachments: TLabel
@@ -150,8 +146,6 @@ inherited frameSettings: TframeSettings
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
-      ExplicitLeft = 81
-      ExplicitTop = 74
       ExplicitHeight = 17
     end
     object lblDeleteAttachments: TLabel
@@ -169,8 +163,6 @@ inherited frameSettings: TframeSettings
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
-      ExplicitLeft = 210
-      ExplicitTop = 109
       ExplicitHeight = 17
     end
     object cbLanguage: TComboBox
@@ -276,18 +268,12 @@ inherited frameSettings: TframeSettings
     object miPathForAttachments: TMenuItem [5]
       Action = aPathForAttachments
     end
-    inherited miExpandAll: TMenuItem
-      Visible = False
-    end
-    inherited miCollapseAll: TMenuItem
-      Visible = False
-    end
   end
   object dlgAttachmments: TFileOpenDialog
     FavoriteLinks = <>
     FileTypes = <>
     Options = [fdoPickFolders]
-    Left = 744
-    Top = 118
+    Left = 440
+    Top = 166
   end
 end

@@ -65,6 +65,7 @@ resourcestring
   en_ModuleName           = 'Module name';
   en_Ok                   = 'Ok';
   en_OpenEmail            = 'Open email';
+  en_OpenFile             = 'Open File';
   en_OpenLogFile          = 'Open Log File';
   en_Operation            = 'Operation';
   en_Parameter            = 'Parameter';
@@ -80,7 +81,6 @@ resourcestring
   en_ProgramVersion       = 'Version';
   en_Refresh              = 'Refresh';
   en_RegExpTemplate       = 'RegExp Template';
-  en_RestoreConfirm       = 'Are you sure you want to restore DB from backup?';
   en_Save                 = 'Save';
   en_Script               = 'Script';
   en_Server               = 'Server';
@@ -91,6 +91,7 @@ resourcestring
   en_Successful           = 'Operation is successful';
   en_SystemInfo           = 'System Information';
   en_Time                 = 'Time';
+  en_Text                 = 'Text';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
 
@@ -139,6 +140,7 @@ resourcestring
   uk_ModuleName           = 'Назва модуля';
   uk_Ok                   = 'Ок';
   uk_OpenEmail            = 'Відкрити email';
+  uk_OpenFile             = 'Відкрити файл';
   uk_OpenLogFile          = 'Відкрити файл журналу';
   uk_Operation            = 'Операція';
   uk_Parameter            = 'Параметр';
@@ -154,7 +156,6 @@ resourcestring
   uk_ProgramVersion       = 'Версія';
   uk_Refresh              = 'Оновити';
   uk_RegExpTemplate       = 'Шаблон регулярного виразу';
-  uk_RestoreConfirm       = 'Ви впевнені, що бажаєте відновити БД з резервної копії?';
   uk_Save                 = 'Зберегти';
   uk_Script               = 'Сценарій';
   uk_Server               = 'Сервер';
@@ -165,11 +166,12 @@ resourcestring
   uk_Successful           = 'Операція успішна';
   uk_SystemInfo           = 'Інформація про систему';
   uk_Time                 = 'Час';
+  uk_Text                 = 'Текст';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
 
 const
-   ArrayMessages: array[1 .. 72] of TMessageItem = (
+   ArrayMessages: array[1 .. 73] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
     (Key: 'Backup'               ; En: en_Backup;               Uk: uk_Backup),
@@ -214,6 +216,7 @@ const
     (Key: 'ModuleName'           ; En: en_ModuleName;           Uk: uk_ModuleName),
     (Key: 'Ok'                   ; En: en_Ok;                   Uk: uk_Ok),
     (Key: 'OpenEmail'            ; En: en_OpenEmail;            Uk: uk_OpenEmail),
+    (Key: 'OpenFile'             ; En: en_OpenFile;             Uk: uk_OpenFile),
     (Key: 'OpenLogFile'          ; En: en_OpenLogFile;          Uk: uk_OpenLogFile),
     (Key: 'Operation'            ; En: en_Operation;            Uk: uk_Operation),
     (Key: 'Parameter'            ; En: en_Parameter;            Uk: uk_Parameter),
@@ -229,7 +232,6 @@ const
     (Key: 'ProgramVersion'       ; En: en_ProgramVersion;       Uk: uk_ProgramVersion),
     (Key: 'Refresh'              ; En: en_Refresh;              Uk: uk_Refresh),
     (Key: 'RegExpTemplate'       ; En: en_RegExpTemplate;       Uk: uk_RegExpTemplate),
-    (Key: 'RestoreConfirm'       ; En: en_RestoreConfirm;       Uk: uk_RestoreConfirm),
     (Key: 'Save'                 ; En: en_Save;                 Uk: uk_Save),
     (Key: 'Script'               ; En: en_Script;               Uk: uk_Script),
     (Key: 'Server'               ; En: en_Server;               Uk: uk_Server),
@@ -240,6 +242,7 @@ const
     (Key: 'Successful'           ; En: en_Successful;           Uk: uk_Successful),
     (Key: 'SystemInfo'           ; En: en_SystemInfo;           Uk: uk_SystemInfo),
     (Key: 'Time'                 ; En: en_Time;                 Uk: uk_Time),
+    (Key: 'Text'                 ; En: en_Text;                 Uk: uk_Text),
     (Key: 'Value'                ; En: en_Value;                Uk: uk_Value),
     (Key: 'WithSubdir'           ; En: en_WithSubdir;           Uk: uk_WithSubdir)
      );

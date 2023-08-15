@@ -10,27 +10,27 @@ uses
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Custom, System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Vcl.Samples.Gauges,
-  Performer, Winapi.ShellAPI, Vcl.OleCtrls, SHDocVw, Winapi.ActiveX;
+  Performer, Winapi.ShellAPI, Vcl.OleCtrls, SHDocVw, Winapi.ActiveX, Frame.Attachments, Files.Utils;
 {$ENDREGION}
 
 type
   TframeResultView = class(TframeCustom)
-    aOpenEmail     : TAction;
-    aOpenLogFile   : TAction;
-    aSearch        : TAction;
-    btnBreak       : TBitBtn;
-    btnOpenEmail   : TToolButton;
-    btnOpenLogFile : TToolButton;
-    btnSearch      : TToolButton;
-    gProgress      : TGauge;
-    memTextPlain   : TMemo;
-    pcInfo         : TPageControl;
-    pnlBottom      : TPanel;
-    splInfo        : TSplitter;
-    tsAttachments  : TTabSheet;
-    tsHtmlText     : TTabSheet;
-    tsPlainText    : TTabSheet;
-    wbBody         : TWebBrowser;
+    aOpenEmail       : TAction;
+    aOpenLogFile     : TAction;
+    aSearch          : TAction;
+    btnOpenEmail     : TToolButton;
+    btnOpenLogFile   : TToolButton;
+    btnSearch        : TToolButton;
+    frameAttachments : TframeAttachments;
+    gProgress        : TGauge;
+    memTextPlain     : TMemo;
+    pcInfo           : TPageControl;
+    pnlBottom        : TPanel;
+    splInfo          : TSplitter;
+    tsAttachments    : TTabSheet;
+    tsHtmlText       : TTabSheet;
+    tsPlainText      : TTabSheet;
+    wbBody           : TWebBrowser;
     procedure aOpenEmailExecute(Sender: TObject);
     procedure aOpenEmailUpdate(Sender: TObject);
     procedure aOpenLogFileExecute(Sender: TObject);
@@ -107,20 +107,21 @@ end;
 procedure TframeResultView.Initialize;
 begin
   inherited Initialize;
+  frameAttachments.Initialize;
   LoadFromXML;
-  vstTree.FullExpand;
   Translate;
 
-  btnSearch.Left         := 500;
-  btnSep01.Left          := 500;
-  btnOpenEmail.Left      := 500;
-  btnOpenLogFile.Left    := 500;
   btnSep02.Left          := 500;
   btnExportToExcel.Left  := 500;
   btnExportToCSV.Left    := 500;
   btnPrint.Left          := 500;
   btnSep03.Left          := 500;
   btnColumnSettings.Left := 500;
+
+  btnSep01.Left          := 500;
+  btnOpenEmail.Left      := 500;
+  btnOpenLogFile.Left    := 500;
+  btnSearch.Left         := 0;
 
   gProgress.ForeColor := C_TOP_COLOR;
   gProgress.Progress  := 0;
@@ -129,6 +130,7 @@ end;
 procedure TframeResultView.Translate;
 begin
   inherited Translate;
+  frameAttachments.Translate;
   vstTree.Header.Columns[COL_SHORT_NAME].Text   := TLang.Lang.Translate('FileName');
   vstTree.Header.Columns[COL_FILE_NAME].Text    := TLang.Lang.Translate('Path');
   vstTree.Header.Columns[COL_MESSAGE_ID].Text   := TLang.Lang.Translate('MessageId');
@@ -148,10 +150,10 @@ end;
 procedure TframeResultView.Deinitialize;
 begin
   inherited Deinitialize;
+  frameAttachments.Deinitialize;
 end;
 
 procedure TframeResultView.SaveToXML;
-
 begin
   inherited;
 
@@ -202,6 +204,7 @@ begin
   if FIsLoaded then
     Exit;
   Data := Node^.GetData;
+  frameAttachments.Load(Data);
   if (pcInfo.ActivePage = tsPlainText) then
   begin
     memTextPlain.Lines.Text := Data^.Body;
@@ -299,7 +302,9 @@ begin
   begin
     Data := vstTree.FocusedNode.GetData;
     if TFile.Exists(Data^.FileName) then
-     ShellOpen(PWideChar(Data^.FileName));
+      TFileUtils.ShellOpen(Data^.FileName)
+    else
+      TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
   end;
 end;
 
@@ -313,7 +318,7 @@ procedure TframeResultView.aOpenLogFileExecute(Sender: TObject);
 begin
   inherited;
   if FileExists(LogWriter.LogFileName) then
-    ShellOpen(PChar(LogWriter.LogFileName));
+    TFileUtils.ShellOpen(LogWriter.LogFileName);
 end;
 
 procedure TframeResultView.pcInfoChange(Sender: TObject);
@@ -376,10 +381,9 @@ end;
 
 procedure TframeResultView.DoEndEvent;
 begin
-  btnBreak.Caption   := TLang.Lang.Translate('Ok');
+//  btnBreak.Caption   := TLang.Lang.Translate('Ok');
   gProgress.Progress := 0;
   FIsLoaded          := False;
-
   pnlBottom.Visible  := False;
   vstTree.EndUpdate;
 end;
@@ -391,7 +395,5 @@ begin
   gProgress.Progress := gProgress.Progress + 1;
   gProgress.Refresh;
 end;
-
-
 
 end.
