@@ -57,9 +57,9 @@ type
     FProgressBar: TGauge;
     procedure CreateProgressBar;
 
-    procedure DoEndEvent;
     procedure DoStartProgressEvent(const aMaxPosition: Integer);
     procedure DoProgressEvent;
+    procedure DoEndProgressEvent;
   protected
     function GetIdentityName: string; override;
   public
@@ -222,7 +222,7 @@ begin
     frameRegExpParameters.SearchText(srchBox.Text);
 end;
 
-procedure TfrmSettings.DoEndEvent;
+procedure TfrmSettings.DoEndProgressEvent;
 begin
   FProgressBar.Progress := 0;
   FProgressBar.Visible := False;

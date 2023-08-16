@@ -15,9 +15,11 @@ uses
 
 type
   TframeResultView = class(TframeCustom, IProgress)
+    aBreak           : TAction;
     aOpenEmail       : TAction;
     aOpenLogFile     : TAction;
     aSearch          : TAction;
+    btnBreak         : TToolButton;
     btnOpenEmail     : TToolButton;
     btnOpenLogFile   : TToolButton;
     btnSearch        : TToolButton;
@@ -26,23 +28,25 @@ type
     frameAttachments : TframeAttachments;
     memTextPlain     : TMemo;
     pcInfo           : TPageControl;
+    SaveDialogEmail  : TSaveDialog;
     splInfo          : TSplitter;
     tsAttachments    : TTabSheet;
     tsHtmlText       : TTabSheet;
     tsPlainText      : TTabSheet;
     wbBody           : TWebBrowser;
-    SaveDialogEmail: TSaveDialog;
+    procedure aBreakExecute(Sender: TObject);
     procedure aOpenEmailExecute(Sender: TObject);
     procedure aOpenEmailUpdate(Sender: TObject);
     procedure aOpenLogFileExecute(Sender: TObject);
+    procedure aSaveExecute(Sender: TObject);
     procedure aSearchExecute(Sender: TObject);
+    procedure aSearchUpdate(Sender: TObject);
     procedure pcInfoChange(Sender: TObject);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeFocusChanged(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure wbBodyBeforeNavigate2(ASender: TObject; const pDisp: IDispatch; const URL, Flags, TargetFrameName, PostData, Headers: OleVariant; var Cancel: WordBool);
-    procedure aSaveExecute(Sender: TObject);
   private const
     COL_POSITION     = 0;
     COL_SHORT_NAME   = 1;
@@ -59,7 +63,7 @@ type
   private
     FPerformer: TPerformer;
     FIsLoaded: Boolean;
-    procedure DoEndEvent;
+    procedure DoEndProgressEvent;
     procedure DoStartProgressEvent(const aMaxPosition: Integer);
     procedure DoProgressEvent;
     procedure DoCompletedItem(const aResultData: TResultData);
@@ -90,7 +94,7 @@ begin
   vstTree.NodeDataSize := SizeOf(TResultData);
   FPerformer := TPerformer.Create;
   FPerformer.OnCompletedItem      := DoCompletedItem;
-  FPerformer.OnEndEvent           := DoEndEvent;
+  FPerformer.OnEndProgressEvent           := DoEndProgressEvent;
   FPerformer.OnStartProgressEvent := DoStartProgressEvent;
   FPerformer.OnProgressEvent      := DoProgressEvent;
 end;
@@ -112,18 +116,6 @@ begin
   frameAttachments.Initialize;
   LoadFromXML;
   Translate;
-
-//  btnSep02.Left          := 500;
-//  btnExportToExcel.Left  := 500;
-//  btnExportToCSV.Left    := 500;
-//  btnPrint.Left          := 500;
-//  btnSep03.Left          := 500;
-//  btnColumnSettings.Left := 500;
-//
-//  btnSep01.Left          := 500;
-//  btnOpenEmail.Left      := 500;
-//  btnOpenLogFile.Left    := 500;
-//  btnSearch.Left         := 0;
 end;
 
 procedure TframeResultView.Translate;
@@ -206,7 +198,7 @@ begin
   frameAttachments.Load(Data);
   if (pcInfo.ActivePage = tsPlainText) then
   begin
-    memTextPlain.Lines.Text := Data^.Body;
+    memTextPlain.Lines.Text := Data^.ParsedText;
     wbBody.Navigate(C_HTML_BLANK);
   end
   else if (pcInfo.ActivePage = tsHtmlText) then
@@ -292,6 +284,20 @@ begin
   end;
 end;
 
+procedure TframeResultView.aBreakExecute(Sender: TObject);
+begin
+  inherited;
+  FIsLoaded := False;
+  FPerformer.Break;
+  vstTree.EndUpdate;
+end;
+
+procedure TframeResultView.aSearchUpdate(Sender: TObject);
+begin
+  inherited;
+  TAction(Sender).Enabled := not FIsLoaded;
+end;
+
 procedure TframeResultView.aOpenEmailExecute(Sender: TObject);
 var
   Data: PResultData;
@@ -331,7 +337,7 @@ begin
 
     if (pcInfo.ActivePage = tsPlainText) and (not memTextPlain.Lines.Text.Equals(Data^.Body)) then
     begin
-      memTextPlain.Lines.Text := Data^.Body;
+      memTextPlain.Lines.Text := Data^.ParsedText;
     end
     else if (pcInfo.ActivePage = tsHtmlText) then
     begin
@@ -355,6 +361,7 @@ begin
     if TFile.Exists(Data^.FileName) then
     begin
       SaveDialogEmail.InitialDir := TPath.GetDirectoryName(Data^.FileName);
+      SaveDialogEmail.FileName   := Data^.FileName;
       if SaveDialogEmail.Execute and (SaveDialogEmail.FileName <> Data^.FileName) then
         TFile.Copy(Data^.FileName, SaveDialogEmail.FileName);
     end
@@ -396,14 +403,15 @@ begin
   if Supports(Application.MainForm, IProgress, ProgressForm) then
     ProgressForm.DoStartProgressEvent(aMaxPosition);
   vstTree.BeginUpdate;
+  TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('FoundFiles'), [aMaxPosition]));
 end;
 
-procedure TframeResultView.DoEndEvent;
+procedure TframeResultView.DoEndProgressEvent;
 var
   ProgressForm: IProgress;
 begin
   if Supports(Application.MainForm, IProgress, ProgressForm) then
-    ProgressForm.DoEndEvent;
+    ProgressForm.DoEndProgressEvent;
   FIsLoaded := False;
   vstTree.EndUpdate;
 end;

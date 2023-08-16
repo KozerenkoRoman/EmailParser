@@ -26,6 +26,7 @@ uses
   Global.Types in 'Sources\Global.Types.pas',
   HtmlConsts in 'Sources\Common\HtmlConsts.pas',
   HtmlLib in 'Sources\Common\HtmlLib.pas',
+  HtmlParserEx in 'Sources\Common\HtmlParserEx.pas',
   InformationDialog in 'Sources\InformationDialog.pas' {InformationDialog},
   MailMessage.Helper in 'Sources\CleverInternetSuite\MailMessage.Helper.pas',
   MessageDialog in 'Sources\Common\MessageDialog.pas',
@@ -33,6 +34,7 @@ uses
   PdfiumCtrl in 'Sources\PDFiumLib\PdfiumCtrl.pas',
   PdfiumLib in 'Sources\PDFiumLib\PdfiumLib.pas',
   Performer in 'Sources\Performer.pas',
+  Performer.Interfaces in 'Sources\Performer.Interfaces.pas',
   Settings in 'Sources\Settings.pas' {frmSettings},
   SplashScreen in 'Sources\SplashScreen.pas' {frmSplashScreen},
   Translate.Lang in 'Sources\Translate\Translate.Lang.pas',
@@ -43,8 +45,7 @@ uses
   Utils.VerInfo in 'Sources\Common\Utils.VerInfo.pas',
   VirtualTrees.ExportHelper in 'Sources\Virtual TreeView\VirtualTrees.ExportHelper.pas',
   VirtualTrees.Helper in 'Sources\Virtual TreeView\VirtualTrees.Helper.pas',
-  XmlFiles in 'Sources\Common\XmlFiles.pas',
-  Performer.Interfaces in 'Sources\Performer.Interfaces.pas';
+  XmlFiles in 'Sources\Common\XmlFiles.pas';
 
 {$R *.res}
 

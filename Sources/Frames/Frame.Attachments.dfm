@@ -120,7 +120,7 @@ inherited frameAttachments: TframeAttachments
   end
   object SaveDialogAttachment: TSaveDialog
     Filter = 'All files|*.*'
-    Left = 232
+    Left = 224
     Top = 216
   end
 end

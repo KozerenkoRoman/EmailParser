@@ -151,8 +151,13 @@ inherited frameResultView: TframeResultView
       Top = 0
       Action = aSearch
     end
-    object btnSep05: TToolButton
+    object btnBreak: TToolButton
       Left = 400
+      Top = 0
+      Action = aBreak
+    end
+    object btnSep05: TToolButton
+      Left = 440
       Top = 0
       Width = 10
       ImageIndex = 71
@@ -160,12 +165,12 @@ inherited frameResultView: TframeResultView
       Style = tbsSeparator
     end
     object btnOpenEmail: TToolButton
-      Left = 410
+      Left = 450
       Top = 0
       Action = aOpenEmail
     end
     object btnOpenLogFile: TToolButton
-      Left = 450
+      Left = 490
       Top = 0
       Action = aOpenLogFile
     end
@@ -286,6 +291,13 @@ inherited frameResultView: TframeResultView
       ImageIndex = 12
       ImageName = 'lightning'
       OnExecute = aSearchExecute
+      OnUpdate = aSearchUpdate
+    end
+    object aBreak: TAction
+      Hint = 'Break'
+      ImageIndex = 13
+      ImageName = 'lightning_delete'
+      OnExecute = aBreakExecute
     end
     object aOpenEmail: TAction
       Hint = 'Open Email'

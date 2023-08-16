@@ -11,8 +11,8 @@ inherited frmSettings: TfrmSettings
   OnClose = FormClose
   OnCreate = FormCreate
   OnResize = FormResize
-  ExplicitWidth = 1000
-  ExplicitHeight = 700
+  ExplicitWidth = 1004
+  ExplicitHeight = 701
   TextHeight = 15
   object splView: TSplitView
     Left = 0
@@ -77,7 +77,6 @@ inherited frmSettings: TfrmSettings
     Color = 1986047
     ParentBackground = False
     TabOrder = 1
-    ExplicitWidth = 984
     DesignSize = (
       988
       41)
@@ -193,7 +192,7 @@ inherited frmSettings: TfrmSettings
         end
         inherited tbMain: TToolBar
           Width = 780
-          ExplicitWidth = 780
+          ExplicitWidth = 776
         end
       end
     end
@@ -205,6 +204,8 @@ inherited frmSettings: TfrmSettings
       Caption = 'crdCommonParams'
       CardIndex = 2
       TabOrder = 2
+      ExplicitWidth = 422
+      ExplicitHeight = 379
       inline frameCommonSettings: TframeCommonSettings
         Left = 0
         Top = 0
@@ -212,8 +213,8 @@ inherited frmSettings: TfrmSettings
         Height = 600
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 786
-        ExplicitHeight = 600
+        ExplicitWidth = 422
+        ExplicitHeight = 379
         inherited tbMain: TToolBar
           Width = 780
           ExplicitWidth = 780
@@ -265,8 +266,8 @@ inherited frmSettings: TfrmSettings
               Control = frameCommonSettings.cbDeleteAttachments
               Row = 3
             end>
-          ExplicitWidth = 786
-          ExplicitHeight = 554
+          ExplicitWidth = 422
+          ExplicitHeight = 333
         end
       end
     end

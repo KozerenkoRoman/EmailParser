@@ -96,6 +96,7 @@ resourcestring
   en_WithSubdir           = 'With subdir';
   en_NoDataToDisplay      = 'No data to display';
   en_Search               = 'Search';
+  en_FoundFiles           = 'Found %d files';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -173,6 +174,7 @@ resourcestring
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
   uk_NoDataToDisplay      = 'Немає даних для відображення';
+  uk_FoundFiles           = 'Знайдено %d файлів';
 
 const
    ArrayMessages: array[1 .. 73] of TMessageItem = (
@@ -238,7 +240,7 @@ const
     (Key: 'Refresh'              ; En: en_Refresh;              Uk: uk_Refresh),
     (Key: 'RegExpTemplate'       ; En: en_RegExpTemplate;       Uk: uk_RegExpTemplate),
     (Key: 'Save'                 ; En: en_Save;                 Uk: uk_Save),
-    (Key: 'Script'               ; En: en_Script;               Uk: uk_Script),
+    (Key: 'FoundFiles'           ; En: en_FoundFiles;           Uk: uk_FoundFiles),
     (Key: 'Server'               ; En: en_Server;               Uk: uk_Server),
     (Key: 'Search'               ; En: en_Search;               Uk: uk_Search),
     (Key: 'StartSearch'          ; En: en_StartSearch;          Uk: uk_StartSearch),

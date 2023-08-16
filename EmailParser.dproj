@@ -118,8 +118,8 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.1.82;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.0.1.37;Comments=</VerInfo_Keys>
-        <VerInfo_Build>82</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.1.84;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.0.1.37;Comments=</VerInfo_Keys>
+        <VerInfo_Build>84</VerInfo_Build>
         <Icon_MainIcon>EmailParser_Icon.ico</Icon_MainIcon>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -190,6 +190,7 @@
         <DCCReference Include="Sources\Global.Types.pas"/>
         <DCCReference Include="Sources\Common\HtmlConsts.pas"/>
         <DCCReference Include="Sources\Common\HtmlLib.pas"/>
+        <DCCReference Include="Sources\Common\HtmlParserEx.pas"/>
         <DCCReference Include="Sources\InformationDialog.pas">
             <Form>InformationDialog</Form>
         </DCCReference>
@@ -199,6 +200,7 @@
         <DCCReference Include="Sources\PDFiumLib\PdfiumCtrl.pas"/>
         <DCCReference Include="Sources\PDFiumLib\PdfiumLib.pas"/>
         <DCCReference Include="Sources\Performer.pas"/>
+        <DCCReference Include="Sources\Performer.Interfaces.pas"/>
         <DCCReference Include="Sources\Settings.pas">
             <Form>frmSettings</Form>
         </DCCReference>
@@ -214,7 +216,6 @@
         <DCCReference Include="Sources\Virtual TreeView\VirtualTrees.ExportHelper.pas"/>
         <DCCReference Include="Sources\Virtual TreeView\VirtualTrees.Helper.pas"/>
         <DCCReference Include="Sources\Common\XmlFiles.pas"/>
-        <DCCReference Include="Sources\Performer.Interfaces.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

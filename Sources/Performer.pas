@@ -10,7 +10,7 @@ uses
   System.IOUtils, Vcl.Forms, ArrayHelper, Common.Types, Translate.Lang, System.IniFiles, Global.Types,
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
-  Winapi.GDIPAPI, Winapi.GDIPOBJ, Files.Utils, Performer.Interfaces, System.SyncObjs;
+  Winapi.GDIPAPI, Winapi.GDIPOBJ, Files.Utils, Performer.Interfaces, System.SyncObjs, HtmlParserEx;
 {$ENDREGION}
 
 type
@@ -19,11 +19,12 @@ type
   TPerformer = class
   private
     FAttachmentsDir    : TAttachmentsDir;
+    FCriticalSection   : TCriticalSection;
     FDeleteAttachments : Boolean;
     FPathList          : TArray<TParamPath>;
     FRegExpList        : TArray<TRegExpData>;
     FUserDefinedDir    : string;
-    FCriticalSection   : TCriticalSection;
+    FIsBreak           : Boolean;
     function GetAttchmentPath(const aFileName: TFileName): string;
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
@@ -33,9 +34,10 @@ type
   public
     OnStartProgressEvent : TStartProgressEvent;
     OnProgressEvent      : TProgressEvent;
-    OnEndEvent           : TEndEvent;
+    OnEndProgressEvent   : TEndProgressEvent;
     OnCompletedItem      : TCompletedItem;
     procedure Start;
+    procedure Break;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -64,6 +66,7 @@ begin
   if not Assigned(OnCompletedItem) then
     Exit;
 
+  FIsBreak           := False;
   FRegExpList        := TGeneral.GetRegExpParametersList;
   FPathList          := TGeneral.GetPathList;
   FileList           := [];
@@ -83,24 +86,35 @@ begin
 
   LogWriter.Write(ddText, 'Length FileList - ' + Length(FileList).ToString);
   try
-    for var FileName in FileList do
-      ParseFile(FileName);
+    try
+      for var FileName in FileList do
+      begin
+        if FIsBreak then
+          Exit;
+        ParseFile(FileName);
+      end;
+    finally
+      if Assigned(OnEndProgressEvent) then
+        TThread.Queue(nil,
+          procedure
+          begin
+            LogWriter.Write(ddExitMethod, 'TPerformer.Start');
+            OnEndProgressEvent;
+          end);
+    end;
   except
     on E: Exception do
     begin
       LogWriter.Write(ddError, E.Message);
-      if Assigned(OnEndEvent) then
-        OnEndEvent;
+      if Assigned(OnEndProgressEvent) then
+        OnEndProgressEvent;
     end;
   end;
+end;
 
-  if Assigned(OnEndEvent) then
-    TThread.Queue(nil,
-      procedure
-      begin
-        LogWriter.Write(ddExitMethod, 'TPerformer.Start');
-        OnEndEvent;
-      end);
+procedure TPerformer.Break;
+begin
+  FIsBreak := True;
 end;
 
 procedure TPerformer.ParseFile(const aFileName: TFileName);
@@ -147,12 +161,12 @@ end;
 
 procedure TPerformer.ParseEmail(const aFileName: TFileName);
 var
-  MailMessage: TclMailMessage;
-  Data: PResultData;
+  Data        : PResultData;
+  MailMessage : TclMailMessage;
 begin
   New(Data);
-  Data.ShortName := TPath.GetFileNameWithoutExtension(aFileName);
-  Data.FileName  := aFileName;
+  Data^.ShortName := TPath.GetFileNameWithoutExtension(aFileName);
+  Data^.FileName  := aFileName;
 
   MailMessage := TclMailMessage.Create(nil);
   MailMessage.OnSaveAttachment := DoSaveAttachment;
@@ -160,38 +174,61 @@ begin
     try
       MailMessage.ResultData := Data;
       MailMessage.LoadMessage(aFileName);
-      Data.MessageId   := MailMessage.MessageId;
-      Data.Subject     := MailMessage.Subject;
-      Data.TimeStamp   := MailMessage.Date;
-      Data.From        := MailMessage.From.FullAddress;
-      Data.ContentType := MailMessage.ContentType;
+      Data^.MessageId   := MailMessage.MessageId;
+      Data^.Subject     := MailMessage.Subject;
+      Data^.TimeStamp   := MailMessage.Date;
+      Data^.From        := MailMessage.From.FullAddress;
+      Data^.ContentType := MailMessage.ContentType;
 
       if (MailMessage.ContentType = 'text/calendar') then
       begin
         if Assigned(MailMessage.Calendar) then
-          Data.Body := MailMessage.Calendar.Strings.Text
+          Data^.Body := MailMessage.Calendar.Strings.Text
         else
-          Data.Body := 'Empty'
+          Data^.Body := 'Empty';
       end
       else
       begin
         if Assigned(MailMessage.MessageText) then
-          Data.Body := MailMessage.MessageText.Text
+          Data^.Body := MailMessage.MessageText.Text
         else if Assigned(MailMessage.Html) then
-          Data.Body := MailMessage.Html.Strings.Text
+          Data^.Body := MailMessage.Html.Strings.Text
         else
-          Data.Body := 'Empty';
-      end
+          Data^.Body := 'Empty';
+      end;
     except
       on E: Exception do
-        LogWriter.Write(ddError, E.Message + sLineBreak + Data.FileName);
+        LogWriter.Write(ddError, E.Message + sLineBreak + Data^.FileName);
     end;
 
     TTask.Create(
       procedure()
+      var
+        Tasks: array of ITask;
       begin
-        TThread.NameThreadForDebugging('TPerformer.ParseEmail');
-        ParseAttachmentFiles(Data);
+        Setlength(Tasks, 2);
+        Tasks[0] := TTask.Create(
+          procedure()
+          var
+            HtmlElement: IHtmlElement;
+          begin
+            TThread.NameThreadForDebugging('TPerformer.ParserHTML');
+            if not Data^.Body.IsEmpty then
+            begin
+              HtmlElement := ParserHTML(Data^.Body);
+              if Assigned(HtmlElement) then
+                Data^.ParsedText := ConvertWhiteSpace(DecodeHtmlEntities(HtmlElement.Text));
+            end;
+          end).Start;
+
+        Tasks[1] := TTask.Create(
+          procedure()
+          begin
+            TThread.NameThreadForDebugging('TPerformer.ParseEmail');
+            ParseAttachmentFiles(Data);
+          end).Start;
+
+        TTask.WaitForAll(Tasks);
         TThread.Queue(nil,
           procedure
           begin
@@ -261,7 +298,6 @@ begin
                 aData.Attachments[i].ParsedText  := 'key';
                 aData.Attachments[i].ContentType := 'application/key';
               end;
-
             fsUnknown:
               aData.Attachments[i].ParsedText := '';
           end;

@@ -15,12 +15,12 @@ uses
 
 type
   TframeAttachments = class(TframeCustom)
-    aOpenAttachFile: TAction;
-    btnOpenAttachFile: TToolButton;
-    btnOpenParsedText: TToolButton;
-    aOpenParsedText: TAction;
-    btnSep04: TToolButton;
-    SaveDialogAttachment: TSaveDialog;
+    aOpenAttachFile      : TAction;
+    aOpenParsedText      : TAction;
+    btnOpenAttachFile    : TToolButton;
+    btnOpenParsedText    : TToolButton;
+    btnSep04             : TToolButton;
+    SaveDialogAttachment : TSaveDialog;
     procedure aOpenAttachFileExecute(Sender: TObject);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -141,7 +141,7 @@ end;
 procedure TframeAttachments.aOpenAttachFileUpdate(Sender: TObject);
 begin
   inherited;
-    TAction(Sender).Enabled := not vstTree.IsEmpty and Assigned(vstTree.FocusedNode);
+   TAction(Sender).Enabled := not vstTree.IsEmpty and Assigned(vstTree.FocusedNode);
 end;
 
 procedure TframeAttachments.aOpenParsedTextExecute(Sender: TObject);
@@ -167,7 +167,8 @@ begin
     if TFile.Exists(Data^.FileName) then
     begin
       SaveDialogAttachment.InitialDir := TPath.GetDirectoryName(Data^.FileName);
-      SaveDialogAttachment.Filter := 'Attachment|*' + TPath.GetExtension(Data^.FileName) + '|All files|*.*';
+      SaveDialogAttachment.Filter     := 'Attachment|*' + TPath.GetExtension(Data^.FileName) + '|All files|*.*';
+      SaveDialogAttachment.FileName   := Data^.FileName;
       if SaveDialogAttachment.Execute and (SaveDialogAttachment.FileName <> Data^.FileName) then
         TFile.Copy(Data^.FileName, SaveDialogAttachment.FileName);
     end
