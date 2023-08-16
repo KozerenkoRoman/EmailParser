@@ -7,7 +7,10 @@ inherited frmSettings: TfrmSettings
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Position = poScreenCenter
+  ShowHint = True
   OnClose = FormClose
+  OnCreate = FormCreate
+  OnResize = FormResize
   ExplicitWidth = 1000
   ExplicitHeight = 700
   TextHeight = 15
@@ -96,7 +99,7 @@ inherited frmSettings: TfrmSettings
       OnClick = aToggleSplitPanelExecute
     end
     object lblTitle: TLabel
-      Left = 224
+      Left = 212
       Top = 9
       Width = 1000
       Height = 19
@@ -109,9 +112,10 @@ inherited frmSettings: TfrmSettings
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
+      ExplicitLeft = 224
     end
     object srchBox: TSearchBox
-      Left = 766
+      Left = 754
       Top = 10
       Width = 159
       Height = 25
@@ -124,7 +128,7 @@ inherited frmSettings: TfrmSettings
       ParentFont = False
       TabOrder = 0
       OnInvokeSearch = srchBoxInvokeSearch
-      ExplicitLeft = 762
+      ExplicitLeft = 750
     end
   end
   object pnlCard: TCardPanel
@@ -133,7 +137,7 @@ inherited frmSettings: TfrmSettings
     Width = 788
     Height = 602
     Align = alClient
-    ActiveCard = crdSearch
+    ActiveCard = crdPathsToFindScripts
     TabOrder = 2
     object crdRegExpParameters: TCard
       Left = 1
@@ -190,20 +194,6 @@ inherited frmSettings: TfrmSettings
         inherited tbMain: TToolBar
           Width = 780
           ExplicitWidth = 780
-          inherited btnExportToExcel: TToolButton
-            Visible = False
-          end
-          inherited btnExportToCSV: TToolButton
-            Visible = False
-          end
-          inherited btnPrint: TToolButton
-            Visible = False
-          end
-        end
-        inherited alFrame: TActionList
-          inherited aColumnSettings: TAction
-            Visible = False
-          end
         end
       end
     end
@@ -302,79 +292,38 @@ inherited frmSettings: TfrmSettings
         ExplicitWidth = 786
         ExplicitHeight = 600
         inherited splInfo: TSplitter
-          Top = 296
+          Top = 316
           Width = 786
+          ExplicitTop = 316
+          ExplicitWidth = 786
         end
         inherited vstTree: TVirtualStringTree
           Width = 786
-          Height = 256
+          Height = 276
+          ExplicitWidth = 786
+          ExplicitHeight = 276
         end
         inherited tbMain: TToolBar
           Width = 786
-        end
-        inherited pnlBottom: TPanel
-          Top = 580
-          Width = 786
-          inherited gProgress: TGauge
-            Width = 786
-          end
+          ExplicitWidth = 786
         end
         inherited pcInfo: TPageControl
-          Top = 300
+          Top = 320
           Width = 786
-          ExplicitTop = 300
+          ActivePage = frameResultView.tsHtmlText
+          ExplicitTop = 320
           ExplicitWidth = 786
           inherited tsHtmlText: TTabSheet
+            ExplicitWidth = 778
             inherited wbBody: TWebBrowser
+              Width = 778
+              ExplicitWidth = 778
               ControlData = {
-                4C00000086440000D71900000000000000000000000000000000000000000000
+                4C00000069500000D71900000000000000000000000000000000000000000000
                 000000004C000000000000000000000001000000E0D057007335CF11AE690800
                 2B2E126208000000000000004C0000000114020000000000C000000000000046
                 8000000000000000000000000000000000000000000000000000000000000000
                 00000000000000000100000000000000000000000000000000000000}
-            end
-          end
-          inherited tsAttachments: TTabSheet
-            ExplicitWidth = 778
-            inherited frameAttachments: TframeAttachments
-              Width = 778
-              ExplicitWidth = 778
-              inherited vstTree: TVirtualStringTree
-                Width = 778
-              end
-              inherited tbMain: TToolBar
-                Width = 778
-                inherited btnSep01: TToolButton
-                  Width = 10
-                  ExplicitWidth = 10
-                end
-                inherited btnRefresh: TToolButton
-                  Left = 170
-                  ExplicitLeft = 170
-                end
-                inherited btnSep02: TToolButton
-                  Left = 210
-                  ExplicitLeft = 210
-                end
-                inherited btnExportToExcel: TToolButton
-                  Left = 220
-                  ExplicitLeft = 220
-                end
-                inherited btnExportToCSV: TToolButton
-                  Left = 260
-                  ExplicitLeft = 260
-                end
-                inherited btnPrint: TToolButton
-                  Left = 300
-                  ExplicitLeft = 300
-                end
-                inherited btnSep03: TToolButton
-                  Left = 340
-                  Width = 10
-                  ExplicitLeft = 340
-                  ExplicitWidth = 10
-                end
-              end
             end
           end
         end

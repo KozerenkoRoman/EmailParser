@@ -16,7 +16,7 @@ inherited frameAttachments: TframeAttachments
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toEditable, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toVariableNodeHeight, toFullRowDrag]
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowRoot, toShowVertGridLines, toThemeAware, toShowFilteredNodes]
     OnCompareNodes = vstTreeCompareNodes
-    OnDblClick = aOpenAttachFileExecute
+    OnDblClick = aOpenParsedTextExecute
     OnGetText = vstTreeGetText
     ExplicitTop = 40
     ExplicitWidth = 849
@@ -69,16 +69,25 @@ inherited frameAttachments: TframeAttachments
       Action = aOpenAttachFile
       Visible = False
     end
-    inherited btnEdit: TToolButton
-      Visible = False
-    end
     inherited btnSep02: TToolButton
       Visible = False
     end
+    object btnSep04: TToolButton
+      Left = 350
+      Top = 0
+      Width = 10
+      ImageIndex = 76
+      Style = tbsSeparator
+    end
     object btnOpenAttachFile: TToolButton
-      Left = 390
+      Left = 360
       Top = 0
       Action = aOpenAttachFile
+    end
+    object btnOpenParsedText: TToolButton
+      Left = 400
+      Top = 0
+      Action = aOpenParsedText
     end
   end
   inherited alFrame: TActionList
@@ -92,12 +101,26 @@ inherited frameAttachments: TframeAttachments
       Visible = False
     end
     inherited aSave: TAction
-      Visible = False
+      OnExecute = aSaveExecute
+      OnUpdate = aOpenAttachFileUpdate
     end
     object aOpenAttachFile: TAction
       ImageIndex = 72
       ImageName = 'email_attach'
       OnExecute = aOpenAttachFileExecute
+      OnUpdate = aOpenAttachFileUpdate
     end
+    object aOpenParsedText: TAction
+      Hint = 'Open Parsed Text'
+      ImageIndex = 75
+      ImageName = 'email_open'
+      OnExecute = aOpenParsedTextExecute
+      OnUpdate = aOpenAttachFileUpdate
+    end
+  end
+  object SaveDialogAttachment: TSaveDialog
+    Filter = 'All files|*.*'
+    Left = 232
+    Top = 216
   end
 end

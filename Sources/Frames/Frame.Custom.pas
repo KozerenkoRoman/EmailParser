@@ -9,7 +9,7 @@ uses
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} System.Threading, System.Generics.Collections, Vcl.ActnList,
   System.Generics.Defaults, DebugWriter, Global.Types, System.IniFiles, System.Math, System.Actions, Vcl.Menus,
   Vcl.ExtDlgs, Vcl.Printers, MessageDialog, VirtualTrees.ExportHelper, DaImages, Common.Types, Vcl.ComCtrls,
-  Vcl.ToolWin, Translate.Lang, VirtualTrees.Helper, Column.Settings;
+  Vcl.ToolWin, Translate.Lang, VirtualTrees.Helper, Column.Settings, Global.Resources;
 {$ENDREGION}
 
 type
@@ -17,7 +17,6 @@ type
     aAdd              : TAction;
     aColumnSettings   : TAction;
     aDelete           : TAction;
-    aEdit             : TAction;
     aExportToCSV      : TAction;
     aExportToExcel    : TAction;
     alFrame           : TActionList;
@@ -27,7 +26,6 @@ type
     btnAdd            : TToolButton;
     btnColumnSettings : TToolButton;
     btnDelete         : TToolButton;
-    btnEdit           : TToolButton;
     btnExportToCSV    : TToolButton;
     btnExportToExcel  : TToolButton;
     btnPrint          : TToolButton;
@@ -92,7 +90,6 @@ begin
   TStoreHelper.LoadFromXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
   miAdd.Caption    := aAdd.Hint;
   miDelete.Caption := aDelete.Hint;
-  miEdit.Caption   := aEdit.Hint;
   tbMain.ButtonHeight := C_ICON_SIZE;
   tbMain.ButtonWidth  := C_ICON_SIZE;
   tbMain.Height       := C_ICON_SIZE + 2;
@@ -103,7 +100,6 @@ procedure TframeCustom.Translate;
 begin
   aAdd.Hint           := TLang.Lang.Translate('Add');
   aDelete.Hint        := TLang.Lang.Translate('Delete');
-  aEdit.Hint          := TLang.Lang.Translate('Edit');
   aExportToCSV.Hint   := TLang.Lang.Translate('ExportToCSV');
   aExportToExcel.Hint := TLang.Lang.Translate('ExportToExcel');
   aPrint.Hint         := TLang.Lang.Translate('Print');

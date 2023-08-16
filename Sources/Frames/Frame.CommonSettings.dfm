@@ -236,9 +236,6 @@ inherited frameCommonSettings: TframeCommonSettings
     inherited aDelete: TAction
       Visible = False
     end
-    inherited aEdit: TAction
-      Visible = False
-    end
     inherited aColumnSettings: TAction
       Visible = False
     end

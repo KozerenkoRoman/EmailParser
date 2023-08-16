@@ -32,10 +32,10 @@ type
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
   private const
-    COL_WITH_SUBDIR = 3;
-    COL_OPEN_DIALOG = 1;
     COL_PATH        = 0;
+    COL_OPEN_DIALOG = 1;
     COL_INFO        = 2;
+    COL_WITH_SUBDIR = 3;
 
     C_IDENTITY_NAME = 'framePathes';
   private

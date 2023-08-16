@@ -10,14 +10,10 @@ uses
   System.IOUtils, Vcl.Forms, ArrayHelper, Common.Types, Translate.Lang, System.IniFiles, Global.Types,
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
-  Winapi.GDIPAPI, Winapi.GDIPOBJ, Files.Utils;
+  Winapi.GDIPAPI, Winapi.GDIPOBJ, Files.Utils, Performer.Interfaces, System.SyncObjs;
 {$ENDREGION}
 
 type
-  TAbortEvent = function: Boolean of object;
-  TEndEvent = procedure of object;
-  TProgressEvent = procedure of object;
-  TStartProgressEvent = procedure(const aMaxPosition: Integer) of object;
   TCompletedItem = procedure(const aResultData: TResultData) of object;
 
   TPerformer = class
@@ -27,6 +23,7 @@ type
     FPathList          : TArray<TParamPath>;
     FRegExpList        : TArray<TRegExpData>;
     FUserDefinedDir    : string;
+    FCriticalSection   : TCriticalSection;
     function GetAttchmentPath(const aFileName: TFileName): string;
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
@@ -39,11 +36,24 @@ type
     OnEndEvent           : TEndEvent;
     OnCompletedItem      : TCompletedItem;
     procedure Start;
+    constructor Create;
+    destructor Destroy; override;
   end;
 
 implementation
 
 { TPerformer }
+
+constructor TPerformer.Create;
+begin
+  FCriticalSection := TCriticalSection.Create;
+end;
+
+destructor TPerformer.Destroy;
+begin
+  FreeAndNil(FCriticalSection);
+  inherited;
+end;
 
 procedure TPerformer.Start;
 var
@@ -216,11 +226,42 @@ begin
                 aData.Attachments[i].ParsedText  := 'gif';
                 aData.Attachments[i].ContentType := 'image/gif';
               end;
-            fsJpg:
+            fsIco:
+              begin
+                aData.Attachments[i].ParsedText  := 'ico';
+                aData.Attachments[i].ContentType := 'image/icon';
+              end;
+            fsJpg, fsJp2:
               begin
                 aData.Attachments[i].ParsedText  := 'jpg';
                 aData.Attachments[i].ContentType := 'image/jpeg';
               end;
+            fsZip:
+              begin
+                aData.Attachments[i].ParsedText  := 'zip';
+                aData.Attachments[i].ContentType := 'image/png';
+              end;
+            fsRar:
+              begin
+                aData.Attachments[i].ParsedText  := 'rar';
+                aData.Attachments[i].ContentType := 'application/rar';
+              end;
+            fsOffice:
+              begin
+                aData.Attachments[i].ParsedText  := 'office';
+                aData.Attachments[i].ContentType := 'application/office';
+              end;
+            fsCrt:
+              begin
+                aData.Attachments[i].ParsedText  := 'crt';
+                aData.Attachments[i].ContentType := 'application/crt';
+              end;
+            fsKey:
+              begin
+                aData.Attachments[i].ParsedText  := 'key';
+                aData.Attachments[i].ContentType := 'application/key';
+              end;
+
             fsUnknown:
               aData.Attachments[i].ParsedText := '';
           end;
@@ -271,7 +312,9 @@ begin
   Data.Attachments[High(Data.Attachments)].FileName    := TPath.Combine(Path, aFileName);
   Data.Attachments[High(Data.Attachments)].ContentID   := aBody.ContentID;
   Data.Attachments[High(Data.Attachments)].ContentType := aBody.ContentType;
-  aStreamData := TFileStream.Create(Data.Attachments[High(Data.Attachments)].FileName, fmCreate or fmOpenReadWrite);
+  {$WARN SYMBOL_PLATFORM OFF}
+  aStreamData := TFileStream.Create(Data.Attachments[High(Data.Attachments)].FileName, fmCreate or fmOpenReadWrite {$IFDEF MSWINDOWS}or fmShareDenyRead{$ENDIF});
+  {$WARN SYMBOL_PLATFORM ON}
   Handled := True;
 end;
 
@@ -280,17 +323,24 @@ var
   PDFCtrl: TPdfControl;
 begin
   Result := '';
+  FCriticalSection.Enter;
   PDFCtrl := TPdfControl.Create(nil);
   try
     PDFCtrl.Visible := False;
-    PDFCtrl.LoadFromFile(aFileName);
-    for var i := 0 to PDFCtrl.Document.PageCount - 1 do
-    begin
-      PDFCtrl.PageIndex := i;
-      Result := Result + PDFCtrl.Document.Pages[i].ReadText(0, 10000);
+    try
+      PDFCtrl.LoadFromFile(aFileName);
+      for var i := 0 to PDFCtrl.Document.PageCount - 1 do
+      begin
+        PDFCtrl.PageIndex := i;
+        Result := Result + PDFCtrl.Document.Pages[i].ReadText(0, 10000);
+      end;
+    except
+      on E: Exception do
+        LogWriter.Write(ddError, 'GetTextFromPDFFile', 'File name - ' + aFileName);
     end;
   finally
     FreeAndNil(PDFCtrl);
+    FCriticalSection.Leave;
   end;
 end;
 

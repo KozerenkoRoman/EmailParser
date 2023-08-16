@@ -10,27 +10,28 @@ uses
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Custom, System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Vcl.Samples.Gauges,
-  Performer, Winapi.ShellAPI, Vcl.OleCtrls, SHDocVw, Winapi.ActiveX, Frame.Attachments, Files.Utils;
+  Performer, Winapi.ShellAPI, Vcl.OleCtrls, SHDocVw, Winapi.ActiveX, Frame.Attachments, Files.Utils, Performer.Interfaces;
 {$ENDREGION}
 
 type
-  TframeResultView = class(TframeCustom)
+  TframeResultView = class(TframeCustom, IProgress)
     aOpenEmail       : TAction;
     aOpenLogFile     : TAction;
     aSearch          : TAction;
     btnOpenEmail     : TToolButton;
     btnOpenLogFile   : TToolButton;
     btnSearch        : TToolButton;
+    btnSep04         : TToolButton;
+    btnSep05         : TToolButton;
     frameAttachments : TframeAttachments;
-    gProgress        : TGauge;
     memTextPlain     : TMemo;
     pcInfo           : TPageControl;
-    pnlBottom        : TPanel;
     splInfo          : TSplitter;
     tsAttachments    : TTabSheet;
     tsHtmlText       : TTabSheet;
     tsPlainText      : TTabSheet;
     wbBody           : TWebBrowser;
+    SaveDialogEmail: TSaveDialog;
     procedure aOpenEmailExecute(Sender: TObject);
     procedure aOpenEmailUpdate(Sender: TObject);
     procedure aOpenLogFileExecute(Sender: TObject);
@@ -41,6 +42,7 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure wbBodyBeforeNavigate2(ASender: TObject; const pDisp: IDispatch; const URL, Flags, TargetFrameName, PostData, Headers: OleVariant; var Cancel: WordBool);
+    procedure aSaveExecute(Sender: TObject);
   private const
     COL_POSITION     = 0;
     COL_SHORT_NAME   = 1;
@@ -87,10 +89,10 @@ begin
   inherited;
   vstTree.NodeDataSize := SizeOf(TResultData);
   FPerformer := TPerformer.Create;
+  FPerformer.OnCompletedItem      := DoCompletedItem;
   FPerformer.OnEndEvent           := DoEndEvent;
   FPerformer.OnStartProgressEvent := DoStartProgressEvent;
   FPerformer.OnProgressEvent      := DoProgressEvent;
-  FPerformer.OnCompletedItem      := DoCompletedItem;
 end;
 
 destructor TframeResultView.Destroy;
@@ -111,20 +113,17 @@ begin
   LoadFromXML;
   Translate;
 
-  btnSep02.Left          := 500;
-  btnExportToExcel.Left  := 500;
-  btnExportToCSV.Left    := 500;
-  btnPrint.Left          := 500;
-  btnSep03.Left          := 500;
-  btnColumnSettings.Left := 500;
-
-  btnSep01.Left          := 500;
-  btnOpenEmail.Left      := 500;
-  btnOpenLogFile.Left    := 500;
-  btnSearch.Left         := 0;
-
-  gProgress.ForeColor := C_TOP_COLOR;
-  gProgress.Progress  := 0;
+//  btnSep02.Left          := 500;
+//  btnExportToExcel.Left  := 500;
+//  btnExportToCSV.Left    := 500;
+//  btnPrint.Left          := 500;
+//  btnSep03.Left          := 500;
+//  btnColumnSettings.Left := 500;
+//
+//  btnSep01.Left          := 500;
+//  btnOpenEmail.Left      := 500;
+//  btnOpenLogFile.Left    := 500;
+//  btnSearch.Left         := 0;
 end;
 
 procedure TframeResultView.Translate;
@@ -345,10 +344,30 @@ begin
   end;
 end;
 
+procedure TframeResultView.aSaveExecute(Sender: TObject);
+var
+  Data: PResultData;
+begin
+  inherited;
+  if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
+  begin
+    Data := vstTree.FocusedNode.GetData;
+    if TFile.Exists(Data^.FileName) then
+    begin
+      SaveDialogEmail.InitialDir := TPath.GetDirectoryName(Data^.FileName);
+      if SaveDialogEmail.Execute and (SaveDialogEmail.FileName <> Data^.FileName) then
+        TFile.Copy(Data^.FileName, SaveDialogEmail.FileName);
+    end
+    else
+      TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+  end;
+end;
+
 procedure TframeResultView.aSearchExecute(Sender: TObject);
 begin
   inherited;
   vstTree.Clear;
+  frameAttachments.Clear;
   FIsLoaded := True;
   Application.ProcessMessages;
   FPerformer.Start;
@@ -371,29 +390,30 @@ begin
 end;
 
 procedure TframeResultView.DoStartProgressEvent(const aMaxPosition: Integer);
+var
+  ProgressForm: IProgress;
 begin
-  gProgress.MaxValue := aMaxPosition;
-  gProgress.Progress := 0;
-  pnlBottom.Top      := Self.Height;
-  pnlBottom.Visible  := True;
+  if Supports(Application.MainForm, IProgress, ProgressForm) then
+    ProgressForm.DoStartProgressEvent(aMaxPosition);
   vstTree.BeginUpdate;
 end;
 
 procedure TframeResultView.DoEndEvent;
+var
+  ProgressForm: IProgress;
 begin
-//  btnBreak.Caption   := TLang.Lang.Translate('Ok');
-  gProgress.Progress := 0;
-  FIsLoaded          := False;
-  pnlBottom.Visible  := False;
+  if Supports(Application.MainForm, IProgress, ProgressForm) then
+    ProgressForm.DoEndEvent;
+  FIsLoaded := False;
   vstTree.EndUpdate;
 end;
 
 procedure TframeResultView.DoProgressEvent;
+var
+  ProgressForm: IProgress;
 begin
-  if (gProgress.Progress >= gProgress.MaxValue) then
-    gProgress.MaxValue := gProgress.MaxValue + 1;
-  gProgress.Progress := gProgress.Progress + 1;
-  gProgress.Refresh;
+  if Supports(Application.MainForm, IProgress, ProgressForm) then
+    ProgressForm.DoProgressEvent;
 end;
 
 end.

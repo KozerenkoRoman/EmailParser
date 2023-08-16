@@ -6,7 +6,8 @@ interface
 uses
   Windows, ActnList, AppEvnts, Classes, Controls, Dialogs, Vcl.Forms, Messages, System.Actions, Variants,
   System.TypInfo, Vcl.Graphics, System.SysUtils,{$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF}
-  DebugWriter, Utils.LocalInformation, HtmlConsts, HtmlLib, Global.Resources, Utils.VerInfo, Translate.Lang;
+  DebugWriter, Utils.LocalInformation, HtmlConsts, HtmlLib, Global.Resources, Utils.VerInfo, Translate.Lang,
+  Global.Types;
 {$ENDREGION}
 
 type
@@ -139,11 +140,10 @@ begin
   IdentityName := GetIdentityName;
   if not IdentityName.IsEmpty then
   begin
-  {TODO: SaveFormPosition}
-//    General.XMLFile.WriteInteger(IdentityName, C_KEY_FORM_HEIGHT, Self.Height);
-//    General.XMLFile.WriteInteger(IdentityName, C_KEY_FORM_WIDTH, Self.Width);
-//    General.XMLFile.WriteInteger(IdentityName, C_KEY_FORM_LEFT, Self.Left);
-//    General.XMLFile.WriteInteger(IdentityName, C_KEY_FORM_TOP, Self.Top);
+    General.XMLFile.WriteInteger(IdentityName, C_KEY_FORM_HEIGHT, Self.Height);
+    General.XMLFile.WriteInteger(IdentityName, C_KEY_FORM_WIDTH, Self.Width);
+    General.XMLFile.WriteInteger(IdentityName, C_KEY_FORM_LEFT, Self.Left);
+    General.XMLFile.WriteInteger(IdentityName, C_KEY_FORM_TOP, Self.Top);
   end;
 end;
 
@@ -152,22 +152,21 @@ var
   IdentityName: string;
 begin
   IdentityName := GetIdentityName;
-  {TODO: LoadFormPosition}
-//  if not IdentityName.IsEmpty then
-//  begin
-//    Self.Height := General.XMLFile.ReadInteger(IdentityName, C_KEY_FORM_HEIGHT, Self.Height);
-//    Self.Width  := General.XMLFile.ReadInteger(IdentityName, C_KEY_FORM_WIDTH, Self.Width);
-//    Self.Left   := General.XMLFile.ReadInteger(IdentityName, C_KEY_FORM_LEFT, Self.Left);
-//    Self.Top    := General.XMLFile.ReadInteger(IdentityName, C_KEY_FORM_TOP, Self.Top);
-//    if (Self.Top < 0) then
-//      Self.Top := 0
-//    else if (Self.Top > Screen.DesktopHeight) then
-//      Self.Top := Screen.DesktopHeight - Self.Height;
-//    if (Self.Left < 0) then
-//      Self.Left := 0
-//    else if (Self.Left > Screen.DesktopWidth) then
-//      Self.Left := Screen.DesktopWidth - Self.Width;
-//  end;
+  if not IdentityName.IsEmpty then
+  begin
+    Self.Height := General.XMLFile.ReadInteger(IdentityName, C_KEY_FORM_HEIGHT, Self.Height);
+    Self.Width  := General.XMLFile.ReadInteger(IdentityName, C_KEY_FORM_WIDTH, Self.Width);
+    Self.Left   := General.XMLFile.ReadInteger(IdentityName, C_KEY_FORM_LEFT, Self.Left);
+    Self.Top    := General.XMLFile.ReadInteger(IdentityName, C_KEY_FORM_TOP, Self.Top);
+    if (Self.Top < 0) then
+      Self.Top := 0
+    else if (Self.Top > Screen.DesktopHeight) then
+      Self.Top := Screen.DesktopHeight - Self.Height;
+    if (Self.Left < 0) then
+      Self.Left := 0
+    else if (Self.Left > Screen.DesktopWidth) then
+      Self.Left := Screen.DesktopWidth - Self.Width;
+  end;
 end;
 
 end.

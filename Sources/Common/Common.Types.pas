@@ -24,9 +24,6 @@ type
     constructor Create(const aStringValue: string); overload;
   end;
 
-const
-  C_TOP_COLOR = $001E4DFF;
-
 implementation
 
 { TLogDetailTypeHelper }

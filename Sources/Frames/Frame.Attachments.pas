@@ -17,10 +17,17 @@ type
   TframeAttachments = class(TframeCustom)
     aOpenAttachFile: TAction;
     btnOpenAttachFile: TToolButton;
+    btnOpenParsedText: TToolButton;
+    aOpenParsedText: TAction;
+    btnSep04: TToolButton;
+    SaveDialogAttachment: TSaveDialog;
     procedure aOpenAttachFileExecute(Sender: TObject);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure aOpenParsedTextExecute(Sender: TObject);
+    procedure aOpenAttachFileUpdate(Sender: TObject);
+    procedure aSaveExecute(Sender: TObject);
   private const
     COL_SHORT_NAME   = 0;
     COL_FILE_NAME    = 1;
@@ -40,6 +47,7 @@ type
     procedure Translate; override;
     procedure SearchText(const aText: string); override;
     procedure Load(aData: PResultData);
+    procedure Clear;
   end;
 
 implementation
@@ -47,6 +55,11 @@ implementation
 {$R *.dfm}
 
 { TframeAttachments }
+
+procedure TframeAttachments.Clear;
+begin
+  vstTree.Clear;
+end;
 
 constructor TframeAttachments.Create(AOwner: TComponent);
 begin
@@ -70,8 +83,6 @@ begin
   inherited Initialize;
   vstTree.FullExpand;
   Translate;
-  btnOpenAttachFile.Left := 1;
-  tbMain.Color := clBtnFace;
 end;
 
 procedure TframeAttachments.Translate;
@@ -122,6 +133,44 @@ begin
     Data := vstTree.FocusedNode.GetData;
     if TFile.Exists(Data^.FileName) then
       TFileUtils.ShellOpen(Data^.FileName)
+    else
+      TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+  end;
+end;
+
+procedure TframeAttachments.aOpenAttachFileUpdate(Sender: TObject);
+begin
+  inherited;
+    TAction(Sender).Enabled := not vstTree.IsEmpty and Assigned(vstTree.FocusedNode);
+end;
+
+procedure TframeAttachments.aOpenParsedTextExecute(Sender: TObject);
+var
+  Data: PAttachments;
+begin
+  inherited;
+  if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
+  begin
+    Data := vstTree.FocusedNode.GetData;
+    TInformationDialog.ShowMessage(Data^.ParsedText, GetIdentityName);
+  end;
+end;
+
+procedure TframeAttachments.aSaveExecute(Sender: TObject);
+var
+  Data: PAttachments;
+begin
+  inherited;
+  if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
+  begin
+    Data := vstTree.FocusedNode.GetData;
+    if TFile.Exists(Data^.FileName) then
+    begin
+      SaveDialogAttachment.InitialDir := TPath.GetDirectoryName(Data^.FileName);
+      SaveDialogAttachment.Filter := 'Attachment|*' + TPath.GetExtension(Data^.FileName) + '|All files|*.*';
+      if SaveDialogAttachment.Execute and (SaveDialogAttachment.FileName <> Data^.FileName) then
+        TFile.Copy(Data^.FileName, SaveDialogAttachment.FileName);
+    end
     else
       TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
   end;

@@ -10,11 +10,12 @@ uses
   Common.Types, System.IniFiles, System.IOUtils, Global.Resources, Utils, MessageDialog, System.Threading,
   HtmlLib, CustomForms, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExpParameters,Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
-  Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.CommonSettings, Global.Types;
+  Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.CommonSettings, Global.Types, Vcl.Samples.Gauges,
+  Performer.Interfaces;
 {$ENDREGION}
 
 type
-  TfrmSettings = class(TCustomForm)
+  TfrmSettings = class(TCustomForm, IProgress)
     aEditCommonParameters : TAction;
     aEditRegExpParameters : TAction;
     alSettings            : TActionList;
@@ -47,12 +48,24 @@ type
     procedure aSearchExecute(Sender: TObject);
     procedure aToggleSplitPanelExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure FormResize(Sender: TObject);
     procedure srchBoxInvokeSearch(Sender: TObject);
+  private const
+    C_IDENTITY_NAME = 'Settings';
+  private
+    FProgressBar: TGauge;
+    procedure CreateProgressBar;
+
+    procedure DoEndEvent;
+    procedure DoStartProgressEvent(const aMaxPosition: Integer);
+    procedure DoProgressEvent;
+  protected
+    function GetIdentityName: string; override;
   public
     procedure Initialize;
     procedure Deinitialize;
     procedure Translate;
-    class function ShowDocument: Boolean;
   end;
 
 var
@@ -64,25 +77,9 @@ implementation
 
 { TfrmSettings }
 
-class function TfrmSettings.ShowDocument: Boolean;
-begin
-  with TfrmSettings.Create(nil) do
-    try
-      Result := False;
-      Initialize;
-      ShowModal;
-      if (ModalResult = mrOk) then
-      begin
-        Result := True;
-      end;
-    finally
-      Deinitialize;
-      Free;
-    end;
-end;
-
 procedure TfrmSettings.Initialize;
 begin
+  LoadFormPosition;
   TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
   frameRegExpParameters.Initialize;
   framePathes.Initialize;
@@ -98,12 +95,12 @@ begin
   aEditCommonParameters.Caption := TLang.Lang.Translate('EditCommonParameters');
   aEditRegExpParameters.Caption := TLang.Lang.Translate('EditRegExpParameters');
   aPathsFindFiles.Caption       := TLang.Lang.Translate('PathsToFindFiles');
-  aSearch.Caption               := TLang.Lang.Translate('StartSearch');
+  aSearch.Caption               := TLang.Lang.Translate('Search');
 
   crdCommonParams.Caption       := TLang.Lang.Translate('EditCommonParameters');
   crdPathsToFindScripts.Caption := TLang.Lang.Translate('PathsToFindFiles');
   crdRegExpParameters.Caption   := TLang.Lang.Translate('EditRegExpParameters');
-  crdSearch.Caption             := TLang.Lang.Translate('StartSearch');
+  crdSearch.Caption             := TLang.Lang.Translate('Search');
 
   lblTitle.Caption := pnlCard.ActiveCard.Caption;
 end;
@@ -114,12 +111,30 @@ begin
   framePathes.Deinitialize;
   frameResultView.Deinitialize;
   frameCommonSettings.Deinitialize;
+  SaveFormPosition;
+end;
+
+procedure TfrmSettings.FormCreate(Sender: TObject);
+begin
+  inherited;
+  CreateProgressBar;
 end;
 
 procedure TfrmSettings.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   inherited;
   Deinitialize;
+end;
+
+function TfrmSettings.GetIdentityName: string;
+begin
+  Result := C_IDENTITY_NAME;
+end;
+
+procedure TfrmSettings.FormResize(Sender: TObject);
+begin
+  inherited;
+  FProgressBar.Width := sbMain.Width - 20;
 end;
 
 procedure TfrmSettings.aToggleSplitPanelExecute(Sender: TObject);
@@ -129,6 +144,21 @@ begin
     splView.Close
   else
     splView.Open;
+end;
+
+procedure TfrmSettings.CreateProgressBar;
+begin
+  FProgressBar := TGauge.Create(sbMain);
+  FProgressBar.Parent := sbMain;
+  FProgressBar.ForeColor   := C_TOP_COLOR;
+  FProgressBar.BackColor   := clBtnFace;
+  FProgressBar.BorderStyle := bsNone;
+  FProgressBar.Progress    := 100;
+  FProgressBar.Align       := alLeft;
+  FProgressBar.ShowText    := False;
+  FProgressBar.Width       := sbMain.Width - 10;
+  FProgressBar.MinValue    := 0;
+  FProgressBar.Visible     := False;
 end;
 
 procedure TfrmSettings.aEditCommonParametersExecute(Sender: TObject);
@@ -190,6 +220,28 @@ begin
     framePathes.SearchText(srchBox.Text)
   else
     frameRegExpParameters.SearchText(srchBox.Text);
+end;
+
+procedure TfrmSettings.DoEndEvent;
+begin
+  FProgressBar.Progress := 0;
+  FProgressBar.Visible := False;
+end;
+
+procedure TfrmSettings.DoProgressEvent;
+begin
+  if (FProgressBar.Progress >= FProgressBar.MaxValue) then
+    FProgressBar.MaxValue := FProgressBar.MaxValue + 1;
+  FProgressBar.Progress := FProgressBar.Progress + 1;
+  FProgressBar.Refresh;
+  Application.ProcessMessages;
+end;
+
+procedure TfrmSettings.DoStartProgressEvent(const aMaxPosition: Integer);
+begin
+  FProgressBar.MaxValue := aMaxPosition;
+  FProgressBar.Progress := 0;
+  FProgressBar.Visible := True;
 end;
 
 end.

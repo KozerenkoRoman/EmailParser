@@ -5,10 +5,16 @@ object frameCustom: TframeCustom
   Height = 300
   TabOrder = 0
   object vstTree: TVirtualStringTree
+    Left = 0
+    Top = 46
+    Width = 500
+    Height = 254
     Align = alClient
     CustomCheckImages = DMImage.ilCustomCheckImages
     DefaultNodeHeight = 20
+    Header.AutoSizeIndex = 0
     Header.Height = 20
+    Header.MainColumn = -1
     Header.MaxHeight = 25
     Header.MinHeight = 20
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowHint, hoShowImages, hoShowSortGlyphs, hoVisible, hoHeaderClickAutoSort]
@@ -27,13 +33,15 @@ object frameCustom: TframeCustom
     OnFreeNode = vstTreeFreeNode
     OnHeaderDragged = vstTreeHeaderDragged
     OnMeasureItem = vstTreeMeasureItem
+    Touch.InteractiveGestures = [igPan, igPressAndTap]
+    Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
     Columns = <>
   end
   object tbMain: TToolBar
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 429
+    Width = 494
     Height = 40
     ButtonHeight = 40
     ButtonWidth = 40
@@ -50,17 +58,8 @@ object frameCustom: TframeCustom
       Margins.Bottom = 5
       Action = aAdd
     end
-    object btnEdit: TToolButton
-      Left = 40
-      Top = 0
-      Margins.Left = 5
-      Margins.Top = 5
-      Margins.Right = 5
-      Margins.Bottom = 5
-      Action = aEdit
-    end
     object btnDelete: TToolButton
-      Left = 80
+      Left = 40
       Top = 0
       Margins.Left = 5
       Margins.Top = 5
@@ -69,7 +68,7 @@ object frameCustom: TframeCustom
       Action = aDelete
     end
     object btnSave: TToolButton
-      Left = 120
+      Left = 80
       Top = 0
       Margins.Left = 5
       Margins.Top = 5
@@ -78,7 +77,7 @@ object frameCustom: TframeCustom
       Action = aSave
     end
     object btnSep01: TToolButton
-      Left = 160
+      Left = 120
       Top = 0
       Width = 10
       Margins.Left = 5
@@ -90,7 +89,7 @@ object frameCustom: TframeCustom
       Style = tbsSeparator
     end
     object btnRefresh: TToolButton
-      Left = 170
+      Left = 130
       Top = 0
       Margins.Left = 5
       Margins.Top = 5
@@ -99,7 +98,7 @@ object frameCustom: TframeCustom
       Action = aRefresh
     end
     object btnSep02: TToolButton
-      Left = 210
+      Left = 170
       Top = 0
       Width = 10
       Margins.Left = 5
@@ -111,7 +110,7 @@ object frameCustom: TframeCustom
       Style = tbsSeparator
     end
     object btnExportToExcel: TToolButton
-      Left = 220
+      Left = 180
       Top = 0
       Margins.Left = 5
       Margins.Top = 5
@@ -120,7 +119,7 @@ object frameCustom: TframeCustom
       Action = aExportToExcel
     end
     object btnExportToCSV: TToolButton
-      Left = 260
+      Left = 220
       Top = 0
       Margins.Left = 5
       Margins.Top = 5
@@ -129,7 +128,7 @@ object frameCustom: TframeCustom
       Action = aExportToCSV
     end
     object btnPrint: TToolButton
-      Left = 300
+      Left = 260
       Top = 0
       Margins.Left = 5
       Margins.Top = 5
@@ -138,7 +137,7 @@ object frameCustom: TframeCustom
       Action = aPrint
     end
     object btnSep03: TToolButton
-      Left = 340
+      Left = 300
       Top = 0
       Width = 10
       Caption = 'btnSep03'
@@ -147,7 +146,7 @@ object frameCustom: TframeCustom
       Style = tbsSeparator
     end
     object btnColumnSettings: TToolButton
-      Left = 350
+      Left = 310
       Top = 0
       Action = aColumnSettings
     end
@@ -189,11 +188,6 @@ object frameCustom: TframeCustom
       ImageIndex = 0
       ImageName = 'DeleteList_32x32'
     end
-    object aEdit: TAction
-      Hint = 'Edit'
-      ImageIndex = 1
-      ImageName = 'Edit_32x32'
-    end
     object aSave: TAction
       Hint = 'Save'
       ImageIndex = 10
@@ -215,8 +209,10 @@ object frameCustom: TframeCustom
       Caption = 'Add'
     end
     object miEdit: TMenuItem
-      Action = aEdit
       Caption = 'Edit'
+      Hint = 'Edit'
+      ImageIndex = 1
+      ImageName = 'Edit_32x32'
     end
     object miDelete: TMenuItem
       Action = aDelete

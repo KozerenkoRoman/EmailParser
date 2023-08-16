@@ -51,7 +51,7 @@ implementation
 class procedure TInformationDialog.ShowMessage(AMessageText: string; AIdentityName: string);
 begin
   if AMessageText.IsEmpty then
-    TMessageDialog.ShowWarning('No data to display')
+    TMessageDialog.ShowWarning(TLang.Lang.Translate('NoDataToDisplay'))
   else
   begin
     with TInformationDialog.Create(nil) do

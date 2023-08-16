@@ -71,13 +71,7 @@ type
 
 const
   C_ICON_SIZE = 39;
-
-resourcestring
-  C_ATTACHMENTS_DIR       = '#Attachments';
-  C_ATTACHMENTS_SUB_DIR   = '#Sub#Attachments';
-  C_IDENTITY_COLUMNS_NAME = '.Columns';
-  C_SECTION_MAIN          = 'Main';
-
+  C_TOP_COLOR = $001E4DFF;
 
 var
   General: TGeneral;

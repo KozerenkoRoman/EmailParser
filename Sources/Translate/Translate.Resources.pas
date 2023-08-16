@@ -94,6 +94,8 @@ resourcestring
   en_Text                 = 'Text';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
+  en_NoDataToDisplay      = 'No data to display';
+  en_Search               = 'Search';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -162,6 +164,7 @@ resourcestring
   uk_SetMultiUserMode     = 'Установити багатокористувацький режим';
   uk_SetSingleUserMode    = 'Установити режим для одного користувача';
   uk_StartSearch          = 'Почати пошук';
+  uk_Search               = 'Пошук';
   uk_Subject              = 'Тема';
   uk_Successful           = 'Операція успішна';
   uk_SystemInfo           = 'Інформація про систему';
@@ -169,6 +172,7 @@ resourcestring
   uk_Text                 = 'Текст';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
+  uk_NoDataToDisplay      = 'Немає даних для відображення';
 
 const
    ArrayMessages: array[1 .. 73] of TMessageItem = (
@@ -189,6 +193,7 @@ const
     (Key: 'Date'                 ; En: en_Date;                 Uk: uk_Date),
     (Key: 'Delete'               ; En: en_Delete;               Uk: uk_Delete),
     (Key: 'DeleteAttachments'    ; En: en_DeleteAttachments;    Uk: uk_DeleteAttachments),
+    (Key: 'NoDataToDisplay'      ; En: en_NoDataToDisplay;      Uk: uk_NoDataToDisplay),
     (Key: 'DirectoryNotFound'    ; En: en_DirectoryNotFound;    Uk: uk_DirectoryNotFound),
     (Key: 'Disabled'             ; En: en_Disabled;             Uk: uk_Disabled),
     (Key: 'Edit'                 ; En: en_Edit;                 Uk: uk_Edit),
@@ -235,8 +240,7 @@ const
     (Key: 'Save'                 ; En: en_Save;                 Uk: uk_Save),
     (Key: 'Script'               ; En: en_Script;               Uk: uk_Script),
     (Key: 'Server'               ; En: en_Server;               Uk: uk_Server),
-    (Key: 'SetMultiUserMode'     ; En: en_SetMultiUserMode;     Uk: uk_SetMultiUserMode),
-    (Key: 'SetSingleUserMode'    ; En: en_SetSingleUserMode;    Uk: uk_SetSingleUserMode),
+    (Key: 'Search'               ; En: en_Search;               Uk: uk_Search),
     (Key: 'StartSearch'          ; En: en_StartSearch;          Uk: uk_StartSearch),
     (Key: 'Subject'              ; En: en_Subject;              Uk: uk_Subject),
     (Key: 'Successful'           ; En: en_Successful;           Uk: uk_Successful),

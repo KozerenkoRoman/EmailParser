@@ -5,15 +5,21 @@ inherited frameResultView: TframeResultView
   Margins.Top = 0
   Margins.Right = 0
   Margins.Bottom = 0
+  ExplicitWidth = 671
+  ExplicitHeight = 516
   object splInfo: TSplitter [0]
     Left = 0
-    Top = 212
+    Top = 232
     Width = 671
     Height = 4
     Cursor = crVSplit
     Align = alBottom
+    ExplicitTop = 212
   end
   inherited vstTree: TVirtualStringTree
+    Top = 40
+    Width = 671
+    Height = 192
     Header.MainColumn = 0
     Images = DMImage.vil16
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toVariableNodeHeight, toFullRowDrag]
@@ -22,6 +28,9 @@ inherited frameResultView: TframeResultView
     OnDblClick = aOpenEmailExecute
     OnFocusChanged = vstTreeFocusChanged
     OnGetText = vstTreeGetText
+    ExplicitTop = 40
+    ExplicitWidth = 671
+    ExplicitHeight = 192
     Columns = <
       item
         CaptionAlignment = taCenter
@@ -122,53 +131,48 @@ inherited frameResultView: TframeResultView
     Margins.Top = 0
     Margins.Right = 0
     Margins.Bottom = 0
+    ExplicitLeft = 0
+    ExplicitTop = 0
+    ExplicitWidth = 671
+    inherited btnSep01: TToolButton
+      Visible = False
+    end
+    object btnSep04: TToolButton
+      Left = 350
+      Top = 0
+      Width = 10
+      Caption = 'btnSep04'
+      ImageIndex = 71
+      ImageName = 'email'
+      Style = tbsSeparator
+    end
     object btnSearch: TToolButton
-      Left = 390
+      Left = 360
       Top = 0
       Action = aSearch
     end
+    object btnSep05: TToolButton
+      Left = 400
+      Top = 0
+      Width = 10
+      ImageIndex = 71
+      ImageName = 'email'
+      Style = tbsSeparator
+    end
     object btnOpenEmail: TToolButton
-      Left = 430
+      Left = 410
       Top = 0
       Action = aOpenEmail
     end
     object btnOpenLogFile: TToolButton
-      Left = 470
+      Left = 450
       Top = 0
       Action = aOpenLogFile
     end
   end
-  object pnlBottom: TPanel [3]
+  object pcInfo: TPageControl [3]
     Left = 0
-    Top = 496
-    Width = 671
-    Height = 20
-    Margins.Left = 0
-    Margins.Top = 0
-    Margins.Right = 0
-    Margins.Bottom = 0
-    Align = alBottom
-    BevelOuter = bvNone
-    TabOrder = 2
-    Visible = False
-    object gProgress: TGauge
-      Left = 0
-      Top = 0
-      Width = 671
-      Height = 20
-      Align = alClient
-      BorderStyle = bsNone
-      Color = clBtnFace
-      ForeColor = 1986047
-      MaxValue = 0
-      ParentColor = False
-      Progress = 0
-      ShowText = False
-    end
-  end
-  object pcInfo: TPageControl [4]
-    Left = 0
-    Top = 216
+    Top = 236
     Width = 671
     Height = 280
     Margins.Left = 2
@@ -177,7 +181,7 @@ inherited frameResultView: TframeResultView
     Margins.Bottom = 2
     ActivePage = tsAttachments
     Align = alBottom
-    TabOrder = 3
+    TabOrder = 2
     OnChange = pcInfoChange
     object tsPlainText: TTabSheet
       Caption = 'Plain Text'
@@ -228,57 +232,17 @@ inherited frameResultView: TframeResultView
         Margins.Bottom = 0
         Align = alClient
         TabOrder = 0
+        ExplicitWidth = 663
+        ExplicitHeight = 250
         inherited vstTree: TVirtualStringTree
+          Width = 663
+          Height = 210
+          ExplicitWidth = 663
+          ExplicitHeight = 210
         end
         inherited tbMain: TToolBar
           Width = 663
           ExplicitWidth = 663
-          inherited btnAdd: TToolButton
-          end
-          inherited btnEdit: TToolButton
-          end
-          inherited btnDelete: TToolButton
-           end
-          inherited btnSave: TToolButton
-  
-          end
-          inherited btnSep01: TToolButton
-            Width = 15
-
-          end
-          inherited btnRefresh: TToolButton
-            Left = 175
-
-          end
-          inherited btnSep02: TToolButton
-            Left = 215
- 
-          end
-          inherited btnExportToExcel: TToolButton
-            Left = 230
-
-          end
-          inherited btnExportToCSV: TToolButton
-            Left = 270
-   
-          end
-          inherited btnPrint: TToolButton
-            Left = 310
-  
-          end
-          inherited btnSep03: TToolButton
-            Left = 350
-            Width = 5
-
-          end
-          inherited btnColumnSettings: TToolButton
-            Left = 365
-
-          end
-          inherited btnOpenAttachFile: TToolButton
-            Left = 405
-    
-          end
         end
         inherited alFrame: TActionList
           Left = 336
@@ -288,10 +252,16 @@ inherited frameResultView: TframeResultView
           Left = 392
           Top = 96
         end
+        inherited SaveDialogAttachment: TSaveDialog
+          Left = 216
+          Top = 144
+        end
       end
     end
   end
   inherited alFrame: TActionList
+    Left = 352
+    Top = 96
     inherited aRefresh: TAction
       Visible = False
     end
@@ -301,11 +271,9 @@ inherited frameResultView: TframeResultView
     inherited aDelete: TAction
       Visible = False
     end
-    inherited aEdit: TAction
-      Visible = False
-    end
     inherited aSave: TAction
-      Visible = False
+      OnExecute = aSaveExecute
+      OnUpdate = aOpenEmailUpdate
     end
     object aOpenLogFile: TAction
       Hint = 'Open Log File'
@@ -314,8 +282,9 @@ inherited frameResultView: TframeResultView
       OnExecute = aOpenLogFileExecute
     end
     object aSearch: TAction
-      ImageIndex = 21
-      ImageName = 'Zoom_32x32'
+      Hint = 'Start Search'
+      ImageIndex = 12
+      ImageName = 'lightning'
       OnExecute = aSearchExecute
     end
     object aOpenEmail: TAction
@@ -325,5 +294,15 @@ inherited frameResultView: TframeResultView
       OnExecute = aOpenEmailExecute
       OnUpdate = aOpenEmailUpdate
     end
+  end
+  inherited pmFrame: TPopupMenu
+    Left = 352
+    Top = 160
+  end
+  object SaveDialogEmail: TSaveDialog
+    DefaultExt = '*.eml'
+    Filter = 'Email|*.eml|All files|*.*'
+    Left = 128
+    Top = 96
   end
 end

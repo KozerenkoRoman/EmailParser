@@ -4,6 +4,8 @@ inherited frameRegExpParameters: TframeRegExpParameters
   ExplicitWidth = 765
   ExplicitHeight = 436
   inherited vstTree: TVirtualStringTree
+    Width = 765
+    Height = 390
     Header.MainColumn = 1
     Images = DMImage.vil16
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toEditable, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toVariableNodeHeight, toFullRowDrag, toEditOnClick, toEditOnDblClick]
@@ -30,6 +32,7 @@ inherited frameRegExpParameters: TframeRegExpParameters
       end>
   end
   inherited tbMain: TToolBar
+    Width = 759
   end
   inherited alFrame: TActionList
     inherited aRefresh: TAction
@@ -42,9 +45,6 @@ inherited frameRegExpParameters: TframeRegExpParameters
     inherited aDelete: TAction
       OnExecute = aDeleteExecute
       OnUpdate = aDeleteUpdate
-    end
-    inherited aEdit: TAction
-      OnUpdate = aEditUpdate
     end
     inherited aSave: TAction
       OnExecute = aSaveExecute

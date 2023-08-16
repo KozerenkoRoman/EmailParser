@@ -11,17 +11,17 @@ uses
   System.UITypes, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} System.ImageList, System.Math, Vcl.DBCtrls,
   VirtualTrees, DebugWriter, HtmlLib, Column.Types, Global.Types, CustomForms, VirtualTrees.Helper, System.Types,
   DaImages, XmlFiles, Common.Types, VirtualTrees.ExportHelper, System.Generics.Collections, System.Generics.Defaults,
-  Translate.Lang;
+  Translate.Lang, Global.Resources;
 {$ENDREGION}
 
 type
   TfrmColumnSettings = class(TCustomForm)
-    aCancel               : TAction;
-    ActionListMain        : TActionList;
-    btnOk: TBitBtn;
-    btnCancel             : TBitBtn;
-    pnlBottom             : TPanel;
-    vstColumns            : TVirtualStringTree;
+    aCancel        : TAction;
+    ActionListMain : TActionList;
+    btnCancel      : TBitBtn;
+    btnOk          : TBitBtn;
+    pnlBottom      : TPanel;
+    vstColumns     : TVirtualStringTree;
     procedure aCancelExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure vstColumnsChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);

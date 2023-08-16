@@ -89,10 +89,8 @@ end;
 
 class function TFileUtils.GetSignature(const aFilename: string): TFileSignature;
 var
-  FileSignature : TBytes;
-  FileStream    : TFileStream;
-//  Signature     : TBytes;
-  a, b:UInt64;
+  FileSignature: TBytes;
+  FileStream: TFileStream;
 begin
   Result := fsUnknown;
   FileStream := TFileStream.Create(aFilename, fmOpenRead or fmShareDenyWrite);
@@ -102,12 +100,8 @@ begin
       for var item in ArraySignatures do
         if (item.TypeSignature <> fsUnknown) then
         begin
-          var Signature := Copy(FileSignature, 0, High(item.Signature));
-          a := PUInt64(Signature)^;
-          b := PUInt64(item.Signature)^;
-          if a=b  then
-
-//          if (PUInt64(Signature)^ = PUInt64(item.Signature)^) then
+          var Signature := Copy(FileSignature, 0, Length(item.Signature));
+          if CompareMem(Signature, item.Signature, Length(item.Signature)) then
             Exit(item.TypeSignature);
         end;
   finally
@@ -129,7 +123,7 @@ begin
         if (aSignature = item.TypeSignature) and (item.TypeSignature <> fsUnknown) then
         begin
           SetLength(FileSignature, Length(item.Signature));
-          Exit(PUInt64(FileSignature)^ = PUInt64(item.Signature)^);
+          Exit(CompareMem(FileSignature, item.Signature, Length(item.Signature)));
         end;
   finally
     FreeAndNil(FileStream);
