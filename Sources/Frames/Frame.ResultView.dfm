@@ -34,17 +34,16 @@ inherited frameResultView: TframeResultView
     Columns = <
       item
         CaptionAlignment = taCenter
-        MaxWidth = 1000
-        MinWidth = 7
+        MaxWidth = 200
+        MinWidth = 50
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 0
         Text = '#'
-        Width = 33
       end
       item
         CaptionAlignment = taCenter
-        MaxWidth = 1000
-        MinWidth = 100
+        MaxWidth = 500
+        MinWidth = 50
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 1
         Text = 'File Name'
@@ -53,24 +52,24 @@ inherited frameResultView: TframeResultView
       item
         CaptionAlignment = taCenter
         MaxWidth = 1000
-        MinWidth = 100
+        MinWidth = 50
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 2
         Text = 'Path'
-        Width = 187
+        Width = 100
       end
       item
         CaptionAlignment = taCenter
         MaxWidth = 1000
-        MinWidth = 100
+        MinWidth = 50
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 3
         Text = 'Message ID'
-        Width = 115
+        Width = 100
       end
       item
         CaptionAlignment = taCenter
-        MaxWidth = 1000
+        MaxWidth = 500
         MinWidth = 100
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 4
@@ -89,38 +88,42 @@ inherited frameResultView: TframeResultView
       item
         CaptionAlignment = taCenter
         MaxWidth = 1000
-        MinWidth = 100
+        MinWidth = 50
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 6
         Text = 'Attach'
-        Width = 100
       end
       item
         CaptionAlignment = taCenter
         MaxWidth = 1000
-        MinWidth = 100
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        MinWidth = 50
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 7
         Text = 'Body'
-        Width = 100
       end
       item
         CaptionAlignment = taCenter
         MaxWidth = 1000
-        MinWidth = 100
+        MinWidth = 50
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 8
         Text = 'From'
-        Width = 100
       end
       item
         CaptionAlignment = taCenter
-        MaxWidth = 1000
-        MinWidth = 100
+        MaxWidth = 500
+        MinWidth = 50
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 9
         Text = 'Content Type'
-        Width = 100
+      end
+      item
+        CaptionAlignment = taCenter
+        MaxWidth = 500
+        MinWidth = 50
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 10
+        Text = 'Matches Count'
       end>
   end
   inherited tbMain: TToolBar

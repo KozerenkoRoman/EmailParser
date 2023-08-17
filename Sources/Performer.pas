@@ -21,11 +21,12 @@ type
     FAttachmentsDir    : TAttachmentsDir;
     FCriticalSection   : TCriticalSection;
     FDeleteAttachments : Boolean;
-    FPathList          : TArray<TParamPath>;
-    FRegExpList        : TArray<TRegExpData>;
+    FPathList          : TArrayRecord<TParamPath>;
+    FRegExpList        : TArrayRecord<TRegExpData>;
     FUserDefinedDir    : string;
     FIsBreak           : Boolean;
     function GetAttchmentPath(const aFileName: TFileName): string;
+    function GetRegExpCollection(const aText, aPattern: string): string;
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
     procedure ParseAttachmentFiles(aData: PResultData);
@@ -119,7 +120,7 @@ end;
 
 procedure TPerformer.ParseFile(const aFileName: TFileName);
 begin
-  if (not Assigned(OnCompletedItem)) or (Length(FRegExpList) = 0) then
+  if not Assigned(OnCompletedItem) then
     Exit;
 
   ParseEmail(aFileName);
@@ -129,6 +130,18 @@ begin
       begin
         OnProgressEvent;
       end);
+end;
+
+function TPerformer.GetRegExpCollection(const aText, aPattern: string): string;
+var
+  RegExpr: TRegEx;
+  Match: TMatch;
+begin
+  RegExpr := TRegEx.Create(aPattern);
+  Match := RegExpr.Match(aText);
+  if Match.Success then
+    for var i := 0 to Match.Groups.Count - 1 do
+      Result := Concat(Result, sLineBreak, Match.Groups[i].Value);
 end;
 
 function TPerformer.GetAttchmentPath(const aFileName: TFileName): string;
@@ -180,22 +193,21 @@ begin
       Data^.From        := MailMessage.From.FullAddress;
       Data^.ContentType := MailMessage.ContentType;
 
-      if (MailMessage.ContentType = 'text/calendar') then
-      begin
-        if Assigned(MailMessage.Calendar) then
-          Data^.Body := MailMessage.Calendar.Strings.Text
-        else
-          Data^.Body := 'Empty';
-      end
-      else
-      begin
+
+
         if Assigned(MailMessage.MessageText) then
-          Data^.Body := MailMessage.MessageText.Text
-        else if Assigned(MailMessage.Html) then
-          Data^.Body := MailMessage.Html.Strings.Text
-        else
-          Data^.Body := 'Empty';
-      end;
+          Data^.Body := Concat(Data^.Body, MailMessage.MessageText.Text);
+//      if (MailMessage.ContentType = 'text/calendar') then
+//      begin
+//        if Assigned(MailMessage.Calendar) then
+//          Data^.Body := Concat(Data^.Body, MailMessage.Calendar.Strings.Text);
+//      end
+//      else
+//      begin
+//
+//        else if Assigned(MailMessage.Html) then
+//          Data^.Body := Concat(Data^.Body, MailMessage.Html.Strings.Text);
+//      end;
     except
       on E: Exception do
         LogWriter.Write(ddError, E.Message + sLineBreak + Data^.FileName);
@@ -229,6 +241,11 @@ begin
           end).Start;
 
         TTask.WaitForAll(Tasks);
+
+        Data.Matches.Count := FRegExpList.Count;
+        for var i := 0 to FRegExpList.Count - 1 do
+          Data.Matches[i] := GetRegExpCollection(Data.Body, FRegExpList[i].RegExpTemplate);
+
         TThread.Queue(nil,
           procedure
           begin

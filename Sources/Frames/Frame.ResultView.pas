@@ -48,16 +48,17 @@ type
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure wbBodyBeforeNavigate2(ASender: TObject; const pDisp: IDispatch; const URL, Flags, TargetFrameName, PostData, Headers: OleVariant; var Cancel: WordBool);
   private const
-    COL_POSITION     = 0;
-    COL_SHORT_NAME   = 1;
-    COL_FILE_NAME    = 2;
-    COL_MESSAGE_ID   = 3;
-    COL_DATE         = 4;
-    COL_SUBJECT      = 5;
-    COL_ATTACH       = 6;
-    COL_BODY         = 7;
-    COL_FROM         = 8;
-    COL_CONTENT_TYPE = 9;
+    COL_POSITION      = 0;
+    COL_SHORT_NAME    = 1;
+    COL_FILE_NAME     = 2;
+    COL_MESSAGE_ID    = 3;
+    COL_DATE          = 4;
+    COL_SUBJECT       = 5;
+    COL_ATTACH        = 6;
+    COL_BODY          = 7;
+    COL_FROM          = 8;
+    COL_CONTENT_TYPE  = 9;
+    COL_MATCHES_COUNT = 10;
 
     C_IDENTITY_NAME = 'frameResultView';
   private
@@ -94,7 +95,7 @@ begin
   vstTree.NodeDataSize := SizeOf(TResultData);
   FPerformer := TPerformer.Create;
   FPerformer.OnCompletedItem      := DoCompletedItem;
-  FPerformer.OnEndProgressEvent           := DoEndProgressEvent;
+  FPerformer.OnEndProgressEvent   := DoEndProgressEvent;
   FPerformer.OnStartProgressEvent := DoStartProgressEvent;
   FPerformer.OnProgressEvent      := DoProgressEvent;
 end;
@@ -122,15 +123,16 @@ procedure TframeResultView.Translate;
 begin
   inherited Translate;
   frameAttachments.Translate;
-  vstTree.Header.Columns[COL_SHORT_NAME].Text   := TLang.Lang.Translate('FileName');
-  vstTree.Header.Columns[COL_FILE_NAME].Text    := TLang.Lang.Translate('Path');
-  vstTree.Header.Columns[COL_MESSAGE_ID].Text   := TLang.Lang.Translate('MessageId');
-  vstTree.Header.Columns[COL_DATE].Text         := TLang.Lang.Translate('Date');
-  vstTree.Header.Columns[COL_SUBJECT].Text      := TLang.Lang.Translate('Subject');
-  vstTree.Header.Columns[COL_ATTACH].Text       := TLang.Lang.Translate('Attachment');
-  vstTree.Header.Columns[COL_BODY].Text         := TLang.Lang.Translate('Body');
-  vstTree.Header.Columns[COL_FROM].Text         := TLang.Lang.Translate('From');
-  vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
+  vstTree.Header.Columns[COL_SHORT_NAME].Text    := TLang.Lang.Translate('FileName');
+  vstTree.Header.Columns[COL_FILE_NAME].Text     := TLang.Lang.Translate('Path');
+  vstTree.Header.Columns[COL_MESSAGE_ID].Text    := TLang.Lang.Translate('MessageId');
+  vstTree.Header.Columns[COL_DATE].Text          := TLang.Lang.Translate('Date');
+  vstTree.Header.Columns[COL_SUBJECT].Text       := TLang.Lang.Translate('Subject');
+  vstTree.Header.Columns[COL_ATTACH].Text        := TLang.Lang.Translate('Attachment');
+  vstTree.Header.Columns[COL_BODY].Text          := TLang.Lang.Translate('Body');
+  vstTree.Header.Columns[COL_FROM].Text          := TLang.Lang.Translate('From');
+  vstTree.Header.Columns[COL_CONTENT_TYPE].Text  := TLang.Lang.Translate('ContentType');
+  vstTree.Header.Columns[COL_MATCHES_COUNT].Text := TLang.Lang.Translate('Matches');
 
   aOpenEmail.Hint     := TLang.Lang.Translate('OpenEmail');
   aOpenLogFile.Hint   := TLang.Lang.Translate('OpenLogFile');
@@ -184,6 +186,8 @@ begin
       Result := CompareText(Data1^.From, Data2^.From);
     COL_CONTENT_TYPE:
       Result := CompareText(Data1^.ContentType, Data2^.ContentType);
+    COL_MATCHES_COUNT:
+      Result := CompareValue(Data1^.Matches.Count, Data2^.Matches.Count);
   end;
 end;
 
@@ -254,6 +258,8 @@ begin
       CellText := Data^.From;
     COL_CONTENT_TYPE:
       CellText := Data^.ContentType;
+    COL_MATCHES_COUNT:
+      CellText := Data^.Matches.Count.ToString;
   end;
 end;
 

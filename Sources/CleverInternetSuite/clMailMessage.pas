@@ -1272,7 +1272,9 @@ begin
   s := '';
   for i := 0 to ASource.Count - 1 do
   begin
-    if (('--' + Boundary) = ASource[i]) or (('--' + Boundary + '--') = ASource[i]) then
+    if (('--' + Boundary) = ASource[i]) or
+       (('=-' + Boundary) = ASource[i]) or
+       (('--' + Boundary + '--') = ASource[i]) then
     begin
       if (BodyItem <> nil) and (i > StartBody) then
       begin

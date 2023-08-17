@@ -290,7 +290,7 @@ begin
 end;
 
 class function THtmlLib.SqlToHtml(const aSqlText: string): string;
-const
+resourcestring
   C_COMMENTS_PATTERN = '(?is)((/\*.*?\*/)|(--.*?\n))';
   C_LEXEM_PATTERN = '(?i)(' +
     '\bAGGREGATE\b|\bALL\b|\bALTER\b|\bAND\b|\bANY\b|\bAS\b|\bASC\b|\bAVG\b|\bBEFORE\b|\bBEGIN\b|' +
@@ -325,7 +325,7 @@ begin
 end;
 
 class function THtmlLib.GetTableTag(aColumns: Variant; aTableCaption: string = ''): string;
-const
+resourcestring
   C_TABLE_TAG = '<table>';
 var
   i           : Integer;

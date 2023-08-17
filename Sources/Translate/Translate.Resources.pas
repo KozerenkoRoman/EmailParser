@@ -56,13 +56,16 @@ resourcestring
   en_FileIsDisabled       = 'File "%s" is disabled';
   en_FileName             = 'File name';
   en_FileNotFound         = 'File "%s" not found';
+  en_FoundFiles           = 'Found %d files';
   en_From                 = 'From';
   en_GettingStarted       = 'Getting started';
   en_Go                   = 'Go';
   en_Info                 = 'Info ';
   en_Language             = 'Language';
+  en_Matches              = 'Matches';
   en_MessageId            = 'Message Id';
   en_ModuleName           = 'Module name';
+  en_NoDataToDisplay      = 'No data to display';
   en_Ok                   = 'Ok';
   en_OpenEmail            = 'Open email';
   en_OpenFile             = 'Open File';
@@ -83,6 +86,7 @@ resourcestring
   en_RegExpTemplate       = 'RegExp Template';
   en_Save                 = 'Save';
   en_Script               = 'Script';
+  en_Search               = 'Search';
   en_Server               = 'Server';
   en_SetMultiUserMode     = 'Set multi user mode';
   en_SetSingleUserMode    = 'Set single user mode';
@@ -90,13 +94,10 @@ resourcestring
   en_Subject              = 'Subject';
   en_Successful           = 'Operation is successful';
   en_SystemInfo           = 'System Information';
-  en_Time                 = 'Time';
   en_Text                 = 'Text';
+  en_Time                 = 'Time';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
-  en_NoDataToDisplay      = 'No data to display';
-  en_Search               = 'Search';
-  en_FoundFiles           = 'Found %d files';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -175,9 +176,10 @@ resourcestring
   uk_WithSubdir           = 'З підкаталогами';
   uk_NoDataToDisplay      = 'Немає даних для відображення';
   uk_FoundFiles           = 'Знайдено %d файлів';
+  uk_Matches              = 'Співпадіння';
 
 const
-   ArrayMessages: array[1 .. 73] of TMessageItem = (
+   ArrayMessages: array[1 .. 74] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
     (Key: 'Backup'               ; En: en_Backup;               Uk: uk_Backup),
@@ -195,7 +197,6 @@ const
     (Key: 'Date'                 ; En: en_Date;                 Uk: uk_Date),
     (Key: 'Delete'               ; En: en_Delete;               Uk: uk_Delete),
     (Key: 'DeleteAttachments'    ; En: en_DeleteAttachments;    Uk: uk_DeleteAttachments),
-    (Key: 'NoDataToDisplay'      ; En: en_NoDataToDisplay;      Uk: uk_NoDataToDisplay),
     (Key: 'DirectoryNotFound'    ; En: en_DirectoryNotFound;    Uk: uk_DirectoryNotFound),
     (Key: 'Disabled'             ; En: en_Disabled;             Uk: uk_Disabled),
     (Key: 'Edit'                 ; En: en_Edit;                 Uk: uk_Edit),
@@ -214,13 +215,16 @@ const
     (Key: 'FileIsDisabled'       ; En: en_FileIsDisabled;       Uk: uk_FileIsDisabled),
     (Key: 'FileName'             ; En: en_FileName;             Uk: uk_FileName),
     (Key: 'FileNotFound'         ; En: en_FileNotFound;         Uk: uk_FileNotFound),
+    (Key: 'FoundFiles'           ; En: en_FoundFiles;           Uk: uk_FoundFiles),
     (Key: 'From'                 ; En: en_From;                 Uk: uk_From),
     (Key: 'GettingStarted'       ; En: en_GettingStarted;       Uk: uk_GettingStarted),
     (Key: 'Go'                   ; En: en_Go;                   Uk: uk_Go),
     (Key: 'Info'                 ; En: en_Info;                 Uk: uk_Info),
     (Key: 'Language'             ; En: en_Language;             Uk: uk_Language),
+    (Key: 'Matches'              ; En: en_Matches;              Uk: uk_Matches),
     (Key: 'MessageId'            ; En: en_MessageId;            Uk: uk_MessageId),
     (Key: 'ModuleName'           ; En: en_ModuleName;           Uk: uk_ModuleName),
+    (Key: 'NoDataToDisplay'      ; En: en_NoDataToDisplay;      Uk: uk_NoDataToDisplay),
     (Key: 'Ok'                   ; En: en_Ok;                   Uk: uk_Ok),
     (Key: 'OpenEmail'            ; En: en_OpenEmail;            Uk: uk_OpenEmail),
     (Key: 'OpenFile'             ; En: en_OpenFile;             Uk: uk_OpenFile),
@@ -240,15 +244,14 @@ const
     (Key: 'Refresh'              ; En: en_Refresh;              Uk: uk_Refresh),
     (Key: 'RegExpTemplate'       ; En: en_RegExpTemplate;       Uk: uk_RegExpTemplate),
     (Key: 'Save'                 ; En: en_Save;                 Uk: uk_Save),
-    (Key: 'FoundFiles'           ; En: en_FoundFiles;           Uk: uk_FoundFiles),
-    (Key: 'Server'               ; En: en_Server;               Uk: uk_Server),
     (Key: 'Search'               ; En: en_Search;               Uk: uk_Search),
+    (Key: 'Server'               ; En: en_Server;               Uk: uk_Server),
     (Key: 'StartSearch'          ; En: en_StartSearch;          Uk: uk_StartSearch),
     (Key: 'Subject'              ; En: en_Subject;              Uk: uk_Subject),
     (Key: 'Successful'           ; En: en_Successful;           Uk: uk_Successful),
     (Key: 'SystemInfo'           ; En: en_SystemInfo;           Uk: uk_SystemInfo),
-    (Key: 'Time'                 ; En: en_Time;                 Uk: uk_Time),
     (Key: 'Text'                 ; En: en_Text;                 Uk: uk_Text),
+    (Key: 'Time'                 ; En: en_Time;                 Uk: uk_Time),
     (Key: 'Value'                ; En: en_Value;                Uk: uk_Value),
     (Key: 'WithSubdir'           ; En: en_WithSubdir;           Uk: uk_WithSubdir)
      );

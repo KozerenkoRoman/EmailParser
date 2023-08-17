@@ -52,14 +52,15 @@ type
     TimeStamp   : TDateTime;
     ContentType : string;
     ParsedText  : string;
+    Matches     : TStringArray;
     procedure Clear;
     procedure Assign(const aData: TResultData);
   end;
 
   TGeneral = record
   public
-    class function GetPathList: TArray<TParamPath>; static;
-    class function GetRegExpParametersList: TArray<TRegExpData>; static;
+    class function GetPathList: TArrayRecord<TParamPath>; static;
+    class function GetRegExpParametersList: TArrayRecord<TRegExpData>; static;
     class function XMLFile: TXMLFile; static;
     class function XMLParams: TXMLFile; static;
   end;
@@ -94,7 +95,7 @@ begin
   Result := FXMLParams;
 end;
 
-class function TGeneral.GetRegExpParametersList: TArray<TRegExpData>;
+class function TGeneral.GetRegExpParametersList: TArrayRecord<TRegExpData>;
 var
   Data: TRegExpData;
   i: Integer;
@@ -103,8 +104,8 @@ begin
   XMLParams.CurrentSection := 'RegExpParameters';
   try
     i := 0;
-    SetLength(Result, XMLParams.ChildCount);
-     while not XMLParams.IsLastKey do
+    Result.Count := XMLParams.ChildCount;
+    while not XMLParams.IsLastKey do
     begin
       if XMLParams.ReadAttributes then
       begin
@@ -120,7 +121,7 @@ begin
   end;
 end;
 
-class function TGeneral.GetPathList: TArray<TParamPath>;
+class function TGeneral.GetPathList: TArrayRecord<TParamPath>;
 var
   Data: TParamPath;
   i: Integer;
@@ -129,7 +130,7 @@ begin
   XMLParams.CurrentSection := 'Path';
   try
     i := 0;
-    SetLength(Result, XMLParams.ChildCount);
+    Result.Count := XMLParams.ChildCount;
     while not XMLParams.IsLastKey do
     begin
       if XMLParams.ReadAttributes then
@@ -192,10 +193,14 @@ begin
     Self.Attachments[att].ContentType := aData.Attachments[att].ContentType;
     Self.Attachments[att].ParsedText  := aData.Attachments[att].ParsedText;
   end;
+  Self.Matches.Count := aData.Matches.Count;
+  for var i := 0 to Self.Matches.Count - 1 do
+    Self.Matches[i] := aData.Matches[i];
 end;
 
 procedure TResultData.Clear;
 begin
+  Matches.Clear;
   for var att := Low(Self.Attachments) to High(Self.Attachments) do
     Self.Attachments[att].Clear;
   Self := Default(TResultData);

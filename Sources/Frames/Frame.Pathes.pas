@@ -138,7 +138,7 @@ procedure TframePathes.LoadFromXML;
     arrData: TParamPath;
     Data: PParamPath;
     NewNode: PVirtualNode;
-    arrPath: TArray<TParamPath>;
+    arrPath: TArrayRecord<TParamPath>;
   begin
     inherited;
     arrPath := TGeneral.GetPathList;

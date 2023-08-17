@@ -15,6 +15,8 @@ inherited frameRegExpParameters: TframeRegExpParameters
     OnEditing = vstTreeEditing
     OnGetText = vstTreeGetText
     OnNewText = vstTreeNewText
+    ExplicitWidth = 765
+    ExplicitHeight = 390
     Columns = <
       item
         CaptionAlignment = taCenter
@@ -33,6 +35,7 @@ inherited frameRegExpParameters: TframeRegExpParameters
   end
   inherited tbMain: TToolBar
     Width = 759
+    ExplicitWidth = 759
   end
   inherited alFrame: TActionList
     inherited aRefresh: TAction

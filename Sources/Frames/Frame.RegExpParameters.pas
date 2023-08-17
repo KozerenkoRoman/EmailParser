@@ -171,7 +171,7 @@ procedure TframeRegExpParameters.LoadFromXML;
     arrData: TRegExpData;
     Data: PRegExpData;
     NewNode: PVirtualNode;
-    arrPath: TArray<TRegExpData>;
+    arrPath: TArrayRecord<TRegExpData>;
   begin
     inherited;
     arrPath := TGeneral.GetRegExpParametersList;
