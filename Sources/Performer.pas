@@ -31,7 +31,6 @@ type
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
     procedure ParseAttachmentFiles(aData: PResultData);
-    procedure ParseEmail(const aFileName: TFileName);
     procedure ParseFile(const aFileName: TFileName);
     procedure FillStartParameters;
   public
@@ -141,7 +140,7 @@ begin
             Data.Matches[i] := GetRegExpCollection(Data.ParsedText, FRegExpList[i].RegExpTemplate, FUseLastGroup);
 
 //         Data^.From := 'aaa' + Data^.From ;
-//        TPublishers.ProgressPublisher.CompletedItem(Data);
+        TPublishers.ProgressPublisher.CompletedItem(Data);
         TPublishers.ProgressPublisher.Progress;
       end;
     finally
@@ -157,12 +156,6 @@ begin
   end;
 end;
 
-procedure TPerformer.ParseFile(const aFileName: TFileName);
-begin
-  ParseEmail(aFileName);
-  TPublishers.ProgressPublisher.Progress;
-end;
-
 class function TPerformer.GetRegExpCollection(const aText, aPattern: string; const aUseLastGroup: Boolean): string;
 var
   RegExpr: TRegEx;
@@ -176,9 +169,8 @@ begin
     if aUseLastGroup then
       Result := Match.Groups[Match.Groups.Count - 1].Value
     else
-    Result := '6654654';
-//      for var i := 0 to Match.Groups.Count - 1 do
-//        Result := Concat(Result, Match.Groups[i].Value, '; ');
+      for var i := 0 to Match.Groups.Count - 1 do
+        Result := Concat(Result, Match.Groups[i].Value, '; ');
   end;
 end;
 
@@ -210,12 +202,13 @@ begin
     end;
 end;
 
-procedure TPerformer.ParseEmail(const aFileName: TFileName);
+procedure TPerformer.ParseFile(const aFileName: TFileName);
 var
   Data        : PResultData;
   MailMessage : TclMailMessage;
 begin
   New(Data);
+  Data^.Clear;
   Data^.ShortName := TPath.GetFileNameWithoutExtension(aFileName);
   Data^.FileName  := aFileName;
 
@@ -286,6 +279,7 @@ begin
         TPublishers.ProgressPublisher.CompletedItem(Data^);
       end).Start;
   finally
+    TPublishers.ProgressPublisher.Progress;
     FreeAndNil(MailMessage);
   end;
 end;

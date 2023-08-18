@@ -39,6 +39,7 @@ type
     procedure aOpenEmailExecute(Sender: TObject);
     procedure aOpenEmailUpdate(Sender: TObject);
     procedure aOpenLogFileExecute(Sender: TObject);
+    procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
     procedure aSearchExecute(Sender: TObject);
     procedure aSearchUpdate(Sender: TObject);
@@ -48,7 +49,6 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure wbBodyBeforeNavigate2(ASender: TObject; const pDisp: IDispatch; const URL, Flags, TargetFrameName, PostData, Headers: OleVariant; var Cancel: WordBool);
-    procedure aRefreshExecute(Sender: TObject);
   private const
     COL_POSITION      = 0;
     COL_SHORT_NAME    = 1;
@@ -390,17 +390,20 @@ var
   Node: PVirtualNode;
   Data: PResultData;
   ResultDataArray : TResultDataArray;
+  Counter: Integer;
 begin
   inherited;
   if (vstTree.RootNode.ChildCount > 0) then
   begin
     ResultDataArray.Count := vstTree.RootNode.ChildCount;
     Node := vstTree.RootNode.FirstChild;
+    Counter := 0;
     while Assigned(Node) do
     begin
       Data := Node.GetData;
-      ResultDataArray[Data.Position - 1] := Data^;
+      ResultDataArray[Counter] := Data^;
       Node := Node.NextSibling;
+      Inc(Counter);
     end;
     FPerformer.Refresh(@ResultDataArray);
   end;
@@ -463,17 +466,17 @@ end;
 procedure TframeResultView.CompletedItem(const aResultData: TResultData);
 var
   Data: PResultData;
-  NewNode: PVirtualNode;
+  Node: PVirtualNode;
 begin
-  vstTree.BeginUpdate;
-  try
-    NewNode := vstTree.AddChild(nil);
-    Data := NewNode.GetData;
-    Data^.Assign(aResultData);
+  if Assigned(aResultData.ParentNode) then
+    Node := aResultData.ParentNode
+  else
+    Node := vstTree.AddChild(nil);
+  Data := Node^.GetData;
+  Data^.Assign(aResultData);
+  Data^.ParentNode := Node;
+  if (Data^.Position = -1) then
     Data^.Position := vstTree.TotalCount;
-  finally
-    vstTree.EndUpdate;
-  end;
 end;
 
 procedure TframeResultView.StartProgress(const aMaxPosition: Integer);

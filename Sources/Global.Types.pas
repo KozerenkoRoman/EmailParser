@@ -8,7 +8,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
   System.IOUtils, Vcl.Forms, ArrayHelper, Data.DB, System.Win.Registry, Common.Types, Translate.Lang,
-  System.IniFiles;
+  System.IniFiles, VirtualTrees;
 {$ENDREGION}
 
 type
@@ -53,6 +53,7 @@ type
     ContentType : string;
     ParsedText  : string;
     Matches     : TStringArray;
+    ParentNode  : PVirtualNode;
     procedure Clear;
     procedure Assign(const aData: TResultData);
   end;
@@ -186,6 +187,7 @@ begin
   Self.From        := aData.From;
   Self.ContentType := aData.ContentType;
   Self.ParsedText  := aData.ParsedText;
+  Self.ParentNode  := aData.ParentNode;
   SetLength(Self.Attachments, Length(aData.Attachments));
   for var att := Low(Self.Attachments) to High(Self.Attachments) do
   begin
@@ -206,6 +208,8 @@ begin
   for var att := Low(Self.Attachments) to High(Self.Attachments) do
     Self.Attachments[att].Clear;
   Self := Default(TResultData);
+  Self.Position := -1;
+  Self.ParentNode := nil;
 end;
 
 { TAttachments }

@@ -28,18 +28,19 @@ type
     crdCommonParams       : TCard;
     crdPathsToFindScripts : TCard;
     crdRegExpParameters   : TCard;
-    crdResultView: TCard;
-    imgMenu               : TImage;
+    crdResultView         : TCard;
+    frameCommonSettings   : TframeCommonSettings;
+    framePathes           : TframePathes;
+    frameRegExpParameters : TframeRegExpParameters;
+    frameResultView       : TframeResultView;
     lblTitle              : TLabel;
     pnlCard               : TCardPanel;
     pnlTop                : TPanel;
     sbMain                : TStatusBar;
     splView               : TSplitView;
     srchBox               : TSearchBox;
-    framePathes: TframePathes;
-    frameRegExpParameters: TframeRegExpParameters;
-    frameCommonSettings: TframeCommonSettings;
-    frameResultView: TframeResultView;
+    pnlLeft: TPanel;
+    imgMenu: TImage;
     procedure aEditCommonParametersExecute(Sender: TObject);
     procedure aEditRegExpParametersExecute(Sender: TObject);
     procedure aPathsFindFilesExecute(Sender: TObject);
@@ -89,6 +90,7 @@ begin
   frameCommonSettings.Initialize;
   pnlTop.Color                := C_TOP_COLOR;
   catMenuItems.HotButtonColor := C_TOP_COLOR;
+  catMenuItems.Height         := 20;
   Translate;
 end;
 
@@ -250,8 +252,6 @@ end;
 
 procedure TfrmSettings.StartProgress(const aMaxPosition: Integer);
 begin
-  if splView.Opened then
-    splView.Close;
   FProgressBar.MaxValue := aMaxPosition;
   FProgressBar.Progress := 0;
   FProgressBar.Visible := True;

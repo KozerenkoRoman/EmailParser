@@ -31,7 +31,7 @@ inherited frameResultView: TframeResultView
     OnFocusChanged = vstTreeFocusChanged
     OnGetText = vstTreeGetText
     ExplicitTop = 39
-    ExplicitWidth = 1050
+    ExplicitWidth = 806
     ExplicitHeight = 306
     Columns = <
       item
@@ -122,7 +122,7 @@ inherited frameResultView: TframeResultView
     Margins.Bottom = 0
     ExplicitLeft = 0
     ExplicitTop = 0
-    ExplicitWidth = 1050
+    ExplicitWidth = 806
     inherited btnSep01: TToolButton
       Visible = False
     end
@@ -177,7 +177,6 @@ inherited frameResultView: TframeResultView
     Align = alBottom
     TabOrder = 2
     OnChange = pcInfoChange
-    ExplicitWidth = 1050
     object tsPlainText: TTabSheet
       Caption = 'Plain Text'
       object memTextPlain: TMemo
@@ -192,7 +191,6 @@ inherited frameResultView: TframeResultView
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 0
-        ExplicitWidth = 1042
       end
     end
     object tsHtmlText: TTabSheet
@@ -201,15 +199,14 @@ inherited frameResultView: TframeResultView
       object wbBody: TWebBrowser
         Left = 0
         Top = 0
-        Width = 1042
+        Width = 798
         Height = 250
         Align = alClient
         TabOrder = 0
         OnBeforeNavigate2 = wbBodyBeforeNavigate2
-        ExplicitWidth = 695
-        ExplicitHeight = 160
+        ExplicitWidth = 1042
         ControlData = {
-          4C000000B26B0000D71900000000000000000000000000000000000000000000
+          4C0000007A520000D71900000000000000000000000000000000000000000000
           000000004C000000000000000000000001000000E0D057007335CF11AE690800
           2B2E126208000000000000004C0000000114020000000000C000000000000046
           8000000000000000000000000000000000000000000000000000000000000000
@@ -230,17 +227,17 @@ inherited frameResultView: TframeResultView
         Margins.Bottom = 0
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 1042
+        ExplicitWidth = 798
         ExplicitHeight = 250
         inherited vstTree: TVirtualStringTree
           Width = 798
           Height = 211
-          ExplicitWidth = 1042
+          ExplicitWidth = 798
           ExplicitHeight = 211
         end
         inherited tbMain: TToolBar
           Width = 798
-          ExplicitWidth = 1042
+          ExplicitWidth = 798
         end
         inherited alFrame: TActionList
           Left = 336
