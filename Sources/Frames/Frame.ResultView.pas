@@ -10,11 +10,12 @@ uses
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Custom, System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Vcl.Samples.Gauges,
-  Performer, Winapi.ShellAPI, Vcl.OleCtrls, SHDocVw, Winapi.ActiveX, Frame.Attachments, Files.Utils, Performer.Interfaces;
+  Performer, Winapi.ShellAPI, Vcl.OleCtrls, SHDocVw, Winapi.ActiveX, Frame.Attachments, Files.Utils,
+  VirtualTrees.ExportHelper, Global.Resources, Publishers, Publishers.Interfaces;
 {$ENDREGION}
 
 type
-  TframeResultView = class(TframeCustom, IProgress)
+  TframeResultView = class(TFrameCustom, IProgress, IUpdateXML)
     aBreak           : TAction;
     aOpenEmail       : TAction;
     aOpenLogFile     : TAction;
@@ -47,6 +48,7 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure wbBodyBeforeNavigate2(ASender: TObject; const pDisp: IDispatch; const URL, Flags, TargetFrameName, PostData, Headers: OleVariant; var Cancel: WordBool);
+    procedure aRefreshExecute(Sender: TObject);
   private const
     COL_POSITION      = 0;
     COL_SHORT_NAME    = 1;
@@ -55,20 +57,26 @@ type
     COL_DATE          = 4;
     COL_SUBJECT       = 5;
     COL_ATTACH        = 6;
-    COL_BODY          = 7;
-    COL_FROM          = 8;
-    COL_CONTENT_TYPE  = 9;
-    COL_MATCHES_COUNT = 10;
+    COL_FROM          = 7;
+    COL_CONTENT_TYPE  = 8;
+
+    C_FIXED_COLUMNS   = 9;
 
     C_IDENTITY_NAME = 'frameResultView';
   private
     FPerformer: TPerformer;
     FIsLoaded: Boolean;
-    procedure DoEndProgressEvent;
-    procedure DoStartProgressEvent(const aMaxPosition: Integer);
-    procedure DoProgressEvent;
-    procedure DoCompletedItem(const aResultData: TResultData);
 
+    //IUpdateXML
+    procedure UpdateXML;
+
+    //IProgress
+    procedure EndProgress;
+    procedure StartProgress(const aMaxPosition: Integer);
+    procedure Progress;
+    procedure CompletedItem(const aResultData: TResultData);
+
+    procedure UpdateColumns;
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
     function GetIdentityName: string; override;
@@ -94,14 +102,14 @@ begin
   inherited;
   vstTree.NodeDataSize := SizeOf(TResultData);
   FPerformer := TPerformer.Create;
-  FPerformer.OnCompletedItem      := DoCompletedItem;
-  FPerformer.OnEndProgressEvent   := DoEndProgressEvent;
-  FPerformer.OnStartProgressEvent := DoStartProgressEvent;
-  FPerformer.OnProgressEvent      := DoProgressEvent;
+  TPublishers.UpdateXMLPublisher.Subscribe(Self);
+  TPublishers.ProgressPublisher.Subscribe(Self);
 end;
 
 destructor TframeResultView.Destroy;
 begin
+  TPublishers.UpdateXMLPublisher.Unsubscribe(Self);
+  TPublishers.ProgressPublisher.Unsubscribe(Self);
   FreeAndNil(FPerformer);
   inherited;
 end;
@@ -117,33 +125,79 @@ begin
   frameAttachments.Initialize;
   LoadFromXML;
   Translate;
-end;
-
-procedure TframeResultView.Translate;
-begin
-  inherited Translate;
-  frameAttachments.Translate;
-  vstTree.Header.Columns[COL_SHORT_NAME].Text    := TLang.Lang.Translate('FileName');
-  vstTree.Header.Columns[COL_FILE_NAME].Text     := TLang.Lang.Translate('Path');
-  vstTree.Header.Columns[COL_MESSAGE_ID].Text    := TLang.Lang.Translate('MessageId');
-  vstTree.Header.Columns[COL_DATE].Text          := TLang.Lang.Translate('Date');
-  vstTree.Header.Columns[COL_SUBJECT].Text       := TLang.Lang.Translate('Subject');
-  vstTree.Header.Columns[COL_ATTACH].Text        := TLang.Lang.Translate('Attachment');
-  vstTree.Header.Columns[COL_BODY].Text          := TLang.Lang.Translate('Body');
-  vstTree.Header.Columns[COL_FROM].Text          := TLang.Lang.Translate('From');
-  vstTree.Header.Columns[COL_CONTENT_TYPE].Text  := TLang.Lang.Translate('ContentType');
-  vstTree.Header.Columns[COL_MATCHES_COUNT].Text := TLang.Lang.Translate('Matches');
-
-  aOpenEmail.Hint     := TLang.Lang.Translate('OpenEmail');
-  aOpenLogFile.Hint   := TLang.Lang.Translate('OpenLogFile');
-  aSearch.Hint        := TLang.Lang.Translate('StartSearch');
-  tsPlainText.Caption := TLang.Lang.Translate('Info');
+  UpdateColumns;
 end;
 
 procedure TframeResultView.Deinitialize;
 begin
   inherited Deinitialize;
   frameAttachments.Deinitialize;
+end;
+
+procedure TframeResultView.Translate;
+begin
+  inherited Translate;
+  frameAttachments.Translate;
+  vstTree.Header.Columns[COL_SHORT_NAME].Text   := TLang.Lang.Translate('FileName');
+  vstTree.Header.Columns[COL_FILE_NAME].Text    := TLang.Lang.Translate('Path');
+  vstTree.Header.Columns[COL_MESSAGE_ID].Text   := TLang.Lang.Translate('MessageId');
+  vstTree.Header.Columns[COL_DATE].Text         := TLang.Lang.Translate('Date');
+  vstTree.Header.Columns[COL_SUBJECT].Text      := TLang.Lang.Translate('Subject');
+  vstTree.Header.Columns[COL_ATTACH].Text       := TLang.Lang.Translate('Attachment');
+  vstTree.Header.Columns[COL_FROM].Text         := TLang.Lang.Translate('From');
+  vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
+
+  aOpenEmail.Hint     := TLang.Lang.Translate('OpenEmail');
+  aOpenLogFile.Hint   := TLang.Lang.Translate('OpenLogFile');
+  aSearch.Hint        := TLang.Lang.Translate('StartSearch');
+  tsPlainText.Caption := TLang.Lang.Translate('PlainText');
+end;
+
+procedure TframeResultView.UpdateColumns;
+var
+  Column: TVirtualTreeColumn;
+  FRegExpList: TArrayRecord<TRegExpData>;
+  Node: PVirtualNode;
+  Data: PResultData;
+begin
+  vstTree.BeginUpdate;
+
+  while (C_FIXED_COLUMNS < vstTree.Header.Columns.Count) do
+    vstTree.Header.Columns.Delete(C_FIXED_COLUMNS);
+
+  try
+    FRegExpList := TGeneral.GetRegExpParametersList;
+    for var item in FRegExpList do
+    begin
+      Column := vstTree.Header.Columns.Add;
+      Column.Text             := item.ParameterName;
+      Column.Options          := Column.Options - [coEditable];
+      Column.CaptionAlignment := taCenter;
+      Column.Alignment        := taLeftJustify;
+      Column.Width            := 100;
+      Column.Options          := Column.Options + [coVisible];
+    end;
+    TStoreHelper.LoadFromXML(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
+
+    if (FRegExpList.Count + C_FIXED_COLUMNS <> vstTree.Header.Columns.Count) then
+      if (vstTree.RootNode.ChildCount > 0) then
+      begin
+        Node := vstTree.RootNode.FirstChild;
+        while Assigned(Node) do
+        begin
+          Data := Node.GetData;
+          Data.Matches.Count := FRegExpList.Count;
+          Node := Node.NextSibling;
+        end;
+      end;
+  finally
+    vstTree.EndUpdate;
+  end;
+end;
+
+procedure TframeResultView.UpdateXML;
+begin
+  UpdateColumns;
 end;
 
 procedure TframeResultView.SaveToXML;
@@ -180,14 +234,12 @@ begin
       Result := CompareText(Data1^.Subject, Data2^.Subject);
     COL_ATTACH:
       Result := CompareValue(Length(Data1^.Attachments), Length(Data2^.Attachments));
-    COL_BODY:
-      Result := CompareText(Data1^.Body, Data2^.Body);
     COL_FROM:
       Result := CompareText(Data1^.From, Data2^.From);
     COL_CONTENT_TYPE:
       Result := CompareText(Data1^.ContentType, Data2^.ContentType);
-    COL_MATCHES_COUNT:
-      Result := CompareValue(Data1^.Matches.Count, Data2^.Matches.Count);
+//  else
+//    Result := CompareText(Data1^.Matches.Items[Column - C_FIXED_COLUMNS], Data2^.Matches.Items[Column - C_FIXED_COLUMNS]);
   end;
 end;
 
@@ -251,15 +303,16 @@ begin
     COL_SUBJECT:
       CellText := Data^.Subject;
     COL_ATTACH:
-      CellText := Length(Data^.Attachments).ToString;
-    COL_BODY:
-      CellText := Data^.Body;
+      if (Length(Data^.Attachments) = 0) then
+        CellText := ''
+      else
+        CellText := Length(Data^.Attachments).ToString;
     COL_FROM:
       CellText := Data^.From;
     COL_CONTENT_TYPE:
       CellText := Data^.ContentType;
-    COL_MATCHES_COUNT:
-      CellText := Data^.Matches.Count.ToString;
+  else
+    CellText := Data^.Matches.Items[Column - C_FIXED_COLUMNS]
   end;
 end;
 
@@ -332,6 +385,27 @@ begin
     TFileUtils.ShellOpen(LogWriter.LogFileName);
 end;
 
+procedure TframeResultView.aRefreshExecute(Sender: TObject);
+var
+  Node: PVirtualNode;
+  Data: PResultData;
+  ResultDataArray : TResultDataArray;
+begin
+  inherited;
+  if (vstTree.RootNode.ChildCount > 0) then
+  begin
+    ResultDataArray.Count := vstTree.RootNode.ChildCount;
+    Node := vstTree.RootNode.FirstChild;
+    while Assigned(Node) do
+    begin
+      Data := Node.GetData;
+      ResultDataArray[Data.Position - 1] := Data^;
+      Node := Node.NextSibling;
+    end;
+    FPerformer.Refresh(@ResultDataArray);
+  end;
+end;
+
 procedure TframeResultView.pcInfoChange(Sender: TObject);
 var
   Data: PResultData;
@@ -386,7 +460,7 @@ begin
   FPerformer.Start;
 end;
 
-procedure TframeResultView.DoCompletedItem(const aResultData: TResultData);
+procedure TframeResultView.CompletedItem(const aResultData: TResultData);
 var
   Data: PResultData;
   NewNode: PVirtualNode;
@@ -402,32 +476,21 @@ begin
   end;
 end;
 
-procedure TframeResultView.DoStartProgressEvent(const aMaxPosition: Integer);
-var
-  ProgressForm: IProgress;
+procedure TframeResultView.StartProgress(const aMaxPosition: Integer);
 begin
-  if Supports(Application.MainForm, IProgress, ProgressForm) then
-    ProgressForm.DoStartProgressEvent(aMaxPosition);
   vstTree.BeginUpdate;
   TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('FoundFiles'), [aMaxPosition]));
 end;
 
-procedure TframeResultView.DoEndProgressEvent;
-var
-  ProgressForm: IProgress;
+procedure TframeResultView.EndProgress;
 begin
-  if Supports(Application.MainForm, IProgress, ProgressForm) then
-    ProgressForm.DoEndProgressEvent;
   FIsLoaded := False;
   vstTree.EndUpdate;
 end;
 
-procedure TframeResultView.DoProgressEvent;
-var
-  ProgressForm: IProgress;
+procedure TframeResultView.Progress;
 begin
-  if Supports(Application.MainForm, IProgress, ProgressForm) then
-    ProgressForm.DoProgressEvent;
+
 end;
 
 end.

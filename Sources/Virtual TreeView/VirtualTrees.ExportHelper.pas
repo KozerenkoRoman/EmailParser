@@ -135,7 +135,7 @@ begin
   ColumnCount := Length(Columns);
   arr := GetNodesList(aTree.RootNode);
   RowCount := Length(arr) + 1; // +1 for the header
-  Result := VarArrayCreate([0, RowCount - 1, 0, ColumnCount - 1], varOleStr);
+  Result := VarArrayCreate([0, RowCount, 0, ColumnCount], varOleStr);
   nRow := 0;
   for i := 0 to ColumnCount - 1 do
     Result[nRow, i] := aTree.Header.Columns.Items[Columns[i].Index].Text;
@@ -194,7 +194,7 @@ begin
           for var i := VarArrayLowBound(VArray, 1) to VarArrayHighBound(VArray, 1) do
           begin
             for var j := VarArrayLowBound(VArray, col) to VarArrayHighBound(VArray, col) do
-              str := Concat(str, '"', VarToStr(VArray[i, j]), '";');
+               str := Concat(str, '"', VarToStr(VArray[i, j]).Replace('"', '""'), '";');
             str := Concat(str, sLineBreak);
           end;
           TFile.WriteAllText(SaveDialog.FileName, str, TEncoding.UTF8);

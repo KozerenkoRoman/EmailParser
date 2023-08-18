@@ -74,6 +74,7 @@ resourcestring
   en_Parameter            = 'Parameter';
   en_ParameterName        = 'Parameter name';
   en_Parameters           = 'Parameters';
+  en_ParseBodyAsHTML      = 'Parse body with RegExp as HTML-text';
   en_Path                 = 'Path';
   en_PathForAttachments   = 'Paths for saving attachments';
   en_PathsToFindFiles     = 'Paths to find files';
@@ -88,8 +89,6 @@ resourcestring
   en_Script               = 'Script';
   en_Search               = 'Search';
   en_Server               = 'Server';
-  en_SetMultiUserMode     = 'Set multi user mode';
-  en_SetSingleUserMode    = 'Set single user mode';
   en_StartSearch          = 'Start Search';
   en_Subject              = 'Subject';
   en_Successful           = 'Operation is successful';
@@ -98,6 +97,8 @@ resourcestring
   en_Time                 = 'Time';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
+  en_UseLastGroup         = 'Use only the last result group';
+  en_PlainText            = 'Plain Text';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -135,13 +136,16 @@ resourcestring
   uk_FileIsDisabled       = 'Файл "%s" вимкнено';
   uk_FileName             = 'Назва файлу';
   uk_FileNotFound         = 'Файл "%s" не знайдено';
+  uk_FoundFiles           = 'Знайдено %d файлів';
   uk_From                 = 'Відправник';
   uk_GettingStarted       = 'Початок роботи';
   uk_Go                   = 'Почати';
   uk_Info                 = 'Опис ';
   uk_Language             = 'Мова';
+  uk_Matches              = 'Співпадіння';
   uk_MessageId            = 'Id листа';
   uk_ModuleName           = 'Назва модуля';
+  uk_NoDataToDisplay      = 'Немає даних для відображення';
   uk_Ok                   = 'Ок';
   uk_OpenEmail            = 'Відкрити email';
   uk_OpenFile             = 'Відкрити файл';
@@ -150,6 +154,7 @@ resourcestring
   uk_Parameter            = 'Параметр';
   uk_ParameterName        = 'Назва параметра';
   uk_Parameters           = 'Параметри';
+  uk_ParseBodyAsHTML      = 'Парсити тіло регулярними виразами як HTML-текст';
   uk_Path                 = 'Шлях';
   uk_PathForAttachments   = 'Шляхи для збереження вкладень';
   uk_PathsToFindFiles     = 'Шляхи для пошуку файлів';
@@ -162,24 +167,21 @@ resourcestring
   uk_RegExpTemplate       = 'Шаблон регулярного виразу';
   uk_Save                 = 'Зберегти';
   uk_Script               = 'Сценарій';
-  uk_Server               = 'Сервер';
-  uk_SetMultiUserMode     = 'Установити багатокористувацький режим';
-  uk_SetSingleUserMode    = 'Установити режим для одного користувача';
-  uk_StartSearch          = 'Почати пошук';
   uk_Search               = 'Пошук';
+  uk_Server               = 'Сервер';
+  uk_StartSearch          = 'Почати пошук';
   uk_Subject              = 'Тема';
   uk_Successful           = 'Операція успішна';
   uk_SystemInfo           = 'Інформація про систему';
-  uk_Time                 = 'Час';
   uk_Text                 = 'Текст';
+  uk_Time                 = 'Час';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
-  uk_NoDataToDisplay      = 'Немає даних для відображення';
-  uk_FoundFiles           = 'Знайдено %d файлів';
-  uk_Matches              = 'Співпадіння';
+  uk_UseLastGroup         = 'Використовувати лише останню групу співпадіння';
+  uk_PlainText            = 'Простий текст';
 
 const
-   ArrayMessages: array[1 .. 74] of TMessageItem = (
+   ArrayMessages: array[1 .. 76] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
     (Key: 'Backup'               ; En: en_Backup;               Uk: uk_Backup),
@@ -233,6 +235,7 @@ const
     (Key: 'Parameter'            ; En: en_Parameter;            Uk: uk_Parameter),
     (Key: 'ParameterName'        ; En: en_ParameterName;        Uk: uk_ParameterName),
     (Key: 'Parameters'           ; En: en_Parameters;           Uk: uk_Parameters),
+    (Key: 'ParseBodyAsHTML'      ; En: en_ParseBodyAsHTML;      Uk: uk_ParseBodyAsHTML),
     (Key: 'Path'                 ; En: en_Path;                 Uk: uk_Path),
     (Key: 'PathForAttachments'   ; En: en_PathForAttachments;   Uk: uk_PathForAttachments),
     (Key: 'PathsToFindFiles'     ; En: en_PathsToFindFiles;     Uk: uk_PathsToFindFiles),
@@ -245,13 +248,14 @@ const
     (Key: 'RegExpTemplate'       ; En: en_RegExpTemplate;       Uk: uk_RegExpTemplate),
     (Key: 'Save'                 ; En: en_Save;                 Uk: uk_Save),
     (Key: 'Search'               ; En: en_Search;               Uk: uk_Search),
-    (Key: 'Server'               ; En: en_Server;               Uk: uk_Server),
+    (Key: 'PlainText'            ; En: en_PlainText;            Uk: uk_PlainText),
     (Key: 'StartSearch'          ; En: en_StartSearch;          Uk: uk_StartSearch),
     (Key: 'Subject'              ; En: en_Subject;              Uk: uk_Subject),
     (Key: 'Successful'           ; En: en_Successful;           Uk: uk_Successful),
     (Key: 'SystemInfo'           ; En: en_SystemInfo;           Uk: uk_SystemInfo),
     (Key: 'Text'                 ; En: en_Text;                 Uk: uk_Text),
     (Key: 'Time'                 ; En: en_Time;                 Uk: uk_Time),
+    (Key: 'UseLastGroup'         ; En: en_UseLastGroup;         Uk: uk_UseLastGroup),
     (Key: 'Value'                ; En: en_Value;                Uk: uk_Value),
     (Key: 'WithSubdir'           ; En: en_WithSubdir;           Uk: uk_WithSubdir)
      );

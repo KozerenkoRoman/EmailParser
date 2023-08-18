@@ -11,14 +11,14 @@ uses
   Column.Settings in 'Sources\Column.Settings.pas' {frmColumnSettings},
   Column.Types in 'Sources\Column.Types.pas',
   Common.Types in 'Sources\Common\Common.Types.pas',
-  CustomForms in 'Sources\CustomForms.pas' {CustomForm},
+  CommonForms in 'Sources\CommonForms.pas' {CommonForm},
   DaImages in 'Sources\DataModules\DaImages.pas' {DMImage: TDataModule},
   DebugWriter in 'Sources\Common\DebugWriter.pas',
   ExecConsoleProgram in 'Sources\Common\ExecConsoleProgram.pas',
   Files.Utils in 'Sources\Common\Files.Utils.pas',
   Frame.Attachments in 'Sources\Frames\Frame.Attachments.pas' {frameAttachments: TFrame},
   Frame.CommonSettings in 'Sources\Frames\Frame.CommonSettings.pas' {frameCommonSettings: TFrame},
-  Frame.Custom in 'Sources\Frames\Frame.Custom.pas' {frameCustom: TFrame},
+  Frame.Custom in 'Sources\Frames\Frame.Custom.pas' {FrameCustom: TFrame},
   Frame.Pathes in 'Sources\Frames\Frame.Pathes.pas' {framePathes: TFrame},
   Frame.RegExpParameters in 'Sources\Frames\Frame.RegExpParameters.pas' {frameRegExpParameters: TFrame},
   Frame.ResultView in 'Sources\Frames\Frame.ResultView.pas' {frameResultView: TFrame},
@@ -34,7 +34,8 @@ uses
   PdfiumCtrl in 'Sources\PDFiumLib\PdfiumCtrl.pas',
   PdfiumLib in 'Sources\PDFiumLib\PdfiumLib.pas',
   Performer in 'Sources\Performer.pas',
-  Performer.Interfaces in 'Sources\Performer.Interfaces.pas',
+  Publishers in 'Sources\Publishers.pas',
+  Publishers.Interfaces in 'Sources\Publishers.Interfaces.pas',
   Settings in 'Sources\Settings.pas' {frmSettings},
   SplashScreen in 'Sources\SplashScreen.pas' {frmSplashScreen},
   Translate.Lang in 'Sources\Translate\Translate.Lang.pas',
@@ -68,7 +69,6 @@ begin
     end;
     Application.ShowMainForm := True;
     Application.Run;
-//    frmSettings.Deinitialize;
   except
     on E: Exception do
     begin

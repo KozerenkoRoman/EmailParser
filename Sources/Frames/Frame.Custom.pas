@@ -13,7 +13,7 @@ uses
 {$ENDREGION}
 
 type
-  TframeCustom = class(TFrame)
+  TFrameCustom = class(TFrame)
     aAdd              : TAction;
     aColumnSettings   : TAction;
     aDelete           : TAction;
@@ -34,10 +34,6 @@ type
     btnSep01          : TToolButton;
     btnSep02          : TToolButton;
     btnSep03          : TToolButton;
-    miAdd             : TMenuItem;
-    miDelete          : TMenuItem;
-    miEdit            : TMenuItem;
-    miSep01           : TMenuItem;
     pmFrame           : TPopupMenu;
     tbMain            : TToolBar;
     vstTree           : TVirtualStringTree;
@@ -71,32 +67,30 @@ implementation
 
 {$R *.dfm}
 
-{ TframeCustom }
+{ TFrameCustom }
 
-constructor TframeCustom.Create(AOwner: TComponent);
+constructor TFrameCustom.Create(AOwner: TComponent);
 begin
   inherited;
   TVirtualTree.Initialize(vstTree);
 end;
 
-destructor TframeCustom.Destroy;
+destructor TFrameCustom.Destroy;
 begin
 
   inherited;
 end;
 
-procedure TframeCustom.Initialize;
+procedure TFrameCustom.Initialize;
 begin
   TStoreHelper.LoadFromXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
-  miAdd.Caption    := aAdd.Hint;
-  miDelete.Caption := aDelete.Hint;
   tbMain.ButtonHeight := C_ICON_SIZE;
   tbMain.ButtonWidth  := C_ICON_SIZE;
   tbMain.Height       := C_ICON_SIZE + 2;
   vstTree.FullExpand;
 end;
 
-procedure TframeCustom.Translate;
+procedure TFrameCustom.Translate;
 begin
   aAdd.Hint           := TLang.Lang.Translate('Add');
   aDelete.Hint        := TLang.Lang.Translate('Delete');
@@ -107,32 +101,32 @@ begin
   aSave.Hint          := TLang.Lang.Translate('Save');
 end;
 
-procedure TframeCustom.Deinitialize;
+procedure TFrameCustom.Deinitialize;
 begin
   TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
 end;
 
-function TframeCustom.GetIdentityName: string;
+function TFrameCustom.GetIdentityName: string;
 begin
   Result := C_IDENTITY_NAME;
 end;
 
-procedure TframeCustom.vstTreeColumnResize(Sender: TVTHeader; Column: TColumnIndex);
+procedure TFrameCustom.vstTreeColumnResize(Sender: TVTHeader; Column: TColumnIndex);
 begin
   TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
 end;
 
-procedure TframeCustom.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+procedure TFrameCustom.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 begin
 //
 end;
 
-procedure TframeCustom.vstTreeHeaderDragged(Sender: TVTHeader; Column: TColumnIndex; OldPosition: Integer);
+procedure TFrameCustom.vstTreeHeaderDragged(Sender: TVTHeader; Column: TColumnIndex; OldPosition: Integer);
 begin
   TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
 end;
 
-procedure TframeCustom.vstTreeMeasureItem(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; var NodeHeight: Integer);
+procedure TFrameCustom.vstTreeMeasureItem(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; var NodeHeight: Integer);
 begin
   if Sender.MultiLine[Node] then
   begin
@@ -141,23 +135,23 @@ begin
   end;
 end;
 
-procedure TframeCustom.aCollapseAllExecute(Sender: TObject);
+procedure TFrameCustom.aCollapseAllExecute(Sender: TObject);
 begin
   vstTree.FullCollapse(nil);
 end;
 
-procedure TframeCustom.aColumnSettingsExecute(Sender: TObject);
+procedure TFrameCustom.aColumnSettingsExecute(Sender: TObject);
 begin
   if TfrmColumnSettings.ShowSettings(vstTree, GetIdentityName, 0) = mrOk then
     TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
 end;
 
-procedure TframeCustom.aExpandAllExecute(Sender: TObject);
+procedure TFrameCustom.aExpandAllExecute(Sender: TObject);
 begin
   vstTree.FullExpand(nil);
 end;
 
-procedure TframeCustom.aExportToCSVExecute(Sender: TObject);
+procedure TFrameCustom.aExportToCSVExecute(Sender: TObject);
 begin
   Screen.Cursor := crHourGlass;
   try
@@ -167,7 +161,7 @@ begin
   end;
 end;
 
-procedure TframeCustom.aExportToExcelExecute(Sender: TObject);
+procedure TFrameCustom.aExportToExcelExecute(Sender: TObject);
 begin
   Screen.Cursor := crHourGlass;
   try
@@ -177,7 +171,7 @@ begin
   end;
 end;
 
-procedure TframeCustom.aExportToHTMLExecute(Sender: TObject);
+procedure TFrameCustom.aExportToHTMLExecute(Sender: TObject);
 begin
   Screen.Cursor := crHourGlass;
   try
@@ -187,7 +181,7 @@ begin
   end;
 end;
 
-procedure TframeCustom.aPrintExecute(Sender: TObject);
+procedure TFrameCustom.aPrintExecute(Sender: TObject);
 begin
   Printer.Orientation := poLandscape;
   vstTree.Print(Printer, True);

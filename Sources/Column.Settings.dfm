@@ -4,8 +4,8 @@ object frmColumnSettings: TfrmColumnSettings
   Anchors = [akLeft, akTop, akRight]
   BorderStyle = bsDialog
   Caption = 'Column Settings'
-  ClientHeight = 511
-  ClientWidth = 369
+  ClientHeight = 510
+  ClientWidth = 365
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,14 +19,12 @@ object frmColumnSettings: TfrmColumnSettings
   TextHeight = 13
   object pnlBottom: TPanel
     Left = 0
-    Top = 469
-    Width = 369
+    Top = 468
+    Width = 365
     Height = 42
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = 468
-    ExplicitWidth = 365
     object btnCancel: TBitBtn
       Left = 151
       Top = 1
@@ -67,8 +65,8 @@ object frmColumnSettings: TfrmColumnSettings
   object vstColumns: TVirtualStringTree
     Left = 0
     Top = 0
-    Width = 369
-    Height = 469
+    Width = 365
+    Height = 468
     Align = alClient
     Header.AutoSizeIndex = 0
     Header.Options = [hoAutoResize, hoColumnResize, hoShowSortGlyphs, hoVisible, hoHeaderClickAutoSort]
@@ -83,13 +81,15 @@ object frmColumnSettings: TfrmColumnSettings
     OnGetText = vstColumnsGetText
     Touch.InteractiveGestures = [igPan, igPressAndTap]
     Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
+    ExplicitWidth = 369
+    ExplicitHeight = 469
     Columns = <
       item
         CaptionAlignment = taCenter
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 0
         Text = 'Name'
-        Width = 313
+        Width = 321
       end
       item
         Alignment = taRightJustify

@@ -10,11 +10,11 @@ uses
   Global.Types, System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin,
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
-  Frame.Custom, System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles;
+  Frame.Custom, System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Publishers;
 {$ENDREGION}
 
 type
-  TframeRegExpParameters = class(TframeCustom)
+  TframeRegExpParameters = class(TFrameCustom)
     procedure aAddExecute(Sender: TObject);
     procedure aAddUpdate(Sender: TObject);
     procedure aDeleteExecute(Sender: TObject);
@@ -198,6 +198,7 @@ procedure TframeRegExpParameters.aSaveExecute(Sender: TObject);
 begin
   inherited;
   SaveToXML;
+  TPublishers.UpdateXMLPublisher.UpdateXML;
 end;
 
 procedure TframeRegExpParameters.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);

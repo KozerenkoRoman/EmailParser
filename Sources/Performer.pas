@@ -10,35 +10,36 @@ uses
   System.IOUtils, Vcl.Forms, ArrayHelper, Common.Types, Translate.Lang, System.IniFiles, Global.Types,
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
-  Winapi.GDIPAPI, Winapi.GDIPOBJ, Files.Utils, Performer.Interfaces, System.SyncObjs, HtmlParserEx;
+  Winapi.GDIPAPI, Winapi.GDIPOBJ, Files.Utils, System.SyncObjs, HtmlParserEx, Publishers.Interfaces,
+  Publishers;
 {$ENDREGION}
 
 type
-  TCompletedItem = procedure(const aResultData: TResultData) of object;
-
   TPerformer = class
   private
     FAttachmentsDir    : TAttachmentsDir;
     FCriticalSection   : TCriticalSection;
     FDeleteAttachments : Boolean;
+    FFileExt           : string;
+    FIsBreak           : Boolean;
+    FParseBodyAsHTML   : Boolean;
     FPathList          : TArrayRecord<TParamPath>;
     FRegExpList        : TArrayRecord<TRegExpData>;
+    FUseLastGroup      : Boolean;
     FUserDefinedDir    : string;
-    FIsBreak           : Boolean;
     function GetAttchmentPath(const aFileName: TFileName): string;
-    function GetRegExpCollection(const aText, aPattern: string): string;
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
     procedure ParseAttachmentFiles(aData: PResultData);
     procedure ParseEmail(const aFileName: TFileName);
     procedure ParseFile(const aFileName: TFileName);
+    procedure FillStartParameters;
   public
-    OnStartProgressEvent : TStartProgressEvent;
-    OnProgressEvent      : TProgressEvent;
-    OnEndProgressEvent   : TEndProgressEvent;
-    OnCompletedItem      : TCompletedItem;
+    class function GetRegExpCollection(const aText, aPattern: string; const aUseLastGroup: Boolean = True): string;
     procedure Start;
+    procedure Refresh(const aResultDataArray: PResultDataArray);
     procedure Break;
+
     constructor Create;
     destructor Destroy; override;
   end;
@@ -58,32 +59,34 @@ begin
   inherited;
 end;
 
-procedure TPerformer.Start;
-var
-  FileList: TStringDynArray;
-  FileExt: string;
+procedure TPerformer.FillStartParameters;
 begin
-  LogWriter.Write(ddEnterMethod, 'TPerformer.Start');
-  if not Assigned(OnCompletedItem) then
-    Exit;
-
-  FIsBreak           := False;
   FRegExpList        := TGeneral.GetRegExpParametersList;
   FPathList          := TGeneral.GetPathList;
-  FileList           := [];
-  FileExt            := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
+  FParseBodyAsHTML   := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'ParseBodyAsHTML', False);
+  FUseLastGroup      := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'UseLastGroup', True);
   FUserDefinedDir    := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
   FAttachmentsDir    := FAttachmentsDir.FromString(FUserDefinedDir);
   FDeleteAttachments := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
+  FFileExt           := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
+end;
+
+procedure TPerformer.Start;
+var
+  FileList: TStringDynArray;
+begin
+  LogWriter.Write(ddEnterMethod, 'TPerformer.Start');
+  FillStartParameters;
+  FIsBreak := False;
+  FileList := [];
 
   for var Dir in FPathList do
     if Dir.WithSubdir then
-      FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FileExt, TSearchOption.soAllDirectories))
+      FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FFileExt, TSearchOption.soAllDirectories))
     else
-      FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FileExt, TSearchOption.soTopDirectoryOnly));
+      FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FFileExt, TSearchOption.soTopDirectoryOnly));
 
-  if Assigned(OnStartProgressEvent) then
-    OnStartProgressEvent(Length(FileList));
+  TPublishers.ProgressPublisher.StartProgress(Length(FileList));
 
   LogWriter.Write(ddText, 'Length FileList - ' + Length(FileList).ToString);
   try
@@ -95,20 +98,14 @@ begin
         ParseFile(FileName);
       end;
     finally
-      if Assigned(OnEndProgressEvent) then
-        TThread.Queue(nil,
-          procedure
-          begin
-            LogWriter.Write(ddExitMethod, 'TPerformer.Start');
-            OnEndProgressEvent;
-          end);
+      TPublishers.ProgressPublisher.EndProgress;
+      LogWriter.Write(ddExitMethod, 'TPerformer.Start');
     end;
   except
     on E: Exception do
     begin
-      LogWriter.Write(ddError, E.Message);
-      if Assigned(OnEndProgressEvent) then
-        OnEndProgressEvent;
+      TPublishers.ProgressPublisher.EndProgress;
+      LogWriter.Write(ddError, 'TPerformer.Start', E.Message);
     end;
   end;
 end;
@@ -118,30 +115,71 @@ begin
   FIsBreak := True;
 end;
 
-procedure TPerformer.ParseFile(const aFileName: TFileName);
+procedure TPerformer.Refresh(const aResultDataArray: PResultDataArray);
 begin
-  if not Assigned(OnCompletedItem) then
+  if aResultDataArray.Count = 0 then
     Exit;
 
-  ParseEmail(aFileName);
-  if Assigned(OnProgressEvent) then
-    TThread.Queue(nil,
-      procedure
+  LogWriter.Write(ddEnterMethod, 'TPerformer.Refresh');
+  FIsBreak := False;
+  FillStartParameters;
+  TPublishers.ProgressPublisher.StartProgress(aResultDataArray^.Count);
+
+  LogWriter.Write(ddText, 'Length of ResultDataArray - ' + aResultDataArray^.Count.ToString);
+  try
+    try
+      for var Data in aResultDataArray^ do
       begin
-        OnProgressEvent;
-      end);
+        if FIsBreak then
+          Exit;
+
+        Data.Matches.Count := FRegExpList.Count;
+        for var i := 0 to FRegExpList.Count - 1 do
+          if FParseBodyAsHTML then
+            Data.Matches[i] := GetRegExpCollection(Data.Body, FRegExpList[i].RegExpTemplate, FUseLastGroup)
+          else
+            Data.Matches[i] := GetRegExpCollection(Data.ParsedText, FRegExpList[i].RegExpTemplate, FUseLastGroup);
+
+//         Data^.From := 'aaa' + Data^.From ;
+//        TPublishers.ProgressPublisher.CompletedItem(Data);
+        TPublishers.ProgressPublisher.Progress;
+      end;
+    finally
+      TPublishers.ProgressPublisher.EndProgress;
+      LogWriter.Write(ddExitMethod, 'TPerformer.Refresh');
+    end;
+  except
+    on E: Exception do
+    begin
+      TPublishers.ProgressPublisher.EndProgress;
+      LogWriter.Write(ddError, 'TPerformer.Refresh', E.Message);
+    end;
+  end;
 end;
 
-function TPerformer.GetRegExpCollection(const aText, aPattern: string): string;
+procedure TPerformer.ParseFile(const aFileName: TFileName);
+begin
+  ParseEmail(aFileName);
+  TPublishers.ProgressPublisher.Progress;
+end;
+
+class function TPerformer.GetRegExpCollection(const aText, aPattern: string; const aUseLastGroup: Boolean): string;
 var
   RegExpr: TRegEx;
   Match: TMatch;
 begin
+  Result := '';
   RegExpr := TRegEx.Create(aPattern);
   Match := RegExpr.Match(aText);
   if Match.Success then
-    for var i := 0 to Match.Groups.Count - 1 do
-      Result := Concat(Result, sLineBreak, Match.Groups[i].Value);
+  begin
+    if aUseLastGroup then
+      Result := Match.Groups[Match.Groups.Count - 1].Value
+    else
+    Result := '6654654';
+//      for var i := 0 to Match.Groups.Count - 1 do
+//        Result := Concat(Result, Match.Groups[i].Value, '; ');
+  end;
 end;
 
 function TPerformer.GetAttchmentPath(const aFileName: TFileName): string;
@@ -193,21 +231,18 @@ begin
       Data^.From        := MailMessage.From.FullAddress;
       Data^.ContentType := MailMessage.ContentType;
 
-
-
+      if (MailMessage.ContentType = 'text/calendar') then
+      begin
+        if Assigned(MailMessage.Calendar) then
+          Data^.Body := Concat(Data^.Body, MailMessage.Calendar.Strings.Text);
+      end
+      else
+      begin
         if Assigned(MailMessage.MessageText) then
-          Data^.Body := Concat(Data^.Body, MailMessage.MessageText.Text);
-//      if (MailMessage.ContentType = 'text/calendar') then
-//      begin
-//        if Assigned(MailMessage.Calendar) then
-//          Data^.Body := Concat(Data^.Body, MailMessage.Calendar.Strings.Text);
-//      end
-//      else
-//      begin
-//
-//        else if Assigned(MailMessage.Html) then
-//          Data^.Body := Concat(Data^.Body, MailMessage.Html.Strings.Text);
-//      end;
+          Data^.Body := Concat(Data^.Body, MailMessage.MessageText.Text)
+        else if Assigned(MailMessage.Html) then
+          Data^.Body := Concat(Data^.Body, MailMessage.Html.Strings.Text);
+      end;
     except
       on E: Exception do
         LogWriter.Write(ddError, E.Message + sLineBreak + Data^.FileName);
@@ -239,20 +274,17 @@ begin
             TThread.NameThreadForDebugging('TPerformer.ParseEmail');
             ParseAttachmentFiles(Data);
           end).Start;
-
         TTask.WaitForAll(Tasks);
 
         Data.Matches.Count := FRegExpList.Count;
         for var i := 0 to FRegExpList.Count - 1 do
-          Data.Matches[i] := GetRegExpCollection(Data.Body, FRegExpList[i].RegExpTemplate);
+          if FParseBodyAsHTML then
+            Data.Matches[i] := GetRegExpCollection(Data.Body, FRegExpList[i].RegExpTemplate, FUseLastGroup)
+          else
+            Data.Matches[i] := GetRegExpCollection(Data.ParsedText, FRegExpList[i].RegExpTemplate, FUseLastGroup);
 
-        TThread.Queue(nil,
-          procedure
-          begin
-            OnCompletedItem(Data^);
-          end);
+        TPublishers.ProgressPublisher.CompletedItem(Data^);
       end).Start;
-
   finally
     FreeAndNil(MailMessage);
   end;

@@ -1,4 +1,4 @@
-﻿unit CustomForms;
+﻿unit CommonForms;
 
 interface
 
@@ -13,8 +13,9 @@ uses
 type
   TDialogMode = (dmInsert, dmUpdate, dmView);
 
-  TCustomForm = class(TForm)
+  TCommonForm = class(TForm)
     procedure FormShow(Sender: TObject);
+    procedure FormAfterMonitorDpiChanged(Sender: TObject; OldDPI, NewDPI: Integer);
   private const
     C_COMPONENT_CLASSNAME       = 'ClassName';
     C_COMPONENT_HIERARCHY_CLASS = 'CompHierarchy';
@@ -39,6 +40,7 @@ type
     procedure WMAfterShow(var Msg: TMessage); message WM_AFTER_SHOW;
     procedure WMAfterCreate(var Msg: TMessage); message WM_AFTER_CREATE;
   protected
+    procedure ScaleForm(aForm: TForm; aScreenWidth, aScreenHeight: LongInt);
     function GetIdentityName: string; virtual;
     procedure SaveFormPosition;
     procedure LoadFormPosition;
@@ -57,9 +59,9 @@ implementation
 uses
   InformationDialog;
 
-{TCustomForm}
+{TCommonForm}
 
-constructor TCustomForm.Create(AOwner: TComponent);
+constructor TCommonForm.Create(AOwner: TComponent);
 var
   SysMenu: HMENU;
 begin
@@ -71,25 +73,36 @@ begin
   PostMessage(Self.Handle, WM_AFTER_CREATE, 0, 0);
 end;
 
-procedure TCustomForm.FormShow(Sender: TObject);
+procedure TCommonForm.FormAfterMonitorDpiChanged(Sender: TObject; OldDPI, NewDPI: Integer);
+begin
+  DisableAlign;
+  try
+    for var i := 0 to ControlCount - 1 do
+      Controls[i].ScaleForPPI(NewDPI);
+  finally
+    EnableAlign;
+  end;
+end;
+
+procedure TCommonForm.FormShow(Sender: TObject);
 begin
   inherited;
   PostMessage(Self.Handle, WM_AFTER_SHOW, 0, 0);
 end;
 
-procedure TCustomForm.WMAfterCreate(var Msg: TMessage);
+procedure TCommonForm.WMAfterCreate(var Msg: TMessage);
 begin
   if Assigned(FOnAfterCreate) then
     FOnAfterCreate(Self);
 end;
 
-procedure TCustomForm.WMAfterShow(var Msg: TMessage);
+procedure TCommonForm.WMAfterShow(var Msg: TMessage);
 begin
   if Assigned(FOnAfterShow) then
     FOnAfterShow(Self);
 end;
 
-procedure TCustomForm.WMSysCommand(var Msg: TWMSysCommand);
+procedure TCommonForm.WMSysCommand(var Msg: TWMSysCommand);
 begin
   if Msg.CmdType = SC_SYS_INFO then
     TInformationDialog.ShowMessage(Self.GetClassInfo, 'ClassInfo')
@@ -97,7 +110,7 @@ begin
     inherited;
 end;
 
-function TCustomForm.GetClassInfo: string;
+function TCommonForm.GetClassInfo: string;
 var
   loClass : TClass;
   sText   : string;
@@ -128,12 +141,12 @@ begin
   Result := Concat(sText, C_HTML_TABLE_CLOSE, C_HTML_BODY_CLOSE);
 end;
 
-function TCustomForm.GetIdentityName: string;
+function TCommonForm.GetIdentityName: string;
 begin
   Result := '';
 end;
 
-procedure TCustomForm.SaveFormPosition;
+procedure TCommonForm.SaveFormPosition;
 var
   IdentityName: string;
 begin
@@ -147,7 +160,7 @@ begin
   end;
 end;
 
-procedure TCustomForm.LoadFormPosition;
+procedure TCommonForm.LoadFormPosition;
 var
   IdentityName: string;
 begin
@@ -166,6 +179,20 @@ begin
       Self.Left := 0
     else if (Self.Left > Screen.DesktopWidth) then
       Self.Left := Screen.DesktopWidth - Self.Width;
+  end;
+end;
+
+procedure TCommonForm.ScaleForm(aForm: TForm; aScreenWidth, aScreenHeight: LongInt);
+begin
+  aForm.Scaled     := True;
+  aForm.AutoScroll := False;
+  aForm.Position   := poScreenCenter;
+//  aForm.Font.Name := 'Arial';
+  if (Screen.Width <> aScreenWidth) then
+  begin
+    aForm.Height := LongInt(aForm.Height) * LongInt(Screen.Height) div aScreenHeight;
+    aForm.Width  := LongInt(aForm.Width) * LongInt(Screen.Width) div aScreenWidth;
+    aForm.ScaleBy(Screen.Width, aScreenWidth);
   end;
 end;
 

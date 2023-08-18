@@ -8,9 +8,9 @@ inherited frameAttachments: TframeAttachments
   ExplicitWidth = 849
   ExplicitHeight = 566
   inherited vstTree: TVirtualStringTree
-    Top = 40
+    Top = 39
     Width = 849
-    Height = 526
+    Height = 527
     Header.MainColumn = 0
     Images = DMImage.vil16
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toEditable, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toVariableNodeHeight, toFullRowDrag]
@@ -18,9 +18,9 @@ inherited frameAttachments: TframeAttachments
     OnCompareNodes = vstTreeCompareNodes
     OnDblClick = aOpenParsedTextExecute
     OnGetText = vstTreeGetText
-    ExplicitTop = 40
+    ExplicitTop = 39
     ExplicitWidth = 849
-    ExplicitHeight = 526
+    ExplicitHeight = 527
     Columns = <
       item
         CaptionAlignment = taCenter
@@ -73,19 +73,19 @@ inherited frameAttachments: TframeAttachments
       Visible = False
     end
     object btnSep04: TToolButton
-      Left = 350
+      Left = 336
       Top = 0
-      Width = 10
+      Width = 8
       ImageIndex = 76
       Style = tbsSeparator
     end
     object btnOpenAttachFile: TToolButton
-      Left = 360
+      Left = 344
       Top = 0
       Action = aOpenAttachFile
     end
     object btnOpenParsedText: TToolButton
-      Left = 400
+      Left = 383
       Top = 0
       Action = aOpenParsedText
     end

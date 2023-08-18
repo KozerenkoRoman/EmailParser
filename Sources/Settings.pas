@@ -8,14 +8,14 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Translate.Lang, Vcl.ExtCtrls, DebugWriter,
   Common.Types, System.IniFiles, System.IOUtils, Global.Resources, Utils, MessageDialog, System.Threading,
-  HtmlLib, CustomForms, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
+  HtmlLib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExpParameters,Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.CommonSettings, Global.Types, Vcl.Samples.Gauges,
-  Performer.Interfaces;
+  Publishers.Interfaces, Publishers, CommonForms;
 {$ENDREGION}
 
 type
-  TfrmSettings = class(TCustomForm, IProgress)
+  TfrmSettings = class(TCommonForm, IProgress)
     aEditCommonParameters : TAction;
     aEditRegExpParameters : TAction;
     alSettings            : TActionList;
@@ -28,11 +28,7 @@ type
     crdCommonParams       : TCard;
     crdPathsToFindScripts : TCard;
     crdRegExpParameters   : TCard;
-    crdSearch             : TCard;
-    frameCommonSettings   : TframeCommonSettings;
-    framePathes           : TframePathes;
-    frameRegExpParameters : TframeRegExpParameters;
-    frameResultView       : TframeResultView;
+    crdResultView: TCard;
     imgMenu               : TImage;
     lblTitle              : TLabel;
     pnlCard               : TCardPanel;
@@ -40,6 +36,10 @@ type
     sbMain                : TStatusBar;
     splView               : TSplitView;
     srchBox               : TSearchBox;
+    framePathes: TframePathes;
+    frameRegExpParameters: TframeRegExpParameters;
+    frameCommonSettings: TframeCommonSettings;
+    frameResultView: TframeResultView;
     procedure aEditCommonParametersExecute(Sender: TObject);
     procedure aEditRegExpParametersExecute(Sender: TObject);
     procedure aPathsFindFilesExecute(Sender: TObject);
@@ -57,9 +57,11 @@ type
     FProgressBar: TGauge;
     procedure CreateProgressBar;
 
-    procedure DoStartProgressEvent(const aMaxPosition: Integer);
-    procedure DoProgressEvent;
-    procedure DoEndProgressEvent;
+    //IProgress
+    procedure EndProgress;
+    procedure StartProgress(const aMaxPosition: Integer);
+    procedure Progress;
+    procedure CompletedItem(const aResultData: TResultData);
   protected
     function GetIdentityName: string; override;
   public
@@ -100,7 +102,7 @@ begin
   crdCommonParams.Caption       := TLang.Lang.Translate('EditCommonParameters');
   crdPathsToFindScripts.Caption := TLang.Lang.Translate('PathsToFindFiles');
   crdRegExpParameters.Caption   := TLang.Lang.Translate('EditRegExpParameters');
-  crdSearch.Caption             := TLang.Lang.Translate('Search');
+  crdResultView.Caption         := TLang.Lang.Translate('Search');
 
   lblTitle.Caption := pnlCard.ActiveCard.Caption;
 end;
@@ -118,12 +120,15 @@ procedure TfrmSettings.FormCreate(Sender: TObject);
 begin
   inherited;
   CreateProgressBar;
+  TPublishers.ProgressPublisher.Subscribe(Self);
 end;
 
 procedure TfrmSettings.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   inherited;
+  FreeAndNil(FProgressBar);
   Deinitialize;
+  TPublishers.ProgressPublisher.Unsubscribe(Self);
 end;
 
 function TfrmSettings.GetIdentityName: string;
@@ -148,7 +153,7 @@ end;
 
 procedure TfrmSettings.CreateProgressBar;
 begin
-  FProgressBar := TGauge.Create(sbMain);
+  FProgressBar := TGauge.Create(nil);
   FProgressBar.Parent := sbMain;
   FProgressBar.ForeColor   := C_TOP_COLOR;
   FProgressBar.BackColor   := clBtnFace;
@@ -210,25 +215,31 @@ procedure TfrmSettings.aSearchExecute(Sender: TObject);
 begin
   inherited;
   lblTitle.Caption := TAction(Sender).Caption;
-  pnlCard.ActiveCard := crdSearch;
+  pnlCard.ActiveCard := crdResultView;
 end;
 
 procedure TfrmSettings.srchBoxInvokeSearch(Sender: TObject);
 begin
   inherited;
-  if pnlCard.ActiveCard = crdPathsToFindScripts then
-    framePathes.SearchText(srchBox.Text)
-  else
-    frameRegExpParameters.SearchText(srchBox.Text);
+//  if pnlCard.ActiveCard = crdPathsToFindScripts then
+//    framePathes.SearchText(srchBox.Text)
+//  else
+//    frameRegExpParameters.SearchText(srchBox.Text);
 end;
 
-procedure TfrmSettings.DoEndProgressEvent;
+
+procedure TfrmSettings.CompletedItem(const aResultData: TResultData);
+begin
+  //nothing
+end;
+
+procedure TfrmSettings.EndProgress;
 begin
   FProgressBar.Progress := 0;
   FProgressBar.Visible := False;
 end;
 
-procedure TfrmSettings.DoProgressEvent;
+procedure TfrmSettings.Progress;
 begin
   if (FProgressBar.Progress >= FProgressBar.MaxValue) then
     FProgressBar.MaxValue := FProgressBar.MaxValue + 1;
@@ -237,8 +248,10 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure TfrmSettings.DoStartProgressEvent(const aMaxPosition: Integer);
+procedure TfrmSettings.StartProgress(const aMaxPosition: Integer);
 begin
+  if splView.Opened then
+    splView.Close;
   FProgressBar.MaxValue := aMaxPosition;
   FProgressBar.Progress := 0;
   FProgressBar.Visible := True;

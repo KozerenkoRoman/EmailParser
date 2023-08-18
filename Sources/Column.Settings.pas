@@ -9,13 +9,13 @@ uses
   Vcl.Forms, Vcl.Dialogs, Data.DB, IBX.IBCustomDataSet, IBX.IBQuery, IBX.IB, Vcl.Buttons, Vcl.DBGrids,
   System.Actions, Vcl.ActnList, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Menus, Vcl.Mask, Vcl.ImgList, Winapi.ActiveX,
   System.UITypes, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} System.ImageList, System.Math, Vcl.DBCtrls,
-  VirtualTrees, DebugWriter, HtmlLib, Column.Types, Global.Types, CustomForms, VirtualTrees.Helper, System.Types,
+  VirtualTrees, DebugWriter, HtmlLib, Column.Types, Global.Types, CommonForms, VirtualTrees.Helper, System.Types,
   DaImages, XmlFiles, Common.Types, VirtualTrees.ExportHelper, System.Generics.Collections, System.Generics.Defaults,
   Translate.Lang, Global.Resources;
 {$ENDREGION}
 
 type
-  TfrmColumnSettings = class(TCustomForm)
+  TfrmColumnSettings = class(TCommonForm)
     aCancel        : TAction;
     ActionListMain : TActionList;
     btnCancel      : TBitBtn;

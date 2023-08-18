@@ -6,12 +6,12 @@ interface
 uses
   Windows, ActiveX, Buttons, Classes, ComCtrls, Controls, Dialogs, ExtCtrls, Forms, Graphics, Messages, SHDocVw,
   System.SysUtils, System.Variants, Vcl.ActnList, System.Actions, Vcl.OleCtrls, System.IOUtils, MessageDialog,
-  DebugWriter, HtmlConsts, HtmlLib, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} CustomForms, Vcl.ExtDlgs,
+  DebugWriter, HtmlConsts, HtmlLib, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} CommonForms, Vcl.ExtDlgs,
   Vcl.StdCtrls, DaImages, Common.Types, Translate.Lang;
 {$ENDREGION}
 
 type
-  TInformationDialog = class(TCustomForm)
+  TInformationDialog = class(TCommonForm)
     ActionList         : TActionList;
     aOk: TAction;
     aSave              : TAction;

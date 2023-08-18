@@ -56,6 +56,8 @@ type
     procedure Clear;
     procedure Assign(const aData: TResultData);
   end;
+  TResultDataArray = TArrayRecord<TResultData>;
+  PResultDataArray = ^TResultDataArray;
 
   TGeneral = record
   public

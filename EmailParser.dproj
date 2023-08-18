@@ -109,17 +109,17 @@
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.1.59;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.0.1.37;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.1.63;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.0.1.37;Comments=</VerInfo_Keys>
         <Icon_MainIcon>EmailParser_Icon.ico</Icon_MainIcon>
         <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
         <Debugger_RunParams>-lang=en</Debugger_RunParams>
         <DCC_RangeChecking>true</DCC_RangeChecking>
-        <VerInfo_Build>59</VerInfo_Build>
+        <VerInfo_Build>63</VerInfo_Build>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.1.84;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.0.1.37;Comments=</VerInfo_Keys>
-        <VerInfo_Build>84</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.1.96;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.0.1.37;Comments=</VerInfo_Keys>
+        <VerInfo_Build>96</VerInfo_Build>
         <Icon_MainIcon>EmailParser_Icon.ico</Icon_MainIcon>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -152,8 +152,8 @@
         </DCCReference>
         <DCCReference Include="Sources\Column.Types.pas"/>
         <DCCReference Include="Sources\Common\Common.Types.pas"/>
-        <DCCReference Include="Sources\CustomForms.pas">
-            <Form>CustomForm</Form>
+        <DCCReference Include="Sources\CommonForms.pas">
+            <Form>CommonForm</Form>
         </DCCReference>
         <DCCReference Include="Sources\DataModules\DaImages.pas">
             <Form>DMImage</Form>
@@ -164,26 +164,32 @@
         <DCCReference Include="Sources\Common\Files.Utils.pas"/>
         <DCCReference Include="Sources\Frames\Frame.Attachments.pas">
             <Form>frameAttachments</Form>
+            <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="Sources\Frames\Frame.CommonSettings.pas">
             <Form>frameCommonSettings</Form>
+            <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="Sources\Frames\Frame.Custom.pas">
-            <Form>frameCustom</Form>
+            <Form>FrameCustom</Form>
+            <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="Sources\Frames\Frame.Pathes.pas">
             <Form>framePathes</Form>
+            <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="Sources\Frames\Frame.RegExpParameters.pas">
             <Form>frameRegExpParameters</Form>
+            <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="Sources\Frames\Frame.ResultView.pas">
             <Form>frameResultView</Form>
+            <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="Sources\Global.Resources.pas"/>
@@ -200,7 +206,8 @@
         <DCCReference Include="Sources\PDFiumLib\PdfiumCtrl.pas"/>
         <DCCReference Include="Sources\PDFiumLib\PdfiumLib.pas"/>
         <DCCReference Include="Sources\Performer.pas"/>
-        <DCCReference Include="Sources\Performer.Interfaces.pas"/>
+        <DCCReference Include="Sources\Publishers.pas"/>
+        <DCCReference Include="Sources\Publishers.Interfaces.pas"/>
         <DCCReference Include="Sources\Settings.pas">
             <Form>frmSettings</Form>
         </DCCReference>

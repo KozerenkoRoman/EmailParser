@@ -13,7 +13,7 @@ uses
 {$ENDREGION}
 
 type
-  TframePathes = class(TframeCustom)
+  TframePathes = class(TFrameCustom)
     OpenDialog: TFileOpenDialog;
     procedure aAddExecute(Sender: TObject);
     procedure aDeleteExecute(Sender: TObject);

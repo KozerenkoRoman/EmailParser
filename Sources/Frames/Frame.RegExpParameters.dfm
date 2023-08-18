@@ -5,7 +5,7 @@ inherited frameRegExpParameters: TframeRegExpParameters
   ExplicitHeight = 436
   inherited vstTree: TVirtualStringTree
     Width = 765
-    Height = 390
+    Height = 391
     Header.MainColumn = 1
     Images = DMImage.vil16
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toEditable, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toVariableNodeHeight, toFullRowDrag, toEditOnClick, toEditOnDblClick]

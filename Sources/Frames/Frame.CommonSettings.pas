@@ -13,23 +13,27 @@ uses
 {$ENDREGION}
 
 type
-  TframeCommonSettings = class(TframeCustom)
-    aAttachmentsMain      : TAction;
-    aAttachmentsSub       : TAction;
-    aPathForAttachments   : TAction;
-    cbDeleteAttachments   : TCheckBox;
-    cbLanguage            : TComboBox;
-    dlgAttachmments       : TFileOpenDialog;
-    edtExtensions         : TEdit;
-    edtPathForAttachments : TButtonedEdit;
-    grdCommonParams       : TGridPanel;
-    lblDeleteAttachments  : TLabel;
-    lblExtensions         : TLabel;
-    lblLanguage           : TLabel;
-    lblPathForAttachments : TLabel;
-    miAttachmentsMain     : TMenuItem;
-    miAttachmentsSub      : TMenuItem;
-    miPathForAttachments  : TMenuItem;
+  TframeCommonSettings = class(TFrameCustom)
+    aAttachmentsMain       : TAction;
+    aAttachmentsSub        : TAction;
+    aPathForAttachments    : TAction;
+    cbDeleteAttachments    : TCheckBox;
+    cbLanguage             : TComboBox;
+    cbParseBodyAsHTML      : TCheckBox;
+    cbUseLastGroup         : TCheckBox;
+    dlgAttachmments        : TFileOpenDialog;
+    edtExtensions          : TEdit;
+    edtPathForAttachments  : TButtonedEdit;
+    grdCommonParams        : TGridPanel;
+    lblDeleteAttachments   : TLabel;
+    lblExtensions          : TLabel;
+    lblLanguage            : TLabel;
+    lblParseBodyAsHTML     : TLabel;
+    lblPathForAttachments  : TLabel;
+    lblUseLastGroup        : TLabel;
+    miAttachmentsMain      : TMenuItem;
+    miAttachmentsSub       : TMenuItem;
+    miPathForAttachments   : TMenuItem;
     procedure aAttachmentsMainExecute(Sender: TObject);
     procedure aAttachmentsSubExecute(Sender: TObject);
     procedure aPathForAttachmentsExecute(Sender: TObject);
@@ -80,7 +84,9 @@ begin
   lblDeleteAttachments.Caption  := TLang.Lang.Translate('DeleteAttachments');
   lblExtensions.Caption         := TLang.Lang.Translate('FileExtensions');
   lblLanguage.Caption           := TLang.Lang.Translate('Language');
+  lblParseBodyAsHTML.Caption    := TLang.Lang.Translate('ParseBodyAsHTML');
   lblPathForAttachments.Caption := TLang.Lang.Translate('PathForAttachments');
+  lblUseLastGroup.Caption       := TLang.Lang.Translate('UseLastGroup');
 end;
 
 procedure TframeCommonSettings.Deinitialize;
@@ -99,16 +105,20 @@ begin
   cbLanguage.Items.Clear;
   for var lang := Low(TLanguage) to High(TLanguage) do
     cbLanguage.Items.Add(lang.ToString);
-  cbDeleteAttachments.Checked := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
-  cbLanguage.ItemIndex        := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0);
-  edtExtensions.Text          := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
-  edtPathForAttachments.Text  := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
+  cbDeleteAttachments.Checked   := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
+  cbLanguage.ItemIndex          := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0);
+  cbParseBodyAsHTML.Checked     := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'ParseBodyAsHTML', False);
+  edtExtensions.Text            := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
+  cbUseLastGroup.Checked        := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'UseLastGroup', True);
+  edtPathForAttachments.Text    := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
 end;
 
 procedure TframeCommonSettings.SaveToXML;
 begin
   inherited;
   TGeneral.XMLParams.WriteBool(C_SECTION_MAIN, 'DeleteAttachments', cbDeleteAttachments.Checked, lblDeleteAttachments.Caption);
+  TGeneral.XMLParams.WriteBool(C_SECTION_MAIN, 'ParseBodyAsHTML', cbParseBodyAsHTML.Checked, lblParseBodyAsHTML.Caption);
+  TGeneral.XMLParams.WriteBool(C_SECTION_MAIN, 'UseLastGroup', cbUseLastGroup.Checked, lblUseLastGroup.Caption);
   TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'Language', cbLanguage.ItemIndex, cbLanguage.Text);
   TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'Extensions', edtExtensions.Text, lblExtensions.Caption);
   TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'PathForAttachments', edtPathForAttachments.Text, lblPathForAttachments.Caption);

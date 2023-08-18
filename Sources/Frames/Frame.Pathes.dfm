@@ -1,11 +1,11 @@
 inherited framePathes: TframePathes
-  Width = 848
+  Width = 711
   Height = 436
-  ExplicitWidth = 848
+  ExplicitWidth = 711
   ExplicitHeight = 436
   inherited vstTree: TVirtualStringTree
-    Width = 848
-    Height = 390
+    Width = 711
+    Height = 391
     Colors.GridLineColor = cl3DLight
     Header.MainColumn = 3
     Images = DMImage.vil16
@@ -20,7 +20,7 @@ inherited framePathes: TframePathes
     OnGetImageIndex = vstTreeGetImageIndex
     OnNewText = vstTreeNewText
     ExplicitWidth = 848
-    ExplicitHeight = 390
+    ExplicitHeight = 391
     Columns = <
       item
         BiDiMode = bdLeftToRight
@@ -53,7 +53,7 @@ inherited framePathes: TframePathes
       end>
   end
   inherited tbMain: TToolBar
-    Width = 842
+    Width = 705
     ExplicitWidth = 842
   end
   inherited alFrame: TActionList

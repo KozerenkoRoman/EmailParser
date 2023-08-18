@@ -1,19 +1,13 @@
 inherited frameCommonSettings: TframeCommonSettings
   Width = 858
   Height = 555
-  ExplicitWidth = 858
-  ExplicitHeight = 555
   inherited vstTree: TVirtualStringTree
-    Left = 792
-    Top = 504
-    Width = 23
-    Height = 25
+    Left = 200
+    Top = 200
+    Width = 5
+    Height = 5
     Align = alNone
     Visible = False
-    ExplicitLeft = 792
-    ExplicitTop = 504
-    ExplicitWidth = 23
-    ExplicitHeight = 25
   end
   inherited tbMain: TToolBar
     Width = 852
@@ -23,18 +17,20 @@ inherited frameCommonSettings: TframeCommonSettings
     end
   end
   object grdCommonParams: TGridPanel [2]
-    Left = 0
-    Top = 46
-    Width = 858
-    Height = 509
     Align = alClient
-    BevelKind = bkFlat
     BevelOuter = bvNone
     Color = clWindow
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentBackground = False
+    ParentFont = False	
     ColumnCollection = <
       item
         SizeStyle = ssAbsolute
-        Value = 250.000000000000000000
+        Value = 320.000000000000000000
       end
       item
         Value = 100.000000000000000000
@@ -79,15 +75,28 @@ inherited frameCommonSettings: TframeCommonSettings
         Column = 1
         Control = cbDeleteAttachments
         Row = 3
+      end
+      item
+        Column = 0
+        Control = lblParseBodyAsHTML
+        Row = 4
+      end
+      item
+        Column = 1
+        Control = cbParseBodyAsHTML
+        Row = 4
+      end
+      item
+        Column = 0
+        Control = lblUseLastGroup
+        Row = 5
+      end
+      item
+        Column = 1
+        Control = cbUseLastGroup
+        Row = 5
       end>
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentBackground = False
-    ParentFont = False
-    RowCollection = <
+     RowCollection = <
       item
         SizeStyle = ssAbsolute
         Value = 35.000000000000000000
@@ -107,67 +116,61 @@ inherited frameCommonSettings: TframeCommonSettings
       item
         SizeStyle = ssAbsolute
         Value = 35.000000000000000000
+      end
+      item
+        SizeStyle = ssAbsolute
+        Value = 35.000000000000000000
+      end
+      item
+        SizeStyle = ssAbsolute
+        Value = 35.000000000000000000
+      end
+      item
+        Value = 100.000000000000000000
       end>
     TabOrder = 2
     object lblLanguage: TLabel
       AlignWithMargins = True
-      Left = 190
-      Top = 3
-      Width = 57
-      Height = 29
-      Align = alRight
+ 
+      Align = alClient
+      Alignment = taRightJustify
       Caption = 'Language'
       Layout = tlCenter
-      ExplicitHeight = 17
+   
     end
     object lblExtensions: TLabel
       AlignWithMargins = True
-      Left = 105
-      Top = 38
-      Width = 142
-      Height = 29
-      Align = alRight
+
+      Align = alClient
+      Alignment = taRightJustify
       Caption = 'File extensions to search'
       Layout = tlCenter
-      ExplicitHeight = 17
+
     end
     object lblPathForAttachments: TLabel
       AlignWithMargins = True
-      Left = 80
-      Top = 73
-      Width = 167
-      Height = 29
-      Align = alRight
+
+      Align = alClient
+      Alignment = taRightJustify
       Caption = 'Paths for saving attachments'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
       Layout = tlCenter
-      ExplicitHeight = 17
+  
     end
     object lblDeleteAttachments: TLabel
       AlignWithMargins = True
-      Left = 56
+      Left = 3
       Top = 108
-      Width = 191
+      Width = 314
       Height = 29
-      Align = alRight
+      Align = alClient
+      Alignment = taRightJustify
       Caption = 'Delete attachments after analysis'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
       Layout = tlCenter
-      ExplicitHeight = 17
+
     end
     object cbLanguage: TComboBox
       AlignWithMargins = True
-      Left = 260
+      Left = 330
       Top = 3
       Width = 134
       Height = 25
@@ -178,7 +181,7 @@ inherited frameCommonSettings: TframeCommonSettings
     end
     object edtExtensions: TEdit
       AlignWithMargins = True
-      Left = 260
+      Left = 330
       Top = 38
       Width = 50
       Height = 29
@@ -190,7 +193,7 @@ inherited frameCommonSettings: TframeCommonSettings
     end
     object edtPathForAttachments: TButtonedEdit
       AlignWithMargins = True
-      Left = 260
+      Left = 330
       Top = 73
       Width = 436
       Height = 29
@@ -208,13 +211,61 @@ inherited frameCommonSettings: TframeCommonSettings
     end
     object cbDeleteAttachments: TCheckBox
       AlignWithMargins = True
-      Left = 260
+      Left = 330
       Top = 108
       Width = 50
       Height = 29
       Margins.Left = 10
       Align = alLeft
       TabOrder = 3
+    end
+    object lblParseBodyAsHTML: TLabel
+      AlignWithMargins = True
+      Left = 3
+      Top = 143
+      Width = 314
+      Height = 29
+      Align = alClient
+      Alignment = taRightJustify
+      Caption = 'Parse body with RegExp in HTML-text'
+      Layout = tlCenter
+  
+    end
+    object cbParseBodyAsHTML: TCheckBox
+      AlignWithMargins = True
+      Left = 330
+      Top = 143
+      Width = 50
+      Height = 29
+      Margins.Left = 10
+      Align = alLeft
+      TabOrder = 4
+    end
+    object lblUseLastGroup: TLabel
+      AlignWithMargins = True
+      Left = 5
+      Top = 180
+      Width = 310
+      Height = 25
+      Margins.Left = 5
+      Margins.Top = 5
+      Margins.Right = 5
+      Margins.Bottom = 5
+      Align = alClient
+      Alignment = taRightJustify
+      Caption = 'Use only the last result group'
+      Layout = tlCenter
+ 
+    end
+    object cbUseLastGroup: TCheckBox
+      AlignWithMargins = True
+      Left = 330
+      Top = 178
+      Width = 50
+      Height = 29
+      Margins.Left = 10
+      Align = alLeft
+      TabOrder = 5
     end
   end
   inherited alFrame: TActionList
@@ -256,13 +307,13 @@ inherited frameCommonSettings: TframeCommonSettings
   end
   inherited pmFrame: TPopupMenu
     Top = 224
-    object miAttachmentsMain: TMenuItem [3]
+    object miAttachmentsMain: TMenuItem
       Action = aAttachmentsMain
     end
-    object miAttachmentsSub: TMenuItem [4]
+    object miAttachmentsSub: TMenuItem
       Action = aAttachmentsSub
     end
-    object miPathForAttachments: TMenuItem [5]
+    object miPathForAttachments: TMenuItem
       Action = aPathForAttachments
     end
   end

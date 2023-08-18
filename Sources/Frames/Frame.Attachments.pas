@@ -14,7 +14,7 @@ uses
 {$ENDREGION}
 
 type
-  TframeAttachments = class(TframeCustom)
+  TframeAttachments = class(TFrameCustom)
     aOpenAttachFile      : TAction;
     aOpenParsedText      : TAction;
     btnOpenAttachFile    : TToolButton;

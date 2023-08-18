@@ -1,8 +1,8 @@
 object InformationDialog: TInformationDialog
   Left = 0
   Top = 0
-  ClientHeight = 480
-  ClientWidth = 486
+  ClientHeight = 479
+  ClientWidth = 482
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,10 +14,12 @@ object InformationDialog: TInformationDialog
   object pnlMain: TPanel
     Left = 0
     Top = 0
-    Width = 486
-    Height = 480
+    Width = 482
+    Height = 479
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 486
+    ExplicitHeight = 480
     object wbMessage: TWebBrowser
       Left = 1
       Top = 1
@@ -51,10 +53,10 @@ object InformationDialog: TInformationDialog
       ParentBackground = False
       TabOrder = 1
       DesignSize = (
-        484
+        480
         42)
       object btnSave: TBitBtn
-        Left = 261
+        Left = 257
         Top = 1
         Width = 110
         Height = 40
@@ -70,9 +72,10 @@ object InformationDialog: TInformationDialog
         Images = DMImage.vil32
         ParentFont = False
         TabOrder = 0
+        ExplicitLeft = 261
       end
       object btnOk: TBitBtn
-        Left = 374
+        Left = 370
         Top = 1
         Width = 110
         Height = 40
@@ -87,6 +90,7 @@ object InformationDialog: TInformationDialog
         Images = DMImage.vil32
         ParentFont = False
         TabOrder = 1
+        ExplicitLeft = 374
       end
     end
   end
