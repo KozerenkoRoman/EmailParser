@@ -3,7 +3,6 @@
 interface
 
 {$REGION 'Region uses'}
-
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Translate.Lang, Vcl.ExtCtrls, DebugWriter,
@@ -33,14 +32,14 @@ type
     framePathes           : TframePathes;
     frameRegExpParameters : TframeRegExpParameters;
     frameResultView       : TframeResultView;
+    imgMenu               : TImage;
     lblTitle              : TLabel;
     pnlCard               : TCardPanel;
+    pnlLeft               : TPanel;
     pnlTop                : TPanel;
     sbMain                : TStatusBar;
     splView               : TSplitView;
     srchBox               : TSearchBox;
-    pnlLeft: TPanel;
-    imgMenu: TImage;
     procedure aEditCommonParametersExecute(Sender: TObject);
     procedure aEditRegExpParametersExecute(Sender: TObject);
     procedure aPathsFindFilesExecute(Sender: TObject);
@@ -80,6 +79,21 @@ implementation
 
 { TfrmSettings }
 
+procedure TfrmSettings.FormCreate(Sender: TObject);
+begin
+  inherited;
+  CreateProgressBar;
+  TPublishers.ProgressPublisher.Subscribe(Self);
+end;
+
+procedure TfrmSettings.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  inherited;
+  FreeAndNil(FProgressBar);
+  Deinitialize;
+  TPublishers.ProgressPublisher.Unsubscribe(Self);
+end;
+
 procedure TfrmSettings.Initialize;
 begin
   LoadFormPosition;
@@ -92,6 +106,15 @@ begin
   catMenuItems.HotButtonColor := C_TOP_COLOR;
   catMenuItems.Height         := 20;
   Translate;
+end;
+
+procedure TfrmSettings.Deinitialize;
+begin
+  frameRegExpParameters.Deinitialize;
+  framePathes.Deinitialize;
+  frameResultView.Deinitialize;
+  frameCommonSettings.Deinitialize;
+  SaveFormPosition;
 end;
 
 procedure TfrmSettings.Translate;
@@ -109,30 +132,6 @@ begin
   lblTitle.Caption := pnlCard.ActiveCard.Caption;
 end;
 
-procedure TfrmSettings.Deinitialize;
-begin
-  frameRegExpParameters.Deinitialize;
-  framePathes.Deinitialize;
-  frameResultView.Deinitialize;
-  frameCommonSettings.Deinitialize;
-  SaveFormPosition;
-end;
-
-procedure TfrmSettings.FormCreate(Sender: TObject);
-begin
-  inherited;
-  CreateProgressBar;
-  TPublishers.ProgressPublisher.Subscribe(Self);
-end;
-
-procedure TfrmSettings.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  inherited;
-  FreeAndNil(FProgressBar);
-  Deinitialize;
-  TPublishers.ProgressPublisher.Unsubscribe(Self);
-end;
-
 function TfrmSettings.GetIdentityName: string;
 begin
   Result := C_IDENTITY_NAME;
@@ -141,7 +140,9 @@ end;
 procedure TfrmSettings.FormResize(Sender: TObject);
 begin
   inherited;
-  FProgressBar.Width := sbMain.Width - 20;
+  if not Application.Terminated then
+    if Assigned(FProgressBar) then
+      FProgressBar.Width := sbMain.Width - 20;
 end;
 
 procedure TfrmSettings.aToggleSplitPanelExecute(Sender: TObject);

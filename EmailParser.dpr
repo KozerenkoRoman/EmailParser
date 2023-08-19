@@ -9,7 +9,7 @@ uses
   System.SysUtils,
   ArrayHelper in 'Sources\Common\ArrayHelper.pas',
   Column.Settings in 'Sources\Column.Settings.pas' {frmColumnSettings},
-  Column.Types in 'Sources\Column.Types.pas',
+  Column.Types in 'Sources\Common\Column.Types.pas',
   Common.Types in 'Sources\Common\Common.Types.pas',
   CommonForms in 'Sources\CommonForms.pas' {CommonForm},
   DaImages in 'Sources\DataModules\DaImages.pas' {DMImage: TDataModule},
@@ -27,7 +27,7 @@ uses
   HtmlConsts in 'Sources\Common\HtmlConsts.pas',
   HtmlLib in 'Sources\Common\HtmlLib.pas',
   HtmlParserEx in 'Sources\Common\HtmlParserEx.pas',
-  InformationDialog in 'Sources\InformationDialog.pas' {InformationDialog},
+  InformationDialog in 'Sources\Common\InformationDialog.pas' {TInformationDialog},
   MailMessage.Helper in 'Sources\CleverInternetSuite\MailMessage.Helper.pas',
   MessageDialog in 'Sources\Common\MessageDialog.pas',
   PdfiumCore in 'Sources\PDFiumLib\PdfiumCore.pas',
@@ -36,6 +36,7 @@ uses
   Performer in 'Sources\Performer.pas',
   Publishers in 'Sources\Publishers.pas',
   Publishers.Interfaces in 'Sources\Publishers.Interfaces.pas',
+  RegExpEditor in 'Sources\RegExpEditor.pas' {frmRegExpEditor},
   Settings in 'Sources\Settings.pas' {frmSettings},
   SplashScreen in 'Sources\SplashScreen.pas' {frmSplashScreen},
   Translate.Lang in 'Sources\Translate\Translate.Lang.pas',
@@ -52,22 +53,21 @@ uses
 
 begin
   // ReportMemoryLeaksOnShutdown := {$IFDEF DEBUG} True {$ELSE} False {$ENDIF DEBUG};
-  PDFiumDllDir := ExtractFilePath(ParamStr(0)) + {$IFDEF CPUX64}'x64' {$ELSE} 'x86' {$ENDIF CPUX64};
+  PDFiumDllDir := ExtractFilePath(ParamStr(0)) + {$IFDEF CPUX64} '' {$ELSE} '' {$ENDIF CPUX64};
   IsMultiThread := True;
   try
     Application.Initialize;
-    Application.MainFormOnTaskbar := True;
+    Application.Title := 'Email Parser';
     try
-      {$IFDEF RELEASE}
+{$IFDEF RELEASE}
       TfrmSplashScreen.ShowSplashScreen;
-      {$ENDIF}
+{$ENDIF}
       Application.CreateForm(TDMImage, DMImage);
-  Application.CreateForm(TfrmSettings, frmSettings);
-  frmSettings.Initialize;
+      Application.CreateForm(TfrmSettings, frmSettings);
+      frmSettings.Initialize;
     finally
       TfrmSplashScreen.HideSplashScreen;
     end;
-    Application.ShowMainForm := True;
     Application.Run;
   except
     on E: Exception do

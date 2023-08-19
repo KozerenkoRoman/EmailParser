@@ -1,8 +1,8 @@
 object InformationDialog: TInformationDialog
   Left = 0
   Top = 0
-  ClientHeight = 479
-  ClientWidth = 482
+  ClientHeight = 478
+  ClientWidth = 478
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,17 +14,15 @@ object InformationDialog: TInformationDialog
   object pnlMain: TPanel
     Left = 0
     Top = 0
-    Width = 482
-    Height = 479
+    Width = 478
+    Height = 478
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 486
-    ExplicitHeight = 480
     object wbMessage: TWebBrowser
       Left = 1
       Top = 1
-      Width = 484
-      Height = 436
+      Width = 476
+      Height = 434
       Margins.Left = 0
       Margins.Top = 0
       Margins.Right = 0
@@ -35,6 +33,7 @@ object InformationDialog: TInformationDialog
       ShowHint = False
       TabOrder = 0
       OnBeforeNavigate2 = wbMessageBeforeNavigate2
+      ExplicitWidth = 484
       ExplicitHeight = 439
       ControlData = {
         4C00000006320000102D00000000000000000000000000000000000000000000
@@ -45,18 +44,18 @@ object InformationDialog: TInformationDialog
     end
     object pnlBottom: TPanel
       Left = 1
-      Top = 437
-      Width = 484
+      Top = 435
+      Width = 476
       Height = 42
       Align = alBottom
       BevelOuter = bvNone
       ParentBackground = False
       TabOrder = 1
       DesignSize = (
-        480
+        476
         42)
       object btnSave: TBitBtn
-        Left = 257
+        Left = 249
         Top = 1
         Width = 110
         Height = 40
@@ -75,7 +74,7 @@ object InformationDialog: TInformationDialog
         ExplicitLeft = 261
       end
       object btnOk: TBitBtn
-        Left = 370
+        Left = 362
         Top = 1
         Width = 110
         Height = 40

@@ -69,7 +69,8 @@ begin
   SysMenu := GetSystemMenu(Handle, False);
   AppendMenu(SysMenu, MF_SEPARATOR, 0, '');
   AppendMenu(SysMenu, MF_STRING, SC_SYS_INFO, PWideChar(C_SYS_SHOW_CLASS_INFO));
-  Caption := Format(rsCaption, [Caption, TVersionInfo.GetAppVersion]);
+  Caption := Format(rsCaption, [Application.Title, TVersionInfo.GetAppVersion]);
+  ShowHint := True;
   PostMessage(Self.Handle, WM_AFTER_CREATE, 0, 0);
 end;
 

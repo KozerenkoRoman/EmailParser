@@ -12,6 +12,7 @@ resourcestring
   C_ATTACHMENTS_SUB_DIR   = '#Sub#Attachments';
   C_IDENTITY_COLUMNS_NAME = '.Columns';
   C_SECTION_MAIN          = 'Main';
+  C_SECTION_TEMPLATE_SETS = 'TemplateSets';
 
 implementation
 

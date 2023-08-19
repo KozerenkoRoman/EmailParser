@@ -17,6 +17,7 @@ type
     aAdd              : TAction;
     aColumnSettings   : TAction;
     aDelete           : TAction;
+    aEdit             : TAction;
     aExportToCSV      : TAction;
     aExportToExcel    : TAction;
     alFrame           : TActionList;
@@ -26,6 +27,7 @@ type
     btnAdd            : TToolButton;
     btnColumnSettings : TToolButton;
     btnDelete         : TToolButton;
+    btnEdit           : TToolButton;
     btnExportToCSV    : TToolButton;
     btnExportToExcel  : TToolButton;
     btnPrint          : TToolButton;
@@ -92,13 +94,15 @@ end;
 
 procedure TFrameCustom.Translate;
 begin
-  aAdd.Hint           := TLang.Lang.Translate('Add');
-  aDelete.Hint        := TLang.Lang.Translate('Delete');
-  aExportToCSV.Hint   := TLang.Lang.Translate('ExportToCSV');
-  aExportToExcel.Hint := TLang.Lang.Translate('ExportToExcel');
-  aPrint.Hint         := TLang.Lang.Translate('Print');
-  aRefresh.Hint       := TLang.Lang.Translate('Refresh');
-  aSave.Hint          := TLang.Lang.Translate('Save');
+  aAdd.Hint            := TLang.Lang.Translate('Add');
+  aColumnSettings.Hint := TLang.Lang.Translate('ColumnSettings');
+  aDelete.Hint         := TLang.Lang.Translate('Delete');
+  aEdit.Hint           := TLang.Lang.Translate('Edit');
+  aExportToCSV.Hint    := TLang.Lang.Translate('ExportToCSV');
+  aExportToExcel.Hint  := TLang.Lang.Translate('ExportToExcel');
+  aPrint.Hint          := TLang.Lang.Translate('Print');
+  aRefresh.Hint        := TLang.Lang.Translate('Refresh');
+  aSave.Hint           := TLang.Lang.Translate('Save');
 end;
 
 procedure TFrameCustom.Deinitialize;

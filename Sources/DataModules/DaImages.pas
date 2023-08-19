@@ -10,11 +10,11 @@ uses
 
 type
   TDMImage = class(TDataModule)
-    ImCollection16: TImageCollection;
-    ImCollection32: TImageCollection;
-    vil16: TVirtualImageList;
-    vil32: TVirtualImageList;
-    ilCustomCheckImages: TImageList;
+    ilCustomCheckImages : TImageList;
+    ImCollection16      : TImageCollection;
+    ImCollection32      : TImageCollection;
+    vil16               : TVirtualImageList;
+    vil32               : TVirtualImageList;
   private
     { Private declarations }
   public
@@ -27,6 +27,7 @@ var
 implementation
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
+
 {$R *.dfm}
 
 end.

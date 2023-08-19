@@ -62,8 +62,13 @@ object FrameCustom: TFrameCustom
       Margins.Bottom = 8
       Action = aAdd
     end
-    object btnDelete: TToolButton
+    object btnEdit: TToolButton
       Left = 39
+      Top = 0
+      Action = aEdit
+    end
+    object btnDelete: TToolButton
+      Left = 78
       Top = 0
       Margins.Left = 8
       Margins.Top = 8
@@ -72,7 +77,7 @@ object FrameCustom: TFrameCustom
       Action = aDelete
     end
     object btnSave: TToolButton
-      Left = 78
+      Left = 117
       Top = 0
       Margins.Left = 8
       Margins.Top = 8
@@ -81,7 +86,7 @@ object FrameCustom: TFrameCustom
       Action = aSave
     end
     object btnSep01: TToolButton
-      Left = 117
+      Left = 156
       Top = 0
       Width = 8
       Margins.Left = 8
@@ -93,7 +98,7 @@ object FrameCustom: TFrameCustom
       Style = tbsSeparator
     end
     object btnRefresh: TToolButton
-      Left = 125
+      Left = 164
       Top = 0
       Margins.Left = 8
       Margins.Top = 8
@@ -102,7 +107,7 @@ object FrameCustom: TFrameCustom
       Action = aRefresh
     end
     object btnSep02: TToolButton
-      Left = 164
+      Left = 203
       Top = 0
       Width = 8
       Margins.Left = 8
@@ -114,7 +119,7 @@ object FrameCustom: TFrameCustom
       Style = tbsSeparator
     end
     object btnExportToExcel: TToolButton
-      Left = 172
+      Left = 211
       Top = 0
       Margins.Left = 8
       Margins.Top = 8
@@ -123,7 +128,7 @@ object FrameCustom: TFrameCustom
       Action = aExportToExcel
     end
     object btnExportToCSV: TToolButton
-      Left = 211
+      Left = 250
       Top = 0
       Margins.Left = 8
       Margins.Top = 8
@@ -132,7 +137,7 @@ object FrameCustom: TFrameCustom
       Action = aExportToCSV
     end
     object btnPrint: TToolButton
-      Left = 250
+      Left = 289
       Top = 0
       Margins.Left = 8
       Margins.Top = 8
@@ -141,7 +146,7 @@ object FrameCustom: TFrameCustom
       Action = aPrint
     end
     object btnSep03: TToolButton
-      Left = 289
+      Left = 328
       Top = 0
       Width = 8
       Margins.Left = 5
@@ -154,7 +159,7 @@ object FrameCustom: TFrameCustom
       Style = tbsSeparator
     end
     object btnColumnSettings: TToolButton
-      Left = 297
+      Left = 336
       Top = 0
       Margins.Left = 5
       Margins.Top = 5
@@ -165,8 +170,8 @@ object FrameCustom: TFrameCustom
   end
   object alFrame: TActionList
     Images = DMImage.vil32
-    Left = 328
-    Top = 160
+    Left = 104
+    Top = 168
     object aExportToExcel: TAction
       Hint = 'Export To Excel'
       ImageIndex = 16
@@ -210,6 +215,11 @@ object FrameCustom: TFrameCustom
       ImageIndex = 63
       ImageName = 'PageSetup_32x32'
       OnExecute = aColumnSettingsExecute
+    end
+    object aEdit: TAction
+      ImageIndex = 1
+      ImageName = 'Edit_32x32'
+      Visible = False
     end
   end
   object pmFrame: TPopupMenu

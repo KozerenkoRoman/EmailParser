@@ -18,8 +18,8 @@ type
   end;
 
   TStringObject = class(TObject)
-    Id: Integer;
-    StringValue: string;
+    Id          : Integer;
+    StringValue : string;
     constructor Create(const aId: Integer; const aStringValue: string); overload;
     constructor Create(const aStringValue: string); overload;
   end;

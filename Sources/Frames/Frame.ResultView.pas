@@ -161,12 +161,23 @@ var
   Data: PResultData;
 begin
   vstTree.BeginUpdate;
-
+  FRegExpList := TGeneral.GetRegExpParametersList;
   while (C_FIXED_COLUMNS < vstTree.Header.Columns.Count) do
     vstTree.Header.Columns.Delete(C_FIXED_COLUMNS);
 
+  if (FRegExpList.Count + C_FIXED_COLUMNS <> vstTree.Header.Columns.Count) then
+    if (vstTree.RootNode.ChildCount > 0) then
+    begin
+      Node := vstTree.RootNode.FirstChild;
+      while Assigned(Node) do
+      begin
+        Data := Node.GetData;
+        Data.Matches.Count := FRegExpList.Count;
+        Node := Node.NextSibling;
+      end;
+    end;
+
   try
-    FRegExpList := TGeneral.GetRegExpParametersList;
     for var item in FRegExpList do
     begin
       Column := vstTree.Header.Columns.Add;
@@ -178,18 +189,6 @@ begin
       Column.Options          := Column.Options + [coVisible];
     end;
     TStoreHelper.LoadFromXML(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
-
-    if (FRegExpList.Count + C_FIXED_COLUMNS <> vstTree.Header.Columns.Count) then
-      if (vstTree.RootNode.ChildCount > 0) then
-      begin
-        Node := vstTree.RootNode.FirstChild;
-        while Assigned(Node) do
-        begin
-          Data := Node.GetData;
-          Data.Matches.Count := FRegExpList.Count;
-          Node := Node.NextSibling;
-        end;
-      end;
   finally
     vstTree.EndUpdate;
   end;
@@ -239,7 +238,8 @@ begin
     COL_CONTENT_TYPE:
       Result := CompareText(Data1^.ContentType, Data2^.ContentType);
 //  else
-//    Result := CompareText(Data1^.Matches.Items[Column - C_FIXED_COLUMNS], Data2^.Matches.Items[Column - C_FIXED_COLUMNS]);
+//    if (Data1^.Matches.Count >= Column - C_FIXED_COLUMNS) then
+//      Result := CompareText(Data1^.Matches.Items[Column - C_FIXED_COLUMNS], Data2^.Matches.Items[Column - C_FIXED_COLUMNS]);
   end;
 end;
 
@@ -312,7 +312,8 @@ begin
     COL_CONTENT_TYPE:
       CellText := Data^.ContentType;
   else
-    CellText := Data^.Matches.Items[Column - C_FIXED_COLUMNS]
+    if (Data^.Matches.Count >= Column - C_FIXED_COLUMNS) then
+      CellText := Data^.Matches.Items[Column - C_FIXED_COLUMNS];
   end;
 end;
 

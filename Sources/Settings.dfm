@@ -4,7 +4,6 @@ inherited frmSettings: TfrmSettings
   ClientWidth = 916
   Constraints.MinHeight = 500
   Constraints.MinWidth = 600
-  DoubleBuffered = True
   Position = poScreenCenter
   ShowHint = True
   OnClose = FormClose
@@ -16,7 +15,7 @@ inherited frmSettings: TfrmSettings
   object splView: TSplitView
     Left = 0
     Top = 41
-    Width = 217
+    Width = 200
     Height = 514
     Color = clMedGray
     OpenedWidth = 200
@@ -26,7 +25,7 @@ inherited frmSettings: TfrmSettings
     object catMenuItems: TCategoryButtons
       Left = 0
       Top = 0
-      Width = 217
+      Width = 200
       Height = 514
       Align = alClient
       BevelInner = bvNone
@@ -64,7 +63,7 @@ inherited frmSettings: TfrmSettings
       RegularButtonColor = clNone
       SelectedButtonColor = clNone
       TabOrder = 0
-      ExplicitHeight = 193
+      ExplicitHeight = 513
     end
   end
   object pnlTop: TPanel
@@ -77,6 +76,7 @@ inherited frmSettings: TfrmSettings
     Color = 1986047
     ParentBackground = False
     TabOrder = 1
+    ExplicitWidth = 912
     DesignSize = (
       916
       41)
@@ -99,7 +99,7 @@ inherited frmSettings: TfrmSettings
       ExplicitHeight = 19
     end
     object srchBox: TSearchBox
-      Left = 744
+      Left = 720
       Top = 10
       Width = 159
       Height = 25
@@ -112,7 +112,7 @@ inherited frmSettings: TfrmSettings
       ParentFont = False
       TabOrder = 0
       OnInvokeSearch = srchBoxInvokeSearch
-      ExplicitLeft = 740
+      ExplicitLeft = 716
     end
     object pnlLeft: TPanel
       Left = 0
@@ -142,9 +142,9 @@ inherited frmSettings: TfrmSettings
     end
   end
   object pnlCard: TCardPanel
-    Left = 217
+    Left = 200
     Top = 41
-    Width = 699
+    Width = 716
     Height = 514
     Align = alClient
     ActiveCard = crdPathsToFindScripts
@@ -152,58 +152,44 @@ inherited frmSettings: TfrmSettings
     object crdRegExpParameters: TCard
       Left = 1
       Top = 1
-      Width = 697
+      Width = 714
       Height = 512
       Caption = 'crdRegExpParameters'
       CardIndex = 0
       TabOrder = 0
       inline frameRegExpParameters: TframeRegExpParameters
-        Left = 0
-        Top = 0
-        Width = 697
-        Height = 512
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 697
-        ExplicitHeight = 512
         inherited vstTree: TVirtualStringTree
-          Width = 697
-          Height = 467
-          ExplicitWidth = 697
-          ExplicitHeight = 467
         end
         inherited tbMain: TToolBar
-          Width = 691
-          ExplicitWidth = 691
+          Width = 708
+          ExplicitWidth = 708
+        end
+        inherited tbSettings: TToolBar
+          Width = 708
+          ExplicitWidth = 708
         end
       end
     end
     object crdPathsToFindScripts: TCard
       Left = 1
       Top = 1
-      Width = 697
+      Width = 714
       Height = 512
       Caption = 'crdPathsToFindScripts'
       CardIndex = 1
       TabOrder = 1
       inline framePathes: TframePathes
-        Left = 0
-        Top = 0
-        Width = 697
-        Height = 512
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 697
-        ExplicitHeight = 512
+
         inherited vstTree: TVirtualStringTree
-          Width = 697
-          Height = 467
-          ExplicitWidth = 697
-          ExplicitHeight = 467
+
         end
         inherited tbMain: TToolBar
-          Width = 691
-          ExplicitWidth = 687
+          Width = 708
+          ExplicitWidth = 704
         end
         inherited pmFrame: TPopupMenu
           Left = 260
@@ -213,29 +199,23 @@ inherited frmSettings: TfrmSettings
     object crdCommonParams: TCard
       Left = 1
       Top = 1
-      Width = 697
+      Width = 714
       Height = 512
       Caption = 'crdCommonParams'
       CardIndex = 2
       TabOrder = 2
       inline frameCommonSettings: TframeCommonSettings
-        Left = 0
-        Top = 0
-        Width = 697
-        Height = 512
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 697
-        ExplicitHeight = 512
         inherited tbMain: TToolBar
-          Width = 691
-          ExplicitWidth = 691
+          Width = 708
+          ExplicitWidth = 708
           inherited btnSave: TToolButton
             Action = aSaveCommonSettings
           end
         end
         inherited grdCommonParams: TGridPanel
-          Width = 697
+          Width = 714
           Height = 467
           ControlCollection = <
             item
@@ -298,7 +278,7 @@ inherited frmSettings: TfrmSettings
               Control = frameCommonSettings.cbUseLastGroup
               Row = 5
             end>
-          ExplicitWidth = 697
+          ExplicitWidth = 714
           ExplicitHeight = 467
           inherited lblLanguage: TLabel
             ExplicitLeft = 260
@@ -318,59 +298,65 @@ inherited frmSettings: TfrmSettings
     object crdResultView: TCard
       Left = 1
       Top = 1
-      Width = 697
+      Width = 714
       Height = 512
       Caption = 'crdResultView'
       CardIndex = 3
       TabOrder = 3
       inline frameResultView: TframeResultView
-        Left = 0
-        Top = 0
-        Width = 697
-        Height = 512
-        Margins.Left = 0
-        Margins.Top = 0
-        Margins.Right = 0
-        Margins.Bottom = 0
         Align = alClient
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 0
-        ExplicitWidth = 697
-        ExplicitHeight = 512
         inherited splInfo: TSplitter
           Top = 228
-          Width = 697
+          Width = 714
           ExplicitTop = 345
-          ExplicitWidth = 714
+          ExplicitWidth = 718
         end
         inherited vstTree: TVirtualStringTree
-          Width = 697
-          Height = 189
-          ExplicitWidth = 697
-          ExplicitHeight = 189
+
         end
         inherited tbMain: TToolBar
-          Width = 697
-          ExplicitWidth = 697
+          Width = 708
+          ExplicitLeft = 3
+          ExplicitTop = 3
+          ExplicitWidth = 708
+          inherited btnSep04: TToolButton
+            Left = 375
+            ExplicitLeft = 375
+          end
+          inherited btnSearch: TToolButton
+            Left = 385
+            ExplicitLeft = 385
+          end
+          inherited btnBreak: TToolButton
+            Left = 424
+            ExplicitLeft = 424
+          end
+          inherited btnSep05: TToolButton
+            Left = 463
+            ExplicitLeft = 463
+          end
+          inherited btnOpenEmail: TToolButton
+            Left = 473
+            ExplicitLeft = 473
+          end
+          inherited btnOpenLogFile: TToolButton
+            Left = 512
+            ExplicitLeft = 512
+          end
         end
         inherited pcInfo: TPageControl
           Top = 232
-          Width = 697
+          Width = 714
           ExplicitTop = 232
-          ExplicitWidth = 697
+          ExplicitWidth = 714
           inherited tsPlainText: TTabSheet
             ExplicitTop = 25
-            ExplicitWidth = 689
+            ExplicitWidth = 706
             ExplicitHeight = 251
             inherited memTextPlain: TMemo
-              Width = 689
+              Width = 706
               Height = 251
-              ExplicitWidth = 689
+              ExplicitWidth = 706
               ExplicitHeight = 251
             end
           end
@@ -394,8 +380,21 @@ inherited frmSettings: TfrmSettings
               Height = 252
               ExplicitHeight = 252
               inherited vstTree: TVirtualStringTree
-                Height = 213
-                ExplicitHeight = 213
+
+              end
+              inherited tbMain: TToolBar
+                inherited btnSep04: TToolButton
+                  Left = 375
+                  ExplicitLeft = 375
+                end
+                inherited btnOpenAttachFile: TToolButton
+                  Left = 383
+                  ExplicitLeft = 383
+                end
+                inherited btnOpenParsedText: TToolButton
+                  Left = 422
+                  ExplicitLeft = 422
+                end
               end
             end
           end

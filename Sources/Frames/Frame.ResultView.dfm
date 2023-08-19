@@ -19,9 +19,8 @@ inherited frameResultView: TframeResultView
     ExplicitWidth = 671
   end
   inherited vstTree: TVirtualStringTree
-    Top = 39
     Width = 806
-    Height = 306
+    Height = 300
     Header.MainColumn = 0
     Images = DMImage.vil16
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toVariableNodeHeight, toFullRowDrag]
@@ -113,13 +112,7 @@ inherited frameResultView: TframeResultView
       end>
   end
   inherited tbMain: TToolBar
-    Left = 0
-    Top = 0
-    Width = 806
-    Margins.Left = 0
-    Margins.Top = 0
-    Margins.Right = 0
-    Margins.Bottom = 0
+    Width = 800
     ExplicitLeft = 0
     ExplicitTop = 0
     ExplicitWidth = 806

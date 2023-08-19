@@ -10,30 +10,49 @@ uses
   Global.Types, System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin,
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
-  Frame.Custom, System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Publishers;
+  Frame.Custom, System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Publishers,
+  VCLTee.TeCanvas, Global.Resources, Winapi.msxml, RegExpEditor;
 {$ENDREGION}
 
 type
   TframeRegExpParameters = class(TFrameCustom)
+    aDeleteSet        : TAction;
+    aSaveSet          : TAction;
+    aSaveSetAs        : TAction;
+    btnDeleteSet      : TToolButton;
+    btnSaveSet        : TToolButton;
+    cbSetOfTemplates  : TComboBox;
+    lblSetOfTemplates : TLabel;
+    miSaveSet         : TMenuItem;
+    miSaveSetAs       : TMenuItem;
+    pnlSettings       : TPanel;
+    tbSettings        : TToolBar;
     procedure aAddExecute(Sender: TObject);
     procedure aAddUpdate(Sender: TObject);
     procedure aDeleteExecute(Sender: TObject);
+    procedure aDeleteSetExecute(Sender: TObject);
     procedure aDeleteUpdate(Sender: TObject);
-    procedure aEditUpdate(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
+    procedure aSaveSetAsExecute(Sender: TObject);
+    procedure aSaveSetExecute(Sender: TObject);
+    procedure aSaveSetUpdate(Sender: TObject);
+    procedure cbSetOfTemplatesChange(Sender: TObject);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
     procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
+    procedure aEditExecute(Sender: TObject);
   private const
     COL_PARAM_NAME      = 0;
     COL_REGEXP_TEMPLATE = 1;
 
     C_IDENTITY_NAME = 'frameRegExpParameters';
   private
+    function SaveSetOfTemplate(const aSection, aName: string): string;
+    procedure RestoreSetOfTemplate(const aSection: string);
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
     function GetIdentityName: string; override;
@@ -51,6 +70,7 @@ type
 implementation
 
 {$R *.dfm}
+
 { TframeRegExpParameters }
 
 constructor TframeRegExpParameters.Create(AOwner: TComponent);
@@ -61,7 +81,9 @@ end;
 
 destructor TframeRegExpParameters.Destroy;
 begin
-
+  for var i := 0 to cbSetOfTemplates.Items.Count - 1 do
+    cbSetOfTemplates.Items.Objects[i].Free;
+  cbSetOfTemplates.Items.Clear;
   inherited;
 end;
 
@@ -73,6 +95,10 @@ end;
 procedure TframeRegExpParameters.Initialize;
 begin
   inherited Initialize;
+  tbSettings.ButtonHeight := C_ICON_SIZE;
+  tbSettings.ButtonWidth  := C_ICON_SIZE;
+  tbSettings.Height       := C_ICON_SIZE + 2;
+
   LoadFromXML;
   vstTree.FullExpand;
   Translate;
@@ -81,7 +107,11 @@ end;
 procedure TframeRegExpParameters.Translate;
 begin
   inherited;
-  vstTree.Header.Columns[COL_PARAM_NAME].Text      := TLang.Lang.Translate('ParameterName');
+  aSaveSet.Caption                                 := TLang.Lang.Translate('SaveAs');
+  aSaveSetAs.Caption                               := TLang.Lang.Translate('Save');
+  aDeleteSet.Hint                                  := TLang.Lang.Translate('Delete');
+  lblSetOfTemplates.Caption                        := TLang.Lang.Translate('SetOfTemplates');
+  vstTree.Header.Columns[COL_PARAM_NAME].Text      := TLang.Lang.Translate('TemplateName');
   vstTree.Header.Columns[COL_REGEXP_TEMPLATE].Text := TLang.Lang.Translate('RegExpTemplate');
 end;
 
@@ -152,10 +182,16 @@ begin
   TAction(Sender).Enabled := not vstTree.IsEmpty and Assigned(vstTree.FocusedNode);
 end;
 
-procedure TframeRegExpParameters.aEditUpdate(Sender: TObject);
+procedure TframeRegExpParameters.aEditExecute(Sender: TObject);
+var
+  Data: PRegExpData;
 begin
   inherited;
-  TAction(Sender).Enabled := not vstTree.IsEmpty;
+  if Assigned(vstTree.FocusedNode) then
+  begin
+    Data := vstTree.FocusedNode.GetData;
+    TfrmRegExpEditor.GetPattern(Data^.RegExpTemplate);
+  end;
 end;
 
 procedure TframeRegExpParameters.aRefreshExecute(Sender: TObject);
@@ -168,23 +204,40 @@ procedure TframeRegExpParameters.LoadFromXML;
 
   procedure LoadNode;
   var
-    arrData: TRegExpData;
-    Data: PRegExpData;
-    NewNode: PVirtualNode;
-    arrPath: TArrayRecord<TRegExpData>;
+    arrParams : TArrayRecord<TRegExpData>;
+    Data    : PRegExpData;
+    NewNode : PVirtualNode;
   begin
     inherited;
-    arrPath := TGeneral.GetRegExpParametersList;
-    for arrData in arrPath do
+    arrParams := TGeneral.GetRegExpParametersList;
+    for var Param in arrParams do
     begin
       NewNode := vstTree.AddChild(nil);
-      Data := NewNode.GetData;
-      Data^ := arrData;
+      Data    := NewNode.GetData;
+      Data^   := Param;
+    end;
+  end;
+
+  procedure LoadSetsOfTemplate;
+  var
+    arrSections: TArray<string>;
+    Name: string;
+  begin
+    for var i := 0 to cbSetOfTemplates.Items.Count - 1 do
+      cbSetOfTemplates.Items.Objects[i].Free;
+    cbSetOfTemplates.Items.Clear;
+    arrSections := TGeneral.XMLParams.ReadSection(C_SECTION_TEMPLATE_SETS);
+    for var Section in arrSections do
+    begin
+      if TGeneral.XMLParams.ReadAttributes(C_SECTION_TEMPLATE_SETS, Section) then
+        Name := TGeneral.XMLParams.Attributes.GetAttributeValue('Name', Section);
+      cbSetOfTemplates.Items.AddObject(Name, TStringObject.Create(Section));
     end;
   end;
 
 begin
   inherited;
+  LoadSetsOfTemplate;
   vstTree.BeginUpdate;
   try
     vstTree.Clear;
@@ -291,6 +344,154 @@ begin
     end;
   finally
     vstTree.EndUpdate;
+  end;
+end;
+
+procedure TframeRegExpParameters.aSaveSetExecute(Sender: TObject);
+var
+  str: TStringObject;
+begin
+  inherited;
+  if (cbSetOfTemplates.ItemIndex > -1) then
+  begin
+    str := TStringObject(cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex]);
+    SaveSetOfTemplate(str.StringValue, cbSetOfTemplates.Text);
+  end;
+end;
+
+procedure TframeRegExpParameters.aSaveSetUpdate(Sender: TObject);
+begin
+  inherited;
+  TAction(Sender).Enabled := (cbSetOfTemplates.ItemIndex > -1);
+end;
+
+procedure TframeRegExpParameters.cbSetOfTemplatesChange(Sender: TObject);
+begin
+  inherited;
+  if (cbSetOfTemplates.ItemIndex > -1) then
+    RestoreSetOfTemplate(TStringObject(cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex]).StringValue);
+end;
+
+procedure TframeRegExpParameters.aDeleteSetExecute(Sender: TObject);
+var
+  str: TStringObject;
+  xPath: string;
+begin
+  inherited;
+  if (cbSetOfTemplates.ItemIndex > -1) and
+    (TMessageDialog.ShowQuestion(Format(TLang.Lang.Translate('DeletePrompt'), [cbSetOfTemplates.Text])) = mrYes) then
+  begin
+    str := TStringObject(cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex]);
+    xPath := Concat(C_XPATH_SEPARATOR, TGeneral.XMLParams.RootNode, C_XPATH_SEPARATOR, C_SECTION_TEMPLATE_SETS, C_XPATH_SEPARATOR, str.StringValue);
+    TGeneral.XMLParams.DeleteKey(xPath);
+    TGeneral.XMLParams.Save;
+    cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex].Free;
+    cbSetOfTemplates.Items.Delete(cbSetOfTemplates.ItemIndex);
+    cbSetOfTemplates.ItemIndex := -1;
+  end;
+end;
+
+procedure TframeRegExpParameters.aSaveSetAsExecute(Sender: TObject);
+var
+  NewName: string;
+  Section: string;
+begin
+  inherited;
+  if (cbSetOfTemplates.ItemIndex > -1) then
+    NewName := cbSetOfTemplates.Text
+  else
+    NewName := TLang.Lang.Translate('NewNameSet');
+  NewName := InputBox(Application.Title, TLang.Lang.Translate('NewNamePrompt'), NewName);
+  if not NewName.IsEmpty then
+  begin
+    Section := SaveSetOfTemplate(string.Empty, NewName);
+    cbSetOfTemplates.Items.AddObject(NewName, TStringObject.Create(Section));
+    cbSetOfTemplates.ItemIndex := cbSetOfTemplates.Items.Count - 1;
+  end;
+end;
+
+procedure TframeRegExpParameters.RestoreSetOfTemplate(const aSection: string);
+var
+  Data: PRegExpData;
+  Node: PVirtualNode;
+begin
+  TGeneral.XMLParams.CurrentSection := TGeneral.XMLParams.GetXPath(C_SECTION_TEMPLATE_SETS, aSection);
+  vstTree.BeginUpdate;
+  try
+    vstTree.Clear;
+    while not TGeneral.XMLParams.IsLastKey do
+    begin
+      if TGeneral.XMLParams.ReadAttributes then
+      begin
+        Node := vstTree.AddChild(nil);
+        Data := Node.GetData;
+        Data^.ParameterName  := TGeneral.XMLParams.Attributes.GetAttributeValue('ParameterName', '');
+        Data^.RegExpTemplate := TGeneral.XMLParams.Attributes.GetAttributeValue('RegExpTemplate', '');
+      end;
+      TGeneral.XMLParams.NextKey;
+    end;
+  finally
+    TGeneral.XMLParams.CurrentSection := '';
+    vstTree.EndUpdate;
+  end;
+end;
+
+function TframeRegExpParameters.SaveSetOfTemplate(const aSection, aName: string): string;
+
+ procedure SaveNode(const aXmlNode: IXMLDOMNode; const aTreeNode: PVirtualNode);
+  var
+    Data: PRegExpData;
+  begin
+    if Assigned(aXmlNode) and Assigned(aTreeNode) then
+    begin
+      Data := aTreeNode^.GetData;
+      with TGeneral.XMLParams do
+      begin
+        Attributes.Node := aXmlNode;
+        Attributes.SetAttributeValue('ParameterName', Data^.ParameterName);
+        Attributes.SetAttributeValue('RegExpTemplate', Data^.RegExpTemplate);
+        WriteAttributes;
+      end;
+    end;
+  end;
+
+var
+  iItemNode : IXMLDOMNode;
+  iSetNode  : IXMLDOMNode;
+  NewSet    : string;
+  TreeNode  : PVirtualNode;
+begin
+  inherited;
+  if aSection.IsEmpty then
+    NewSet := 'Set.' + TGeneral.GetCounterValue.ToString
+  else
+    NewSet := aSection;
+  Result := NewSet;
+
+  TGeneral.XMLParams.Open;
+  try
+    iSetNode := TGeneral.XMLParams.GetNode(TGeneral.XMLParams.GetXPath(C_SECTION_TEMPLATE_SETS, NewSet));
+    if aSection.IsEmpty then
+      with TGeneral.XMLParams do
+      begin
+        Attributes.Node := iSetNode;
+        Attributes.SetAttributeValue('Name', aName);
+        WriteAttributes;
+      end
+    else
+      TGeneral.XMLParams.EraseSection(TGeneral.XMLParams.GetXPath(C_SECTION_TEMPLATE_SETS, NewSet));
+
+    TreeNode := vstTree.GetFirst;
+    while Assigned(TreeNode) do
+    begin
+      iItemNode := TGeneral.XMLParams.XMLDomDocument.createNode(varNull, 'Item', '');
+      iSetNode.appendChild(iItemNode);
+      SaveNode(iItemNode, TreeNode);
+      TreeNode := TreeNode.NextSibling;
+    end;
+  finally
+    TGeneral.XMLParams.CurrentSection := '';
+    TGeneral.XMLParams.Save;
   end;
 end;
 

@@ -24,12 +24,12 @@ type
     FList: TDictionary<string, TMessageItem>;
     class var FLang: TLang;
   public
+    class function Lang: TLang;
+    function Translate(const AKey: string): string;
+
     constructor Create;
     destructor Destroy; override;
-    procedure Initialize;
-    function Translate(const AKey: string): string;
     property Language: TLanguage read FLanguage write FLanguage;
-    class function Lang: TLang;
   end;
 
 implementation
@@ -39,10 +39,7 @@ implementation
 class function TLang.Lang: TLang;
 begin
   if not Assigned(FLang) then
-  begin
     FLang := TLang.Create;
-    FLang.Initialize;
-  end;
   Result := FLang;
 end;
 
@@ -50,6 +47,8 @@ constructor TLang.Create;
 begin
   FLanguage := lgUk;
   FList := TDictionary<string, TMessageItem>.Create;
+  for var item in ArrayMessages do
+    FList.Add(item.Key.Trim.ToLower, item);
 end;
 
 destructor TLang.Destroy;
@@ -58,19 +57,12 @@ begin
   inherited;
 end;
 
-procedure TLang.Initialize;
-begin
-  FList.Clear;
-  for var item in ArrayMessages do
-    FList.Add(item.Key.ToLower, item);
-end;
-
 function TLang.Translate(const AKey: string): string;
 var
   Item: TMessageItem;
 begin
-  Result := AKey;
-  if FList.TryGetValue(AKey.ToLower, item) then
+  Result := AKey.Trim;
+  if FList.TryGetValue(Result.ToLower, item) then
     case FLanguage of
       lgUk:
         Result := item.Uk;

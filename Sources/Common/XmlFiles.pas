@@ -206,6 +206,7 @@ type
     procedure DeleteKey(const aXPath: string); overload;
     procedure EraseSection(const aSection: string);
 
+    function ReadSection(const aSection: string): TArray<string>; overload;
     procedure ReadSection(const aSection: string; aStrings: TStrings); overload;
     procedure ReadSection(const aSection: string; aStrings: TStrings; const aSortAttr: OleVariant); overload;
     procedure ReadSections(aStrings: TStrings);
@@ -680,6 +681,33 @@ begin
   end;
 end;
 
+function TXMLFile.ReadSection(const aSection: string): TArray<string>;
+var
+  i: Integer;
+  iNode: IXMLDOMNode;
+begin
+  System.TMonitor.Enter(FLockObject);
+  try
+    try
+      if aSection.Contains(C_XPATH_SEPARATOR) then
+        iNode := GetNode(aSection, False)
+      else
+        iNode := GetNode(GetXPath(aSection), False)
+    except
+      raise Exception.Create('Wrong IXMLDOMNode - ' + aSection);
+    end;
+
+    if Assigned(iNode) then
+    begin
+      SetLength(Result, iNode.childNodes.length);
+      for i := 0 to iNode.childNodes.length - 1 do
+        Result[i] := GetReturnedNodeName(iNode.childNodes.item[i].nodeName);
+    end;
+  finally
+    System.TMonitor.Enter(FLockObject);
+  end;
+end;
+
 procedure TXMLFile.ReadSection(const aSection: string; aStrings: TStrings; const aSortAttr: OleVariant);
 const
   C_COUNT_SYMB = 25;
@@ -724,8 +752,7 @@ begin
 
           if VarIsArray(aSortAttr) then
             for j := VarArrayLowBound(aSortAttr, 1) to VarArrayHighBound(aSortAttr, 1) do
-              sSortKey := sSortKey + VarToStr(Attributes.GetAttributeValue(VarToStr(aSortAttr[j]), ''))
-                .PadLeft(C_COUNT_SYMB, '0')
+              sSortKey := sSortKey + VarToStr(Attributes.GetAttributeValue(VarToStr(aSortAttr[j]), '')).PadLeft(C_COUNT_SYMB, '0')
           else
             sSortKey := VarToStr(Attributes.GetAttributeValue(VarToStr(aSortAttr), '')).PadLeft(C_COUNT_SYMB, '0');
           stKeyList.Add(sSortKey + iNodeKey.nodeName);
@@ -1131,7 +1158,7 @@ begin
   System.TMonitor.Enter(FLockObject);
   try
     try
-      iNode := GetNode(GetXPath(aXPath), False);
+      iNode := GetNode(aXPath, False);
     except
       raise Exception.Create('Wrong IXMLDOMNode - ' + aXPath);
     end;

@@ -62,6 +62,7 @@ type
 
   TGeneral = record
   public
+    class function GetCounterValue: Integer; static;
     class function GetPathList: TArrayRecord<TParamPath>; static;
     class function GetRegExpParametersList: TArrayRecord<TRegExpData>; static;
     class function XMLFile: TXMLFile; static;
@@ -87,6 +88,13 @@ var
   FXMLParams: TXMLFile = nil;
 
 { TGeneral }
+
+class function TGeneral.XMLFile: TXMLFile;
+begin
+  if not Assigned(FXmlFile) then
+    FXmlFile := TXmlFile.Create(GetEnvironmentVariable('USERPROFILE') + '\' + TPath.GetFileNameWithoutExtension(Application.ExeName) + '.xml');
+  Result := FXmlFile;
+end;
 
 class function TGeneral.XMLParams: TXMLFile;
 begin
@@ -151,11 +159,11 @@ begin
   end;
 end;
 
-class function TGeneral.XMLFile: TXMLFile;
+class function TGeneral.GetCounterValue: Integer;
 begin
-  if not Assigned(FXmlFile) then
-    FXmlFile := TXmlFile.Create(GetEnvironmentVariable('USERPROFILE') + '\' + TPath.GetFileNameWithoutExtension(Application.ExeName) + '.xml');
-  Result := FXmlFile;
+  Result := XMLParams.ReadInteger(C_SECTION_MAIN, 'Counter', 0);
+  Inc(Result);
+  XMLParams.WriteInteger(C_SECTION_MAIN, 'Counter', Result);
 end;
 
 {TParamPath}
