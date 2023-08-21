@@ -18,146 +18,169 @@ inherited frameResultView: TframeResultView
     ExplicitTop = 212
     ExplicitWidth = 671
   end
-  inherited vstTree: TVirtualStringTree
+  inherited pnlFrame: TCardPanel
+    Top = 22
     Width = 806
-    Height = 300
-    Header.MainColumn = 0
-    Images = DMImage.vil16
-    TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toVariableNodeHeight, toFullRowDrag]
-    TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowVertGridLines, toThemeAware, toShowFilteredNodes]
-    OnCompareNodes = vstTreeCompareNodes
-    OnDblClick = aOpenEmailExecute
-    OnFocusChanged = vstTreeFocusChanged
-    OnGetText = vstTreeGetText
-    ExplicitTop = 39
+    Height = 323
+    ExplicitTop = 22
     ExplicitWidth = 806
-    ExplicitHeight = 306
-    Columns = <
-      item
-        CaptionAlignment = taCenter
-        MaxWidth = 200
-        MinWidth = 50
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 0
-        Text = '#'
+    ExplicitHeight = 323
+    inherited crdMain: TCard
+      Width = 806
+      Height = 323
+      Caption = 'Emails'
+      ExplicitWidth = 806
+      ExplicitHeight = 323
+      inherited tbMain: TToolBar
+        Width = 800
+        ExplicitWidth = 800
+        inherited btnSep01: TToolButton
+          Visible = False
+        end
+        object btnSep04: TToolButton
+          Left = 375
+          Top = 0
+          Width = 10
+          Caption = 'btnSep04'
+          ImageIndex = 71
+          ImageName = 'email'
+          Style = tbsSeparator
+        end
+        object btnSearch: TToolButton
+          Left = 385
+          Top = 0
+          Action = aSearch
+        end
+        object btnBreak: TToolButton
+          Left = 424
+          Top = 0
+          Action = aBreak
+        end
+        object btnSep05: TToolButton
+          Left = 463
+          Top = 0
+          Width = 10
+          ImageIndex = 71
+          ImageName = 'email'
+          Style = tbsSeparator
+        end
+        object btnOpenEmail: TToolButton
+          Left = 473
+          Top = 0
+          Action = aOpenEmail
+        end
+        object btnOpenLogFile: TToolButton
+          Left = 512
+          Top = 0
+          Action = aOpenLogFile
+        end
       end
-      item
-        CaptionAlignment = taCenter
-        MaxWidth = 1000
-        MinWidth = 50
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 1
-        Text = 'File Name'
-        Width = 100
+      inherited vstTree: TVirtualStringTree
+        Width = 806
+        Height = 278
+        Header.MainColumn = 0
+        Images = DMImage.vil16
+        TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toVariableNodeHeight, toFullRowDrag]
+        TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowVertGridLines, toThemeAware, toShowFilteredNodes]
+        OnCompareNodes = vstTreeCompareNodes
+        OnDblClick = aOpenEmailExecute
+        OnFocusChanged = vstTreeFocusChanged
+        OnGetText = vstTreeGetText
+        ExplicitWidth = 806
+        ExplicitHeight = 278
+        Columns = <
+          item
+            CaptionAlignment = taCenter
+            MaxWidth = 200
+            MinWidth = 50
+            Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+            Position = 0
+            Text = '#'
+          end
+          item
+            CaptionAlignment = taCenter
+            MaxWidth = 1000
+            MinWidth = 50
+            Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+            Position = 1
+            Text = 'File Name'
+            Width = 100
+          end
+          item
+            CaptionAlignment = taCenter
+            MaxWidth = 1000
+            MinWidth = 50
+            Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+            Position = 2
+            Text = 'Path'
+            Width = 100
+          end
+          item
+            CaptionAlignment = taCenter
+            MaxWidth = 1000
+            MinWidth = 50
+            Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+            Position = 3
+            Text = 'Message ID'
+            Width = 100
+          end
+          item
+            CaptionAlignment = taCenter
+            MaxWidth = 500
+            MinWidth = 100
+            Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+            Position = 4
+            Text = 'Date'
+            Width = 100
+          end
+          item
+            CaptionAlignment = taCenter
+            MaxWidth = 1000
+            MinWidth = 100
+            Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+            Position = 5
+            Text = 'Subject'
+            Width = 100
+          end
+          item
+            CaptionAlignment = taCenter
+            MaxWidth = 1000
+            MinWidth = 50
+            Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+            Position = 6
+            Text = 'Attach'
+          end
+          item
+            CaptionAlignment = taCenter
+            MaxWidth = 1000
+            MinWidth = 50
+            Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+            Position = 7
+            Text = 'From'
+          end
+          item
+            CaptionAlignment = taCenter
+            MaxWidth = 500
+            MinWidth = 50
+            Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+            Position = 8
+            Text = 'Content Type'
+          end>
       end
-      item
-        CaptionAlignment = taCenter
-        MaxWidth = 1000
-        MinWidth = 50
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 2
-        Text = 'Path'
-        Width = 100
-      end
-      item
-        CaptionAlignment = taCenter
-        MaxWidth = 1000
-        MinWidth = 50
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 3
-        Text = 'Message ID'
-        Width = 100
-      end
-      item
-        CaptionAlignment = taCenter
-        MaxWidth = 500
-        MinWidth = 100
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 4
-        Text = 'Date'
-        Width = 100
-      end
-      item
-        CaptionAlignment = taCenter
-        MaxWidth = 1000
-        MinWidth = 100
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 5
-        Text = 'Subject'
-        Width = 100
-      end
-      item
-        CaptionAlignment = taCenter
-        MaxWidth = 1000
-        MinWidth = 50
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 6
-        Text = 'Attach'
-      end
-      item
-        CaptionAlignment = taCenter
-        MaxWidth = 1000
-        MinWidth = 50
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 7
-        Text = 'From'
-      end
-      item
-        CaptionAlignment = taCenter
-        MaxWidth = 500
-        MinWidth = 50
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 8
-        Text = 'Content Type'
-      end>
+    end
+    object crdAllAttachment: TCard
+      Left = 0
+      Top = 0
+      Width = 806
+      Height = 323
+      Caption = 'All Attachment'
+      CardIndex = 1
+      TabOrder = 1
+      ExplicitWidth = 185
+      ExplicitHeight = 41
+    end
   end
-  inherited tbMain: TToolBar
-    Width = 800
-    ExplicitLeft = 0
-    ExplicitTop = 0
-    ExplicitWidth = 806
-    inherited btnSep01: TToolButton
-      Visible = False
-    end
-    object btnSep04: TToolButton
-      Left = 336
-      Top = 0
-      Width = 10
-      Caption = 'btnSep04'
-      ImageIndex = 71
-      ImageName = 'email'
-      Style = tbsSeparator
-    end
-    object btnSearch: TToolButton
-      Left = 346
-      Top = 0
-      Action = aSearch
-    end
-    object btnBreak: TToolButton
-      Left = 385
-      Top = 0
-      Action = aBreak
-    end
-    object btnSep05: TToolButton
-      Left = 424
-      Top = 0
-      Width = 10
-      ImageIndex = 71
-      ImageName = 'email'
-      Style = tbsSeparator
-    end
-    object btnOpenEmail: TToolButton
-      Left = 434
-      Top = 0
-      Action = aOpenEmail
-    end
-    object btnOpenLogFile: TToolButton
-      Left = 473
-      Top = 0
-      Action = aOpenLogFile
-    end
-  end
-  object pcInfo: TPageControl [3]
+  object pcInfo: TPageControl [2]
     Left = 0
     Top = 349
     Width = 806
@@ -168,7 +191,7 @@ inherited frameResultView: TframeResultView
     Margins.Bottom = 2
     ActivePage = tsPlainText
     Align = alBottom
-    TabOrder = 2
+    TabOrder = 1
     OnChange = pcInfoChange
     object tsPlainText: TTabSheet
       Caption = 'Plain Text'
@@ -197,7 +220,6 @@ inherited frameResultView: TframeResultView
         Align = alClient
         TabOrder = 0
         OnBeforeNavigate2 = wbBodyBeforeNavigate2
-        ExplicitWidth = 1042
         ControlData = {
           4C0000007A520000D71900000000000000000000000000000000000000000000
           000000004C000000000000000000000001000000E0D057007335CF11AE690800
@@ -222,15 +244,27 @@ inherited frameResultView: TframeResultView
         TabOrder = 0
         ExplicitWidth = 798
         ExplicitHeight = 250
-        inherited vstTree: TVirtualStringTree
+        inherited pnlFrame: TCardPanel
           Width = 798
-          Height = 211
+          Height = 250
           ExplicitWidth = 798
-          ExplicitHeight = 211
-        end
-        inherited tbMain: TToolBar
-          Width = 798
-          ExplicitWidth = 798
+          ExplicitHeight = 250
+          inherited crdMain: TCard
+            Width = 798
+            Height = 250
+            ExplicitWidth = 798
+            ExplicitHeight = 250
+            inherited tbMain: TToolBar
+              Width = 798
+              ExplicitWidth = 798
+            end
+            inherited vstTree: TVirtualStringTree
+              Width = 798
+              Height = 211
+              ExplicitWidth = 798
+              ExplicitHeight = 211
+            end
+          end
         end
         inherited alFrame: TActionList
           Left = 336
@@ -245,6 +279,23 @@ inherited frameResultView: TframeResultView
           Top = 144
         end
       end
+    end
+  end
+  object pcTop: TPageControl [3]
+    Left = 0
+    Top = 0
+    Width = 806
+    Height = 22
+    ActivePage = tsMain
+    Align = alTop
+    TabOrder = 2
+    OnChange = pcTopChange
+    object tsMain: TTabSheet
+      Caption = 'Emails'
+    end
+    object tsAllAttachments: TTabSheet
+      Caption = 'All attachments'
+      ImageIndex = 1
     end
   end
   inherited alFrame: TActionList

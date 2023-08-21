@@ -36,6 +36,7 @@ type
     lblTitle              : TLabel;
     pnlCard               : TCardPanel;
     pnlLeft               : TPanel;
+    pnlSrchBox            : TPanel;
     pnlTop                : TPanel;
     sbMain                : TStatusBar;
     splView               : TSplitView;

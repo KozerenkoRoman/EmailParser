@@ -1,32 +1,44 @@
 inherited frameCommonSettings: TframeCommonSettings
-  Width = 858
-  Height = 555
-  ExplicitWidth = 858
-  ExplicitHeight = 555
-  inherited vstTree: TVirtualStringTree
-    Left = 200
-    Top = 200
-    Width = 5
-    Height = 5
-    Align = alNone
-    Visible = False
-    ExplicitLeft = 200
-    ExplicitTop = 200
-    ExplicitWidth = 5
-    ExplicitHeight = 5
-  end
-  inherited tbMain: TToolBar
-    Width = 852
-    ExplicitWidth = 852
-    inherited btnSep03: TToolButton
-      Visible = False
+  Width = 782
+  Height = 330
+  ExplicitWidth = 782
+  ExplicitHeight = 330
+  inherited pnlFrame: TCardPanel
+    Width = 782
+    Height = 330
+    ExplicitWidth = 782
+    ExplicitHeight = 270
+    inherited crdMain: TCard
+      Width = 782
+      Height = 330
+      ExplicitWidth = 782
+      ExplicitHeight = 270
+      inherited tbMain: TToolBar
+        Width = 776
+        ExplicitWidth = 776
+        inherited btnSep03: TToolButton
+          Visible = False
+        end
+      end
+      inherited vstTree: TVirtualStringTree
+        Left = 200
+        Top = 200
+        Width = 5
+        Height = 5
+        Align = alNone
+        Visible = False
+        ExplicitLeft = 200
+        ExplicitTop = 200
+        ExplicitWidth = 5
+        ExplicitHeight = 5
+      end
     end
   end
-  object grdCommonParams: TGridPanel [2]
+  object grdCommonParams: TGridPanel [1]
     Left = 0
-    Top = 45
-    Width = 858
-    Height = 510
+    Top = 0
+    Width = 782
+    Height = 330
     Align = alClient
     BevelOuter = bvNone
     Color = clWindow
@@ -138,7 +150,8 @@ inherited frameCommonSettings: TframeCommonSettings
       item
         Value = 100.000000000000000000
       end>
-    TabOrder = 2
+    TabOrder = 1
+    ExplicitHeight = 270
     object lblLanguage: TLabel
       AlignWithMargins = True
       Left = 3
@@ -149,8 +162,7 @@ inherited frameCommonSettings: TframeCommonSettings
       Alignment = taRightJustify
       Caption = 'Language'
       Layout = tlCenter
-      ExplicitLeft = -53
-      ExplicitTop = 0
+      ExplicitLeft = 260
       ExplicitWidth = 57
       ExplicitHeight = 17
     end
@@ -164,8 +176,7 @@ inherited frameCommonSettings: TframeCommonSettings
       Alignment = taRightJustify
       Caption = 'File extensions to search'
       Layout = tlCenter
-      ExplicitLeft = -138
-      ExplicitTop = 0
+      ExplicitLeft = 175
       ExplicitWidth = 142
       ExplicitHeight = 17
     end
@@ -179,8 +190,7 @@ inherited frameCommonSettings: TframeCommonSettings
       Alignment = taRightJustify
       Caption = 'Paths for saving attachments'
       Layout = tlCenter
-      ExplicitLeft = -163
-      ExplicitTop = 0
+      ExplicitLeft = 150
       ExplicitWidth = 167
       ExplicitHeight = 17
     end

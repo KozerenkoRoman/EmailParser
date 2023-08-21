@@ -9,7 +9,7 @@ uses
   Vcl.ToolWin, VirtualTrees, Vcl.StdCtrls, Vcl.ExtCtrls, System.Generics.Defaults,Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Global.Types, Vcl.FileCtrl,
-  Global.Resources;
+  Global.Resources, Vcl.WinXPanels;
 {$ENDREGION}
 
 type

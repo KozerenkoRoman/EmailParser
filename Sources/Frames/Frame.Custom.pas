@@ -9,7 +9,7 @@ uses
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} System.Threading, System.Generics.Collections, Vcl.ActnList,
   System.Generics.Defaults, DebugWriter, Global.Types, System.IniFiles, System.Math, System.Actions, Vcl.Menus,
   Vcl.ExtDlgs, Vcl.Printers, MessageDialog, VirtualTrees.ExportHelper, DaImages, Common.Types, Vcl.ComCtrls,
-  Vcl.ToolWin, Translate.Lang, VirtualTrees.Helper, Column.Settings, Global.Resources;
+  Vcl.ToolWin, Translate.Lang, VirtualTrees.Helper, Column.Settings, Global.Resources, Vcl.WinXPanels;
 {$ENDREGION}
 
 type
@@ -36,7 +36,9 @@ type
     btnSep01          : TToolButton;
     btnSep02          : TToolButton;
     btnSep03          : TToolButton;
+    crdMain           : TCard;
     pmFrame           : TPopupMenu;
+    pnlFrame          : TCardPanel;
     tbMain            : TToolBar;
     vstTree           : TVirtualStringTree;
     procedure aCollapseAllExecute(Sender: TObject);

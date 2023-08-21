@@ -77,9 +77,6 @@ inherited frmSettings: TfrmSettings
     ParentBackground = False
     TabOrder = 1
     ExplicitWidth = 912
-    DesignSize = (
-      916
-      41)
     object lblTitle: TLabel
       Left = 217
       Top = 0
@@ -98,22 +95,6 @@ inherited frmSettings: TfrmSettings
       Layout = tlCenter
       ExplicitHeight = 19
     end
-    object srchBox: TSearchBox
-      Left = 716
-      Top = 10
-      Width = 159
-      Height = 25
-      Anchors = [akTop, akRight]
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 0
-      OnInvokeSearch = srchBoxInvokeSearch
-      ExplicitLeft = 712
-    end
     object pnlLeft: TPanel
       Left = 0
       Top = 0
@@ -121,7 +102,7 @@ inherited frmSettings: TfrmSettings
       Height = 41
       Align = alLeft
       BevelOuter = bvNone
-      TabOrder = 1
+      TabOrder = 0
       object imgMenu: TImage
         Left = 7
         Top = 5
@@ -138,6 +119,34 @@ inherited frmSettings: TfrmSettings
           DD3D19EB00AE00C9000066BE00201900C0CC1700240300003859BE2421B37CDF
           370000000049454E44AE426082}
         OnClick = aToggleSplitPanelExecute
+      end
+    end
+    object pnlSrchBox: TPanel
+      Left = 728
+      Top = 0
+      Width = 188
+      Height = 41
+      Align = alRight
+      BevelOuter = bvNone
+      TabOrder = 1
+      ExplicitLeft = 724
+      object srchBox: TSearchBox
+        Left = 16
+        Top = 8
+        Width = 162
+        Height = 25
+        AutoSize = False
+        Ctl3D = True
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentCtl3D = False
+        ParentFont = False
+        CanUndoSelText = True
+        TabOrder = 0
+        OnInvokeSearch = srchBoxInvokeSearch
       end
     end
   end
@@ -166,17 +175,31 @@ inherited frmSettings: TfrmSettings
         TabOrder = 0
         ExplicitWidth = 714
         ExplicitHeight = 512
-        inherited vstTree: TVirtualStringTree
+        inherited pnlFrame: TCardPanel
           Width = 714
-          Height = 422
-        end
-        inherited tbMain: TToolBar
-          Width = 708
-          ExplicitWidth = 708
+          Height = 467
+          ExplicitWidth = 714
+          ExplicitHeight = 467
+          inherited crdMain: TCard
+            Width = 714
+            Height = 467
+            ExplicitWidth = 714
+            ExplicitHeight = 467
+            inherited tbMain: TToolBar
+              Width = 708
+              ExplicitWidth = 708
+            end
+            inherited vstTree: TVirtualStringTree
+              Width = 714
+              Height = 422
+              ExplicitWidth = 714
+              ExplicitHeight = 422
+            end
+          end
         end
         inherited tbSettings: TToolBar
           Width = 708
-          ExplicitWidth = 416
+          ExplicitWidth = 708
         end
       end
     end
@@ -197,15 +220,27 @@ inherited frmSettings: TfrmSettings
         TabOrder = 0
         ExplicitWidth = 714
         ExplicitHeight = 512
-        inherited vstTree: TVirtualStringTree
+        inherited pnlFrame: TCardPanel
           Width = 714
-          Height = 467
-          ExplicitWidth = 714
-          ExplicitHeight = 467
-        end
-        inherited tbMain: TToolBar
-          Width = 708
-          ExplicitWidth = 704
+          Height = 512
+          ExplicitWidth = 710
+          ExplicitHeight = 511
+          inherited crdMain: TCard
+            Width = 714
+            Height = 512
+            ExplicitWidth = 710
+            ExplicitHeight = 511
+            inherited tbMain: TToolBar
+              Width = 708
+              ExplicitWidth = 704
+            end
+            inherited vstTree: TVirtualStringTree
+              Width = 714
+              Height = 467
+              ExplicitWidth = 714
+              ExplicitHeight = 467
+            end
+          end
         end
         inherited pmFrame: TPopupMenu
           Left = 260
@@ -229,16 +264,28 @@ inherited frmSettings: TfrmSettings
         TabOrder = 0
         ExplicitWidth = 714
         ExplicitHeight = 512
-        inherited tbMain: TToolBar
-          Width = 708
-          ExplicitWidth = 708
-          inherited btnSave: TToolButton
-            Action = aSaveCommonSettings
+        inherited pnlFrame: TCardPanel
+          Width = 714
+          Height = 512
+          ExplicitWidth = 714
+          ExplicitHeight = 512
+          inherited crdMain: TCard
+            Width = 714
+            Height = 512
+            ExplicitWidth = 714
+            ExplicitHeight = 512
+            inherited tbMain: TToolBar
+              Width = 708
+              ExplicitWidth = 708
+              inherited btnSave: TToolButton
+                Action = aSaveCommonSettings
+              end
+            end
           end
         end
         inherited grdCommonParams: TGridPanel
           Width = 714
-          Height = 467
+          Height = 512
           ControlCollection = <
             item
               Column = 0
@@ -300,20 +347,8 @@ inherited frmSettings: TfrmSettings
               Control = frameCommonSettings.cbUseLastGroup
               Row = 5
             end>
-          ExplicitWidth = 422
-          ExplicitHeight = 333
-          inherited lblLanguage: TLabel
-            ExplicitLeft = 260
-            ExplicitTop = 3
-          end
-          inherited lblExtensions: TLabel
-            ExplicitLeft = 175
-            ExplicitTop = 38
-          end
-          inherited lblPathForAttachments: TLabel
-            ExplicitLeft = 150
-            ExplicitTop = 73
-          end
+          ExplicitWidth = 714
+          ExplicitHeight = 512
         end
       end
     end
@@ -350,40 +385,30 @@ inherited frmSettings: TfrmSettings
           ExplicitTop = 345
           ExplicitWidth = 718
         end
-        inherited vstTree: TVirtualStringTree
+        inherited pnlFrame: TCardPanel
           Width = 714
-          Height = 183
-        end
-        inherited tbMain: TToolBar
-          Width = 708
-          ExplicitLeft = 3
-          ExplicitTop = 3
-          ExplicitWidth = 708
-          inherited btnOpenLogFile: TToolButton [11]
-            Left = 512
-            ExplicitLeft = 512
+          Height = 206
+          ExplicitWidth = 714
+          ExplicitHeight = 206
+          inherited crdMain: TCard
+            Width = 714
+            Height = 206
+            ExplicitWidth = 714
+            ExplicitHeight = 206
+            inherited tbMain: TToolBar
+              Width = 708
+              ExplicitWidth = 708
+            end
+            inherited vstTree: TVirtualStringTree
+              Width = 714
+              Height = 161
+              ExplicitWidth = 714
+              ExplicitHeight = 161
+            end
           end
-          inherited btnOpenEmail: TToolButton [12]
-            Left = 473
-            ExplicitLeft = 473
-          end
-          inherited btnSep05: TToolButton [13]
-            Left = 463
-            ExplicitLeft = 463
-          end
-          inherited btnBreak: TToolButton
-            Left = 424
-            ExplicitLeft = 424
-          end
-          inherited btnSearch: TToolButton [15]
-            Left = 385
-            ExplicitLeft = 385
-          end
-          inherited btnSep04: TToolButton [16]
-            Left = 375
-            ExplicitLeft = 375
-          end
-          inherited btnColumnSettings: TToolButton [17]
+          inherited crdAllAttachment: TCard
+            ExplicitWidth = 806
+            ExplicitHeight = 323
           end
         end
         inherited pcInfo: TPageControl
@@ -406,12 +431,11 @@ inherited frmSettings: TfrmSettings
             ExplicitHeight = 252
             inherited wbBody: TWebBrowser
               Height = 252
-              ExplicitWidth = 798
               ExplicitHeight = 252
               ControlData = {
                 4C0000007A5200000C1A00000000000000000000000000000000000000000000
-                000000004C000000000000000000000001000000E0D057007335CF11AE690800
-                2B2E126208000000000000004C0000000114020000000000C000000000000046
+                000000004C000000000000000000000000000000000000000000000000000000
+                0000000000000000000000004C0000000114020000000000C000000000000046
                 8000000000000000000000000000000000000000000000000000000000000000
                 00000000000000000100000000000000000000000000000000000000}
             end
@@ -421,26 +445,30 @@ inherited frmSettings: TfrmSettings
             inherited frameAttachments: TframeAttachments
               Height = 252
               ExplicitHeight = 252
-              inherited vstTree: TVirtualStringTree
-                Height = 213
-              end
-              inherited tbMain: TToolBar
-                inherited btnOpenParsedText: TToolButton [11]
-                  Left = 422
-                  ExplicitLeft = 422
-                end
-                inherited btnOpenAttachFile: TToolButton [12]
-                  Left = 383
-                  ExplicitLeft = 383
-                end
-                inherited btnSep04: TToolButton [13]
-                  Left = 375
-                  ExplicitLeft = 375
-                end
-                inherited btnColumnSettings: TToolButton [14]
+              inherited pnlFrame: TCardPanel
+                Height = 252
+                ExplicitHeight = 252
+                inherited crdMain: TCard
+                  Height = 252
+                  ExplicitHeight = 252
+                  inherited vstTree: TVirtualStringTree
+                    Height = 213
+                    ExplicitHeight = 213
+                  end
                 end
               end
             end
+          end
+        end
+        inherited pcTop: TPageControl
+          Width = 714
+          ExplicitWidth = 718
+          inherited tsMain: TTabSheet
+            ExplicitTop = 25
+            ExplicitWidth = 706
+          end
+          inherited tsAllAttachments: TTabSheet
+            ExplicitHeight = 0
           end
         end
       end
