@@ -7,6 +7,8 @@ inherited frameRegExpParameters: TframeRegExpParameters
     Top = 90
     Width = 753
     Height = 354
+    Alignment = taRightJustify
+    DefaultNodeHeight = 18
     Header.MainColumn = 0
     OnCompareNodes = vstTreeCompareNodes
     OnCreateEditor = vstTreeCreateEditor
@@ -23,21 +25,31 @@ inherited frameRegExpParameters: TframeRegExpParameters
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 0
         Text = 'Name'
-        Width = 200
+        Width = 150
       end
       item
         CaptionAlignment = taCenter
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 1
         Text = 'RegExp Template'
-        Width = 600
+        Width = 300
+      end
+      item
+        Alignment = taRightJustify
+        CaptionAlignment = taCenter
+        MaxWidth = 500
+        MinWidth = 50
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 2
+        Text = 'Group index'
+        Width = 100
       end>
   end
   inherited tbMain: TToolBar
     Top = 48
     Width = 747
     TabOrder = 2
-    ExplicitTop = 48
+    ExplicitTop = 49
     ExplicitWidth = 747
   end
   object tbSettings: TToolBar [2]
@@ -46,8 +58,8 @@ inherited frameRegExpParameters: TframeRegExpParameters
     Top = 3
     Width = 747
     Height = 39
-    ButtonHeight = 39
-    ButtonWidth = 39
+    ButtonHeight = 53
+    ButtonWidth = 49
     EdgeInner = esNone
     EdgeOuter = esNone
     Images = DMImage.vil32
@@ -56,7 +68,7 @@ inherited frameRegExpParameters: TframeRegExpParameters
       Left = 0
       Top = 0
       Width = 449
-      Height = 39
+      Height = 53
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 0
@@ -83,7 +95,6 @@ inherited frameRegExpParameters: TframeRegExpParameters
         Top = 5
         Width = 332
         Height = 25
-        Style = csDropDownList
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -112,7 +123,7 @@ inherited frameRegExpParameters: TframeRegExpParameters
       OnClick = aSaveSetExecute
     end
     object btnDeleteSet: TToolButton
-      Left = 503
+      Left = 513
       Top = 0
       Action = aDeleteSet
     end

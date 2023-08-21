@@ -34,6 +34,7 @@ resourcestring
   en_CompHierarchy        = 'Components hierarchy';
   en_CompName             = 'Component name';
   en_ContentType          = 'Content Type';
+  en_Copy                 = 'Copy';
   en_Date                 = 'Date';
   en_Delete               = 'Delete';
   en_DeleteAttachments    = 'Delete attachments after analysis';
@@ -47,6 +48,7 @@ resourcestring
   en_End                  = 'end';
   en_Error                = 'Error';
   en_Errors               = 'Errors';
+  en_Examples             = 'Examples';
   en_Execution            = 'Execution of scripts';
   en_ExpandAll            = 'Expand All';
   en_ExportToCSV          = 'Export To CSV';
@@ -60,6 +62,7 @@ resourcestring
   en_From                 = 'From';
   en_GettingStarted       = 'Getting started';
   en_Go                   = 'Go';
+  en_GroupIndex           = 'Group index';
   en_Info                 = 'Info ';
   en_Language             = 'Language';
   en_Matches              = 'Matches';
@@ -68,6 +71,7 @@ resourcestring
   en_NewNamePrompt        = 'Enter a name for the new template set';
   en_NewNameSet           = 'New template set';
   en_NoDataToDisplay      = 'No data to display';
+  en_NoMatchFound         = 'No match found';
   en_Ok                   = 'Ok';
   en_OpenEmail            = 'Open email';
   en_OpenFile             = 'Open File';
@@ -77,6 +81,7 @@ resourcestring
   en_Parameter            = 'Parameter';
   en_Parameters           = 'Parameters';
   en_ParseBodyAsHTML      = 'Parse body with RegExp as HTML-text';
+  en_Paste                = 'Paste';
   en_Path                 = 'Path';
   en_PathForAttachments   = 'Paths for saving attachments';
   en_PathsToFindFiles     = 'Paths to find files';
@@ -94,6 +99,7 @@ resourcestring
   en_SaveAs               = 'Save as...';
   en_Script               = 'Script';
   en_Search               = 'Search';
+  en_SelectAll            = 'SelectAll';
   en_Server               = 'Server';
   en_SetOfTemplates       = 'Set of templates';
   en_StartSearch          = 'Start Search';
@@ -106,9 +112,6 @@ resourcestring
   en_UseLastGroup         = 'Use only the last result group';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
-  en_Copy                 = 'Copy';
-  en_Paste                = 'Paste';
-  en_SelectAll            = 'SelectAll';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -124,6 +127,7 @@ resourcestring
   uk_CompHierarchy        = 'Ієрархія компонентів';
   uk_CompName             = 'Назва компонента';
   uk_ContentType          = 'Тип контенту';
+  uk_Copy                 = 'Копіювати';
   uk_Date                 = 'Дата';
   uk_Delete               = 'Видалити';
   uk_DeleteAttachments    = 'Видалити вкладення після аналізу';
@@ -137,6 +141,7 @@ resourcestring
   uk_End                  = 'кінець';
   uk_Error                = 'Помилка';
   uk_Errors               = 'Помилки';
+  uk_Examples             = 'Приклади';
   uk_Execution            = 'Виконання сценаріїв';
   uk_ExpandAll            = 'Розгорнути все';
   uk_ExportToCSV          = 'Експортувати до CSV';
@@ -150,6 +155,7 @@ resourcestring
   uk_From                 = 'Відправник';
   uk_GettingStarted       = 'Початок роботи';
   uk_Go                   = 'Почати';
+  uk_GroupIndex           = 'Індекс групи';
   uk_Info                 = 'Опис ';
   uk_Language             = 'Мова';
   uk_Matches              = 'Співпадіння';
@@ -158,6 +164,7 @@ resourcestring
   uk_NewNamePrompt        = 'Введіть назву нового набору шаблонів';
   uk_NewNameSet           = 'Новий набір шаблонів';
   uk_NoDataToDisplay      = 'Немає даних для відображення';
+  uk_NoMatchFound         = 'Співпадіння відсутні';
   uk_Ok                   = 'Ок';
   uk_OpenEmail            = 'Відкрити email';
   uk_OpenFile             = 'Відкрити файл';
@@ -167,6 +174,7 @@ resourcestring
   uk_Parameter            = 'Параметр';
   uk_Parameters           = 'Параметри';
   uk_ParseBodyAsHTML      = 'Парсити тіло регулярними виразами як HTML-текст';
+  uk_Paste                = 'Вставити';
   uk_Path                 = 'Шлях';
   uk_PathForAttachments   = 'Шляхи для збереження вкладень';
   uk_PathsToFindFiles     = 'Шляхи для пошуку файлів';
@@ -184,6 +192,7 @@ resourcestring
   uk_SaveAs               = 'Зберегти як...';
   uk_Script               = 'Сценарій';
   uk_Search               = 'Пошук';
+  uk_SelectAll            = 'Виділити все';
   uk_Server               = 'Сервер';
   uk_SetOfTemplates       = 'Набір шаблонів';
   uk_StartSearch          = 'Почати пошук';
@@ -196,12 +205,9 @@ resourcestring
   uk_UseLastGroup         = 'Використовувати лише останню групу співпадіння';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
-  uk_Copy                 = 'Копіювати';
-  uk_Paste                = 'Вставити';
-  uk_SelectAll            = 'Виділити все';
 
 const
-   ArrayMessages: array[1 .. 86] of TMessageItem = (
+   ArrayMessages: array[1 .. 89] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
     (Key: 'Begin'                ; En: en_Begin;                Uk: uk_Begin),
@@ -229,6 +235,7 @@ const
     (Key: 'End'                  ; En: en_End;                  Uk: uk_End),
     (Key: 'Error'                ; En: en_Error;                Uk: uk_Error),
     (Key: 'Errors'               ; En: en_Errors;               Uk: uk_Errors),
+    (Key: 'Examples'             ; En: en_Examples;             Uk: uk_Examples),
     (Key: 'Execution'            ; En: en_Execution;            Uk: uk_Execution),
     (Key: 'ExpandAll'            ; En: en_ExpandAll;            Uk: uk_ExpandAll),
     (Key: 'ExportToCSV'          ; En: en_ExportToCSV;          Uk: uk_ExportToCSV),
@@ -242,6 +249,7 @@ const
     (Key: 'From'                 ; En: en_From;                 Uk: uk_From),
     (Key: 'GettingStarted'       ; En: en_GettingStarted;       Uk: uk_GettingStarted),
     (Key: 'Go'                   ; En: en_Go;                   Uk: uk_Go),
+    (Key: 'GroupIndex'           ; En: en_GroupIndex;           Uk: uk_GroupIndex),
     (Key: 'Info'                 ; En: en_Info;                 Uk: uk_Info),
     (Key: 'Language'             ; En: en_Language;             Uk: uk_Language),
     (Key: 'Matches'              ; En: en_Matches;              Uk: uk_Matches),
@@ -250,6 +258,7 @@ const
     (Key: 'NewNamePrompt'        ; En: en_NewNamePrompt;        Uk: uk_NewNamePrompt),
     (Key: 'NewNameSet'           ; En: en_NewNameSet;           Uk: uk_NewNameSet),
     (Key: 'NoDataToDisplay'      ; En: en_NoDataToDisplay;      Uk: uk_NoDataToDisplay),
+    (Key: 'NoMatchFound'         ; En: en_NoMatchFound;         Uk: uk_NoMatchFound),
     (Key: 'Ok'                   ; En: en_Ok;                   Uk: uk_Ok),
     (Key: 'OpenEmail'            ; En: en_OpenEmail;            Uk: uk_OpenEmail),
     (Key: 'OpenFile'             ; En: en_OpenFile;             Uk: uk_OpenFile),

@@ -81,7 +81,6 @@ begin
     Result := Result.Replace(TPath.GetInvalidFileNameChars[i], '');
 end;
 
-
 class procedure TFileUtils.ShellOpen(const aUrl: string; const aParams: string = '');
 begin
   Winapi.ShellAPI.ShellExecute(0, 'Open', PChar(aUrl), PChar(aParams), nil, SW_SHOWNORMAL);

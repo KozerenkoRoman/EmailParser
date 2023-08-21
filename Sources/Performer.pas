@@ -34,7 +34,7 @@ type
     procedure ParseFile(const aFileName: TFileName);
     procedure FillStartParameters;
   public
-    class function GetRegExpCollection(const aText, aPattern: string; const aUseLastGroup: Boolean = True): string;
+    class function GetRegExpCollection(const aText, aPattern: string; const aUseLastGroup: Boolean = True; const aGroupIndex: Integer = 0): string;
     procedure Start;
     procedure Refresh(const aResultDataArray: PResultDataArray);
     procedure Break;
@@ -135,11 +135,10 @@ begin
         Data.Matches.Count := FRegExpList.Count;
         for var i := 0 to FRegExpList.Count - 1 do
           if FParseBodyAsHTML then
-            Data.Matches[i] := GetRegExpCollection(Data.Body, FRegExpList[i].RegExpTemplate, FUseLastGroup)
+            Data.Matches[i] := GetRegExpCollection(Data.Body, FRegExpList[i].RegExpTemplate, FUseLastGroup, FRegExpList[i].GroupIndex)
           else
-            Data.Matches[i] := GetRegExpCollection(Data.ParsedText, FRegExpList[i].RegExpTemplate, FUseLastGroup);
+            Data.Matches[i] := GetRegExpCollection(Data.ParsedText, FRegExpList[i].RegExpTemplate, FUseLastGroup, FRegExpList[i].GroupIndex);
 
-//         Data^.From := 'aaa' + Data^.From ;
         TPublishers.ProgressPublisher.CompletedItem(Data);
         TPublishers.ProgressPublisher.Progress;
       end;
@@ -156,21 +155,29 @@ begin
   end;
 end;
 
-class function TPerformer.GetRegExpCollection(const aText, aPattern: string; const aUseLastGroup: Boolean): string;
+class function TPerformer.GetRegExpCollection(const aText, aPattern: string; const aUseLastGroup: Boolean; const aGroupIndex: Integer): string;
 var
   RegExpr: TRegEx;
   Match: TMatch;
+  GroupIndex: Integer;
 begin
   Result := '';
   RegExpr := TRegEx.Create(aPattern);
   Match := RegExpr.Match(aText);
   if Match.Success then
   begin
+    if (aGroupIndex > Match.Groups.Count - 1) then
+      GroupIndex := Match.Groups.Count - 1
+    else
+      GroupIndex := aGroupIndex;
+
     if aUseLastGroup then
       Result := Match.Groups[Match.Groups.Count - 1].Value
+    else if (GroupIndex > 0) then
+      Result := Match.Groups[GroupIndex].Value
     else
       for var i := 0 to Match.Groups.Count - 1 do
-        Result := Concat(Result, Match.Groups[i].Value, '; ');
+        Result := Concat(Result, Match.Groups[GroupIndex].Value, '; ');
   end;
 end;
 
@@ -272,9 +279,9 @@ begin
         Data.Matches.Count := FRegExpList.Count;
         for var i := 0 to FRegExpList.Count - 1 do
           if FParseBodyAsHTML then
-            Data.Matches[i] := GetRegExpCollection(Data.Body, FRegExpList[i].RegExpTemplate, FUseLastGroup)
+            Data.Matches[i] := GetRegExpCollection(Data.Body, FRegExpList[i].RegExpTemplate, FUseLastGroup, FRegExpList[i].GroupIndex)
           else
-            Data.Matches[i] := GetRegExpCollection(Data.ParsedText, FRegExpList[i].RegExpTemplate, FUseLastGroup);
+            Data.Matches[i] := GetRegExpCollection(Data.ParsedText, FRegExpList[i].RegExpTemplate, FUseLastGroup, FRegExpList[i].GroupIndex);
 
         TPublishers.ProgressPublisher.CompletedItem(Data^);
       end).Start;

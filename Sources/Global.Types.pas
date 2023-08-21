@@ -16,6 +16,7 @@ type
   TRegExpData = record
     ParameterName  : string;
     RegExpTemplate : string;
+    GroupIndex     : Integer;
     procedure Clear;
   end;
 
@@ -122,6 +123,7 @@ begin
       begin
         Data.ParameterName  := XMLParams.Attributes.GetAttributeValue('ParameterName', '');
         Data.RegExpTemplate := XMLParams.Attributes.GetAttributeValue('RegExpTemplate', '');
+        Data.GroupIndex     := XMLParams.Attributes.GetAttributeValue('GroupIndex', 0);
         Result[i] := Data;
         Inc(i);
       end;

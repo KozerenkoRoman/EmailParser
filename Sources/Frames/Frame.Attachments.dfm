@@ -77,6 +77,7 @@ inherited frameAttachments: TframeAttachments
       Top = 0
       Width = 8
       ImageIndex = 76
+      ImageName = 'page_copy'
       Style = tbsSeparator
     end
     object btnOpenAttachFile: TToolButton

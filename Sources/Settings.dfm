@@ -99,7 +99,7 @@ inherited frmSettings: TfrmSettings
       ExplicitHeight = 19
     end
     object srchBox: TSearchBox
-      Left = 720
+      Left = 716
       Top = 10
       Width = 159
       Height = 25
@@ -112,7 +112,7 @@ inherited frmSettings: TfrmSettings
       ParentFont = False
       TabOrder = 0
       OnInvokeSearch = srchBoxInvokeSearch
-      ExplicitLeft = 716
+      ExplicitLeft = 712
     end
     object pnlLeft: TPanel
       Left = 0
@@ -158,9 +158,17 @@ inherited frmSettings: TfrmSettings
       CardIndex = 0
       TabOrder = 0
       inline frameRegExpParameters: TframeRegExpParameters
+        Left = 0
+        Top = 0
+        Width = 714
+        Height = 512
         Align = alClient
         TabOrder = 0
+        ExplicitWidth = 714
+        ExplicitHeight = 512
         inherited vstTree: TVirtualStringTree
+          Width = 714
+          Height = 422
         end
         inherited tbMain: TToolBar
           Width = 708
@@ -168,7 +176,7 @@ inherited frmSettings: TfrmSettings
         end
         inherited tbSettings: TToolBar
           Width = 708
-          ExplicitWidth = 708
+          ExplicitWidth = 416
         end
       end
     end
@@ -181,11 +189,19 @@ inherited frmSettings: TfrmSettings
       CardIndex = 1
       TabOrder = 1
       inline framePathes: TframePathes
+        Left = 0
+        Top = 0
+        Width = 714
+        Height = 512
         Align = alClient
         TabOrder = 0
-
+        ExplicitWidth = 714
+        ExplicitHeight = 512
         inherited vstTree: TVirtualStringTree
-
+          Width = 714
+          Height = 467
+          ExplicitWidth = 714
+          ExplicitHeight = 467
         end
         inherited tbMain: TToolBar
           Width = 708
@@ -205,8 +221,14 @@ inherited frmSettings: TfrmSettings
       CardIndex = 2
       TabOrder = 2
       inline frameCommonSettings: TframeCommonSettings
+        Left = 0
+        Top = 0
+        Width = 714
+        Height = 512
         Align = alClient
         TabOrder = 0
+        ExplicitWidth = 714
+        ExplicitHeight = 512
         inherited tbMain: TToolBar
           Width = 708
           ExplicitWidth = 708
@@ -278,8 +300,8 @@ inherited frmSettings: TfrmSettings
               Control = frameCommonSettings.cbUseLastGroup
               Row = 5
             end>
-          ExplicitWidth = 714
-          ExplicitHeight = 467
+          ExplicitWidth = 422
+          ExplicitHeight = 333
           inherited lblLanguage: TLabel
             ExplicitLeft = 260
             ExplicitTop = 3
@@ -304,7 +326,24 @@ inherited frmSettings: TfrmSettings
       CardIndex = 3
       TabOrder = 3
       inline frameResultView: TframeResultView
+        Left = 0
+        Top = 0
+        Width = 714
+        Height = 512
+        Margins.Left = 0
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
         Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 0
+        ExplicitWidth = 714
+        ExplicitHeight = 512
         inherited splInfo: TSplitter
           Top = 228
           Width = 714
@@ -312,36 +351,39 @@ inherited frmSettings: TfrmSettings
           ExplicitWidth = 718
         end
         inherited vstTree: TVirtualStringTree
-
+          Width = 714
+          Height = 183
         end
         inherited tbMain: TToolBar
           Width = 708
           ExplicitLeft = 3
           ExplicitTop = 3
           ExplicitWidth = 708
-          inherited btnSep04: TToolButton
-            Left = 375
-            ExplicitLeft = 375
+          inherited btnOpenLogFile: TToolButton [11]
+            Left = 512
+            ExplicitLeft = 512
           end
-          inherited btnSearch: TToolButton
-            Left = 385
-            ExplicitLeft = 385
+          inherited btnOpenEmail: TToolButton [12]
+            Left = 473
+            ExplicitLeft = 473
+          end
+          inherited btnSep05: TToolButton [13]
+            Left = 463
+            ExplicitLeft = 463
           end
           inherited btnBreak: TToolButton
             Left = 424
             ExplicitLeft = 424
           end
-          inherited btnSep05: TToolButton
-            Left = 463
-            ExplicitLeft = 463
+          inherited btnSearch: TToolButton [15]
+            Left = 385
+            ExplicitLeft = 385
           end
-          inherited btnOpenEmail: TToolButton
-            Left = 473
-            ExplicitLeft = 473
+          inherited btnSep04: TToolButton [16]
+            Left = 375
+            ExplicitLeft = 375
           end
-          inherited btnOpenLogFile: TToolButton
-            Left = 512
-            ExplicitLeft = 512
+          inherited btnColumnSettings: TToolButton [17]
           end
         end
         inherited pcInfo: TPageControl
@@ -380,20 +422,22 @@ inherited frmSettings: TfrmSettings
               Height = 252
               ExplicitHeight = 252
               inherited vstTree: TVirtualStringTree
-
+                Height = 213
               end
               inherited tbMain: TToolBar
-                inherited btnSep04: TToolButton
-                  Left = 375
-                  ExplicitLeft = 375
+                inherited btnOpenParsedText: TToolButton [11]
+                  Left = 422
+                  ExplicitLeft = 422
                 end
-                inherited btnOpenAttachFile: TToolButton
+                inherited btnOpenAttachFile: TToolButton [12]
                   Left = 383
                   ExplicitLeft = 383
                 end
-                inherited btnOpenParsedText: TToolButton
-                  Left = 422
-                  ExplicitLeft = 422
+                inherited btnSep04: TToolButton [13]
+                  Left = 375
+                  ExplicitLeft = 375
+                end
+                inherited btnColumnSettings: TToolButton [14]
                 end
               end
             end

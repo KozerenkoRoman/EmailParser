@@ -1,6 +1,8 @@
 inherited frameCommonSettings: TframeCommonSettings
   Width = 858
   Height = 555
+  ExplicitWidth = 858
+  ExplicitHeight = 555
   inherited vstTree: TVirtualStringTree
     Left = 200
     Top = 200
@@ -8,6 +10,10 @@ inherited frameCommonSettings: TframeCommonSettings
     Height = 5
     Align = alNone
     Visible = False
+    ExplicitLeft = 200
+    ExplicitTop = 200
+    ExplicitWidth = 5
+    ExplicitHeight = 5
   end
   inherited tbMain: TToolBar
     Width = 852
@@ -17,16 +23,13 @@ inherited frameCommonSettings: TframeCommonSettings
     end
   end
   object grdCommonParams: TGridPanel [2]
+    Left = 0
+    Top = 45
+    Width = 858
+    Height = 510
     Align = alClient
     BevelOuter = bvNone
     Color = clWindow
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentBackground = False
-    ParentFont = False	
     ColumnCollection = <
       item
         SizeStyle = ssAbsolute
@@ -96,7 +99,14 @@ inherited frameCommonSettings: TframeCommonSettings
         Control = cbUseLastGroup
         Row = 5
       end>
-     RowCollection = <
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentBackground = False
+    ParentFont = False
+    RowCollection = <
       item
         SizeStyle = ssAbsolute
         Value = 35.000000000000000000
@@ -131,30 +141,48 @@ inherited frameCommonSettings: TframeCommonSettings
     TabOrder = 2
     object lblLanguage: TLabel
       AlignWithMargins = True
- 
+      Left = 3
+      Top = 3
+      Width = 314
+      Height = 29
       Align = alClient
       Alignment = taRightJustify
       Caption = 'Language'
       Layout = tlCenter
-   
+      ExplicitLeft = -53
+      ExplicitTop = 0
+      ExplicitWidth = 57
+      ExplicitHeight = 17
     end
     object lblExtensions: TLabel
       AlignWithMargins = True
-
+      Left = 3
+      Top = 38
+      Width = 314
+      Height = 29
       Align = alClient
       Alignment = taRightJustify
       Caption = 'File extensions to search'
       Layout = tlCenter
-
+      ExplicitLeft = -138
+      ExplicitTop = 0
+      ExplicitWidth = 142
+      ExplicitHeight = 17
     end
     object lblPathForAttachments: TLabel
       AlignWithMargins = True
-
+      Left = 3
+      Top = 73
+      Width = 314
+      Height = 29
       Align = alClient
       Alignment = taRightJustify
       Caption = 'Paths for saving attachments'
       Layout = tlCenter
-  
+      ExplicitLeft = -163
+      ExplicitTop = 0
+      ExplicitWidth = 167
+      ExplicitHeight = 17
     end
     object lblDeleteAttachments: TLabel
       AlignWithMargins = True
@@ -166,7 +194,9 @@ inherited frameCommonSettings: TframeCommonSettings
       Alignment = taRightJustify
       Caption = 'Delete attachments after analysis'
       Layout = tlCenter
-
+      ExplicitLeft = 126
+      ExplicitWidth = 191
+      ExplicitHeight = 17
     end
     object cbLanguage: TComboBox
       AlignWithMargins = True
@@ -229,7 +259,9 @@ inherited frameCommonSettings: TframeCommonSettings
       Alignment = taRightJustify
       Caption = 'Parse body with RegExp in HTML-text'
       Layout = tlCenter
-  
+      ExplicitLeft = 98
+      ExplicitWidth = 219
+      ExplicitHeight = 17
     end
     object cbParseBodyAsHTML: TCheckBox
       AlignWithMargins = True
@@ -255,7 +287,9 @@ inherited frameCommonSettings: TframeCommonSettings
       Alignment = taRightJustify
       Caption = 'Use only the last result group'
       Layout = tlCenter
- 
+      ExplicitLeft = 143
+      ExplicitWidth = 172
+      ExplicitHeight = 17
     end
     object cbUseLastGroup: TCheckBox
       AlignWithMargins = True

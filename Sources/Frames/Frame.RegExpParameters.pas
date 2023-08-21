@@ -11,7 +11,7 @@ uses
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Custom, System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Publishers,
-  VCLTee.TeCanvas, Global.Resources, Winapi.msxml, RegExpEditor;
+  VCLTee.TeCanvas, Global.Resources, Winapi.msxml, RegExp.Editor;
 {$ENDREGION}
 
 type
@@ -32,6 +32,7 @@ type
     procedure aDeleteExecute(Sender: TObject);
     procedure aDeleteSetExecute(Sender: TObject);
     procedure aDeleteUpdate(Sender: TObject);
+    procedure aEditExecute(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
     procedure aSaveSetAsExecute(Sender: TObject);
@@ -44,10 +45,10 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
-    procedure aEditExecute(Sender: TObject);
   private const
     COL_PARAM_NAME      = 0;
     COL_REGEXP_TEMPLATE = 1;
+    COL_GROUP_INDEX     = 2;
 
     C_IDENTITY_NAME = 'frameRegExpParameters';
   private
@@ -107,12 +108,13 @@ end;
 procedure TframeRegExpParameters.Translate;
 begin
   inherited;
-  aSaveSet.Caption                                 := TLang.Lang.Translate('SaveAs');
-  aSaveSetAs.Caption                               := TLang.Lang.Translate('Save');
+  aSaveSet.Caption                                 := TLang.Lang.Translate('Save');
+  aSaveSetAs.Caption                               := TLang.Lang.Translate('SaveAs');
   aDeleteSet.Hint                                  := TLang.Lang.Translate('Delete');
   lblSetOfTemplates.Caption                        := TLang.Lang.Translate('SetOfTemplates');
   vstTree.Header.Columns[COL_PARAM_NAME].Text      := TLang.Lang.Translate('TemplateName');
   vstTree.Header.Columns[COL_REGEXP_TEMPLATE].Text := TLang.Lang.Translate('RegExpTemplate');
+  vstTree.Header.Columns[COL_GROUP_INDEX].Text     := TLang.Lang.Translate('GroupIndex');
 end;
 
 procedure TframeRegExpParameters.SaveToXML;
@@ -125,6 +127,7 @@ procedure TframeRegExpParameters.SaveToXML;
     TGeneral.XMLParams.Attributes.AddNode;
     TGeneral.XMLParams.Attributes.SetAttributeValue('ParameterName', Data.ParameterName);
     TGeneral.XMLParams.Attributes.SetAttributeValue('RegExpTemplate', Data.RegExpTemplate);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('GroupIndex', Data.GroupIndex);
     TGeneral.XMLParams.WriteAttributes;
   end;
 
@@ -185,12 +188,19 @@ end;
 procedure TframeRegExpParameters.aEditExecute(Sender: TObject);
 var
   Data: PRegExpData;
+  PatternResult: TArray<string>;
 begin
   inherited;
   if Assigned(vstTree.FocusedNode) then
   begin
     Data := vstTree.FocusedNode.GetData;
-    TfrmRegExpEditor.GetPattern(Data^.RegExpTemplate);
+    PatternResult := TfrmRegExpEditor.GetPattern(Data^.RegExpTemplate, Data^.ParameterName, Data^.GroupIndex);
+    if (Length(PatternResult) >= 3) then
+    begin
+      Data^.RegExpTemplate := PatternResult[0];
+      Data^.ParameterName  := PatternResult[1];
+      Data^.GroupIndex     := String.ToInteger(PatternResult[2]);
+    end;
   end;
 end;
 
@@ -205,8 +215,8 @@ procedure TframeRegExpParameters.LoadFromXML;
   procedure LoadNode;
   var
     arrParams : TArrayRecord<TRegExpData>;
-    Data    : PRegExpData;
-    NewNode : PVirtualNode;
+    Data      : PRegExpData;
+    NewNode   : PVirtualNode;
   begin
     inherited;
     arrParams := TGeneral.GetRegExpParametersList;
@@ -266,6 +276,8 @@ begin
       Result := CompareText(Data1^.ParameterName, Data2^.ParameterName);
     COL_REGEXP_TEMPLATE:
       Result := CompareText(Data1^.RegExpTemplate, Data2^.RegExpTemplate);
+    COL_GROUP_INDEX:
+      Result := CompareValue(Data1^.GroupIndex, Data2^.GroupIndex);
   end;
 end;
 
@@ -286,13 +298,15 @@ begin
       Data^.ParameterName := NewText;
     COL_REGEXP_TEMPLATE:
       Data^.RegExpTemplate := NewText;
+    COL_GROUP_INDEX:
+      Data^.GroupIndex := StrToIntDef(NewText, 0);
   end;
 end;
 
 procedure TframeRegExpParameters.vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
 begin
   inherited;
-  Allowed := (Column in [COL_PARAM_NAME, COL_REGEXP_TEMPLATE]);
+  Allowed := (Column in [COL_PARAM_NAME, COL_REGEXP_TEMPLATE, COL_GROUP_INDEX]);
 end;
 
 procedure TframeRegExpParameters.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -317,6 +331,8 @@ begin
       CellText := Data^.ParameterName;
     COL_REGEXP_TEMPLATE:
       CellText := Data^.RegExpTemplate;
+    COL_GROUP_INDEX:
+      CellText := Data^.GroupIndex.ToString;
   end;
 end;
 
@@ -359,6 +375,25 @@ begin
   end;
 end;
 
+procedure TframeRegExpParameters.aSaveSetAsExecute(Sender: TObject);
+var
+  NewName: string;
+  Section: string;
+begin
+  inherited;
+  if (cbSetOfTemplates.ItemIndex > -1) then
+    NewName := cbSetOfTemplates.Text
+  else
+    NewName := TLang.Lang.Translate('NewNameSet');
+  NewName := InputBox(Application.Title, TLang.Lang.Translate('NewNamePrompt'), NewName);
+  if not NewName.IsEmpty then
+  begin
+    Section := SaveSetOfTemplate(string.Empty, NewName);
+    cbSetOfTemplates.Items.AddObject(NewName, TStringObject.Create(Section));
+    cbSetOfTemplates.ItemIndex := cbSetOfTemplates.Items.Count - 1;
+  end;
+end;
+
 procedure TframeRegExpParameters.aSaveSetUpdate(Sender: TObject);
 begin
   inherited;
@@ -391,25 +426,6 @@ begin
   end;
 end;
 
-procedure TframeRegExpParameters.aSaveSetAsExecute(Sender: TObject);
-var
-  NewName: string;
-  Section: string;
-begin
-  inherited;
-  if (cbSetOfTemplates.ItemIndex > -1) then
-    NewName := cbSetOfTemplates.Text
-  else
-    NewName := TLang.Lang.Translate('NewNameSet');
-  NewName := InputBox(Application.Title, TLang.Lang.Translate('NewNamePrompt'), NewName);
-  if not NewName.IsEmpty then
-  begin
-    Section := SaveSetOfTemplate(string.Empty, NewName);
-    cbSetOfTemplates.Items.AddObject(NewName, TStringObject.Create(Section));
-    cbSetOfTemplates.ItemIndex := cbSetOfTemplates.Items.Count - 1;
-  end;
-end;
-
 procedure TframeRegExpParameters.RestoreSetOfTemplate(const aSection: string);
 var
   Data: PRegExpData;
@@ -427,6 +443,7 @@ begin
         Data := Node.GetData;
         Data^.ParameterName  := TGeneral.XMLParams.Attributes.GetAttributeValue('ParameterName', '');
         Data^.RegExpTemplate := TGeneral.XMLParams.Attributes.GetAttributeValue('RegExpTemplate', '');
+        Data^.GroupIndex     := TGeneral.XMLParams.Attributes.GetAttributeValue('GroupIndex', 0);
       end;
       TGeneral.XMLParams.NextKey;
     end;
@@ -450,6 +467,7 @@ function TframeRegExpParameters.SaveSetOfTemplate(const aSection, aName: string)
         Attributes.Node := aXmlNode;
         Attributes.SetAttributeValue('ParameterName', Data^.ParameterName);
         Attributes.SetAttributeValue('RegExpTemplate', Data^.RegExpTemplate);
+        Attributes.SetAttributeValue('GroupIndex', Data^.GroupIndex);
         WriteAttributes;
       end;
     end;
