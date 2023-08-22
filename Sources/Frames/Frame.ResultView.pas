@@ -237,9 +237,13 @@ begin
       Result := CompareText(Data1^.From, Data2^.From);
     COL_CONTENT_TYPE:
       Result := CompareText(Data1^.ContentType, Data2^.ContentType);
-//  else
-//    if (Data1^.Matches.Count >= Column - C_FIXED_COLUMNS) then
-//      Result := CompareText(Data1^.Matches.Items[Column - C_FIXED_COLUMNS], Data2^.Matches.Items[Column - C_FIXED_COLUMNS]);
+  else
+    if (Column >= 0) and
+       (Data1^.Matches.Count > 0) and
+       (Data2^.Matches.Count > 0) and
+       (Data1^.Matches.Count >= Column - C_FIXED_COLUMNS) and
+       (Data2^.Matches.Count >= Column - C_FIXED_COLUMNS) then
+      Result := CompareText(Data1^.Matches.Items[Column - C_FIXED_COLUMNS], Data2^.Matches.Items[Column - C_FIXED_COLUMNS]);
   end;
 end;
 

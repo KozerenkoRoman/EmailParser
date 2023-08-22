@@ -20,8 +20,6 @@ inherited frameResultView: TframeResultView
   end
   inherited tbMain: TToolBar
     Width = 806
-    ExplicitLeft = 0
-    ExplicitTop = 0
     ExplicitWidth = 806
     inherited btnSep01: TToolButton
       Visible = False
