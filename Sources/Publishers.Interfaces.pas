@@ -3,7 +3,6 @@ unit Publishers.Interfaces;
 interface
 
 {$REGION 'Region uses'}
-
 uses
   Winapi.Windows, System.SysUtils, System.Classes, System.Generics.Collections, System.Generics.Defaults,
   Winapi.Messages, Common.Types, Global.Types;
@@ -21,6 +20,11 @@ type
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
     procedure CompletedItem(const aResultData: TResultData);
+  end;
+
+  IEmailChange = interface
+    ['{25917581-2499-4D63-9C42-287C539841CE}']
+    procedure FocusChanged(const aData: PResultData);
   end;
 
 implementation

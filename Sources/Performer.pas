@@ -29,10 +29,11 @@ type
     FUserDefinedDir    : string;
     function GetAttchmentPath(const aFileName: TFileName): string;
     function GetTextFromPDFFile(const aFileName: TFileName): string;
+    procedure DeleteAttachmentFiles(const aData: PResultData);
     procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
+    procedure FillStartParameters;
     procedure ParseAttachmentFiles(aData: PResultData);
     procedure ParseFile(const aFileName: TFileName);
-    procedure FillStartParameters;
   public
     class function GetRegExpCollection(const aText, aPattern: string; const aUseLastGroup: Boolean = True; const aGroupIndex: Integer = 0): string;
     procedure Start;
@@ -205,8 +206,26 @@ begin
       TDirectory.CreateDirectory(Result)
     except
       on E: Exception do
-        LogWriter.Write(ddError, E.Message + sLineBreak + 'Directory - ' + Result);
+        LogWriter.Write(ddError, 'TPerformer.GetAttchmentPath', E.Message + sLineBreak + 'Directory - ' + Result);
     end;
+end;
+
+procedure TPerformer.DeleteAttachmentFiles(const aData: PResultData);
+begin
+  if FDeleteAttachments then
+  begin
+    for var i := Low(aData.Attachments) to High(aData.Attachments) do
+      if TFile.Exists(aData.Attachments[i].FileName) then
+      try
+        TFile.Delete(aData.Attachments[i].FileName);
+      except
+        on E: Exception do
+          LogWriter.Write(ddError, 'TPerformer.DeleteAttachmentFiles',
+                                   E.Message + sLineBreak +
+                                   'Email name - ' + aData.FileName + sLineBreak +
+                                   'File name - ' + aData.Attachments[i].FileName);
+      end;
+  end;
 end;
 
 procedure TPerformer.ParseFile(const aFileName: TFileName);
@@ -245,7 +264,7 @@ begin
       end;
     except
       on E: Exception do
-        LogWriter.Write(ddError, E.Message + sLineBreak + Data^.FileName);
+        LogWriter.Write(ddError, 'TPerformer.ParserHTML', E.Message + sLineBreak + Data^.FileName);
     end;
 
     TTask.Create(
@@ -274,6 +293,7 @@ begin
             TThread.NameThreadForDebugging('TPerformer.ParseEmail');
             ParseAttachmentFiles(Data);
           end).Start;
+
         TTask.WaitForAll(Tasks);
 
         Data.Matches.Count := FRegExpList.Count;
@@ -283,6 +303,7 @@ begin
           else
             Data.Matches[i] := GetRegExpCollection(Data.ParsedText, FRegExpList[i].RegExpTemplate, FUseLastGroup, FRegExpList[i].GroupIndex);
 
+        DeleteAttachmentFiles(Data);
         TPublishers.ProgressPublisher.CompletedItem(Data^);
       end).Start;
   finally
@@ -292,72 +313,110 @@ begin
 end;
 
 procedure TPerformer.ParseAttachmentFiles(aData: PResultData);
+var
+  Ext: string;
 begin
   for var i := Low(aData.Attachments) to High(aData.Attachments) do
     if TFile.Exists(aData.Attachments[i].FileName) then
       try
-        try
-          case TFileUtils.GetSignature(aData.Attachments[i].FileName) of
-            fsPDF:
+        Ext := TPath.GetExtension(aData.Attachments[i].FileName).ToLower;
+        case TFileUtils.GetSignature(aData.Attachments[i].FileName) of
+          fsPDF:
+            begin
+              aData.Attachments[i].ParsedText  := GetTextFromPDFFile(aData^.Attachments[i].FileName);
+              aData.Attachments[i].ContentType := 'application/pdf';
+              aData.Attachments[i].ImageIndex  := TExtIcon.eiPdf.ToByte;
+            end;
+          fsPng:
+            begin
+              aData.Attachments[i].ParsedText  := 'png';
+              aData.Attachments[i].ContentType := 'image/png';
+              aData.Attachments[i].ImageIndex  := TExtIcon.eiPng.ToByte;
+            end;
+          fsGif:
+            begin
+              aData.Attachments[i].ParsedText  := 'gif';
+              aData.Attachments[i].ContentType := 'image/gif';
+              aData.Attachments[i].ImageIndex  := TExtIcon.eiGif.ToByte;
+            end;
+          fsIco:
+            begin
+              aData.Attachments[i].ParsedText  := 'ico';
+              aData.Attachments[i].ContentType := 'image/icon';
+              aData.Attachments[i].ImageIndex  := TExtIcon.eiIco.ToByte;
+            end;
+          fsJpg, fsJp2:
+            begin
+              aData.Attachments[i].ParsedText  := 'jpg';
+              aData.Attachments[i].ContentType := 'image/jpeg';
+              aData.Attachments[i].ImageIndex  := TExtIcon.eiJpg.ToByte;
+            end;
+          fsZip:
+            begin
+              if Ext.Contains('.xlsx') then
               begin
-                aData.Attachments[i].ParsedText  := GetTextFromPDFFile(aData^.Attachments[i].FileName);
-                aData.Attachments[i].ContentType := 'application/pdf';
-              end;
-            fsPng:
+                aData.Attachments[i].ParsedText  := 'xlsx';
+                aData.Attachments[i].ContentType := 'application/excel';
+                aData.Attachments[i].ImageIndex  := TExtIcon.eiXls.ToByte;
+              end
+              else if Ext.Contains('.docx') then
               begin
-                aData.Attachments[i].ParsedText  := 'png';
-                aData.Attachments[i].ContentType := 'image/png';
-              end;
-            fsGif:
-              begin
-                aData.Attachments[i].ParsedText  := 'gif';
-                aData.Attachments[i].ContentType := 'image/gif';
-              end;
-            fsIco:
-              begin
-                aData.Attachments[i].ParsedText  := 'ico';
-                aData.Attachments[i].ContentType := 'image/icon';
-              end;
-            fsJpg, fsJp2:
-              begin
-                aData.Attachments[i].ParsedText  := 'jpg';
-                aData.Attachments[i].ContentType := 'image/jpeg';
-              end;
-            fsZip:
+                aData.Attachments[i].ParsedText  := 'docx';
+                aData.Attachments[i].ContentType := 'application/word';
+                aData.Attachments[i].ImageIndex  := TExtIcon.eiDoc.ToByte;
+              end
+              else if Ext.Contains('.zip') then
               begin
                 aData.Attachments[i].ParsedText  := 'zip';
-                aData.Attachments[i].ContentType := 'image/png';
-              end;
-            fsRar:
+                aData.Attachments[i].ContentType := 'application/zip';
+                aData.Attachments[i].ImageIndex  := TExtIcon.eiZip.ToByte;
+              end
+            end;
+          fsRar:
+            begin
+              aData.Attachments[i].ParsedText  := 'rar';
+              aData.Attachments[i].ContentType := 'application/rar';
+              aData.Attachments[i].ImageIndex  := TExtIcon.eiRar.ToByte;
+            end;
+          fsOffice:
+            begin
+              if Ext.Contains('.xls') then
               begin
-                aData.Attachments[i].ParsedText  := 'rar';
-                aData.Attachments[i].ContentType := 'application/rar';
-              end;
-            fsOffice:
+                aData.Attachments[i].ParsedText  := 'xls';
+                aData.Attachments[i].ContentType := 'application/excel';
+                aData.Attachments[i].ImageIndex  := TExtIcon.eiXls.ToByte;
+              end
+              else if Ext.Contains('.doc') then
+              begin
+                aData.Attachments[i].ParsedText  := 'doc';
+                aData.Attachments[i].ContentType := 'application/word';
+                aData.Attachments[i].ImageIndex  := TExtIcon.eiDoc.ToByte;
+              end
+              else
               begin
                 aData.Attachments[i].ParsedText  := 'office';
                 aData.Attachments[i].ContentType := 'application/office';
               end;
-            fsCrt:
-              begin
-                aData.Attachments[i].ParsedText  := 'crt';
-                aData.Attachments[i].ContentType := 'application/crt';
-              end;
-            fsKey:
-              begin
-                aData.Attachments[i].ParsedText  := 'key';
-                aData.Attachments[i].ContentType := 'application/key';
-              end;
-            fsUnknown:
-              aData.Attachments[i].ParsedText := '';
-          end;
-        finally
-          if FDeleteAttachments then
-            TFile.Delete(aData.Attachments[i].FileName);
+            end;
+          fsCrt:
+            begin
+              aData.Attachments[i].ParsedText  := 'crt';
+              aData.Attachments[i].ContentType := 'application/crt';
+              aData.Attachments[i].ImageIndex  := TExtIcon.eiTxt.ToByte;
+            end;
+          fsKey:
+            begin
+              aData.Attachments[i].ParsedText  := 'key';
+              aData.Attachments[i].ContentType := 'application/key';
+              aData.Attachments[i].ImageIndex  := TExtIcon.eiTxt.ToByte;
+            end;
+          fsUnknown:
+            aData.Attachments[i].ParsedText := '';
         end;
       except
         on E: Exception do
-          LogWriter.Write(ddError, E.Message + sLineBreak +
+          LogWriter.Write(ddError, 'TPerformer.ParseAttachmentFiles',
+                                   E.Message + sLineBreak +
                                    'Email name - ' + aData.FileName + sLineBreak +
                                    'File name - '  + aData.Attachments[i].FileName);
       end;
@@ -378,29 +437,39 @@ begin
   if not TPath.HasValidFileNameChars(aFileName, False) then
   begin
     aFileName := Concat('[', Data.ShortName, '] ', TFileUtils.GetCorrectFileName(aFileName));
-    LogWriter.Write(ddText, 'DoSaveAttachment',
+    LogWriter.Write(ddText, 'TPerformer.DoSaveAttachment',
                             'Email file name - '      + Data.FileName  + sLineBreak +
                             'Email short name - '     + Data.ShortName + sLineBreak +
                             'Attachment file name - ' + aFileName      + sLineBreak +
                             'Attachment index - '     + aBody.Index.ToString);
-
-    if not TPath.HasValidFileNameChars(aFileName, False) then
-    begin
-      var NewName := Concat('[', Data.ShortName, '] (', aBody.Index.ToString, ')');
-      LogWriter.Write(ddError, 'DoSaveAttachment',
-                               'Bad file name - ' + aFileName  + sLineBreak +
-                               'New file name - ' + NewName);
-      aFileName := NewName;
-    end;
   end;
+
+  if aFileName.Trim.IsEmpty or (not TPath.HasValidFileNameChars(aFileName, False)) then
+  begin
+    var NewName := Concat('[', Data.ShortName, '] (', aBody.Index.ToString, ')');
+    LogWriter.Write(ddError, 'TPerformer.DoSaveAttachment',
+                             'Bad file name - ' + aFileName  + sLineBreak +
+                             'New file name - ' + NewName);
+    aFileName := NewName;
+  end;
+
   aBody.FileName := aFileName;
   Data.Attachments[High(Data.Attachments)].ShortName   := aFileName;
   Data.Attachments[High(Data.Attachments)].FileName    := TPath.Combine(Path, aFileName);
   Data.Attachments[High(Data.Attachments)].ContentID   := aBody.ContentID;
   Data.Attachments[High(Data.Attachments)].ContentType := aBody.ContentType;
+
+  try
   {$WARN SYMBOL_PLATFORM OFF}
-  aStreamData := TFileStream.Create(Data.Attachments[High(Data.Attachments)].FileName, fmCreate or fmOpenReadWrite {$IFDEF MSWINDOWS}or fmShareDenyRead{$ENDIF});
+    aStreamData := TFileStream.Create(Data.Attachments[High(Data.Attachments)].FileName, fmCreate or fmOpenReadWrite {$IFDEF MSWINDOWS}or fmShareDenyRead{$ENDIF});
   {$WARN SYMBOL_PLATFORM ON}
+  except
+    on E:Exception do
+      LogWriter.Write(ddError, 'TPerformer.DoSaveAttachment',
+                                E.Message + sLineBreak +
+                                'Bad file name - ' + aFileName  + sLineBreak +
+                                'New file name - ' + Data.Attachments[High(Data.Attachments)].FileName);
+  end;
   Handled := True;
 end;
 
@@ -422,7 +491,7 @@ begin
       end;
     except
       on E: Exception do
-        LogWriter.Write(ddError, 'GetTextFromPDFFile', 'File name - ' + aFileName);
+        LogWriter.Write(ddError, 'TPerformer.GetTextFromPDFFile', 'File name - ' + aFileName);
     end;
   finally
     FreeAndNil(PDFCtrl);

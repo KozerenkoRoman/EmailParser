@@ -1,4 +1,4 @@
-unit Frame.Attachments;
+unit Frame.AllAttachments;
 
 interface
 
@@ -15,7 +15,7 @@ uses
 {$ENDREGION}
 
 type
-  TframeAttachments = class(TFrameSource, IEmailChange)
+  TframeAllAttachments = class(TFrameSource, IProgress, IUpdateXML)
     aOpenAttachFile      : TAction;
     aOpenParsedText      : TAction;
     btnOpenAttachFile    : TToolButton;
@@ -28,19 +28,27 @@ type
     procedure aSaveExecute(Sender: TObject);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
-    procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind;
+      Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
   private const
     COL_SHORT_NAME   = 0;
     COL_FILE_NAME    = 1;
     COL_CONTENT_TYPE = 2;
     COL_PARSED_TEXT  = 3;
 
-    C_IDENTITY_NAME = 'frameAttachments';
+    C_IDENTITY_NAME = 'frameAllAttachments';
   private
+      //IUpdateXML
+    procedure UpdateXML;
+
+    //IProgress
+    procedure EndProgress;
+    procedure StartProgress(const aMaxPosition: Integer);
+    procedure Progress;
+    procedure CompletedItem(const aResultData: TResultData);
+
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
-    //IEmailChange
-    procedure FocusChanged(const aData: PResultData);
   protected
     function GetIdentityName: string; override;
     procedure SearchText(const aText: string); override;
@@ -56,34 +64,42 @@ implementation
 
 {$R *.dfm}
 
-{ TframeAttachments }
+{ TframeAllAttachments }
 
-constructor TframeAttachments.Create(AOwner: TComponent);
+constructor TframeAllAttachments.Create(AOwner: TComponent);
 begin
   inherited;
   vstTree.NodeDataSize := SizeOf(TAttachments);
-  TPublishers.EmailPublisher.Subscribe(Self);
+  TPublishers.UpdateXMLPublisher.Subscribe(Self);
+  TPublishers.ProgressPublisher.Subscribe(Self);
 end;
 
-destructor TframeAttachments.Destroy;
+destructor TframeAllAttachments.Destroy;
 begin
-  TPublishers.EmailPublisher.Unsubscribe(Self);
+  TPublishers.UpdateXMLPublisher.Unsubscribe(Self);
+  TPublishers.ProgressPublisher.Unsubscribe(Self);
   inherited;
 end;
 
-function TframeAttachments.GetIdentityName: string;
+function TframeAllAttachments.GetIdentityName: string;
 begin
   Result := C_IDENTITY_NAME;
 end;
 
-procedure TframeAttachments.Initialize;
+procedure TframeAllAttachments.Initialize;
 begin
   inherited Initialize;
   vstTree.FullExpand;
   Translate;
 end;
 
-procedure TframeAttachments.Translate;
+procedure TframeAllAttachments.Deinitialize;
+begin
+
+  inherited Deinitialize;
+end;
+
+procedure TframeAllAttachments.Translate;
 begin
   inherited;
   aOpenAttachFile.Hint  := TLang.Lang.Translate('OpenFile');
@@ -93,33 +109,7 @@ begin
   vstTree.Header.Columns[COL_PARSED_TEXT].Text  := TLang.Lang.Translate('Text');
 end;
 
-procedure TframeAttachments.Deinitialize;
-begin
-
-  inherited Deinitialize;
-end;
-
-procedure TframeAttachments.FocusChanged(const aData: PResultData);
-var
-  Data: PAttachments;
-  NewNode: PVirtualNode;
-begin
-  vstTree.BeginUpdate;
-  try
-    vstTree.Clear;
-    if Assigned(aData) then
-      for var i := Low(aData.Attachments) to High(aData.Attachments) do
-      begin
-        NewNode := vstTree.AddChild(nil);
-        Data := NewNode^.GetData;
-        Data^.Assign(aData.Attachments[i]);
-      end;
-  finally
-    vstTree.EndUpdate;
-  end;
-end;
-
-procedure TframeAttachments.aOpenAttachFileExecute(Sender: TObject);
+procedure TframeAllAttachments.aOpenAttachFileExecute(Sender: TObject);
 var
   Data: PAttachments;
 begin
@@ -134,13 +124,13 @@ begin
   end;
 end;
 
-procedure TframeAttachments.aOpenAttachFileUpdate(Sender: TObject);
+procedure TframeAllAttachments.aOpenAttachFileUpdate(Sender: TObject);
 begin
   inherited;
   TAction(Sender).Enabled := not vstTree.IsEmpty and Assigned(vstTree.FocusedNode);
 end;
 
-procedure TframeAttachments.aOpenParsedTextExecute(Sender: TObject);
+procedure TframeAllAttachments.aOpenParsedTextExecute(Sender: TObject);
 var
   Data: PAttachments;
 begin
@@ -152,7 +142,7 @@ begin
   end;
 end;
 
-procedure TframeAttachments.aSaveExecute(Sender: TObject);
+procedure TframeAllAttachments.aSaveExecute(Sender: TObject);
 var
   Data: PAttachments;
 begin
@@ -173,7 +163,7 @@ begin
   end;
 end;
 
-procedure TframeAttachments.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+procedure TframeAllAttachments.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
 var
   Data1, Data2: PAttachments;
 begin
@@ -192,7 +182,7 @@ begin
   end;
 end;
 
-procedure TframeAttachments.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+procedure TframeAllAttachments.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
   Data: PAttachments;
 begin
@@ -202,7 +192,7 @@ begin
     Data^.Clear;
 end;
 
-procedure TframeAttachments.vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
+procedure TframeAllAttachments.vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
 var
   Data: PAttachments;
 begin
@@ -214,7 +204,7 @@ begin
   end;
 end;
 
-procedure TframeAttachments.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+procedure TframeAllAttachments.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
   Data: PAttachments;
 begin
@@ -233,7 +223,7 @@ begin
   end;
 end;
 
-procedure TframeAttachments.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
+procedure TframeAllAttachments.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
 var
   CellText: string;
 begin
@@ -241,7 +231,7 @@ begin
   Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
 end;
 
-procedure TframeAttachments.SearchText(const aText: string);
+procedure TframeAllAttachments.SearchText(const aText: string);
 var
   Node: PVirtualNode;
 begin
@@ -258,6 +248,40 @@ begin
   finally
     vstTree.EndUpdate;
   end;
+end;
+
+procedure TframeAllAttachments.StartProgress(const aMaxPosition: Integer);
+begin
+  vstTree.BeginUpdate;
+  vstTree.Clear;
+end;
+
+procedure TframeAllAttachments.CompletedItem(const aResultData: TResultData);
+var
+  Data: PAttachments;
+  Node: PVirtualNode;
+begin
+  for var i := Low(aResultData.Attachments) to High(aResultData.Attachments) do
+  begin
+    Node := vstTree.AddChild(nil);
+    Data := Node^.GetData;
+    Data^.Assign(aResultData.Attachments[i]);
+  end;
+end;
+
+procedure TframeAllAttachments.EndProgress;
+begin
+  vstTree.EndUpdate;
+end;
+
+procedure TframeAllAttachments.Progress;
+begin
+
+end;
+
+procedure TframeAllAttachments.UpdateXML;
+begin
+
 end;
 
 end.

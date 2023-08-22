@@ -13,8 +13,10 @@ type
     ilCustomCheckImages : TImageList;
     ImCollection16      : TImageCollection;
     ImCollection32      : TImageCollection;
+    ImFileExt           : TImageCollection;
     vil16               : TVirtualImageList;
     vil32               : TVirtualImageList;
+    vilFileExt          : TVirtualImageList;
   private
     { Private declarations }
   public

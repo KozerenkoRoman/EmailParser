@@ -1,20 +1,17 @@
 inherited frameCommonSettings: TframeCommonSettings
-  Width = 832
-  Height = 328
-  ExplicitWidth = 832
-  ExplicitHeight = 328
+  Width = 791
+  Height = 356
+  ExplicitWidth = 791
+  ExplicitHeight = 356
   inherited tbMain: TToolBar
-    Width = 832
-    ExplicitWidth = 525
-    inherited btnSep03: TToolButton
-      Visible = False
-    end
+    Width = 791
+    ExplicitWidth = 837
   end
   object grdCommonParams: TGridPanel [1]
     Left = 0
     Top = 39
-    Width = 832
-    Height = 289
+    Width = 791
+    Height = 317
     Align = alClient
     BevelOuter = bvNone
     Color = clWindow
@@ -126,9 +123,8 @@ inherited frameCommonSettings: TframeCommonSettings
       item
         Value = 100.000000000000000000
       end>
-    TabOrder = 2
-    ExplicitWidth = 525
-    ExplicitHeight = 262
+    TabOrder = 1
+    ExplicitWidth = 837
     object lblLanguage: TLabel
       AlignWithMargins = True
       Left = 3
@@ -289,39 +285,15 @@ inherited frameCommonSettings: TframeCommonSettings
       TabOrder = 5
     end
   end
-  inherited vstTree: TVirtualStringTree
-    Left = 777
-    Top = 278
-    Width = 25
-    Height = 25
-    Align = alNone
-    Visible = False
-    ExplicitLeft = 777
-    ExplicitTop = 278
-    ExplicitWidth = 25
-    ExplicitHeight = 25
-  end
   inherited alFrame: TActionList
-    inherited aExportToExcel: TAction
-      Visible = False
-    end
-    inherited aExportToCSV: TAction
-      Visible = False
-    end
-    inherited aPrint: TAction
-      Visible = False
-    end
-    inherited aRefresh: TAction
-      OnExecute = aRefreshExecute
-    end
     inherited aAdd: TAction
       Visible = False
     end
     inherited aDelete: TAction
       Visible = False
     end
-    inherited aColumnSettings: TAction
-      Visible = False
+    inherited aRefresh: TAction
+      OnExecute = aRefreshExecute
     end
     object aPathForAttachments: TAction
       Caption = 'Open'

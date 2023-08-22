@@ -24,7 +24,7 @@ class procedure TVirtualTree.Initialize(Sender: TVirtualStringTree);
 const
   C_HEIGHT = 22;
 begin
-  Sender.CheckImageKind    := ckCustom;
+  Sender.CheckImageKind := ckCustom;
   Sender.CustomCheckImages := DMImage.ilCustomCheckImages;
   Sender.Colors.FocusedSelectionColor   := clWebLightSteelBlue;
   Sender.Colors.GridLineColor           := clSilver;

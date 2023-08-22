@@ -30,10 +30,16 @@ type
     procedure CompletedItem(const aResultData: TResultData);
   end;
 
+  TEmailPublisher = class(TCustomPublisher)
+  public
+    procedure FocusChanged(const aData: PResultData);
+  end;
+
   TPublishers = class
   class var
     ProgressPublisher  : TProgressPublisher;
     UpdateXMLPublisher : TUpdateXMLPublisher;
+    EmailPublisher     : TEmailPublisher;
   end;
 
 implementation
@@ -151,14 +157,38 @@ begin
       end);
 end;
 
+{ TEmailPublisher }
+
+procedure TEmailPublisher.FocusChanged(const aData: PResultData);
+var
+  Item: TObject;
+  obj: IEmailChange;
+begin
+  if not Application.Terminated then
+    TThread.Queue(nil,
+      procedure
+      begin
+        for var i := 0 to Self.Count - 1 do
+        begin
+          Item := Self.Items[i];
+          if Assigned(Item) then
+            if Supports(Item, IEmailChange, obj) then
+              obj.FocusChanged(aData);
+        end;
+      end);
+end;
+
 initialization
   TPublishers.ProgressPublisher  := TProgressPublisher.Create;
   TPublishers.UpdateXMLPublisher := TUpdateXMLPublisher.Create;
+  TPublishers.EmailPublisher     := TEmailPublisher.Create;
 
 finalization
   if Assigned(TPublishers.UpdateXMLPublisher) then
     FreeAndNil(TPublishers.UpdateXMLPublisher);
   if Assigned(TPublishers.ProgressPublisher) then
     FreeAndNil(TPublishers.ProgressPublisher);
+  if Assigned(TPublishers.EmailPublisher) then
+    FreeAndNil(TPublishers.EmailPublisher);
 
 end.

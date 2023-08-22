@@ -6,7 +6,7 @@ inherited frameRegExpParameters: TframeRegExpParameters
   inherited tbMain: TToolBar
     Top = 39
     Width = 753
-    ExplicitTop = 45
+    ExplicitTop = 39
     ExplicitWidth = 753
   end
   object tbSettings: TToolBar [1]
@@ -20,9 +20,6 @@ inherited frameRegExpParameters: TframeRegExpParameters
     EdgeOuter = esNone
     Images = DMImage.vil32
     TabOrder = 2
-    ExplicitLeft = 3
-    ExplicitTop = 3
-    ExplicitWidth = 747
     object pnlSettings: TPanel
       Left = 0
       Top = 0
@@ -88,9 +85,9 @@ inherited frameRegExpParameters: TframeRegExpParameters
     OnEditing = vstTreeEditing
     OnGetText = vstTreeGetText
     OnNewText = vstTreeNewText
-    ExplicitTop = 84
+    ExplicitTop = 78
     ExplicitWidth = 753
-    ExplicitHeight = 360
+    ExplicitHeight = 366
     Columns = <
       item
         CaptionAlignment = taCenter

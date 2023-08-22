@@ -1,4 +1,4 @@
-﻿unit Settings;
+﻿unit MainForm;
 
 interface
 
@@ -10,11 +10,11 @@ uses
   HtmlLib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExpParameters,Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.CommonSettings, Global.Types, Vcl.Samples.Gauges,
-  Publishers.Interfaces, Publishers, CommonForms;
+  Publishers.Interfaces, Publishers, CommonForms, Frame.Source;
 {$ENDREGION}
 
 type
-  TfrmSettings = class(TCommonForm, IProgress)
+  TfrmMain = class(TCommonForm, IProgress)
     aEditCommonParameters : TAction;
     aEditRegExpParameters : TAction;
     alSettings            : TActionList;
@@ -72,22 +72,22 @@ type
   end;
 
 var
-  frmSettings: TfrmSettings;
+  frmMain: TfrmMain;
 
 implementation
 
 {$R *.dfm}
 
-{ TfrmSettings }
+{ TfrmMain }
 
-procedure TfrmSettings.FormCreate(Sender: TObject);
+procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   inherited;
   CreateProgressBar;
   TPublishers.ProgressPublisher.Subscribe(Self);
 end;
 
-procedure TfrmSettings.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   inherited;
   FreeAndNil(FProgressBar);
@@ -95,7 +95,7 @@ begin
   TPublishers.ProgressPublisher.Unsubscribe(Self);
 end;
 
-procedure TfrmSettings.Initialize;
+procedure TfrmMain.Initialize;
 begin
   LoadFormPosition;
   TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
@@ -109,7 +109,7 @@ begin
   Translate;
 end;
 
-procedure TfrmSettings.Deinitialize;
+procedure TfrmMain.Deinitialize;
 begin
   frameRegExpParameters.Deinitialize;
   framePathes.Deinitialize;
@@ -118,7 +118,7 @@ begin
   SaveFormPosition;
 end;
 
-procedure TfrmSettings.Translate;
+procedure TfrmMain.Translate;
 begin
   aEditCommonParameters.Caption := TLang.Lang.Translate('EditCommonParameters');
   aEditRegExpParameters.Caption := TLang.Lang.Translate('EditRegExpParameters');
@@ -133,12 +133,12 @@ begin
   lblTitle.Caption := pnlCard.ActiveCard.Caption;
 end;
 
-function TfrmSettings.GetIdentityName: string;
+function TfrmMain.GetIdentityName: string;
 begin
   Result := C_IDENTITY_NAME;
 end;
 
-procedure TfrmSettings.FormResize(Sender: TObject);
+procedure TfrmMain.FormResize(Sender: TObject);
 begin
   inherited;
   if not Application.Terminated then
@@ -146,7 +146,7 @@ begin
       FProgressBar.Width := sbMain.Width - 20;
 end;
 
-procedure TfrmSettings.aToggleSplitPanelExecute(Sender: TObject);
+procedure TfrmMain.aToggleSplitPanelExecute(Sender: TObject);
 begin
   inherited;
   if splView.Opened then
@@ -155,7 +155,7 @@ begin
     splView.Open;
 end;
 
-procedure TfrmSettings.CreateProgressBar;
+procedure TfrmMain.CreateProgressBar;
 begin
   FProgressBar := TGauge.Create(nil);
   FProgressBar.Parent := sbMain;
@@ -170,28 +170,28 @@ begin
   FProgressBar.Visible     := False;
 end;
 
-procedure TfrmSettings.aEditCommonParametersExecute(Sender: TObject);
+procedure TfrmMain.aEditCommonParametersExecute(Sender: TObject);
 begin
   inherited;
   lblTitle.Caption := TAction(Sender).Caption;
   pnlCard.ActiveCard := crdCommonParams;
 end;
 
-procedure TfrmSettings.aEditRegExpParametersExecute(Sender: TObject);
+procedure TfrmMain.aEditRegExpParametersExecute(Sender: TObject);
 begin
   inherited;
   lblTitle.Caption := TAction(Sender).Caption;
   pnlCard.ActiveCard := crdRegExpParameters;
 end;
 
-procedure TfrmSettings.aPathsFindFilesExecute(Sender: TObject);
+procedure TfrmMain.aPathsFindFilesExecute(Sender: TObject);
 begin
   inherited;
   lblTitle.Caption := TAction(Sender).Caption;
   pnlCard.ActiveCard := crdPathsToFindScripts;
 end;
 
-procedure TfrmSettings.ApplicationEventsException(Sender: TObject; E: Exception);
+procedure TfrmMain.ApplicationEventsException(Sender: TObject; E: Exception);
 var
   StackTrace: string;
 begin
@@ -202,7 +202,7 @@ begin
     TMessageDialog.ShowError(E.Message, StackTrace);
 end;
 
-procedure TfrmSettings.aSaveCommonSettingsExecute(Sender: TObject);
+procedure TfrmMain.aSaveCommonSettingsExecute(Sender: TObject);
 begin
   inherited;
   frameCommonSettings.SaveToXML;
@@ -215,14 +215,14 @@ begin
   frameCommonSettings.Translate;
 end;
 
-procedure TfrmSettings.aSearchExecute(Sender: TObject);
+procedure TfrmMain.aSearchExecute(Sender: TObject);
 begin
   inherited;
   lblTitle.Caption := TAction(Sender).Caption;
   pnlCard.ActiveCard := crdResultView;
 end;
 
-procedure TfrmSettings.srchBoxInvokeSearch(Sender: TObject);
+procedure TfrmMain.srchBoxInvokeSearch(Sender: TObject);
 begin
   inherited;
 //  if pnlCard.ActiveCard = crdPathsToFindScripts then
@@ -232,18 +232,18 @@ begin
 end;
 
 
-procedure TfrmSettings.CompletedItem(const aResultData: TResultData);
+procedure TfrmMain.CompletedItem(const aResultData: TResultData);
 begin
   //nothing
 end;
 
-procedure TfrmSettings.EndProgress;
+procedure TfrmMain.EndProgress;
 begin
   FProgressBar.Progress := 0;
   FProgressBar.Visible := False;
 end;
 
-procedure TfrmSettings.Progress;
+procedure TfrmMain.Progress;
 begin
   if (FProgressBar.Progress >= FProgressBar.MaxValue) then
     FProgressBar.MaxValue := FProgressBar.MaxValue + 1;
@@ -252,7 +252,7 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure TfrmSettings.StartProgress(const aMaxPosition: Integer);
+procedure TfrmMain.StartProgress(const aMaxPosition: Integer);
 begin
   FProgressBar.MaxValue := aMaxPosition;
   FProgressBar.Progress := 0;

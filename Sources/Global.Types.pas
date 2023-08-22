@@ -36,6 +36,8 @@ type
     ContentID   : string;
     ContentType : string;
     ParsedText  : string;
+    ImageIndex  : Byte;
+    procedure Assign(const aData: TAttachments);
     procedure Clear;
   end;
   TAttachmentsArray = TArray<TAttachments>;
@@ -73,6 +75,12 @@ type
   TAttachmentsDir = (adAttachments, adSubAttachments, adUserDefined);
   TAttachmentsDirHelper = record helper for TAttachmentsDir
     function FromString(aDir: string): TAttachmentsDir;
+  end;
+
+  TExtIcon = (eiPdf = 20, eiPng = 21, eiGif = 8, eiIco = 2, eiJpg = 12, eiZip = 30, eiRar = 23, eiHtml = 9, eiTxt = 27,
+              eiXls = 29, eiDoc = 04);
+  TExtIconHelper = record helper for TExtIcon
+    function ToByte: Byte;
   end;
 
 const
@@ -200,13 +208,7 @@ begin
   Self.ParentNode  := aData.ParentNode;
   SetLength(Self.Attachments, Length(aData.Attachments));
   for var att := Low(Self.Attachments) to High(Self.Attachments) do
-  begin
-    Self.Attachments[att].ShortName   := aData.Attachments[att].ShortName;
-    Self.Attachments[att].FileName    := aData.Attachments[att].FileName;
-    Self.Attachments[att].ContentID   := aData.Attachments[att].ContentID;
-    Self.Attachments[att].ContentType := aData.Attachments[att].ContentType;
-    Self.Attachments[att].ParsedText  := aData.Attachments[att].ParsedText;
-  end;
+    Self.Attachments[att].Assign(aData.Attachments[att]);
   Self.Matches.Count := aData.Matches.Count;
   for var i := 0 to Self.Matches.Count - 1 do
     Self.Matches[i] := aData.Matches[i];
@@ -224,9 +226,19 @@ end;
 
 { TAttachments }
 
+procedure TAttachments.Assign(const aData: TAttachments);
+begin
+  Self.ShortName   := aData.ShortName;
+  Self.FileName    := aData.FileName;
+  Self.ContentID   := aData.ContentID;
+  Self.ContentType := aData.ContentType;
+  Self.ParsedText  := aData.ParsedText;
+  Self.ImageIndex  := aData.ImageIndex;
+end;
+
 procedure TAttachments.Clear;
 begin
-  Self := Default (TAttachments);
+  Self := Default(TAttachments);
 end;
 
 { TAttachmentsDirHelper }
@@ -241,6 +253,13 @@ begin
     Result := adSubAttachments
   else
     Result := adUserDefined;
+end;
+
+{ TExtIconHelper }
+
+function TExtIconHelper.ToByte: Byte;
+begin
+  Result := Ord(Self);
 end;
 
 initialization

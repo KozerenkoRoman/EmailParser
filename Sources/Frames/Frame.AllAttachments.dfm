@@ -1,4 +1,4 @@
-inherited frameAttachments: TframeAttachments
+inherited frameAllAttachments: TframeAllAttachments
   Width = 663
   Height = 374
   ExplicitWidth = 663
@@ -8,9 +8,6 @@ inherited frameAttachments: TframeAttachments
     ExplicitWidth = 663
     inherited btnAdd: TToolButton
       Action = aOpenAttachFile
-      Visible = False
-    end
-    inherited btnSep02: TToolButton
       Visible = False
     end
     object btnSep04: TToolButton
@@ -33,6 +30,7 @@ inherited frameAttachments: TframeAttachments
   inherited vstTree: TVirtualStringTree
     Width = 663
     Height = 335
+    CustomCheckImages = DMImage.ilCustomCheckImages
     Header.MainColumn = 0
     OnCompareNodes = vstTreeCompareNodes
     OnDblClick = aOpenParsedTextExecute
@@ -74,6 +72,7 @@ inherited frameAttachments: TframeAttachments
       end>
   end
   inherited alFrame: TActionList
+    Left = 100
     inherited aAdd: TAction
       Visible = False
     end
@@ -83,9 +82,6 @@ inherited frameAttachments: TframeAttachments
     inherited aSave: TAction
       OnExecute = aSaveExecute
       OnUpdate = aOpenAttachFileUpdate
-    end
-    inherited aRefresh: TAction
-      Visible = False
     end
     object aOpenAttachFile: TAction
       ImageIndex = 72
@@ -103,7 +99,7 @@ inherited frameAttachments: TframeAttachments
   end
   object SaveDialogAttachment: TSaveDialog
     Filter = 'All files|*.*'
-    Left = 168
-    Top = 104
+    Left = 200
+    Top = 100
   end
 end
