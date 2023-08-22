@@ -31,10 +31,11 @@ type
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
   private const
-    COL_SHORT_NAME   = 0;
-    COL_FILE_NAME    = 1;
-    COL_CONTENT_TYPE = 2;
-    COL_PARSED_TEXT  = 3;
+    COL_POSITION     = 0;
+    COL_SHORT_NAME   = 1;
+    COL_FILE_NAME    = 2;
+    COL_CONTENT_TYPE = 3;
+    COL_PARSED_TEXT  = 4;
 
     C_IDENTITY_NAME = 'frameAttachments';
   private
@@ -113,6 +114,7 @@ begin
         NewNode := vstTree.AddChild(nil);
         Data := NewNode^.GetData;
         Data^.Assign(aData.Attachments[i]);
+        Data^.Position := i + 1;
       end;
   finally
     vstTree.EndUpdate;
@@ -181,6 +183,8 @@ begin
   Data1 := Node1^.GetData;
   Data2 := Node2^.GetData;
   case Column of
+    COL_POSITION:
+      Result := CompareValue(Data1^.Position, Data2^.Position);
     COL_SHORT_NAME:
       Result := CompareText(Data1^.ShortName, Data2^.ShortName);
     COL_FILE_NAME:
@@ -222,6 +226,8 @@ begin
   CellText := '';
   Data := Node^.GetData;
   case Column of
+    COL_POSITION:
+      CellText := Data^.Position.ToString;
     COL_SHORT_NAME:
       CellText := Data^.ShortName;
     COL_FILE_NAME:

@@ -10,7 +10,7 @@ inherited frameEmails: TframeEmails
   PixelsPerInch = 144
   inherited tbMain: TToolBar
     Width = 752
-    ExplicitWidth = 806
+    ExplicitWidth = 752
     object btnSep04: TToolButton
       Left = 375
       Top = 0
@@ -60,8 +60,8 @@ inherited frameEmails: TframeEmails
     OnDblClick = aOpenEmailExecute
     OnFocusChanged = vstTreeFocusChanged
     OnGetText = vstTreeGetText
-    ExplicitWidth = 806
-    ExplicitHeight = 465
+    ExplicitWidth = 752
+    ExplicitHeight = 307
     Columns = <
       item
         CaptionAlignment = taCenter

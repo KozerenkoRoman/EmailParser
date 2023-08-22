@@ -157,8 +157,8 @@ begin
       Node := vstTree.RootNode.FirstChild;
       while Assigned(Node) do
       begin
-        Data := Node.GetData;
-        Data.Matches.Count := FRegExpList.Count;
+        Data := Node^.GetData;
+        Data^.Matches.Count := FRegExpList.Count;
         Node := Node.NextSibling;
       end;
     end;
@@ -378,7 +378,7 @@ begin
     Counter := 0;
     while Assigned(Node) do
     begin
-      Data := Node.GetData;
+      Data := Node^.GetData;
       ResultDataArray[Counter] := Data^;
       Node := Node.NextSibling;
       Inc(Counter);

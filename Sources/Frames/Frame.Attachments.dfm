@@ -43,8 +43,16 @@ inherited frameAttachments: TframeAttachments
     Columns = <
       item
         CaptionAlignment = taCenter
+        MaxWidth = 100
+        MinWidth = 50
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 0
+        Text = '#'
+      end
+      item
+        CaptionAlignment = taCenter
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 1
         Text = 'File Name'
         Width = 130
       end
@@ -52,7 +60,7 @@ inherited frameAttachments: TframeAttachments
         CaptionAlignment = taCenter
         MaxWidth = 1000
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 1
+        Position = 2
         Text = 'Path'
         Width = 200
       end
@@ -60,15 +68,15 @@ inherited frameAttachments: TframeAttachments
         CaptionAlignment = taCenter
         MaxWidth = 1000
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 2
+        Position = 3
         Text = 'Content Type'
         Width = 129
       end
       item
         CaptionAlignment = taCenter
         MaxWidth = 1000
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 3
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 4
         Text = 'Text'
         Width = 172
       end>

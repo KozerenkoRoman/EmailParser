@@ -11,7 +11,7 @@ uses
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Files.Utils,
-  Vcl.WinXPanels, Publishers.Interfaces, Publishers;
+  Vcl.WinXPanels, Publishers.Interfaces, Publishers, VirtualTrees.ExportHelper, Global.Resources;
 {$ENDREGION}
 
 type
@@ -29,13 +29,15 @@ type
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
-    procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind;
-      Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
+    procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
   private const
-    COL_SHORT_NAME   = 0;
-    COL_FILE_NAME    = 1;
-    COL_CONTENT_TYPE = 2;
-    COL_PARSED_TEXT  = 3;
+    COL_POSITION     = 0;
+    COL_SHORT_NAME   = 1;
+    COL_FILE_NAME    = 2;
+    COL_CONTENT_TYPE = 3;
+    COL_PARSED_TEXT  = 4;
+
+    C_FIXED_COLUMNS  = 5;
 
     C_IDENTITY_NAME = 'frameAllAttachments';
   private
@@ -48,6 +50,7 @@ type
     procedure Progress;
     procedure CompletedItem(const aResultData: TResultData);
 
+    procedure UpdateColumns;
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
     function GetIdentityName: string; override;
@@ -89,7 +92,8 @@ end;
 procedure TframeAllAttachments.Initialize;
 begin
   inherited Initialize;
-  vstTree.FullExpand;
+  LoadFromXML;
+  UpdateColumns;
   Translate;
 end;
 
@@ -102,7 +106,7 @@ end;
 procedure TframeAllAttachments.Translate;
 begin
   inherited;
-  aOpenAttachFile.Hint  := TLang.Lang.Translate('OpenFile');
+  aOpenAttachFile.Hint := TLang.Lang.Translate('OpenFile');
   vstTree.Header.Columns[COL_SHORT_NAME].Text   := TLang.Lang.Translate('FileName');
   vstTree.Header.Columns[COL_FILE_NAME].Text    := TLang.Lang.Translate('Path');
   vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
@@ -171,6 +175,8 @@ begin
   Data1 := Node1^.GetData;
   Data2 := Node2^.GetData;
   case Column of
+    COL_POSITION:
+      Result := CompareValue(Data1^.Position, Data2^.Position);
     COL_SHORT_NAME:
       Result := CompareText(Data1^.ShortName, Data2^.ShortName);
     COL_FILE_NAME:
@@ -179,6 +185,13 @@ begin
       Result := CompareText(Data1^.ContentType, Data2^.ContentType);
     COL_PARSED_TEXT:
       Result := CompareText(Data1^.ParsedText, Data2^.ParsedText);
+  else
+    if (Column >= 0) and
+       (Data1^.Matches.Count > 0) and
+       (Data2^.Matches.Count > 0) and
+       (Data1^.Matches.Count >= Column - C_FIXED_COLUMNS) and
+       (Data2^.Matches.Count >= Column - C_FIXED_COLUMNS) then
+      Result := CompareText(Data1^.Matches.Items[Column - C_FIXED_COLUMNS], Data2^.Matches.Items[Column - C_FIXED_COLUMNS]);
   end;
 end;
 
@@ -212,6 +225,8 @@ begin
   CellText := '';
   Data := Node^.GetData;
   case Column of
+    COL_POSITION:
+      CellText := Data^.Position.ToString;
     COL_SHORT_NAME:
       CellText := Data^.ShortName;
     COL_FILE_NAME:
@@ -220,6 +235,18 @@ begin
       CellText := Data^.ContentType;
     COL_PARSED_TEXT:
       CellText := Data^.ParsedText;
+  else
+  try
+    if (Column >= 0) and (Data^.Matches.Count >= Column - C_FIXED_COLUMNS) then
+      CellText := Data^.Matches.Items[Column - C_FIXED_COLUMNS];
+  except
+             on E: Exception do
+          LogWriter.Write(ddError, 'TframeAllAttachments.vstTreeGetText',
+                                   E.Message + sLineBreak +
+                                   'CellText - ' + CellText + sLineBreak +
+                                   'Column - '  + IntToStr(Column)+ sLineBreak +
+                                   'р≥зниц€ - ' + (Data^.Matches.Count >= Column - C_FIXED_COLUMNS).ToString);
+  end;
   end;
 end;
 
@@ -266,6 +293,48 @@ begin
     Node := vstTree.AddChild(nil);
     Data := Node^.GetData;
     Data^.Assign(aResultData.Attachments[i]);
+    Data^.Position := vstTree.TotalCount;
+  end;
+end;
+
+procedure TframeAllAttachments.UpdateColumns;
+var
+  Column: TVirtualTreeColumn;
+  FRegExpList: TArrayRecord<TRegExpData>;
+  Node: PVirtualNode;
+  Data: PAttachments;
+begin
+  vstTree.BeginUpdate;
+  FRegExpList := TGeneral.GetRegExpParametersList;
+  while (C_FIXED_COLUMNS < vstTree.Header.Columns.Count) do
+    vstTree.Header.Columns.Delete(C_FIXED_COLUMNS);
+
+  if (FRegExpList.Count + C_FIXED_COLUMNS <> vstTree.Header.Columns.Count) then
+    if (vstTree.RootNode.ChildCount > 0) then
+    begin
+      Node := vstTree.RootNode.FirstChild;
+      while Assigned(Node) do
+      begin
+        Data := Node^.GetData;
+        Data^.Matches.Count := FRegExpList.Count;
+        Node := Node^.NextSibling;
+      end;
+    end;
+
+  try
+    for var item in FRegExpList do
+    begin
+      Column := vstTree.Header.Columns.Add;
+      Column.Text             := item.ParameterName;
+      Column.Options          := Column.Options - [coEditable];
+      Column.CaptionAlignment := taCenter;
+      Column.Alignment        := taLeftJustify;
+      Column.Width            := 100;
+      Column.Options          := Column.Options + [coVisible];
+    end;
+    TStoreHelper.LoadFromXML(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
+  finally
+    vstTree.EndUpdate;
   end;
 end;
 
@@ -281,7 +350,7 @@ end;
 
 procedure TframeAllAttachments.UpdateXML;
 begin
-
+  UpdateColumns;
 end;
 
 end.

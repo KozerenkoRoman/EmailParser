@@ -317,6 +317,8 @@ var
   Ext: string;
 begin
   for var i := Low(aData.Attachments) to High(aData.Attachments) do
+  begin
+    aData.Attachments[i].Matches.Count := FRegExpList.Count;
     if TFile.Exists(aData.Attachments[i].FileName) then
       try
         Ext := TPath.GetExtension(aData.Attachments[i].FileName).ToLower;
@@ -411,8 +413,19 @@ begin
               aData.Attachments[i].ImageIndex  := TExtIcon.eiTxt.ToByte;
             end;
           fsUnknown:
-            aData.Attachments[i].ParsedText := '';
+            begin
+              if Ext.Contains('.htm') then
+              begin
+                aData.Attachments[i].ParsedText  := '';
+                aData.Attachments[i].ContentType := 'application/html';
+                aData.Attachments[i].ImageIndex  := TExtIcon.eiHtml.ToByte;
+              end
+              else
+                aData.Attachments[i].ParsedText := '';
+            end;
         end;
+        for var j := 0 to FRegExpList.Count - 1 do
+          aData.Attachments[i].Matches[j] := GetRegExpCollection(aData.Attachments[i].ParsedText, FRegExpList[j].RegExpTemplate, FUseLastGroup, FRegExpList[j].GroupIndex);
       except
         on E: Exception do
           LogWriter.Write(ddError, 'TPerformer.ParseAttachmentFiles',
@@ -420,6 +433,8 @@ begin
                                    'Email name - ' + aData.FileName + sLineBreak +
                                    'File name - '  + aData.Attachments[i].FileName);
       end;
+  end;
+
 end;
 
 procedure TPerformer.DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
@@ -447,9 +462,9 @@ begin
   if aFileName.Trim.IsEmpty or (not TPath.HasValidFileNameChars(aFileName, False)) then
   begin
     var NewName := Concat('[', Data.ShortName, '] (', aBody.Index.ToString, ')');
-    LogWriter.Write(ddError, 'TPerformer.DoSaveAttachment',
-                             'Bad file name - ' + aFileName  + sLineBreak +
-                             'New file name - ' + NewName);
+    LogWriter.Write(ddWarning, 'TPerformer.DoSaveAttachment',
+                               'Bad file name - ' + aFileName  + sLineBreak +
+                               'New file name - ' + NewName);
     aFileName := NewName;
   end;
 

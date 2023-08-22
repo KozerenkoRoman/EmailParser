@@ -31,12 +31,14 @@ type
 
   PAttachments = ^TAttachments;
   TAttachments = record
+    Position    : Integer;
     ShortName   : string;
     FileName    : string;
     ContentID   : string;
     ContentType : string;
     ParsedText  : string;
     ImageIndex  : Byte;
+    Matches     : TStringArray;
     procedure Assign(const aData: TAttachments);
     procedure Clear;
   end;
@@ -57,8 +59,8 @@ type
     ParsedText  : string;
     Matches     : TStringArray;
     ParentNode  : PVirtualNode;
-    procedure Clear;
     procedure Assign(const aData: TResultData);
+    procedure Clear;
   end;
   TResultDataArray = TArrayRecord<TResultData>;
   PResultDataArray = ^TResultDataArray;
@@ -234,11 +236,15 @@ begin
   Self.ContentType := aData.ContentType;
   Self.ParsedText  := aData.ParsedText;
   Self.ImageIndex  := aData.ImageIndex;
+  Self.Matches.Count := aData.Matches.Count;
+  for var i := 0 to Self.Matches.Count - 1 do
+    Self.Matches[i] := aData.Matches[i];
 end;
 
 procedure TAttachments.Clear;
 begin
   Self := Default(TAttachments);
+  Matches.Clear;
 end;
 
 { TAttachmentsDirHelper }

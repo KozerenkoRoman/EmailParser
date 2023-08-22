@@ -30,7 +30,6 @@ inherited frameAllAttachments: TframeAllAttachments
   inherited vstTree: TVirtualStringTree
     Width = 663
     Height = 335
-    CustomCheckImages = DMImage.ilCustomCheckImages
     Header.MainColumn = 0
     OnCompareNodes = vstTreeCompareNodes
     OnDblClick = aOpenParsedTextExecute
@@ -40,9 +39,18 @@ inherited frameAllAttachments: TframeAllAttachments
     ExplicitHeight = 335
     Columns = <
       item
+        Alignment = taRightJustify
         CaptionAlignment = taCenter
+        MaxWidth = 500
+        MinWidth = 50
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 0
+        Text = '#'
+      end
+      item
+        CaptionAlignment = taCenter
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 1
         Text = 'File Name'
         Width = 130
       end
@@ -50,7 +58,7 @@ inherited frameAllAttachments: TframeAllAttachments
         CaptionAlignment = taCenter
         MaxWidth = 1000
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 1
+        Position = 2
         Text = 'Path'
         Width = 200
       end
@@ -58,15 +66,15 @@ inherited frameAllAttachments: TframeAllAttachments
         CaptionAlignment = taCenter
         MaxWidth = 1000
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 2
+        Position = 3
         Text = 'Content Type'
         Width = 129
       end
       item
         CaptionAlignment = taCenter
         MaxWidth = 1000
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 3
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 4
         Text = 'Text'
         Width = 172
       end>
