@@ -1,22 +1,8 @@
 inherited frameAttachments: TframeAttachments
   Width = 519
   Height = 386
-  Margins.Left = 0
-  Margins.Top = 0
-  Margins.Right = 0
-  Margins.Bottom = 0
-  ExplicitWidth = 519
-  ExplicitHeight = 386
-  inherited pnlFrame: TCardPanel
-    Width = 519
-    Height = 386
-    ExplicitWidth = 849
-    ExplicitHeight = 566
-    inherited crdMain: TCard
-      Width = 519
-      Height = 386
-      ExplicitWidth = 849
-      ExplicitHeight = 566
+
+
       inherited tbMain: TToolBar
         Left = 0
         Top = 0
@@ -100,8 +86,7 @@ inherited frameAttachments: TframeAttachments
             Text = 'Text'
             Width = 172
           end>
-      end
-    end
+
   end
   inherited alFrame: TActionList
     inherited aRefresh: TAction

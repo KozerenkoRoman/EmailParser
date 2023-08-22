@@ -1,44 +1,20 @@
 inherited frameCommonSettings: TframeCommonSettings
-  Width = 782
-  Height = 330
-  ExplicitWidth = 782
-  ExplicitHeight = 330
-  inherited pnlFrame: TCardPanel
-    Width = 782
-    Height = 330
-    ExplicitWidth = 782
-    ExplicitHeight = 270
-    inherited crdMain: TCard
-      Width = 782
-      Height = 330
-      ExplicitWidth = 782
-      ExplicitHeight = 270
-      inherited tbMain: TToolBar
-        Width = 776
-        ExplicitWidth = 776
-        inherited btnSep03: TToolButton
-          Visible = False
-        end
-      end
-      inherited vstTree: TVirtualStringTree
-        Left = 200
-        Top = 200
-        Width = 5
-        Height = 5
-        Align = alNone
-        Visible = False
-        ExplicitLeft = 200
-        ExplicitTop = 200
-        ExplicitWidth = 5
-        ExplicitHeight = 5
-      end
+  Width = 832
+  Height = 328
+  ExplicitWidth = 832
+  ExplicitHeight = 328
+  inherited tbMain: TToolBar
+    Width = 832
+    ExplicitWidth = 525
+    inherited btnSep03: TToolButton
+      Visible = False
     end
   end
   object grdCommonParams: TGridPanel [1]
     Left = 0
-    Top = 0
-    Width = 782
-    Height = 330
+    Top = 39
+    Width = 832
+    Height = 289
     Align = alClient
     BevelOuter = bvNone
     Color = clWindow
@@ -150,8 +126,9 @@ inherited frameCommonSettings: TframeCommonSettings
       item
         Value = 100.000000000000000000
       end>
-    TabOrder = 1
-    ExplicitHeight = 270
+    TabOrder = 2
+    ExplicitWidth = 525
+    ExplicitHeight = 262
     object lblLanguage: TLabel
       AlignWithMargins = True
       Left = 3
@@ -311,6 +288,18 @@ inherited frameCommonSettings: TframeCommonSettings
       Align = alLeft
       TabOrder = 5
     end
+  end
+  inherited vstTree: TVirtualStringTree
+    Left = 777
+    Top = 278
+    Width = 25
+    Height = 25
+    Align = alNone
+    Visible = False
+    ExplicitLeft = 777
+    ExplicitTop = 278
+    ExplicitWidth = 25
+    ExplicitHeight = 25
   end
   inherited alFrame: TActionList
     inherited aExportToExcel: TAction

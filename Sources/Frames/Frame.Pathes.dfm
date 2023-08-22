@@ -1,18 +1,7 @@
 inherited framePathes: TframePathes
   Width = 711
   Height = 436
-  ExplicitWidth = 711
-  ExplicitHeight = 436
-  inherited pnlFrame: TCardPanel
-    Width = 711
-    Height = 436
-    inherited crdMain: TCard
-      Width = 711
-      Height = 436
-      inherited tbMain: TToolBar
-        Width = 705
-        ExplicitWidth = 705
-      end
+
       inherited vstTree: TVirtualStringTree
         Width = 711
         Colors.GridLineColor = cl3DLight
@@ -28,8 +17,7 @@ inherited framePathes: TframePathes
         OnGetText = vstTreeGetText
         OnGetImageIndex = vstTreeGetImageIndex
         OnNewText = vstTreeNewText
-        ExplicitWidth = 711
-        ExplicitHeight = 391
+
         Columns = <
           item
             BiDiMode = bdLeftToRight
@@ -61,8 +49,7 @@ inherited framePathes: TframePathes
             Width = 84
           end>
       end
-    end
-  end
+
   inherited alFrame: TActionList
     inherited aRefresh: TAction
       OnExecute = aRefreshExecute

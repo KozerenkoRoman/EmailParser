@@ -26,17 +26,13 @@ type
     btnSearch        : TToolButton;
     btnSep04         : TToolButton;
     btnSep05         : TToolButton;
-    crdAllAttachment : TCard;
     frameAttachments : TframeAttachments;
     memTextPlain     : TMemo;
     pcInfo           : TPageControl;
-    pcTop            : TPageControl;
     SaveDialogEmail  : TSaveDialog;
     splInfo          : TSplitter;
-    tsAllAttachments : TTabSheet;
     tsAttachments    : TTabSheet;
     tsHtmlText       : TTabSheet;
-    tsMain           : TTabSheet;
     tsPlainText      : TTabSheet;
     wbBody           : TWebBrowser;
     procedure aBreakExecute(Sender: TObject);
@@ -48,7 +44,6 @@ type
     procedure aSearchExecute(Sender: TObject);
     procedure aSearchUpdate(Sender: TObject);
     procedure pcInfoChange(Sender: TObject);
-    procedure pcTopChange(Sender: TObject);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeFocusChanged(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -437,12 +432,6 @@ begin
           DoVerb(OLEIVERB_UIACTIVATE, nil, wbBody, 0, Handle, GetClientRect);
     end;
   end;
-end;
-
-procedure TframeResultView.pcTopChange(Sender: TObject);
-begin
-  inherited;
-  pnlFrame.ActiveCardIndex := pcTop.ActivePageIndex;
 end;
 
 procedure TframeResultView.aSaveExecute(Sender: TObject);

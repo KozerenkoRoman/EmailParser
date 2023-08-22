@@ -36,9 +36,7 @@ type
     btnSep01          : TToolButton;
     btnSep02          : TToolButton;
     btnSep03          : TToolButton;
-    crdMain           : TCard;
     pmFrame           : TPopupMenu;
-    pnlFrame          : TCardPanel;
     tbMain            : TToolBar;
     vstTree           : TVirtualStringTree;
     procedure aCollapseAllExecute(Sender: TObject);

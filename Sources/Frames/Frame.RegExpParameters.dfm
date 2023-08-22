@@ -3,80 +3,31 @@ inherited frameRegExpParameters: TframeRegExpParameters
   Height = 444
   ExplicitWidth = 753
   ExplicitHeight = 444
-  inherited pnlFrame: TCardPanel
-    Top = 45
+  inherited tbMain: TToolBar
+    Top = 39
     Width = 753
-    Height = 399
     ExplicitTop = 45
     ExplicitWidth = 753
-    ExplicitHeight = 399
-    inherited crdMain: TCard
-      Width = 753
-      Height = 399
-      ExplicitWidth = 753
-      ExplicitHeight = 399
-      inherited tbMain: TToolBar
-        Width = 747
-        ExplicitWidth = 747
-      end
-      inherited vstTree: TVirtualStringTree
-        Width = 753
-        Height = 354
-        Alignment = taRightJustify
-        DefaultNodeHeight = 18
-        Header.MainColumn = 0
-        OnCompareNodes = vstTreeCompareNodes
-        OnCreateEditor = vstTreeCreateEditor
-        OnDblClick = aEditExecute
-        OnEditing = vstTreeEditing
-        OnGetText = vstTreeGetText
-        OnNewText = vstTreeNewText
-        ExplicitWidth = 753
-        Columns = <
-          item
-            CaptionAlignment = taCenter
-            Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-            Position = 0
-            Text = 'Name'
-            Width = 150
-          end
-          item
-            CaptionAlignment = taCenter
-            Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-            Position = 1
-            Text = 'RegExp Template'
-            Width = 300
-          end
-          item
-            Alignment = taRightJustify
-            CaptionAlignment = taCenter
-            MaxWidth = 500
-            MinWidth = 50
-            Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-            Position = 2
-            Text = 'Group index'
-            Width = 100
-          end>
-      end
-    end
   end
   object tbSettings: TToolBar [1]
-    AlignWithMargins = True
-    Left = 3
-    Top = 3
-    Width = 747
+    Left = 0
+    Top = 0
+    Width = 753
     Height = 39
-    ButtonHeight = 53
-    ButtonWidth = 49
+    ButtonHeight = 39
+    ButtonWidth = 39
     EdgeInner = esNone
     EdgeOuter = esNone
     Images = DMImage.vil32
-    TabOrder = 1
+    TabOrder = 2
+    ExplicitLeft = 3
+    ExplicitTop = 3
+    ExplicitWidth = 747
     object pnlSettings: TPanel
       Left = 0
       Top = 0
       Width = 449
-      Height = 53
+      Height = 39
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 0
@@ -100,24 +51,12 @@ inherited frameRegExpParameters: TframeRegExpParameters
       object cbSetOfTemplates: TComboBox
         AlignWithMargins = True
         Left = 117
-        Top = 5
+        Top = 8
         Width = 332
-        Height = 25
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentColor = True
-        ParentFont = False
+        Height = 23
+        Style = csDropDownList
         TabOrder = 0
         OnChange = cbSetOfTemplatesChange
-        Items.Strings = (
-          'sdfg sdfg sdf'
-          'sdf gsdfg sdf hsdfh '
-          'sdfg sdfh sdh ewty we y'
-          'wer ery weyr wey '
-          'ewr er t')
       end
     end
     object btnSaveSet: TToolButton
@@ -131,10 +70,52 @@ inherited frameRegExpParameters: TframeRegExpParameters
       OnClick = aSaveSetExecute
     end
     object btnDeleteSet: TToolButton
-      Left = 513
+      Left = 503
       Top = 0
       Action = aDeleteSet
     end
+  end
+  inherited vstTree: TVirtualStringTree
+    Top = 78
+    Width = 753
+    Height = 366
+    Alignment = taRightJustify
+    DefaultNodeHeight = 18
+    Header.MainColumn = 0
+    OnCompareNodes = vstTreeCompareNodes
+    OnCreateEditor = vstTreeCreateEditor
+    OnDblClick = aEditExecute
+    OnEditing = vstTreeEditing
+    OnGetText = vstTreeGetText
+    OnNewText = vstTreeNewText
+    ExplicitTop = 84
+    ExplicitWidth = 753
+    ExplicitHeight = 360
+    Columns = <
+      item
+        CaptionAlignment = taCenter
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 0
+        Text = 'Name'
+        Width = 150
+      end
+      item
+        CaptionAlignment = taCenter
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 1
+        Text = 'RegExp Template'
+        Width = 300
+      end
+      item
+        Alignment = taRightJustify
+        CaptionAlignment = taCenter
+        MaxWidth = 500
+        MinWidth = 50
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 2
+        Text = 'Group index'
+        Width = 100
+      end>
   end
   inherited alFrame: TActionList
     Left = 96
