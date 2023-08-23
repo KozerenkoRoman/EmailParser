@@ -1,15 +1,20 @@
 ﻿{*******************************************************************************}
 {                                                                               }
-{              unit HtmlConsts                                                  }
+{              unit Html.Consts                                                 }
 {                  v.3.0.0.6                                                    }
 {              created 03/05/2012                                               }
 {                                                                               }
 {  Constants for working with Html-objects                                      }
 {                                                                               }
 {*******************************************************************************}
-unit HtmlConsts;
+unit Html.Consts;
 
 interface
+
+{$REGION 'Region uses'}
+uses
+  Vcl.Graphics;
+{$ENDREGION}
 
 resourcestring
   C_HTML_BREAK       = '<br>';         // line break
@@ -32,6 +37,11 @@ resourcestring
   C_HTML_TBODY_CLOSE = '</tbody>';
   C_HTML_BLANK       = 'about:blank';
 
+const
+  arrWebColors : TArray<TColor> = [clWebBisque, clWebLightYellow, clWebAliceBlue, clWebMintcream, clWebLavenderBlush, clWebPowderBlue,
+                                   clWebAliceBlue, clWebFloralWhite, clWebOldLace, clWebIvory, clWebSnow, clWebLightGreen,
+                                   clWebPaleTurquoise, clWebCornSilk, clWebGhostWhite, clWebMintcream, clWebBeige,
+                                   clWebAntiqueWhite, clWebLavender];
 const
   C_BG_COL_ERR   = '#FFFACD';
   C_BG_COL_HTML  = '#EAEAEA';

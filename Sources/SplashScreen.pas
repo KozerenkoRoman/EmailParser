@@ -11,9 +11,9 @@ uses
 
 type
   TfrmSplashScreen = class(TForm)
-    imgLogo: TImage;
-    lblVersion: TLabel;
-    lblInfo: TLabel;
+    imgLogo    : TImage;
+    lblInfo    : TLabel;
+    lblVersion : TLabel;
   public
     class procedure ShowSplashScreen;
     class procedure HideSplashScreen;
@@ -49,6 +49,7 @@ begin
   end;
 
   frmSplashScreen.lblInfo.Font.Color    := clWebDarkSlateBlue;
+  frmSplashScreen.lblInfo.Caption       := 'Якщо не ми, то не ми';
   frmSplashScreen.lblVersion.Font.Color := clWebDarkSlateBlue;
   frmSplashScreen.lblVersion.Caption    := 'Ver: ' + TVersionInfo.GetAppVersion;
   frmSplashScreen.Show;

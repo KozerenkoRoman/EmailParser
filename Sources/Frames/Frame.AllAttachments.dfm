@@ -31,6 +31,7 @@ inherited frameAllAttachments: TframeAllAttachments
     Width = 663
     Height = 335
     Header.MainColumn = 0
+    OnBeforeCellPaint = vstTreeBeforeCellPaint
     OnCompareNodes = vstTreeCompareNodes
     OnDblClick = aOpenParsedTextExecute
     OnGetText = vstTreeGetText
@@ -90,6 +91,9 @@ inherited frameAllAttachments: TframeAllAttachments
     inherited aSave: TAction
       OnExecute = aSaveExecute
       OnUpdate = aOpenAttachFileUpdate
+    end
+    inherited aRefresh: TAction
+      OnExecute = aRefreshExecute
     end
     object aOpenAttachFile: TAction
       ImageIndex = 72

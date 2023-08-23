@@ -5,6 +5,7 @@ inherited framePathes: TframePathes
   ExplicitHeight = 436
   inherited tbMain: TToolBar
     Width = 711
+    ExplicitWidth = 711
   end
   inherited vstTree: TVirtualStringTree
     Width = 711
@@ -23,6 +24,7 @@ inherited framePathes: TframePathes
     OnGetImageIndex = vstTreeGetImageIndex
     OnNewText = vstTreeNewText
     ExplicitWidth = 711
+    ExplicitHeight = 397
     Columns = <
       item
         BiDiMode = bdLeftToRight
@@ -55,9 +57,6 @@ inherited framePathes: TframePathes
       end>
   end
   inherited alFrame: TActionList
-    inherited aRefresh: TAction
-      OnExecute = aRefreshExecute
-    end
     inherited aAdd: TAction
       OnExecute = aAddExecute
     end
@@ -67,6 +66,9 @@ inherited framePathes: TframePathes
     end
     inherited aSave: TAction
       OnExecute = aSaveExecute
+    end
+    inherited aRefresh: TAction
+      OnExecute = aRefreshExecute
     end
   end
   object OpenDialog: TFileOpenDialog

@@ -43,6 +43,7 @@ type
     procedure Clear;
   end;
   TAttachmentsArray = TArray<TAttachments>;
+  PAttachmentsArray = ^TAttachmentsArray;
 
   PResultData = ^TResultData;
   TResultData = record

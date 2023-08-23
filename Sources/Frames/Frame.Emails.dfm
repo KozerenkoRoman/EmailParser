@@ -30,8 +30,15 @@ inherited frameEmails: TframeEmails
       Top = 0
       Action = aBreak
     end
-    object btnSep05: TToolButton
+    object btnFilter: TToolButton
       Left = 463
+      Top = 0
+      Action = aFilter
+      Marked = True
+      Style = tbsCheck
+    end
+    object btnSep05: TToolButton
+      Left = 502
       Top = 0
       Width = 10
       ImageIndex = 71
@@ -39,12 +46,12 @@ inherited frameEmails: TframeEmails
       Style = tbsSeparator
     end
     object btnOpenEmail: TToolButton
-      Left = 473
+      Left = 512
       Top = 0
       Action = aOpenEmail
     end
     object btnOpenLogFile: TToolButton
-      Left = 512
+      Left = 551
       Top = 0
       Action = aOpenLogFile
     end
@@ -56,6 +63,7 @@ inherited frameEmails: TframeEmails
     Images = DMImage.vil16
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toVariableNodeHeight, toFullRowDrag]
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowVertGridLines, toThemeAware, toShowFilteredNodes]
+    OnBeforeCellPaint = vstTreeBeforeCellPaint
     OnCompareNodes = vstTreeCompareNodes
     OnDblClick = aOpenEmailExecute
     OnFocusChanged = vstTreeFocusChanged
@@ -182,6 +190,12 @@ inherited frameEmails: TframeEmails
       ImageName = 'email_open'
       OnExecute = aOpenEmailExecute
       OnUpdate = aOpenEmailUpdate
+    end
+    object aFilter: TAction
+      AutoCheck = True
+      ImageIndex = 3
+      ImageName = 'MasterFilter_32x32'
+      OnExecute = aFilterExecute
     end
   end
   inherited pmFrame: TPopupMenu

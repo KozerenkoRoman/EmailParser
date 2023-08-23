@@ -107,14 +107,17 @@ inherited frameResultView: TframeResultView
             Height = 250
             Align = alClient
             TabOrder = 0
-            ExplicitLeft = 168
-            ExplicitTop = -124
+            ExplicitWidth = 924
+            ExplicitHeight = 250
             inherited tbMain: TToolBar
               Width = 924
+              ExplicitWidth = 924
             end
             inherited vstTree: TVirtualStringTree
               Width = 924
               Height = 211
+              ExplicitWidth = 924
+              ExplicitHeight = 211
             end
           end
         end
@@ -154,14 +157,17 @@ inherited frameResultView: TframeResultView
         Height = 643
         Align = alClient
         TabOrder = 0
-        ExplicitLeft = 269
-        ExplicitTop = 269
+        ExplicitWidth = 932
+        ExplicitHeight = 643
         inherited tbMain: TToolBar
           Width = 932
+          ExplicitWidth = 932
         end
         inherited vstTree: TVirtualStringTree
           Width = 932
           Height = 604
+          ExplicitWidth = 932
+          ExplicitHeight = 604
         end
       end
     end

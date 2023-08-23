@@ -8,7 +8,7 @@ interface
 {$REGION 'Region uses'}
 uses
   Winapi.Windows, System.Classes, Vcl.Forms, System.SysUtils, System.Variants, System.IOUtils, Vcl.Graphics,
-  System.DateUtils, System.Threading, Utils.VerInfo, Utils.LocalInformation, HtmlLib, HtmlConsts, XmlFiles,
+  System.DateUtils, System.Threading, Utils.VerInfo, Utils.LocalInformation, Html.Lib, Html.Consts, XmlFiles,
   System.Types, Common.Types;
 {$ENDREGION}
 

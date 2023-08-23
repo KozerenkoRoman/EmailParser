@@ -10,8 +10,9 @@ uses
   Global.Types, System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin,
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
-  Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Files.Utils,
-  Vcl.WinXPanels, Publishers.Interfaces, Publishers, VirtualTrees.ExportHelper, Global.Resources;
+  Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
+  Vcl.WinXPanels, Publishers.Interfaces, Publishers, VirtualTrees.ExportHelper, Global.Resources, Html.Utils,
+  Performer;
 {$ENDREGION}
 
 type
@@ -30,6 +31,9 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
+    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
+      Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+    procedure aRefreshExecute(Sender: TObject);
   private const
     COL_POSITION     = 0;
     COL_SHORT_NAME   = 1;
@@ -142,7 +146,38 @@ begin
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
   begin
     Data := vstTree.FocusedNode.GetData;
-    TInformationDialog.ShowMessage(Data^.ParsedText, GetIdentityName);
+    TInformationDialog.ShowMessage(THtmlUtils.GetHighlightText(Data^.ParsedText, Data^.Matches), GetIdentityName);
+  end;
+end;
+
+procedure TframeAllAttachments.aRefreshExecute(Sender: TObject);
+var
+  Node: PVirtualNode;
+  Data: PAttachments;
+  AttachmentsArray : TAttachmentsArray;
+  Counter: Integer;
+  Performer: TPerformer;
+begin
+  inherited;
+  if (vstTree.RootNode.ChildCount > 0) then
+  begin
+    SetLength(AttachmentsArray, vstTree.RootNode.ChildCount);
+    Node := vstTree.RootNode.FirstChild;
+    Counter := 0;
+    while Assigned(Node) do
+    begin
+      Data := Node^.GetData;
+      AttachmentsArray[Counter] := Data^;
+      Node := Node.NextSibling;
+      Inc(Counter);
+    end;
+
+    Performer := TPerformer.Create;
+    try
+      Performer.RefreshAttachments(@AttachmentsArray);
+    finally
+      FreeAndNil(Performer);
+    end;
   end;
 end;
 
@@ -164,6 +199,21 @@ begin
     end
     else
       TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+  end;
+end;
+
+procedure TframeAllAttachments.vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+var
+  Data: PAttachments;
+begin
+  if (Column >= C_FIXED_COLUMNS) then
+  begin
+    Data := Node^.GetData;
+    if not Data^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
+    begin
+      TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+      TargetCanvas.FillRect(CellRect);
+    end;
   end;
 end;
 
@@ -236,17 +286,8 @@ begin
     COL_PARSED_TEXT:
       CellText := Data^.ParsedText;
   else
-  try
     if (Column >= 0) and (Data^.Matches.Count >= Column - C_FIXED_COLUMNS) then
       CellText := Data^.Matches.Items[Column - C_FIXED_COLUMNS];
-  except
-             on E: Exception do
-          LogWriter.Write(ddError, 'TframeAllAttachments.vstTreeGetText',
-                                   E.Message + sLineBreak +
-                                   'CellText - ' + CellText + sLineBreak +
-                                   'Column - '  + IntToStr(Column)+ sLineBreak +
-                                   'р≥зниц€ - ' + (Data^.Matches.Count >= Column - C_FIXED_COLUMNS).ToString);
-  end;
   end;
 end;
 

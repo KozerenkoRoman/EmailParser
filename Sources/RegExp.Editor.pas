@@ -8,10 +8,10 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Translate.Lang, Vcl.ExtCtrls, DebugWriter,
   Common.Types, System.IniFiles, System.IOUtils, Global.Resources, Utils, MessageDialog, System.Threading,
-  HtmlLib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
+  Html.Lib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
   Vcl.CategoryButtons, Vcl.ComCtrls, Vcl.Menus, Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, Global.Types,
   Publishers.Interfaces, Publishers, CommonForms, System.RegularExpressions, RegExp.Types, Vcl.NumberBox,
-  Vcl.Samples.Spin;
+  Vcl.Samples.Spin, Performer;
 {$ENDREGION}
 
 type
@@ -53,6 +53,7 @@ type
     cbSetOfTemplates: TComboBox;
     lblGroupIndex: TLabel;
     edtGroupIndex: TNumberBox;
+    edtResult: TEdit;
     procedure aCopyExecute(Sender: TObject);
     procedure aPasteExecute(Sender: TObject);
     procedure aSelectAllExecute(Sender: TObject);
@@ -215,7 +216,10 @@ begin
     RegExp := TRegEx.Create(Pattern, Options);
     Match  := RegExp.Match(edSample.Text);
     if Match.Success then
-      AddMatchToTree(Match)
+    begin
+      AddMatchToTree(Match);
+      edtResult.Text := TPerformer.GetRegExpCollection(edSample.Text, Pattern, edtGroupIndex.ValueInt);
+    end
     else
       TMessageDialog.ShowInfo(TLang.Lang.Translate('NoMatchFound'));
    tvResults.FullExpand;
@@ -248,7 +252,6 @@ begin
   if aMatch.Success then
     AddMatchToTree(aMatch);
 end;
-
 
 procedure TfrmRegExpEditor.cbSetOfTemplatesCloseUp(Sender: TObject);
 begin

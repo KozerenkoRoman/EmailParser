@@ -22,6 +22,7 @@ type
 resourcestring
   //English
   en_Add                  = 'Add';
+  en_AllAttachments       = 'All attachments';
   en_Attachment           = 'Attachment';
   en_Begin                = 'begin';
   en_Body                 = 'Body';
@@ -44,6 +45,7 @@ resourcestring
   en_Edit                 = 'Edit';
   en_EditCommonParameters = 'Common parameters';
   en_EditRegExpParameters = 'RegExp parameters';
+  en_Emails               = 'Emails';
   en_Enabled              = 'Enabled';
   en_End                  = 'end';
   en_Error                = 'Error';
@@ -109,12 +111,12 @@ resourcestring
   en_TemplateName         = 'Template name';
   en_Text                 = 'Text';
   en_Time                 = 'Time';
-  en_UseLastGroup         = 'Use only the last result group';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
 
   //Ukrainian
   uk_Add                  = 'Додати';
+  uk_AllAttachments       = 'Всі вкладення';
   uk_Attachment           = 'Вкладення';
   uk_Begin                = 'початок';
   uk_Body                 = 'Тіло';
@@ -137,6 +139,7 @@ resourcestring
   uk_Edit                 = 'Редагувати';
   uk_EditCommonParameters = 'Загальні параметри';
   uk_EditRegExpParameters = 'RegExp параметри';
+  uk_Emails               = 'Листи';
   uk_Enabled              = 'Увімкнено';
   uk_End                  = 'кінець';
   uk_Error                = 'Помилка';
@@ -202,13 +205,13 @@ resourcestring
   uk_TemplateName         = 'Назва шаблону';
   uk_Text                 = 'Текст';
   uk_Time                 = 'Час';
-  uk_UseLastGroup         = 'Використовувати лише останню групу співпадіння';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
 
 const
-   ArrayMessages: array[1 .. 89] of TMessageItem = (
+   ArrayMessages: array[1 .. 90] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
+    (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
     (Key: 'Begin'                ; En: en_Begin;                Uk: uk_Begin),
     (Key: 'Body'                 ; En: en_Body;                 Uk: uk_Body),
@@ -231,6 +234,7 @@ const
     (Key: 'Edit'                 ; En: en_Edit;                 Uk: uk_Edit),
     (Key: 'EditCommonParameters' ; En: en_EditCommonParameters; Uk: uk_EditCommonParameters),
     (Key: 'EditRegExpParameters' ; En: en_EditRegExpParameters; Uk: uk_EditRegExpParameters),
+    (Key: 'Emails'               ; En: en_Emails;               Uk: uk_Emails),
     (Key: 'Enabled'              ; En: en_Enabled;              Uk: uk_Enabled),
     (Key: 'End'                  ; En: en_End;                  Uk: uk_End),
     (Key: 'Error'                ; En: en_Error;                Uk: uk_Error),
@@ -294,7 +298,6 @@ const
     (Key: 'TemplateName'         ; En: en_TemplateName;         Uk: uk_TemplateName),
     (Key: 'Text'                 ; En: en_Text;                 Uk: uk_Text),
     (Key: 'Time'                 ; En: en_Time;                 Uk: uk_Time),
-    (Key: 'UseLastGroup'         ; En: en_UseLastGroup;         Uk: uk_UseLastGroup),
     (Key: 'Value'                ; En: en_Value;                Uk: uk_Value),
     (Key: 'WithSubdir'           ; En: en_WithSubdir;           Uk: uk_WithSubdir)
      );

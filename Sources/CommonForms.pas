@@ -6,7 +6,7 @@ interface
 uses
   Windows, ActnList, AppEvnts, Classes, Controls, Dialogs, Vcl.Forms, Messages, System.Actions, Variants,
   System.TypInfo, Vcl.Graphics, System.SysUtils,{$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF}
-  DebugWriter, Utils.LocalInformation, HtmlConsts, HtmlLib, Global.Resources, Utils.VerInfo, Translate.Lang,
+  DebugWriter, Utils.LocalInformation, Html.Consts, Html.Lib, Global.Resources, Utils.VerInfo, Translate.Lang,
   Global.Types;
 {$ENDREGION}
 

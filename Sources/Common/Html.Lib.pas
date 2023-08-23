@@ -1,6 +1,6 @@
 ﻿{*******************************************************************************}
 {                                                                               }
-{               unit HtmlLib                                                    }
+{               unit Html.Lib                                                   }
 {                  v.3.0.0.7                                                    }
 {             created 10/05/2012                                                }
 {                                                                               }
@@ -8,14 +8,14 @@
 {                                                                               }
 {*******************************************************************************}
 
-unit HtmlLib;
+unit Html.Lib;
 
 interface
 
 {$REGION 'Region uses'}
 uses
   Winapi.Windows, Winapi.ActiveX, System.Classes, Vcl.Forms, Vcl.Graphics, MSHTML, System.RegularExpressions,
-  SHDocVw, System.SysUtils, System.Variants, System.StrUtils, HtmlConsts;
+  SHDocVw, System.SysUtils, System.Variants, System.StrUtils, Html.Consts;
 {$ENDREGION}
 
 type
@@ -119,6 +119,9 @@ type
     }
     class function GetColorTag(aText: string; aColor: TColor): string; overload;
     class function GetColorTag(aText: string; aColor: string): string; overload;
+    class function GetBackgroundColor(aText: string; aColor: string): string; overload;
+    class function GetBackgroundColor(aText: string; aColor: TColor): string; overload;
+
     class function GetSpoilerTag(aCaption, aText: string; aTdStyle: string = ''): string;
     class function GetSrcSQLTag(aCaption, aText: string): string;
     class function GetSrcXMLTag(aCaption, aText: string): string;
@@ -127,10 +130,6 @@ type
     class function GetCenterText(aText: string): string;
     class function GetH1(aText: string): string;
     class function GetH2(aText: string): string;
-  end;
-
-  THtmlBuilder = class
-
   end;
 
 implementation
@@ -161,9 +160,24 @@ begin
   end;
 end;
 
+class function THtmlLib.GetColorTag(aText, aColor: string): string;
+begin
+  Result := Concat('<span style="color:', aColor, '">', aText, '</span>');
+end;
+
 class function THtmlLib.GetColorTag(aText: string; aColor: TColor): string;
 begin
   Result := GetColorTag(aText, ColorToHtml(aColor));
+end;
+
+class function THtmlLib.GetBackgroundColor(aText, aColor: string): string;
+begin
+  Result := Concat('<span style="background-color:', aColor, '">', aText, '</span>');
+end;
+
+class function THtmlLib.GetBackgroundColor(aText: string; aColor: TColor): string;
+begin
+  Result := GetBackgroundColor(aText, ColorToHtml(aColor));
 end;
 
 class function THtmlLib.GetBoldText(aText: string): string;
@@ -174,11 +188,6 @@ end;
 class function THtmlLib.GetCenterText(aText: string): string;
 begin
   Result := Concat('<span class="center">', aText, '</span>');
-end;
-
-class function THtmlLib.GetColorTag(aText, aColor: string): string;
-begin
-  Result := Concat('<span style="color:', aColor, '">', aText, '</span>');
 end;
 
 class function THtmlLib.GetH1(aText: string): string;

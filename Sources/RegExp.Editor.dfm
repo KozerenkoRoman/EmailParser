@@ -133,7 +133,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       828
       42)
     object btnCancel: TBitBtn
-      Left = 600
+      Left = 596
       Top = 1
       Width = 110
       Height = 40
@@ -150,10 +150,10 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 2
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 596
+      ExplicitLeft = 592
     end
     object btnOk: TBitBtn
-      Left = 712
+      Left = 708
       Top = 1
       Width = 110
       Height = 40
@@ -170,7 +170,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 1
       ParentFont = False
       TabOrder = 1
-      ExplicitLeft = 708
+      ExplicitLeft = 704
     end
   end
   object tbPattern: TToolBar
@@ -250,6 +250,8 @@ inherited frmRegExpEditor: TfrmRegExpEditor
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitLeft = 471
+    ExplicitHeight = 531
     object gbOptions: TGroupBox
       AlignWithMargins = True
       Left = 3
@@ -315,7 +317,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
         Left = 2
         Top = 19
         Width = 340
-        Height = 357
+        Height = 329
         Align = alClient
         BevelInner = bvNone
         BevelOuter = bvNone
@@ -330,7 +332,22 @@ inherited frmRegExpEditor: TfrmRegExpEditor
         ShowRoot = False
         TabOrder = 0
         ToolTips = False
-        ExplicitHeight = 356
+        ExplicitHeight = 134
+      end
+      object edtResult: TEdit
+        AlignWithMargins = True
+        Left = 2
+        Top = 351
+        Width = 340
+        Height = 25
+        Margins.Left = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Align = alBottom
+        TabOrder = 1
+        ExplicitLeft = 96
+        ExplicitTop = 328
+        ExplicitWidth = 121
       end
     end
   end

@@ -6,7 +6,7 @@ interface
 uses
   Windows, ActiveX, Buttons, Classes, ComCtrls, Controls, Dialogs, ExtCtrls, Forms, Graphics, Messages, SHDocVw,
   System.SysUtils, System.Variants, Vcl.ActnList, System.Actions, Vcl.OleCtrls, System.IOUtils, MessageDialog,
-  DebugWriter, HtmlConsts, HtmlLib, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} CommonForms, Vcl.ExtDlgs,
+  DebugWriter, Html.Consts, Html.Lib, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} CommonForms, Vcl.ExtDlgs,
   Vcl.StdCtrls, DaImages, Common.Types, Translate.Lang;
 {$ENDREGION}
 
@@ -110,7 +110,7 @@ begin
   LoadFormPosition;
   html := Concat(C_HTML_OPEN,
                  C_HTML_HEAD_OPEN,
-                 C_STYLE,
+//                 C_STYLE,
                  C_HTML_HEAD_CLOSE,
                  C_HTML_BODY_OPEN,
                  FMessageText,

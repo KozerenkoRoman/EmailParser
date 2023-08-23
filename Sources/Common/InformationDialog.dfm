@@ -1,8 +1,8 @@
 object InformationDialog: TInformationDialog
   Left = 0
   Top = 0
-  ClientHeight = 478
-  ClientWidth = 478
+  ClientHeight = 477
+  ClientWidth = 474
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,15 +14,17 @@ object InformationDialog: TInformationDialog
   object pnlMain: TPanel
     Left = 0
     Top = 0
-    Width = 478
-    Height = 478
+    Width = 474
+    Height = 477
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 470
+    ExplicitHeight = 476
     object wbMessage: TWebBrowser
       Left = 1
       Top = 1
-      Width = 476
-      Height = 434
+      Width = 472
+      Height = 433
       Margins.Left = 0
       Margins.Top = 0
       Margins.Right = 0
@@ -33,10 +35,10 @@ object InformationDialog: TInformationDialog
       ShowHint = False
       TabOrder = 0
       OnBeforeNavigate2 = wbMessageBeforeNavigate2
-      ExplicitWidth = 484
-      ExplicitHeight = 439
+      ExplicitWidth = 468
+      ExplicitHeight = 432
       ControlData = {
-        4C00000006320000102D00000000000000000000000000000000000000000000
+        4C000000C8300000C02C00000000000000000000000000000000000000000000
         000000004C000000000000000000000001000000E0D057007335CF11AE690800
         2B2E126209000000000000004C0000000114020000000000C000000000000046
         8000000000000000000000000000000000000000000000000000000000000000
@@ -44,18 +46,20 @@ object InformationDialog: TInformationDialog
     end
     object pnlBottom: TPanel
       Left = 1
-      Top = 435
-      Width = 476
+      Top = 434
+      Width = 472
       Height = 42
       Align = alBottom
       BevelOuter = bvNone
       ParentBackground = False
       TabOrder = 1
+      ExplicitTop = 433
+      ExplicitWidth = 468
       DesignSize = (
-        476
+        472
         42)
       object btnSave: TBitBtn
-        Left = 249
+        Left = 241
         Top = 1
         Width = 110
         Height = 40
@@ -71,10 +75,10 @@ object InformationDialog: TInformationDialog
         Images = DMImage.vil32
         ParentFont = False
         TabOrder = 0
-        ExplicitLeft = 261
+        ExplicitLeft = 237
       end
       object btnOk: TBitBtn
-        Left = 362
+        Left = 354
         Top = 1
         Width = 110
         Height = 40
@@ -89,7 +93,7 @@ object InformationDialog: TInformationDialog
         Images = DMImage.vil32
         ParentFont = False
         TabOrder = 1
-        ExplicitLeft = 374
+        ExplicitLeft = 350
       end
     end
   end

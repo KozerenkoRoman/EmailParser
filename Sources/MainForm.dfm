@@ -156,7 +156,7 @@ inherited frmMain: TfrmMain
     Width = 779
     Height = 585
     Align = alClient
-    ActiveCard = crdResultView
+    ActiveCard = crdPathsToFindScripts
     TabOrder = 2
     object crdRegExpParameters: TCard
       Left = 1
@@ -303,16 +303,6 @@ inherited frmMain: TfrmMain
               Column = 1
               Control = frameCommonSettings.cbParseBodyAsHTML
               Row = 4
-            end
-            item
-              Column = 0
-              Control = frameCommonSettings.lblUseLastGroup
-              Row = 5
-            end
-            item
-              Column = 1
-              Control = frameCommonSettings.cbUseLastGroup
-              Row = 5
             end>
           ExplicitWidth = 777
           ExplicitHeight = 544
@@ -348,7 +338,7 @@ inherited frmMain: TfrmMain
         ExplicitHeight = 583
         inherited tbMain: TToolBar
           Width = 777
-          ExplicitWidth = 773
+          ExplicitWidth = 777
         end
         inherited pcMain: TPageControl
           Width = 777
@@ -363,7 +353,7 @@ inherited frmMain: TfrmMain
               Top = 269
               Width = 769
               ExplicitTop = 358
-              ExplicitWidth = 773
+              ExplicitWidth = 769
             end
             inherited pcInfo: TPageControl
               Top = 274
@@ -371,14 +361,10 @@ inherited frmMain: TfrmMain
               ExplicitTop = 274
               ExplicitWidth = 769
               inherited tsPlainText: TTabSheet
-                ExplicitTop = 25
-                ExplicitWidth = 761
-                ExplicitHeight = 251
+                ExplicitHeight = 252
                 inherited memTextPlain: TMemo
-                  Width = 761
-                  Height = 251
-                  ExplicitWidth = 761
-                  ExplicitHeight = 251
+                  Height = 252
+                  ExplicitHeight = 252
                 end
               end
               inherited tsHtmlText: TTabSheet
@@ -388,36 +374,24 @@ inherited frmMain: TfrmMain
                 inherited wbBody: TWebBrowser
                   Width = 761
                   Height = 251
-                  ExplicitWidth = 757
+                  ExplicitWidth = 744
                   ExplicitHeight = 251
                   ControlData = {
                     4C000000A74E0000F11900000000000000000000000000000000000000000000
                     000000004C000000000000000000000001000000E0D057007335CF11AE690800
-                    2B2E126208000000000000004C0000000114020000000000C000000000000046
+                    2B2E126200000000000000004C0000000114020000000000C000000000000046
                     8000000000000000000000000000000000000000000000000000000000000000
                     00000000000000000100000000000000000000000000000000000000}
                 end
               end
               inherited tsAttachments: TTabSheet
-                ExplicitTop = 25
-                ExplicitWidth = 761
-                ExplicitHeight = 251
+                ExplicitHeight = 252
                 inherited frameAttachments: TframeAttachments
-                  Width = 761
-                  Height = 251
-                  ExplicitLeft = 0
-                  ExplicitTop = 0
-                  ExplicitWidth = 761
-                  ExplicitHeight = 251
-                  inherited tbMain: TToolBar
-                    Width = 761
-                    ExplicitWidth = 761
-                  end
+                  Height = 252
+                  ExplicitHeight = 252
                   inherited vstTree: TVirtualStringTree
-                    Width = 761
-                    Height = 212
-                    ExplicitWidth = 761
-                    ExplicitHeight = 212
+                    Height = 213
+                    ExplicitHeight = 213
                   end
                 end
               end
@@ -429,7 +403,7 @@ inherited frmMain: TfrmMain
               ExplicitHeight = 269
               inherited tbMain: TToolBar
                 Width = 769
-                ExplicitWidth = 765
+                ExplicitWidth = 769
               end
               inherited vstTree: TVirtualStringTree
                 Width = 769
@@ -441,6 +415,14 @@ inherited frmMain: TfrmMain
           end
           inherited tsAllAttachments: TTabSheet
             ExplicitHeight = 645
+            inherited frameAllAttachments: TframeAllAttachments
+              Height = 645
+              ExplicitHeight = 645
+              inherited vstTree: TVirtualStringTree
+                Height = 606
+                ExplicitHeight = 606
+              end
+            end
           end
         end
       end

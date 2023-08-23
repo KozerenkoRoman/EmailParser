@@ -5,7 +5,7 @@ inherited frameCommonSettings: TframeCommonSettings
   ExplicitHeight = 356
   inherited tbMain: TToolBar
     Width = 791
-    ExplicitWidth = 837
+    ExplicitWidth = 791
   end
   object grdCommonParams: TGridPanel [1]
     Left = 0
@@ -73,16 +73,6 @@ inherited frameCommonSettings: TframeCommonSettings
         Column = 1
         Control = cbParseBodyAsHTML
         Row = 4
-      end
-      item
-        Column = 0
-        Control = lblUseLastGroup
-        Row = 5
-      end
-      item
-        Column = 1
-        Control = cbUseLastGroup
-        Row = 5
       end>
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -124,62 +114,49 @@ inherited frameCommonSettings: TframeCommonSettings
         Value = 100.000000000000000000
       end>
     TabOrder = 1
-    ExplicitWidth = 837
     object lblLanguage: TLabel
       AlignWithMargins = True
-      Left = 3
+      Left = 260
       Top = 3
-      Width = 314
-      Height = 29
+      Width = 57
+      Height = 17
       Align = alClient
       Alignment = taRightJustify
       Caption = 'Language'
       Layout = tlCenter
-      ExplicitLeft = 260
-      ExplicitWidth = 57
-      ExplicitHeight = 17
     end
     object lblExtensions: TLabel
       AlignWithMargins = True
-      Left = 3
+      Left = 175
       Top = 38
-      Width = 314
-      Height = 29
+      Width = 142
+      Height = 17
       Align = alClient
       Alignment = taRightJustify
       Caption = 'File extensions to search'
       Layout = tlCenter
-      ExplicitLeft = 175
-      ExplicitWidth = 142
-      ExplicitHeight = 17
     end
     object lblPathForAttachments: TLabel
       AlignWithMargins = True
-      Left = 3
+      Left = 150
       Top = 73
-      Width = 314
-      Height = 29
+      Width = 167
+      Height = 17
       Align = alClient
       Alignment = taRightJustify
       Caption = 'Paths for saving attachments'
       Layout = tlCenter
-      ExplicitLeft = 150
-      ExplicitWidth = 167
-      ExplicitHeight = 17
     end
     object lblDeleteAttachments: TLabel
       AlignWithMargins = True
-      Left = 3
+      Left = 126
       Top = 108
-      Width = 314
-      Height = 29
+      Width = 191
+      Height = 17
       Align = alClient
       Alignment = taRightJustify
       Caption = 'Delete attachments after analysis'
       Layout = tlCenter
-      ExplicitLeft = 126
-      ExplicitWidth = 191
-      ExplicitHeight = 17
     end
     object cbLanguage: TComboBox
       AlignWithMargins = True
@@ -255,34 +232,6 @@ inherited frameCommonSettings: TframeCommonSettings
       Margins.Left = 10
       Align = alLeft
       TabOrder = 4
-    end
-    object lblUseLastGroup: TLabel
-      AlignWithMargins = True
-      Left = 5
-      Top = 180
-      Width = 310
-      Height = 25
-      Margins.Left = 5
-      Margins.Top = 5
-      Margins.Right = 5
-      Margins.Bottom = 5
-      Align = alClient
-      Alignment = taRightJustify
-      Caption = 'Use only the last result group'
-      Layout = tlCenter
-      ExplicitLeft = 143
-      ExplicitWidth = 172
-      ExplicitHeight = 17
-    end
-    object cbUseLastGroup: TCheckBox
-      AlignWithMargins = True
-      Left = 330
-      Top = 178
-      Width = 50
-      Height = 29
-      Margins.Left = 10
-      Align = alLeft
-      TabOrder = 5
     end
   end
   inherited alFrame: TActionList

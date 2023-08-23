@@ -116,26 +116,30 @@ inherited frameRegExpParameters: TframeRegExpParameters
   end
   inherited alFrame: TActionList
     Left = 96
-    inherited aRefresh: TAction
-      OnExecute = aRefreshExecute
-    end
     inherited aAdd: TAction
       OnExecute = aAddExecute
       OnUpdate = aAddUpdate
     end
-    inherited aEdit: TAction [5]
+    inherited aRefresh: TAction [1]
+      OnExecute = aRefreshExecute
+    end
+    inherited aExportToExcel: TAction [2]
+    end
+    inherited aEdit: TAction [3]
       Visible = True
       OnExecute = aEditExecute
       OnUpdate = aDeleteUpdate
     end
-    inherited aDelete: TAction [6]
+    inherited aExportToCSV: TAction [4]
+    end
+    inherited aDelete: TAction [5]
       OnExecute = aDeleteExecute
       OnUpdate = aDeleteUpdate
     end
+    inherited aPrint: TAction [6]
+    end
     inherited aSave: TAction [7]
       OnExecute = aSaveExecute
-    end
-    inherited aColumnSettings: TAction [8]
     end
     object aSaveSet: TAction
       Caption = 'Save template set'

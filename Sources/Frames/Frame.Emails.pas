@@ -9,7 +9,7 @@ uses
   Global.Types, System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin,
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
-  Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Vcl.Samples.Gauges,
+  Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Vcl.Samples.Gauges,
   Performer, Winapi.ShellAPI, Vcl.OleCtrls, SHDocVw, Winapi.ActiveX, Frame.Attachments, Files.Utils,
   VirtualTrees.ExportHelper, Global.Resources, Publishers, Publishers.Interfaces, Vcl.WinXPanels, Frame.Custom;
 {$ENDREGION}
@@ -17,10 +17,12 @@ uses
 type
   TframeEmails = class(TFrameSource, IProgress, IUpdateXML)
     aBreak          : TAction;
+    aFilter         : TAction;
     aOpenEmail      : TAction;
     aOpenLogFile    : TAction;
     aSearch         : TAction;
     btnBreak        : TToolButton;
+    btnFilter       : TToolButton;
     btnOpenEmail    : TToolButton;
     btnOpenLogFile  : TToolButton;
     btnSearch       : TToolButton;
@@ -39,6 +41,8 @@ type
     procedure vstTreeFocusChanged(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+    procedure aFilterExecute(Sender: TObject);
   private const
     COL_POSITION      = 0;
     COL_SHORT_NAME    = 1;
@@ -249,6 +253,21 @@ begin
     TPublishers.EmailPublisher.FocusChanged(nil);
 end;
 
+procedure TframeEmails.vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+var
+  Data: PResultData;
+begin
+  if (Column >= C_FIXED_COLUMNS) then
+  begin
+    Data := Node^.GetData;
+    if not Data^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
+    begin
+      TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+      TargetCanvas.FillRect(CellRect);
+    end;
+  end;
+end;
+
 procedure TframeEmails.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
   Data: PResultData;
@@ -383,7 +402,7 @@ begin
       Node := Node.NextSibling;
       Inc(Counter);
     end;
-    FPerformer.Refresh(@ResultDataArray);
+    FPerformer.RefreshEmails(@ResultDataArray);
   end;
 end;
 
@@ -405,6 +424,15 @@ begin
     else
       TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
   end;
+end;
+
+procedure TframeEmails.aFilterExecute(Sender: TObject);
+begin
+  inherited;
+  if TAction(Sender).Checked then
+    TAction(Sender).ImageIndex := 56
+  else
+    TAction(Sender).ImageIndex := 3;
 end;
 
 procedure TframeEmails.aSearchExecute(Sender: TObject);

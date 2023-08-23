@@ -9,7 +9,7 @@ uses
   Global.Types, System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin,
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
-  Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, HtmlLib, HtmlConsts, XmlFiles, Vcl.Samples.Gauges,
+  Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Vcl.Samples.Gauges,
   Performer, Winapi.ShellAPI, Vcl.OleCtrls, SHDocVw, Winapi.ActiveX, Frame.Attachments, Files.Utils,
   VirtualTrees.ExportHelper, Global.Resources, Publishers, Publishers.Interfaces, Vcl.WinXPanels, Frame.Custom,
   Frame.Emails, Frame.AllAttachments;
@@ -96,7 +96,10 @@ begin
   frameEmails.Translate;
   frameAllAttachments.Translate;
   frameAttachments.Translate;
-  tsPlainText.Caption := TLang.Lang.Translate('PlainText');
+  tsAllAttachments.Caption := TLang.Lang.Translate('AllAttachments');
+  tsAttachments.Caption    := TLang.Lang.Translate('Attachment');
+  tsEmail.Caption          := TLang.Lang.Translate('Emails');
+  tsPlainText.Caption      := TLang.Lang.Translate('PlainText');
 end;
 
 procedure TframeResultView.SaveToXML;

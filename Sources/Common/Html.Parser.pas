@@ -1,4 +1,4 @@
-﻿unit HtmlParserEx;
+﻿unit Html.Parser;
 
 {$IF RTLVersion < 24.0}
 {$MESSAGE ERROR '只支持XE3及之后的版本'}
@@ -676,7 +676,7 @@ var
     PreIsblique: Boolean;
   begin
     oldIndex := sc.CodeIndex;
-    stringChar := #0;
+//    stringChar := #0;
     sc.SkipBlank();
     if sc.subStr(4) = '<!--' then
     begin
@@ -777,7 +777,7 @@ begin
   sc.setCode(Source);
   while sc.CodeIndex <= high(sc.Code) do
   begin
-    ElementType := EtUnknow;
+//    ElementType := EtUnknow;
     OldCodeIndex := sc.CodeIndex;
     BeginLineNum := sc.LineNum;
     BeginColNum := sc.ColNum;

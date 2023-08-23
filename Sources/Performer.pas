@@ -10,8 +10,7 @@ uses
   System.IOUtils, Vcl.Forms, ArrayHelper, Common.Types, Translate.Lang, System.IniFiles, Global.Types,
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
-  Winapi.GDIPAPI, Winapi.GDIPOBJ, Files.Utils, System.SyncObjs, HtmlParserEx, Publishers.Interfaces,
-  Publishers;
+  Files.Utils, System.SyncObjs, Html.Parser, Publishers.Interfaces, Publishers, dEXIF.Helper;
 {$ENDREGION}
 
 type
@@ -25,9 +24,9 @@ type
     FParseBodyAsHTML   : Boolean;
     FPathList          : TArrayRecord<TParamPath>;
     FRegExpList        : TArrayRecord<TRegExpData>;
-    FUseLastGroup      : Boolean;
     FUserDefinedDir    : string;
     function GetAttchmentPath(const aFileName: TFileName): string;
+    function GetEXIFInfo(const aFileName: TFileName): string;
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     procedure DeleteAttachmentFiles(const aData: PResultData);
     procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
@@ -35,9 +34,10 @@ type
     procedure ParseAttachmentFiles(aData: PResultData);
     procedure ParseFile(const aFileName: TFileName);
   public
-    class function GetRegExpCollection(const aText, aPattern: string; const aUseLastGroup: Boolean = True; const aGroupIndex: Integer = 0): string;
+    class function GetRegExpCollection(const aText, aPattern: string; const aGroupIndex: Integer = 0): string;
     procedure Start;
-    procedure Refresh(const aResultDataArray: PResultDataArray);
+    procedure RefreshEmails(const aResultDataArray: PResultDataArray);
+    procedure RefreshAttachments(const aAttachmentsArray: PAttachmentsArray);
     procedure Break;
 
     constructor Create;
@@ -64,7 +64,6 @@ begin
   FRegExpList        := TGeneral.GetRegExpParametersList;
   FPathList          := TGeneral.GetPathList;
   FParseBodyAsHTML   := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'ParseBodyAsHTML', False);
-  FUseLastGroup      := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'UseLastGroup', True);
   FUserDefinedDir    := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
   FAttachmentsDir    := FAttachmentsDir.FromString(FUserDefinedDir);
   FDeleteAttachments := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
@@ -115,9 +114,16 @@ begin
   FIsBreak := True;
 end;
 
-procedure TPerformer.Refresh(const aResultDataArray: PResultDataArray);
+procedure TPerformer.RefreshAttachments(const aAttachmentsArray: PAttachmentsArray);
 begin
-  if aResultDataArray.Count = 0 then
+  if Length(aAttachmentsArray^) = 0 then
+    Exit;
+
+end;
+
+procedure TPerformer.RefreshEmails(const aResultDataArray: PResultDataArray);
+begin
+  if (aResultDataArray.Count = 0) then
     Exit;
 
   LogWriter.Write(ddEnterMethod, 'TPerformer.Refresh');
@@ -136,9 +142,9 @@ begin
         Data.Matches.Count := FRegExpList.Count;
         for var i := 0 to FRegExpList.Count - 1 do
           if FParseBodyAsHTML then
-            Data.Matches[i] := GetRegExpCollection(Data.Body, FRegExpList[i].RegExpTemplate, FUseLastGroup, FRegExpList[i].GroupIndex)
+            Data.Matches[i] := GetRegExpCollection(Data.Body, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex)
           else
-            Data.Matches[i] := GetRegExpCollection(Data.ParsedText, FRegExpList[i].RegExpTemplate, FUseLastGroup, FRegExpList[i].GroupIndex);
+            Data.Matches[i] := GetRegExpCollection(Data.ParsedText, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex);
 
         TPublishers.ProgressPublisher.CompletedItem(Data);
         TPublishers.ProgressPublisher.Progress;
@@ -156,29 +162,27 @@ begin
   end;
 end;
 
-class function TPerformer.GetRegExpCollection(const aText, aPattern: string; const aUseLastGroup: Boolean; const aGroupIndex: Integer): string;
+class function TPerformer.GetRegExpCollection(const aText, aPattern: string; const aGroupIndex: Integer): string;
 var
-  RegExpr: TRegEx;
-  Match: TMatch;
-  GroupIndex: Integer;
+  GroupIndex : Integer;
+  Matches    : TMatchCollection;
+  RegExpr    : TRegEx;
 begin
   Result := '';
   RegExpr := TRegEx.Create(aPattern);
-  Match := RegExpr.Match(aText);
-  if Match.Success then
+  if RegExpr.IsMatch(aText) then
   begin
-    if (aGroupIndex > Match.Groups.Count - 1) then
-      GroupIndex := Match.Groups.Count - 1
-    else
-      GroupIndex := aGroupIndex;
-
-    if aUseLastGroup then
-      Result := Match.Groups[Match.Groups.Count - 1].Value
-    else if (GroupIndex > 0) then
-      Result := Match.Groups[GroupIndex].Value
-    else
-      for var i := 0 to Match.Groups.Count - 1 do
-        Result := Concat(Result, Match.Groups[GroupIndex].Value, '; ');
+    Matches := RegExpr.Matches(aText, aPattern);
+    for var i := 0 to Matches.Count - 1 do
+    begin
+      if (aGroupIndex <= 0) then
+        GroupIndex := 0
+      else if (aGroupIndex > Matches.Item[i].Groups.Count - 1) then
+        GroupIndex := Matches.Item[i].Groups.Count - 1
+      else
+        GroupIndex := aGroupIndex;
+      Result := Concat(Result, Matches.Item[i].Groups[GroupIndex].Value, '; ');
+    end;
   end;
 end;
 
@@ -208,6 +212,18 @@ begin
       on E: Exception do
         LogWriter.Write(ddError, 'TPerformer.GetAttchmentPath', E.Message + sLineBreak + 'Directory - ' + Result);
     end;
+end;
+
+function TPerformer.GetEXIFInfo(const aFileName: TFileName): string;
+var
+  ImgData: TEXIFDump;
+begin
+  ImgData := TEXIFDump.Create(aFileName);
+  try
+    Result := ImgData.GetText;
+  finally
+    FreeAndNil(ImgData)
+  end;
 end;
 
 procedure TPerformer.DeleteAttachmentFiles(const aData: PResultData);
@@ -281,7 +297,12 @@ begin
             TThread.NameThreadForDebugging('TPerformer.ParserHTML');
             if not Data^.Body.IsEmpty then
             begin
-              HtmlElement := ParserHTML(Data^.Body);
+              try
+                HtmlElement := ParserHTML(Data^.Body);
+              except
+                on E: Exception do
+                  LogWriter.Write(ddError, 'TPerformer.ParserHTML', E.Message + sLineBreak + 'Email name - ' + Data.FileName);
+              end;
               if Assigned(HtmlElement) then
                 Data^.ParsedText := ConvertWhiteSpace(DecodeHtmlEntities(HtmlElement.Text));
             end;
@@ -299,9 +320,9 @@ begin
         Data.Matches.Count := FRegExpList.Count;
         for var i := 0 to FRegExpList.Count - 1 do
           if FParseBodyAsHTML then
-            Data.Matches[i] := GetRegExpCollection(Data.Body, FRegExpList[i].RegExpTemplate, FUseLastGroup, FRegExpList[i].GroupIndex)
+            Data.Matches[i] := GetRegExpCollection(Data.Body, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex)
           else
-            Data.Matches[i] := GetRegExpCollection(Data.ParsedText, FRegExpList[i].RegExpTemplate, FUseLastGroup, FRegExpList[i].GroupIndex);
+            Data.Matches[i] := GetRegExpCollection(Data.ParsedText, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex);
 
         DeleteAttachmentFiles(Data);
         TPublishers.ProgressPublisher.CompletedItem(Data^);
@@ -331,25 +352,25 @@ begin
             end;
           fsPng:
             begin
-              aData.Attachments[i].ParsedText  := 'png';
+              aData.Attachments[i].ParsedText  := GetEXIFInfo(aData^.Attachments[i].FileName);
               aData.Attachments[i].ContentType := 'image/png';
               aData.Attachments[i].ImageIndex  := TExtIcon.eiPng.ToByte;
             end;
           fsGif:
             begin
-              aData.Attachments[i].ParsedText  := 'gif';
+              aData.Attachments[i].ParsedText  := GetEXIFInfo(aData^.Attachments[i].FileName);
               aData.Attachments[i].ContentType := 'image/gif';
               aData.Attachments[i].ImageIndex  := TExtIcon.eiGif.ToByte;
             end;
           fsIco:
             begin
-              aData.Attachments[i].ParsedText  := 'ico';
+              aData.Attachments[i].ParsedText  := GetEXIFInfo(aData^.Attachments[i].FileName);
               aData.Attachments[i].ContentType := 'image/icon';
               aData.Attachments[i].ImageIndex  := TExtIcon.eiIco.ToByte;
             end;
           fsJpg, fsJp2:
             begin
-              aData.Attachments[i].ParsedText  := 'jpg';
+              aData.Attachments[i].ParsedText  := GetEXIFInfo(aData^.Attachments[i].FileName);
               aData.Attachments[i].ContentType := 'image/jpeg';
               aData.Attachments[i].ImageIndex  := TExtIcon.eiJpg.ToByte;
             end;
@@ -402,22 +423,28 @@ begin
             end;
           fsCrt:
             begin
-              aData.Attachments[i].ParsedText  := 'crt';
+              aData.Attachments[i].ParsedText  := TFile.ReadAllText(aData^.Attachments[i].FileName);
               aData.Attachments[i].ContentType := 'application/crt';
               aData.Attachments[i].ImageIndex  := TExtIcon.eiTxt.ToByte;
             end;
           fsKey:
             begin
-              aData.Attachments[i].ParsedText  := 'key';
+              aData.Attachments[i].ParsedText  := TFile.ReadAllText(aData^.Attachments[i].FileName);
               aData.Attachments[i].ContentType := 'application/key';
               aData.Attachments[i].ImageIndex  := TExtIcon.eiTxt.ToByte;
             end;
           fsUnknown:
             begin
-              if Ext.Contains('.htm') then
+              if Ext.Contains('.txt') then
               begin
-                aData.Attachments[i].ParsedText  := '';
-                aData.Attachments[i].ContentType := 'application/html';
+                aData.Attachments[i].ParsedText  := TFile.ReadAllText(aData^.Attachments[i].FileName);
+                aData.Attachments[i].ContentType := 'text/plain';
+                aData.Attachments[i].ImageIndex  := TExtIcon.eiTxt.ToByte;
+              end
+              else if Ext.Contains('.htm') then
+              begin
+                aData.Attachments[i].ParsedText  := TFile.ReadAllText(aData^.Attachments[i].FileName);
+                aData.Attachments[i].ContentType := 'text/html';
                 aData.Attachments[i].ImageIndex  := TExtIcon.eiHtml.ToByte;
               end
               else
@@ -425,7 +452,7 @@ begin
             end;
         end;
         for var j := 0 to FRegExpList.Count - 1 do
-          aData.Attachments[i].Matches[j] := GetRegExpCollection(aData.Attachments[i].ParsedText, FRegExpList[j].RegExpTemplate, FUseLastGroup, FRegExpList[j].GroupIndex);
+          aData.Attachments[i].Matches[j] := GetRegExpCollection(aData.Attachments[i].ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
       except
         on E: Exception do
           LogWriter.Write(ddError, 'TPerformer.ParseAttachmentFiles',
@@ -434,7 +461,6 @@ begin
                                    'File name - '  + aData.Attachments[i].FileName);
       end;
   end;
-
 end;
 
 procedure TPerformer.DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);

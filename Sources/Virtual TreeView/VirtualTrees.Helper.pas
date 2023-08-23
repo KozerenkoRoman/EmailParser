@@ -6,7 +6,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls,
   Vcl.Forms, Vcl.Dialogs, DebugWriter, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF}
-  HtmlLib, VirtualTrees, DaImages, HtmlConsts, System.StrUtils, Utils, System.Generics.Defaults,
+  Html.Lib, VirtualTrees, DaImages, Html.Consts, System.StrUtils, Utils, System.Generics.Defaults,
   System.Generics.Collections, System.DateUtils, System.UITypes;
 {$ENDREGION}
 

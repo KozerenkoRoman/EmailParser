@@ -7,10 +7,12 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Translate.Lang, Vcl.ExtCtrls, DebugWriter,
   Common.Types, System.IniFiles, System.IOUtils, Global.Resources, Utils, MessageDialog, System.Threading,
-  HtmlLib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
+  Html.Lib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExpParameters,Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.CommonSettings, Global.Types, Vcl.Samples.Gauges,
-  Publishers.Interfaces, Publishers, CommonForms, Frame.Source;
+  Publishers.Interfaces, Publishers, CommonForms, Frame.Source,
+
+  dEXIF.Helper;
 {$ENDREGION}
 
 type
@@ -103,6 +105,8 @@ begin
   framePathes.Initialize;
   frameResultView.Initialize;
   frameCommonSettings.Initialize;
+  frameCommonSettings.btnSave.Action := aSaveCommonSettings;
+
   pnlTop.Color                := C_TOP_COLOR;
   catMenuItems.HotButtonColor := C_TOP_COLOR;
   catMenuItems.Height         := 20;
