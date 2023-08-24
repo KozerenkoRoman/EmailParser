@@ -30,7 +30,6 @@ uses
   Global.Types in 'Sources\Global.Types.pas',
   Html.Consts in 'Sources\Common\Html.Consts.pas',
   Html.Lib in 'Sources\Common\Html.Lib.pas',
-  Html.Parser in 'Sources\Common\Html.Parser.pas',
   Html.Utils in 'Sources\Common\Html.Utils.pas',
   InformationDialog in 'Sources\Common\InformationDialog.pas' {TInformationDialog},
   MailMessage.Helper in 'Sources\CleverInternetSuite\MailMessage.Helper.pas',
@@ -47,6 +46,7 @@ uses
   SplashScreen in 'Sources\SplashScreen.pas' {frmSplashScreen},
   Translate.Lang in 'Sources\Translate\Translate.Lang.pas',
   Translate.Resources in 'Sources\Translate\Translate.Resources.pas',
+  UHtmlParse in 'Sources\HTMLParse\UHtmlParse.pas',
   Utils in 'Sources\Common\Utils.pas',
   Utils.Exceptions in 'Sources\Common\Utils.Exceptions.pas',
   Utils.LocalInformation in 'Sources\Common\Utils.LocalInformation.pas',
@@ -69,8 +69,8 @@ begin
       TfrmSplashScreen.ShowSplashScreen;
 {$ENDIF}
       Application.CreateForm(TDMImage, DMImage);
-  Application.CreateForm(TfrmMain, frmMain);
-  frmMain.Initialize;
+      Application.CreateForm(TfrmMain, frmMain);
+      frmMain.Initialize;
     finally
       TfrmSplashScreen.HideSplashScreen;
     end;

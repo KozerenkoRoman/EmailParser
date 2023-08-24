@@ -1,62 +1,56 @@
 ﻿[Closed Files]
-File_0=TSourceModule,'D:\Install\dexif\samples\99_OrigDemo\common\MainView.pas',0,1,677,1,688,0,0,,
-File_1=TSourceModule,'D:\Work\EmailParser\Sources\MainForm.pas',0,1,239,1,266,0,0,,{1,266,1}
-File_2=TSourceModule,'D:\Work\EmailParser\Sources\Common\Html.Consts.pas',0,1,1,1,33,0,0,{{14,0},{17,11},{'Region uses'}},
-File_3=TSourceModule,'D:\Work\EmailParser\Sources\dExif\dmetadata.pas',0,1,54,19,72,0,0,,
-File_4=TSourceModule,'D:\Work\EmailParser\Sources\dEXIF\dEXIF.Helper.pas',0,1,20,21,38,0,0,,
-File_5=TSourceModule,'D:\Work\EmailParser\Sources\Common\Html.Parser.pas',0,1,1000,1,1016,0,0,,
-File_6=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\win\Winapi.GDIPAPI.pas',0,1,1,20,22,0,0,,
-File_7=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\win\Winapi.GDIPOBJ.pas',0,1,1399,22,356,0,0,,
-File_8=TSourceModule,'D:\Work\EmailParser\Sources\dExif\dglobal.pas',0,1,180,32,197,0,0,,
-File_9=TSourceModule,'D:\Work\EmailParser\Sources\dExif\dUtils.pas',0,1,1028,1,1046,0,0,,
-File_10=TSourceModule,'D:\Work\EmailParser\Sources\Translate\Translate.Resources.pas',0,1,1,58,33,0,0,,
-File_11=TSourceModule,'D:\Work\EmailParser\Sources\Common\Html.Lib.pas',0,1,231,12,251,0,0,,
-File_12=TSourceModule,'D:\Work\EmailParser\Sources\Common\Html.Utils.pas',0,1,16,14,32,0,0,,
-File_13=TSourceModule,'D:\Work\EmailParser\Sources\Common\Common.Types.pas',0,1,4,1,1,0,0,{{5,0}
-File_14=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\win\Winapi.Windows.pas',0,1,43033,1,43051,0,0,,
+File_0=TSourceModule,'D:\Work\EmailParser\Sources\Virtual TreeView\VirtualTrees.ExportHelper.pas',0,1,1,7,229,0,0,{{9,0},{15,11},{'Region uses'}},
+File_1=TSourceModule,'D:\Work\EmailParser\Sources\Frames\Frame.CommonSettings.pas',0,1,1,1,1,0,0,{{5,0},{13,11},{'Region uses'}},
+File_2=TSourceModule,'D:\Work\EmailParser\Sources\HTMLParse\UhtmlChars.pas',0,1,111,3,129,0,0,,
+File_3=TSourceModule,'D:\Work\EmailParser\Sources\HTMLParse\USourceParser.pas',0,1,148,1,166,0,0,,
+File_4=TSourceModule,'D:\Work\EmailParser\Sources\HTMLParse\UHtmlParse.pas',0,1,616,48,628,0,0,,
+File_5=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.pas',0,1,1,1,12,0,0,,
+File_6=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.SysUtils.pas',0,1,24498,1,24515,0,0,,
+File_7=TSourceModule,'D:\Work\EmailParser\Sources\JCL\JclDebug.pas',0,1,5579,1,5596,0,0,,
+File_8=TSourceModule,'D:\Work\EmailParser\Sources\Global.Types.pas',0,1,42,1,60,0,0,{{5,0}
+File_9=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Generics.Collections.pas',0,1,3336,1,3353,0,0,,
+File_10=TSourceModule,'D:\Work\EmailParser\Sources\Publishers.pas',0,1,75,1,84,0,0,{{5,0}
+File_11=TSourceModule,'D:\Components\VirtualTreeView\Source\VirtualTrees.pas',0,1,204,14,230,0,0,,
+File_12=TSourceModule,'D:\Work\EmailParser\Sources\Virtual TreeView\VirtualTrees.Helper.pas',0,1,1,101,39,0,0,{{5,0}
+File_13=TSourceModule,'D:\Work\EmailParser\Sources\dExif\dEXIF.pas',0,1,3436,54,3459,0,0,,
 
 [Modules]
-Module0=D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas
-Module1=D:\Work\EmailParser\EmailParser.dproj
-Module2=D:\Work\EmailParser\Sources\Frames\Frame.AllAttachments.pas
-Module3=D:\Work\EmailParser\Sources\Common\InformationDialog.pas
-Module4=D:\Work\EmailParser\Sources\Global.Types.pas
-Module5=D:\Work\EmailParser\Sources\Performer.pas
-Module6=D:\Work\EmailParser\Sources\dExif\dEXIF.pas
-Count=7
+Module0=D:\Work\EmailParser\Sources\Frames\Frame.RegExpParameters.pas
+Module1=D:\Work\EmailParser\Sources\Global.Resources.pas
+Module2=D:\Work\EmailParser\Sources\MainForm.pas
+Module3=D:\Work\EmailParser\Sources\Performer.pas
+Module4=D:\Work\EmailParser\Sources\Frames\Frame.AllAttachments.pas
+Module5=D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas
+Count=6
 EditWindowCount=1
 
-[D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas]
+[D:\Work\EmailParser\Sources\Frames\Frame.RegExpParameters.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\EmailParser.dproj]
-ModuleType=TBaseProject
-
-[D:\Work\EmailParser\Sources\Frames\Frame.AllAttachments.pas]
+[D:\Work\EmailParser\Sources\Global.Resources.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\Sources\Common\InformationDialog.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Global.Types.pas]
+[D:\Work\EmailParser\Sources\MainForm.pas]
 ModuleType=TSourceModule
 
 [D:\Work\EmailParser\Sources\Performer.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\Sources\dExif\dEXIF.pas]
+[D:\Work\EmailParser\Sources\Frames\Frame.AllAttachments.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas]
 ModuleType=TSourceModule
 
 [EditWindow0]
-ViewCount=7
-CurrentEditView=D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas
+ViewCount=6
+CurrentEditView=D:\Work\EmailParser\Sources\Frames\Frame.RegExpParameters.pas
 View0=0
 View1=1
 View2=2
 View3=3
 View4=4
 View5=5
-View6=6
 PercentageSizes=1
 Create=1
 Visible=1
@@ -75,13 +69,13 @@ BorlandEditorCodeExplorer=BorlandEditorCodeExplorer@EditWindow0
 TopPanelSize=0
 LeftPanelSize=1896
 LeftPanelClients=PropertyInspector,DockSite3
-LeftPanelData=000008000101000000008B0F00000000000001680700000000000001000000002308000009000000446F636B53697465330100000000A21B00001100000050726F7065727479496E73706563746F72FFFFFFFF
+LeftPanelData=000008000101000000000B1300000000000001680700000000000001000000002308000009000000446F636B53697465330100000000DB2100001100000050726F7065727479496E73706563746F72FFFFFFFF
 RightPanelSize=2000
 RightPanelClients=DockSite2,DockSite4
-RightPanelData=0000080001010100000009000000446F636B53697465348B0F00000000000001D0070000000000000100000000A21B000009000000446F636B5369746532FFFFFFFF
-BottomPanelSize=1519
+RightPanelData=0000080001010100000009000000446F636B53697465340B1300000000000001D0070000000000000100000000DB21000009000000446F636B5369746532FFFFFFFF
+BottomPanelSize=0
 BottomPanelClients=MessageView,DockSite1
-BottomPanelData=0000080001020100000009000000446F636B5369746531DE4400000000000002EF050000000000000100000000DE4400000F0000004D65737361676556696577466F726DFFFFFFFF
+BottomPanelData=000008000102020000000F0000004D65737361676556696577466F726D09000000446F636B5369746531DE440000000000000214060000000000000100000000DE4400000F0000004D65737361676556696577466F726DFFFFFFFF
 BottomMiddlePanelSize=0
 BottomMiddlePanelClients=DockSite0,GraphDrawingModel
 BottomMiddelPanelData=0000080001020200000009000000446F636B536974653010000000477261706844726177696E67566965773C29000000000000024B06000000000000FFFFFFFF
@@ -89,26 +83,59 @@ BottomMiddelPanelData=0000080001020200000009000000446F636B5369746530100000004772
 [View0]
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas
+CursorX=25
+CursorY=55
+TopLine=45
+LeftCol=1
+Elisions=
+Bookmarks={1,466,7}
+EditViewName=Borland.FormDesignerView
+
+[View1]
+CustomEditViewType=TEditView
+Module=D:\Work\EmailParser\Sources\Performer.pas
+CursorX=44
+CursorY=308
+TopLine=277
+LeftCol=1
+Elisions=
+Bookmarks={1,54,1}{2,330,18}
+EditViewName=D:\Work\EmailParser\Sources\Performer.pas
+
+[View2]
+CustomEditViewType=TEditView
+Module=D:\Work\EmailParser\Sources\Frames\Frame.RegExpParameters.pas
 CursorX=1
-CursorY=32
+CursorY=252
+TopLine=175
+LeftCol=1
+Elisions={{5,0},{15,11},{'Region uses'}}
+Bookmarks=
+EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.RegExpParameters.pas
+
+[View3]
+CustomEditViewType=TEditView
+Module=D:\Work\EmailParser\Sources\Global.Resources.pas
+CursorX=1
+CursorY=15
 TopLine=1
 LeftCol=1
 Elisions=
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas
+EditViewName=D:\Work\EmailParser\Sources\Global.Resources.pas
 
-[View1]
+[View4]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Common\InformationDialog.pas
-CursorX=28
-CursorY=112
-TopLine=94
+Module=D:\Work\EmailParser\Sources\MainForm.pas
+CursorX=63
+CursorY=13
+TopLine=226
 LeftCol=1
-Elisions={{5,0},{11,11},{'Region uses'}}
+Elisions=
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Common\InformationDialog.pas
+EditViewName=D:\Work\EmailParser\Sources\MainForm.pas
 
-[View2]
+[View5]
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\Frames\Frame.AllAttachments.pas
 CursorX=8
@@ -117,55 +144,14 @@ TopLine=133
 LeftCol=1
 Elisions=
 Bookmarks={1,149,1}
-EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.AllAttachments.pas
-
-[View3]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Performer.pas
-CursorX=30
-CursorY=223
-TopLine=199
-LeftCol=1
-Elisions=
-Bookmarks={1,121,1}
-EditViewName=D:\Work\EmailParser\Sources\Performer.pas
-
-[View4]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\dExif\dEXIF.pas
-CursorX=54
-CursorY=3459
-TopLine=3436
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\dExif\dEXIF.pas
-
-[View5]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\EmailParser.dpr
-CursorX=45
-CursorY=56
-TopLine=37
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=D:\Work\EmailParser\EmailParser.dpr
-
-[View6]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Global.Types.pas
-CursorX=1
-CursorY=46
-TopLine=36
-LeftCol=1
-Elisions={{5,0},{12,11},{'Region uses'}}
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Global.Types.pas
+EditViewName=Borland.FormDesignerView
 
 [Watches]
-Count=1
-Watch0='tag',256,0,18,1,0,'Watches',1
+Count=4
+Watch0='CurrentChar',256,0,18,1,0,'Watches',1
+Watch1='LineNum',256,0,18,1,0,'Watches',1
+Watch2='ColNum',256,0,18,1,0,'Watches',1
+Watch3='CodeIndex',256,0,18,1,0,'Watches',1
 
 [WatchWindow]
 WatchColumnWidth=111
@@ -189,11 +175,13 @@ Dockable=1
 StayOnTop=0
 
 [Breakpoints]
-Count=4
+Count=6
 Breakpoint0='D:\Work\EmailParser\CleverInternetSuite\clMailMessage.pas',2058,'',0,1,'',1,0,0,'',1,'','','',0,''
 Breakpoint1='D:\Work\EmailParser\CleverInternetSuite\clMailMessage.pas',1154,'',0,1,'',1,0,0,'',1,'','','',0,''
 Breakpoint2='D:\Work\EmailParser\PDFiumLib\PdfiumCtrl.pas',933,'',0,1,'',1,0,0,'',1,'','','',0,''
 Breakpoint3='D:\Work\EmailParser\Sources\PDFiumLib\PdfiumCore.pas',1240,'',0,1,'',1,0,0,'',1,'','','',0,''
+Breakpoint4='D:\Work\EmailParser\Sources\Common\Html.Parser.pas',1010,'',0,1,'',1,0,0,'',1,'','','',0,''
+Breakpoint5='D:\Work\EmailParser\Sources\Common\Html.Parser.pas',775,'',0,1,'',1,0,0,'',1,'','','',0,''
 
 [EmbarcaderoWin32Debugger_AddressBreakpoints]
 Count=0
@@ -230,11 +218,11 @@ State=0
 Left=0
 Top=0
 Width=2000
-Height=6808
+Height=8462
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=2000
-ClientHeight=6808
+ClientHeight=8462
 TBDockHeight=5904
 LRDockWidth=2349
 Dockable=1
@@ -243,18 +231,18 @@ StayOnTop=0
 [MessageView]
 PercentageSizes=1
 Create=1
-Visible=1
+Visible=0
 Docked=1
 State=0
 Left=0
 Top=28
 Width=9917
-Height=1308
+Height=1346
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=9917
-ClientHeight=1308
-TBDockHeight=1308
+ClientHeight=1346
+TBDockHeight=1346
 LRDockWidth=2771
 Dockable=1
 StayOnTop=0
@@ -287,21 +275,16 @@ State=0
 Left=0
 Top=253
 Width=1896
-Height=4913
+Height=6567
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=1896
-ClientHeight=4913
-TBDockHeight=7010
+ClientHeight=6567
+TBDockHeight=8731
 LRDockWidth=1896
 Dockable=1
 StayOnTop=0
 SplitPos=149
-
-[PropInspDesignerSelection]
-ArrangeBy=Name
-SelectedItem=Action,CustomHint
-ExpandedItems=BevelEdges=0,Constraints=0,LiveBindings=0,"LiveBindings Designer=0",Margins=0,Anchors=0,BorderIcons=0,Images=0,Action=0
 
 [frmDesignPreview]
 PercentageSizes=1
@@ -767,11 +750,11 @@ State=0
 Left=0
 Top=28
 Width=2000
-Height=7077
+Height=8731
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=2000
-ClientHeight=7077
+ClientHeight=8731
 TBDockHeight=8731
 LRDockWidth=2000
 Dockable=1
@@ -796,7 +779,7 @@ MaxLeft=-1
 MaxTop=-1
 ClientWidth=1896
 ClientHeight=1817
-TBDockHeight=7010
+TBDockHeight=8731
 LRDockWidth=1896
 Dockable=1
 StayOnTop=0

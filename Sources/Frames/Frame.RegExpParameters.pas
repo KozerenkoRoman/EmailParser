@@ -105,6 +105,12 @@ begin
   Translate;
 end;
 
+procedure TframeRegExpParameters.Deinitialize;
+begin
+  TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'TemplateIndex', cbSetOfTemplates.ItemIndex, lblSetOfTemplates.Caption);
+  inherited Deinitialize;
+end;
+
 procedure TframeRegExpParameters.Translate;
 begin
   inherited;
@@ -149,11 +155,6 @@ begin
     TGeneral.XMLParams.CurrentSection := '';
     TGeneral.XMLParams.Save;
   end;
-end;
-
-procedure TframeRegExpParameters.Deinitialize;
-begin
-  inherited Deinitialize;
 end;
 
 procedure TframeRegExpParameters.aAddExecute(Sender: TObject);
@@ -247,7 +248,9 @@ procedure TframeRegExpParameters.LoadFromXML;
 
 begin
   inherited;
+  TGeneral.XMLParams.Open;
   LoadSetsOfTemplate;
+  cbSetOfTemplates.ItemIndex := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'TemplateIndex', -1);
   vstTree.BeginUpdate;
   try
     vstTree.Clear;

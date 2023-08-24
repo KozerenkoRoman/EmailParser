@@ -75,10 +75,10 @@ begin
 //  FBuilder.AppendLine(FImgData.ExifObj.TraceStr);
   FImgData.ExifObj.ResetIterator;
   while FImgData.ExifObj.IterateFoundTags(GenericEXIF, tag) do
-    FBuilder.AppendLine(tag.Desc.Trim)
+    FBuilder.Append(tag.Desc.Trim)
             .Append(dExifDelim)
             .Append(tag.Data.Trim)
-            .AppendLine(' ');
+            .AppendLine;
 end;
 
 procedure TEXIFDump.DumpMSpecificAsText;
@@ -92,10 +92,10 @@ begin
           .AppendLine(FImgData.ExifObj.msTraceStr);
   FImgData.ExifObj.ResetIterator;
   while FImgData.ExifObj.IterateFoundTags(CustomEXIF, tag) do
-    FBuilder.AppendLine(tag.Desc)
+    FBuilder.Append(tag.Desc)
             .Append(DexifDelim)
             .Append(tag.Data)
-            .AppendLine(' ');
+            .AppendLine;
 end;
 
 function TEXIFDump.GetText: string;

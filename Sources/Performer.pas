@@ -10,7 +10,7 @@ uses
   System.IOUtils, Vcl.Forms, ArrayHelper, Common.Types, Translate.Lang, System.IniFiles, Global.Types,
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
-  Files.Utils, System.SyncObjs, Html.Parser, Publishers.Interfaces, Publishers, dEXIF.Helper;
+  Files.Utils, System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper;
 {$ENDREGION}
 
 type
@@ -36,6 +36,7 @@ type
   public
     class function GetRegExpCollection(const aText, aPattern: string; const aGroupIndex: Integer = 0): string;
     procedure Start;
+    procedure Clear;
     procedure RefreshEmails(const aResultDataArray: PResultDataArray);
     procedure RefreshAttachments(const aAttachmentsArray: PAttachmentsArray);
     procedure Break;
@@ -47,6 +48,11 @@ type
 implementation
 
 { TPerformer }
+
+procedure TPerformer.Clear;
+begin
+
+end;
 
 constructor TPerformer.Create;
 begin
@@ -246,41 +252,40 @@ end;
 
 procedure TPerformer.ParseFile(const aFileName: TFileName);
 var
-  Data        : PResultData;
+  Data        : TResultData;
   MailMessage : TclMailMessage;
 begin
-  New(Data);
-  Data^.Clear;
-  Data^.ShortName := TPath.GetFileNameWithoutExtension(aFileName);
-  Data^.FileName  := aFileName;
+  Data.Clear;
+  Data.ShortName := TPath.GetFileNameWithoutExtension(aFileName);
+  Data.FileName  := aFileName;
 
   MailMessage := TclMailMessage.Create(nil);
   MailMessage.OnSaveAttachment := DoSaveAttachment;
   try
     try
-      MailMessage.ResultData := Data;
+      MailMessage.ResultData := @Data;
       MailMessage.LoadMessage(aFileName);
-      Data^.MessageId   := MailMessage.MessageId;
-      Data^.Subject     := MailMessage.Subject;
-      Data^.TimeStamp   := MailMessage.Date;
-      Data^.From        := MailMessage.From.FullAddress;
-      Data^.ContentType := MailMessage.ContentType;
+      Data.MessageId   := MailMessage.MessageId;
+      Data.Subject     := MailMessage.Subject;
+      Data.TimeStamp   := MailMessage.Date;
+      Data.From        := MailMessage.From.FullAddress;
+      Data.ContentType := MailMessage.ContentType;
 
       if (MailMessage.ContentType = 'text/calendar') then
       begin
         if Assigned(MailMessage.Calendar) then
-          Data^.Body := Concat(Data^.Body, MailMessage.Calendar.Strings.Text);
+          Data.Body := Concat(Data.Body, MailMessage.Calendar.Strings.Text);
       end
       else
       begin
         if Assigned(MailMessage.MessageText) then
-          Data^.Body := Concat(Data^.Body, MailMessage.MessageText.Text)
+          Data.Body := Concat(Data.Body, MailMessage.MessageText.Text)
         else if Assigned(MailMessage.Html) then
-          Data^.Body := Concat(Data^.Body, MailMessage.Html.Strings.Text);
+          Data.Body := Concat(Data.Body, MailMessage.Html.Strings.Text);
       end;
     except
       on E: Exception do
-        LogWriter.Write(ddError, 'TPerformer.ParserHTML', E.Message + sLineBreak + Data^.FileName);
+        LogWriter.Write(ddError, 'TPerformer.ParserHTML', E.Message + sLineBreak + Data.FileName);
     end;
 
     TTask.Create(
@@ -291,28 +296,24 @@ begin
         Setlength(Tasks, 2);
         Tasks[0] := TTask.Create(
           procedure()
-          var
-            HtmlElement: IHtmlElement;
           begin
             TThread.NameThreadForDebugging('TPerformer.ParserHTML');
-            if not Data^.Body.IsEmpty then
-            begin
+            if not Data.Body.IsEmpty then
               try
-                HtmlElement := ParserHTML(Data^.Body);
+                Data.ParsedText := THtmlDom.GetText(Data.Body);
               except
                 on E: Exception do
-                  LogWriter.Write(ddError, 'TPerformer.ParserHTML', E.Message + sLineBreak + 'Email name - ' + Data.FileName);
+                  LogWriter.Write(ddError, 'TPerformer.ParserHTML',
+                                           E.Message + sLineBreak +
+                                           'Email name - ' + Data.FileName);
               end;
-              if Assigned(HtmlElement) then
-                Data^.ParsedText := ConvertWhiteSpace(DecodeHtmlEntities(HtmlElement.Text));
-            end;
           end).Start;
 
         Tasks[1] := TTask.Create(
           procedure()
           begin
             TThread.NameThreadForDebugging('TPerformer.ParseEmail');
-            ParseAttachmentFiles(Data);
+            ParseAttachmentFiles(@Data);
           end).Start;
 
         TTask.WaitForAll(Tasks);
@@ -324,8 +325,8 @@ begin
           else
             Data.Matches[i] := GetRegExpCollection(Data.ParsedText, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex);
 
-        DeleteAttachmentFiles(Data);
-        TPublishers.ProgressPublisher.CompletedItem(Data^);
+        DeleteAttachmentFiles(@Data);
+        TPublishers.ProgressPublisher.CompletedItem(Data);
       end).Start;
   finally
     TPublishers.ProgressPublisher.Progress;

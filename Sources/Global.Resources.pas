@@ -13,6 +13,7 @@ resourcestring
   C_IDENTITY_COLUMNS_NAME = '.Columns';
   C_SECTION_MAIN          = 'Main';
   C_SECTION_TEMPLATE_SETS = 'TemplateSets';
+  C_XML_PARAMS_FILE       = 'EmailParser.xml';
 
 implementation
 

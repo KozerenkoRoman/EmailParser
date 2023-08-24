@@ -123,13 +123,12 @@ end;
 
 class function TExcelExportHelper.ContentToVariantArray(aTree: TVirtualStringTree): Variant;
 var
-  ColumnCount: Integer;
-  Columns: TColumnsArray;
-  i: Integer;
-  Node: PVirtualNode;
-  nRow: Integer;
-  RowCount: Integer;
-  arr: TNodeArray;
+  arr         : TNodeArray;
+  ColumnCount : Integer;
+  Columns     : TColumnsArray;
+  Node        : PVirtualNode;
+  nRow        : Integer;
+  RowCount    : Integer;
 begin
   Columns := aTree.Header.Columns.GetVisibleColumns;
   ColumnCount := Length(Columns);
@@ -137,14 +136,14 @@ begin
   RowCount := Length(arr) + 1; // +1 for the header
   Result := VarArrayCreate([0, RowCount, 0, ColumnCount], varOleStr);
   nRow := 0;
-  for i := 0 to ColumnCount - 1 do
+  for var i := 0 to ColumnCount - 1 do
     Result[nRow, i] := aTree.Header.Columns.Items[Columns[i].Index].Text;
 
   for Node in arr do
-    if Assigned(Node) and (Node <> aTree.RootNode) then
+    if Assigned(Node) and aTree.IsVisible[Node] and (Node <> aTree.RootNode) then
     begin
       Inc(nRow);
-      for i := 0 to ColumnCount - 1 do
+      for var i := 0 to ColumnCount - 1 do
       begin
         if Utils.IsFloat(aTree.Text[Node, Columns[i].Index]) then
           Result[nRow, i] := aTree.Text[Node, Columns[i].Index].Replace('.', ',')
@@ -219,18 +218,18 @@ begin
     SaveDialog := TFileSaveDialog.Create(nil);
     try
       SaveDialog.FileTypes.Clear;
-      SaveDialog.DefaultExtension := '*.xls';
+      SaveDialog.DefaultExtension := '*.xlsx';
       if not aFileName.IsEmpty then
-        SaveDialog.FileName := aFileName + '.xls'
+        SaveDialog.FileName := aFileName + '.xlsx'
       else
-        SaveDialog.FileName := aTree.Name + '.xls';
-      TypeItem := SaveDialog.FileTypes.Add;
-      TypeItem.DisplayName := 'XLS-file';
-      TypeItem.FileMask := '*.xls';
-
+        SaveDialog.FileName := aTree.Name + '.xlsx';
       TypeItem := SaveDialog.FileTypes.Add;
       TypeItem.DisplayName := 'XLSX-file';
       TypeItem.FileMask := '*.xlsx';
+
+      TypeItem := SaveDialog.FileTypes.Add;
+      TypeItem.DisplayName := 'XLS-file';
+      TypeItem.FileMask := '*.xls';
 
       TypeItem := SaveDialog.FileTypes.Add;
       TypeItem.DisplayName := 'All files';

@@ -196,6 +196,7 @@ inherited frameEmails: TframeEmails
       ImageIndex = 3
       ImageName = 'MasterFilter_32x32'
       OnExecute = aFilterExecute
+      OnUpdate = aSearchUpdate
     end
   end
   inherited pmFrame: TPopupMenu

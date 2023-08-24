@@ -10,9 +10,7 @@ uses
   Html.Lib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExpParameters,Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.CommonSettings, Global.Types, Vcl.Samples.Gauges,
-  Publishers.Interfaces, Publishers, CommonForms, Frame.Source,
-
-  dEXIF.Helper;
+  Publishers.Interfaces, Publishers, CommonForms, Frame.Source;
 {$ENDREGION}
 
 type

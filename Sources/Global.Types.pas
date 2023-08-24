@@ -60,6 +60,7 @@ type
     ParsedText  : string;
     Matches     : TStringArray;
     ParentNode  : PVirtualNode;
+    function IsMatch: Boolean;
     procedure Assign(const aData: TResultData);
     procedure Clear;
   end;
@@ -112,7 +113,7 @@ class function TGeneral.XMLParams: TXMLFile;
 begin
   if not Assigned(FXMLParams) then
   begin
-    FXMLParams := TXmlFile.Create(TPath.ChangeExtension(TPath.GetFullPath(Application.ExeName), '.xml'));
+    FXMLParams := TXmlFile.Create(TPath.Combine(TPath.GetDirectoryName(Application.ExeName), C_XML_PARAMS_FILE));
     FXMLParams.UsedAttributes := [uaComment, uaValue];
   end;
   Result := FXMLParams;
@@ -225,6 +226,14 @@ begin
   Self := Default(TResultData);
   Self.Position := -1;
   Self.ParentNode := nil;
+end;
+
+function TResultData.IsMatch: Boolean;
+begin
+  Result := False;
+  for var item in Matches do
+    if not item.IsEmpty then
+      Exit(True);
 end;
 
 { TAttachments }

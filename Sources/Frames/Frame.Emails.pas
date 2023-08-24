@@ -30,6 +30,7 @@ type
     btnSep05        : TToolButton;
     SaveDialogEmail : TSaveDialog;
     procedure aBreakExecute(Sender: TObject);
+    procedure aFilterExecute(Sender: TObject);
     procedure aOpenEmailExecute(Sender: TObject);
     procedure aOpenEmailUpdate(Sender: TObject);
     procedure aOpenLogFileExecute(Sender: TObject);
@@ -37,12 +38,11 @@ type
     procedure aSaveExecute(Sender: TObject);
     procedure aSearchExecute(Sender: TObject);
     procedure aSearchUpdate(Sender: TObject);
+    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeFocusChanged(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
-    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
-    procedure aFilterExecute(Sender: TObject);
   private const
     COL_POSITION      = 0;
     COL_SHORT_NAME    = 1;
@@ -58,8 +58,9 @@ type
 
     C_IDENTITY_NAME = 'frameResultView';
   private
-    FPerformer: TPerformer;
-    FIsLoaded: Boolean;
+    FIsFiltered : Boolean;
+    FIsLoaded   : Boolean;
+    FPerformer  : TPerformer;
 
     //IUpdateXML
     procedure UpdateXML;
@@ -98,6 +99,7 @@ begin
   FPerformer := TPerformer.Create;
   TPublishers.UpdateXMLPublisher.Subscribe(Self);
   TPublishers.ProgressPublisher.Subscribe(Self);
+  FIsFiltered := False;
 end;
 
 destructor TframeEmails.Destroy;
@@ -395,14 +397,22 @@ begin
     ResultDataArray.Count := vstTree.RootNode.ChildCount;
     Node := vstTree.RootNode.FirstChild;
     Counter := 0;
-    while Assigned(Node) do
-    begin
-      Data := Node^.GetData;
-      ResultDataArray[Counter] := Data^;
-      Node := Node.NextSibling;
-      Inc(Counter);
-    end;
+
+    vstTree.BeginUpdate;
+    try
+      while Assigned(Node) do
+      begin
+        Data := Node^.GetData;
+        ResultDataArray[Counter] := Data^;
+        vstTree.IsVisible[Node] := not FIsFiltered or Data^.IsMatch;
+        vstTree.InvalidateNode(Node);
+        Node := Node.NextSibling;
+        Inc(Counter);
+      end;
     FPerformer.RefreshEmails(@ResultDataArray);
+  finally
+      vstTree.EndUpdate;
+    end;
   end;
 end;
 
@@ -427,12 +437,33 @@ begin
 end;
 
 procedure TframeEmails.aFilterExecute(Sender: TObject);
+var
+  Node: PVirtualNode;
+  Data: PResultData;
 begin
   inherited;
+  FIsFiltered := TAction(Sender).Checked;
   if TAction(Sender).Checked then
     TAction(Sender).ImageIndex := 56
   else
     TAction(Sender).ImageIndex := 3;
+
+  if (vstTree.RootNode.ChildCount > 0) then
+  begin
+    Node := vstTree.RootNode.FirstChild;
+    vstTree.BeginUpdate;
+    try
+      while Assigned(Node) do
+      begin
+        Data := Node^.GetData;
+        vstTree.IsVisible[Node] := not FIsFiltered or Data^.IsMatch;
+        vstTree.InvalidateNode(Node);
+        Node := Node.NextSibling;
+      end;
+    finally
+      vstTree.EndUpdate;
+    end;
+  end;
 end;
 
 procedure TframeEmails.aSearchExecute(Sender: TObject);
@@ -456,6 +487,8 @@ begin
   Data := Node^.GetData;
   Data^.Assign(aResultData);
   Data^.ParentNode := Node;
+  vstTree.IsVisible[Node] := not FIsFiltered or Data^.IsMatch;
+  vstTree.InvalidateNode(Node);
   if (Data^.Position = -1) then
     Data^.Position := vstTree.TotalCount;
 end;
@@ -471,6 +504,7 @@ procedure TframeEmails.EndProgress;
 begin
   FIsLoaded := False;
   vstTree.EndUpdate;
+  FPerformer.Clear;
 end;
 
 procedure TframeEmails.Progress;
