@@ -14,6 +14,7 @@ resourcestring
   C_SECTION_MAIN          = 'Main';
   C_SECTION_TEMPLATE_SETS = 'TemplateSets';
   C_XML_PARAMS_FILE       = 'EmailParser.xml';
+  C_SQLITE_DB_FILE        = 'EmailParser.db';
 
 implementation
 

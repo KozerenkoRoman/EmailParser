@@ -43,7 +43,7 @@ type
 
     C_FIXED_COLUMNS  = 5;
 
-    C_IDENTITY_NAME = 'frameAllAttachments';
+    C_IDENTITY_NAME = 'frameAllAttachment';
   private
       //IUpdateXML
     procedure UpdateXML;
@@ -71,12 +71,12 @@ implementation
 
 {$R *.dfm}
 
-{ TframeAllAttachments }
+{ TframeAllAttachment }
 
 constructor TframeAllAttachments.Create(AOwner: TComponent);
 begin
   inherited;
-  vstTree.NodeDataSize := SizeOf(TAttachments);
+  vstTree.NodeDataSize := SizeOf(TAttachment);
   TPublishers.UpdateXMLPublisher.Subscribe(Self);
   TPublishers.ProgressPublisher.Subscribe(Self);
 end;
@@ -119,7 +119,7 @@ end;
 
 procedure TframeAllAttachments.aOpenAttachFileExecute(Sender: TObject);
 var
-  Data: PAttachments;
+  Data: PAttachment;
 begin
   inherited;
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
@@ -140,7 +140,7 @@ end;
 
 procedure TframeAllAttachments.aOpenParsedTextExecute(Sender: TObject);
 var
-  Data: PAttachments;
+  Data: PAttachment;
 begin
   inherited;
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
@@ -153,28 +153,28 @@ end;
 procedure TframeAllAttachments.aRefreshExecute(Sender: TObject);
 var
   Node: PVirtualNode;
-  Data: PAttachments;
-  AttachmentsArray : TAttachmentsArray;
+  Data: PAttachment;
+  AttachmentArray : TAttachmentArray;
   Counter: Integer;
   Performer: TPerformer;
 begin
   inherited;
   if (vstTree.RootNode.ChildCount > 0) then
   begin
-    SetLength(AttachmentsArray, vstTree.RootNode.ChildCount);
+    SetLength(AttachmentArray, vstTree.RootNode.ChildCount);
     Node := vstTree.RootNode.FirstChild;
     Counter := 0;
     while Assigned(Node) do
     begin
       Data := Node^.GetData;
-      AttachmentsArray[Counter] := Data^;
+      AttachmentArray[Counter] := Data^;
       Node := Node.NextSibling;
       Inc(Counter);
     end;
 
     Performer := TPerformer.Create;
     try
-      Performer.RefreshAttachments(@AttachmentsArray);
+      Performer.RefreshAttachment(@AttachmentArray);
     finally
       FreeAndNil(Performer);
     end;
@@ -183,7 +183,7 @@ end;
 
 procedure TframeAllAttachments.aSaveExecute(Sender: TObject);
 var
-  Data: PAttachments;
+  Data: PAttachment;
 begin
   inherited;
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
@@ -204,7 +204,7 @@ end;
 
 procedure TframeAllAttachments.vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
 var
-  Data: PAttachments;
+  Data: PAttachment;
 begin
   if (Column >= C_FIXED_COLUMNS) then
   begin
@@ -219,7 +219,7 @@ end;
 
 procedure TframeAllAttachments.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
 var
-  Data1, Data2: PAttachments;
+  Data1, Data2: PAttachment;
 begin
   inherited;
   Data1 := Node1^.GetData;
@@ -247,7 +247,7 @@ end;
 
 procedure TframeAllAttachments.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
-  Data: PAttachments;
+  Data: PAttachment;
 begin
   inherited;
   Data := Node^.GetData;
@@ -257,7 +257,7 @@ end;
 
 procedure TframeAllAttachments.vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
 var
-  Data: PAttachments;
+  Data: PAttachment;
 begin
   inherited;
   if (Column = COL_SHORT_NAME) and (Kind in [ikNormal, ikSelected]) then
@@ -269,7 +269,7 @@ end;
 
 procedure TframeAllAttachments.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
-  Data: PAttachments;
+  Data: PAttachment;
 begin
   inherited;
   CellText := '';
@@ -326,7 +326,7 @@ end;
 
 procedure TframeAllAttachments.CompletedItem(const aResultData: TResultData);
 var
-  Data: PAttachments;
+  Data: PAttachment;
   Node: PVirtualNode;
 begin
   for var i := Low(aResultData.Attachments) to High(aResultData.Attachments) do
@@ -343,7 +343,7 @@ var
   Column: TVirtualTreeColumn;
   FRegExpList: TArrayRecord<TRegExpData>;
   Node: PVirtualNode;
-  Data: PAttachments;
+  Data: PAttachment;
 begin
   vstTree.BeginUpdate;
   FRegExpList := TGeneral.GetRegExpParametersList;

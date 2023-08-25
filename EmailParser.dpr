@@ -13,10 +13,14 @@ uses
   Common.Types in 'Sources\Common\Common.Types.pas',
   CommonForms in 'Sources\CommonForms.pas' {CommonForm},
   DaImages in 'Sources\DataModules\DaImages.pas' {DMImage: TDataModule},
+  DaModule in 'Sources\DataModules\DaModule.pas' {DaMod: TDataModule},
+  DaModule.Resources in 'Sources\DataModules\DaModule.Resources.pas',
   DebugWriter in 'Sources\Common\DebugWriter.pas',
   dEXIF.Helper in 'Sources\dEXIF\dEXIF.Helper.pas',
+  Entity.Emails in 'Sources\DataModules\Entity.Emails.pas',
   ExecConsoleProgram in 'Sources\Common\ExecConsoleProgram.pas',
   Files.Utils in 'Sources\Common\Files.Utils.pas',
+  FireDAC.Phys.SQLiteIniFile in 'Sources\DataModules\FireDAC.Phys.SQLiteIniFile.pas',
   Frame.AllAttachments in 'Sources\Frames\Frame.AllAttachments.pas' {frameAllAttachments: TFrame},
   Frame.Attachments in 'Sources\Frames\Frame.Attachments.pas' {frameAttachments: TFrame},
   Frame.CommonSettings in 'Sources\Frames\Frame.CommonSettings.pas' {frameCommonSettings: TFrame},
@@ -69,8 +73,9 @@ begin
       TfrmSplashScreen.ShowSplashScreen;
 {$ENDIF}
       Application.CreateForm(TDMImage, DMImage);
-      Application.CreateForm(TfrmMain, frmMain);
-      frmMain.Initialize;
+  Application.CreateForm(TDaMod, DaMod);
+  Application.CreateForm(TfrmMain, frmMain);
+  frmMain.Initialize;
     finally
       TfrmSplashScreen.HideSplashScreen;
     end;

@@ -10,7 +10,7 @@ uses
   Html.Lib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExpParameters,Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.CommonSettings, Global.Types, Vcl.Samples.Gauges,
-  Publishers.Interfaces, Publishers, CommonForms, Frame.Source;
+  Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule;
 {$ENDREGION}
 
 type
@@ -99,6 +99,7 @@ procedure TfrmMain.Initialize;
 begin
   LoadFormPosition;
   TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
+  DaMod.Initialize;
   frameRegExpParameters.Initialize;
   framePathes.Initialize;
   frameResultView.Initialize;
@@ -117,6 +118,7 @@ begin
   framePathes.Deinitialize;
   frameResultView.Deinitialize;
   frameCommonSettings.Deinitialize;
+  DaMod.Deinitialize;
   SaveFormPosition;
 end;
 

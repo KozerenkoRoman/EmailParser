@@ -4,8 +4,8 @@
         <ProjectVersion>19.5</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
-        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Platform Condition="'$(Platform)'==''">Win64</Platform>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
         <MainSource>EmailParser.dpr</MainSource>
@@ -109,20 +109,20 @@
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.1.136;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=0.0.1.132;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.1.137;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=0.0.1.132;Comments=</VerInfo_Keys>
         <Icon_MainIcon>EmailParser_Icon.ico</Icon_MainIcon>
         <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
         <Debugger_RunParams>-lang=en</Debugger_RunParams>
         <DCC_RangeChecking>true</DCC_RangeChecking>
         <VerInfo_Debug>true</VerInfo_Debug>
-        <VerInfo_Build>136</VerInfo_Build>
+        <VerInfo_Build>137</VerInfo_Build>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.1.134;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=0.0.1.132;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.1.138;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=0.0.1.132;Comments=</VerInfo_Keys>
         <Icon_MainIcon>EmailParser_Icon.ico</Icon_MainIcon>
         <VerInfo_Debug>true</VerInfo_Debug>
-        <VerInfo_Build>134</VerInfo_Build>
+        <VerInfo_Build>138</VerInfo_Build>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -162,10 +162,18 @@
             <Form>DMImage</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="Sources\DataModules\DaModule.pas">
+            <Form>DaMod</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Sources\DataModules\DaModule.Resources.pas"/>
         <DCCReference Include="Sources\Common\DebugWriter.pas"/>
         <DCCReference Include="Sources\dEXIF\dEXIF.Helper.pas"/>
+        <DCCReference Include="Sources\DataModules\Entity.Emails.pas"/>
         <DCCReference Include="Sources\Common\ExecConsoleProgram.pas"/>
         <DCCReference Include="Sources\Common\Files.Utils.pas"/>
+        <DCCReference Include="Sources\DataModules\FireDAC.Phys.SQLiteIniFile.pas"/>
         <DCCReference Include="Sources\Frames\Frame.AllAttachments.pas">
             <Form>frameAllAttachments</Form>
             <FormType>dfm</FormType>
@@ -307,6 +315,12 @@
                 <DeployFile LocalName="bin\EmailParser.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>EmailParser.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="bin\EmailParser.rsm" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win64">
+                        <RemoteName>EmailParser.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

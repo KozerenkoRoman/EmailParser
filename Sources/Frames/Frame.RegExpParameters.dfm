@@ -14,8 +14,8 @@ inherited frameRegExpParameters: TframeRegExpParameters
     Top = 0
     Width = 753
     Height = 39
-    ButtonHeight = 39
-    ButtonWidth = 39
+    ButtonHeight = 47
+    ButtonWidth = 45
     EdgeInner = esNone
     EdgeOuter = esNone
     Images = DMImage.vil32
@@ -24,7 +24,7 @@ inherited frameRegExpParameters: TframeRegExpParameters
       Left = 0
       Top = 0
       Width = 449
-      Height = 39
+      Height = 47
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 0
@@ -67,7 +67,7 @@ inherited frameRegExpParameters: TframeRegExpParameters
       OnClick = aSaveSetExecute
     end
     object btnDeleteSet: TToolButton
-      Left = 503
+      Left = 509
       Top = 0
       Action = aDeleteSet
     end

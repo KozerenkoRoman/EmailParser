@@ -116,47 +116,59 @@ inherited frameCommonSettings: TframeCommonSettings
     TabOrder = 1
     object lblLanguage: TLabel
       AlignWithMargins = True
-      Left = 260
+      Left = 3
       Top = 3
-      Width = 57
-      Height = 17
+      Width = 314
+      Height = 29
       Align = alClient
       Alignment = taRightJustify
       Caption = 'Language'
       Layout = tlCenter
+      ExplicitLeft = 260
+      ExplicitWidth = 57
+      ExplicitHeight = 17
     end
     object lblExtensions: TLabel
       AlignWithMargins = True
-      Left = 175
+      Left = 3
       Top = 38
-      Width = 142
-      Height = 17
+      Width = 314
+      Height = 29
       Align = alClient
       Alignment = taRightJustify
       Caption = 'File extensions to search'
       Layout = tlCenter
+      ExplicitLeft = 175
+      ExplicitWidth = 142
+      ExplicitHeight = 17
     end
     object lblPathForAttachments: TLabel
       AlignWithMargins = True
-      Left = 150
+      Left = 3
       Top = 73
-      Width = 167
-      Height = 17
+      Width = 314
+      Height = 29
       Align = alClient
       Alignment = taRightJustify
       Caption = 'Paths for saving attachments'
       Layout = tlCenter
+      ExplicitLeft = 150
+      ExplicitWidth = 167
+      ExplicitHeight = 17
     end
     object lblDeleteAttachments: TLabel
       AlignWithMargins = True
-      Left = 126
+      Left = 3
       Top = 108
-      Width = 191
-      Height = 17
+      Width = 314
+      Height = 29
       Align = alClient
       Alignment = taRightJustify
       Caption = 'Delete attachments after analysis'
       Layout = tlCenter
+      ExplicitLeft = 126
+      ExplicitWidth = 191
+      ExplicitHeight = 17
     end
     object cbLanguage: TComboBox
       AlignWithMargins = True

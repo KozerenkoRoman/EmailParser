@@ -81,7 +81,7 @@ inherited frmMain: TfrmMain
       Left = 217
       Top = 0
       Width = 143
-      Height = 41
+      Height = 19
       Align = alLeft
       Caption = 'Paths to find files'
       Color = clBtnFace
@@ -93,7 +93,6 @@ inherited frmMain: TfrmMain
       ParentColor = False
       ParentFont = False
       Layout = tlCenter
-      ExplicitHeight = 19
     end
     object pnlLeft: TPanel
       Left = 0
@@ -181,12 +180,26 @@ inherited frmMain: TfrmMain
         end
         inherited tbSettings: TToolBar
           Width = 777
+          ButtonHeight = 75
+          ButtonWidth = 65
           ExplicitWidth = 777
           inherited pnlSettings: TPanel
+            Height = 75
+            ExplicitHeight = 75
             inherited cbSetOfTemplates: TComboBox
               Height = 21
               ExplicitHeight = 21
             end
+          end
+          inherited btnSaveSet: TToolButton
+            ExplicitWidth = 80
+            ExplicitHeight = 75
+          end
+          inherited btnDeleteSet: TToolButton
+            Left = 529
+            ExplicitLeft = 529
+            ExplicitWidth = 65
+            ExplicitHeight = 75
           end
         end
         inherited vstTree: TVirtualStringTree
@@ -304,8 +317,8 @@ inherited frmMain: TfrmMain
               Control = frameCommonSettings.cbParseBodyAsHTML
               Row = 4
             end>
-          ExplicitWidth = 777
-          ExplicitHeight = 544
+          ExplicitWidth = 767
+          ExplicitHeight = 526
         end
       end
     end

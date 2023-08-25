@@ -29,8 +29,8 @@ type
   end;
   TParamPathArray = TArrayRecord<TParamPath>;
 
-  PAttachments = ^TAttachments;
-  TAttachments = record
+  PAttachment = ^TAttachment;
+  TAttachment = record
     Position    : Integer;
     ShortName   : string;
     FileName    : string;
@@ -39,16 +39,16 @@ type
     ParsedText  : string;
     ImageIndex  : Byte;
     Matches     : TStringArray;
-    procedure Assign(const aData: TAttachments);
+    procedure Assign(const aData: TAttachment);
     procedure Clear;
   end;
-  TAttachmentsArray = TArray<TAttachments>;
-  PAttachmentsArray = ^TAttachmentsArray;
+  TAttachmentArray = TArray<TAttachment>;
+  PAttachmentArray = ^TAttachmentArray;
 
   PResultData = ^TResultData;
   TResultData = record
     Position    : Integer;
-    Attachments : TAttachmentsArray;
+    Attachments : TAttachmentArray;
     Body        : string;
     FileName    : TFileName;
     From        : string;
@@ -76,9 +76,9 @@ type
     class function XMLParams: TXMLFile; static;
   end;
 
-  TAttachmentsDir = (adAttachments, adSubAttachments, adUserDefined);
-  TAttachmentsDirHelper = record helper for TAttachmentsDir
-    function FromString(aDir: string): TAttachmentsDir;
+  TAttachmentDir = (adAttachment, adSubAttachment, adUserDefined);
+  TAttachmentDirHelper = record helper for TAttachmentDir
+    function FromString(aDir: string): TAttachmentDir;
   end;
 
   TExtIcon = (eiPdf = 20, eiPng = 21, eiGif = 8, eiIco = 2, eiJpg = 12, eiZip = 30, eiRar = 23, eiHtml = 9, eiTxt = 27,
@@ -205,10 +205,10 @@ begin
   Self.Subject     := aData.Subject;
   Self.Attachments := aData.Attachments;
   Self.TimeStamp   := aData.TimeStamp;
-  Self.Body        := aData.Body;
+//  Self.Body        := aData.Body;
+//  Self.ParsedText  := aData.ParsedText;
   Self.From        := aData.From;
   Self.ContentType := aData.ContentType;
-  Self.ParsedText  := aData.ParsedText;
   Self.ParentNode  := aData.ParentNode;
   SetLength(Self.Attachments, Length(aData.Attachments));
   for var att := Low(Self.Attachments) to High(Self.Attachments) do
@@ -236,9 +236,9 @@ begin
       Exit(True);
 end;
 
-{ TAttachments }
+{ TAttachment }
 
-procedure TAttachments.Assign(const aData: TAttachments);
+procedure TAttachment.Assign(const aData: TAttachment);
 begin
   Self.ShortName   := aData.ShortName;
   Self.FileName    := aData.FileName;
@@ -251,22 +251,22 @@ begin
     Self.Matches[i] := aData.Matches[i];
 end;
 
-procedure TAttachments.Clear;
+procedure TAttachment.Clear;
 begin
-  Self := Default(TAttachments);
+  Self := Default(TAttachment);
   Matches.Clear;
 end;
 
-{ TAttachmentsDirHelper }
+{ TAttachmentDirHelper }
 
-function TAttachmentsDirHelper.FromString(aDir: string): TAttachmentsDir;
+function TAttachmentDirHelper.FromString(aDir: string): TAttachmentDir;
 begin
   if aDir.IsEmpty then
-    Result := adSubAttachments
+    Result := adSubAttachment
   else if aDir.Equals(C_ATTACHMENTS_DIR) then
-    Result := adAttachments
+    Result := adAttachment
   else if aDir.Equals(C_ATTACHMENTS_SUB_DIR) then
-    Result := adSubAttachments
+    Result := adSubAttachment
   else
     Result := adUserDefined;
 end;

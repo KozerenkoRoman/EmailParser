@@ -1,6 +1,6 @@
 object DMImage: TDMImage
-  Height = 334
-  Width = 437
+  Height = 385
+  Width = 604
   object vil32: TVirtualImageList
     Images = <
       item

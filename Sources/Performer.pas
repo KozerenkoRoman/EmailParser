@@ -16,9 +16,9 @@ uses
 type
   TPerformer = class
   private
-    FAttachmentsDir    : TAttachmentsDir;
+    FAttachmentDir    : TAttachmentDir;
     FCriticalSection   : TCriticalSection;
-    FDeleteAttachments : Boolean;
+    FDeleteAttachment : Boolean;
     FFileExt           : string;
     FIsBreak           : Boolean;
     FParseBodyAsHTML   : Boolean;
@@ -38,7 +38,7 @@ type
     procedure Start;
     procedure Clear;
     procedure RefreshEmails(const aResultDataArray: PResultDataArray);
-    procedure RefreshAttachments(const aAttachmentsArray: PAttachmentsArray);
+    procedure RefreshAttachment(const aAttachmentArray: PAttachmentArray);
     procedure Break;
 
     constructor Create;
@@ -67,20 +67,20 @@ end;
 
 procedure TPerformer.FillStartParameters;
 begin
-  FRegExpList        := TGeneral.GetRegExpParametersList;
-  FPathList          := TGeneral.GetPathList;
-  FParseBodyAsHTML   := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'ParseBodyAsHTML', False);
-  FUserDefinedDir    := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
-  FAttachmentsDir    := FAttachmentsDir.FromString(FUserDefinedDir);
-  FDeleteAttachments := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
-  FFileExt           := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
+  FRegExpList       := TGeneral.GetRegExpParametersList;
+  FPathList         := TGeneral.GetPathList;
+  FParseBodyAsHTML  := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'ParseBodyAsHTML', False);
+  FUserDefinedDir   := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachment', C_ATTACHMENTS_SUB_DIR);
+  FAttachmentDir    := FAttachmentDir.FromString(FUserDefinedDir);
+  FDeleteAttachment := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachment', True);
+  FFileExt          := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
 end;
 
 procedure TPerformer.Start;
 var
   FileList: TStringDynArray;
 begin
-  LogWriter.Write(ddEnterMethod, 'TPerformer.Start');
+  LogWriter.Write(ddEnterMethod, Self, 'Start');
   FillStartParameters;
   FIsBreak := False;
   FileList := [];
@@ -93,7 +93,7 @@ begin
 
   TPublishers.ProgressPublisher.StartProgress(Length(FileList));
 
-  LogWriter.Write(ddText, 'Length FileList - ' + Length(FileList).ToString);
+  LogWriter.Write(ddText, Self, 'Length FileList - ' + Length(FileList).ToString);
   try
     try
       for var FileName in FileList do
@@ -104,13 +104,13 @@ begin
       end;
     finally
       TPublishers.ProgressPublisher.EndProgress;
-      LogWriter.Write(ddExitMethod, 'TPerformer.Start');
+      LogWriter.Write(ddExitMethod, Self, 'Start');
     end;
   except
     on E: Exception do
     begin
       TPublishers.ProgressPublisher.EndProgress;
-      LogWriter.Write(ddError, 'TPerformer.Start', E.Message);
+      LogWriter.Write(ddError, Self, 'Start', E.Message);
     end;
   end;
 end;
@@ -120,9 +120,9 @@ begin
   FIsBreak := True;
 end;
 
-procedure TPerformer.RefreshAttachments(const aAttachmentsArray: PAttachmentsArray);
+procedure TPerformer.RefreshAttachment(const aAttachmentArray: PAttachmentArray);
 begin
-  if Length(aAttachmentsArray^) = 0 then
+  if Length(aAttachmentArray^) = 0 then
     Exit;
 
 end;
@@ -132,12 +132,12 @@ begin
   if (aResultDataArray.Count = 0) then
     Exit;
 
-  LogWriter.Write(ddEnterMethod, 'TPerformer.Refresh');
+  LogWriter.Write(ddEnterMethod, Self, 'Refresh');
   FIsBreak := False;
   FillStartParameters;
   TPublishers.ProgressPublisher.StartProgress(aResultDataArray^.Count);
 
-  LogWriter.Write(ddText, 'Length of ResultDataArray - ' + aResultDataArray^.Count.ToString);
+  LogWriter.Write(ddText, Self, 'Length of ResultDataArray - ' + aResultDataArray^.Count.ToString);
   try
     try
       for var Data in aResultDataArray^ do
@@ -157,13 +157,13 @@ begin
       end;
     finally
       TPublishers.ProgressPublisher.EndProgress;
-      LogWriter.Write(ddExitMethod, 'TPerformer.Refresh');
+      LogWriter.Write(ddExitMethod, Self, 'Refresh');
     end;
   except
     on E: Exception do
     begin
       TPublishers.ProgressPublisher.EndProgress;
-      LogWriter.Write(ddError, 'TPerformer.Refresh', E.Message);
+      LogWriter.Write(ddError, Self, 'Refresh', E.Message);
     end;
   end;
 end;
@@ -196,13 +196,13 @@ function TPerformer.GetAttchmentPath(const aFileName: TFileName): string;
 var
   Path: string;
 begin
-  case FAttachmentsDir of
-    adAttachments:
+  case FAttachmentDir of
+    adAttachment:
       begin
         Path := TDirectory.GetParent(TPath.GetDirectoryName(aFileName));
         Result := TPath.Combine(Path, C_ATTACHMENTS_DIR);
       end;
-    adSubAttachments:
+    adSubAttachment:
       begin
         Path := TPath.GetDirectoryName(aFileName);
         Result := TPath.Combine(Path, C_ATTACHMENTS_DIR);
@@ -216,7 +216,7 @@ begin
       TDirectory.CreateDirectory(Result)
     except
       on E: Exception do
-        LogWriter.Write(ddError, 'TPerformer.GetAttchmentPath', E.Message + sLineBreak + 'Directory - ' + Result);
+        LogWriter.Write(ddError, Self, 'GetAttchmentPath', E.Message + sLineBreak + 'Directory - ' + Result);
     end;
 end;
 
@@ -234,7 +234,7 @@ end;
 
 procedure TPerformer.DeleteAttachmentFiles(const aData: PResultData);
 begin
-  if FDeleteAttachments then
+  if FDeleteAttachment then
   begin
     for var i := Low(aData.Attachments) to High(aData.Attachments) do
       if TFile.Exists(aData.Attachments[i].FileName) then
@@ -242,7 +242,8 @@ begin
         TFile.Delete(aData.Attachments[i].FileName);
       except
         on E: Exception do
-          LogWriter.Write(ddError, 'TPerformer.DeleteAttachmentFiles',
+          LogWriter.Write(ddError, Self,
+                                   'TPerformer.DeleteAttachmentFiles',
                                    E.Message + sLineBreak +
                                    'Email name - ' + aData.FileName + sLineBreak +
                                    'File name - ' + aData.Attachments[i].FileName);
@@ -285,7 +286,7 @@ begin
       end;
     except
       on E: Exception do
-        LogWriter.Write(ddError, 'TPerformer.ParserHTML', E.Message + sLineBreak + Data.FileName);
+        LogWriter.Write(ddError, Self, 'ParserHTML', E.Message + sLineBreak + Data.FileName);
     end;
 
     TTask.Create(
@@ -303,7 +304,8 @@ begin
                 Data.ParsedText := THtmlDom.GetText(Data.Body);
               except
                 on E: Exception do
-                  LogWriter.Write(ddError, 'TPerformer.ParserHTML',
+                  LogWriter.Write(ddError, Self,
+                                           'TPerformer.ParserHTML',
                                            E.Message + sLineBreak +
                                            'Email name - ' + Data.FileName);
               end;
@@ -456,7 +458,8 @@ begin
           aData.Attachments[i].Matches[j] := GetRegExpCollection(aData.Attachments[i].ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
       except
         on E: Exception do
-          LogWriter.Write(ddError, 'TPerformer.ParseAttachmentFiles',
+          LogWriter.Write(ddError, Self,
+                                   'ParseAttachmentFiles',
                                    E.Message + sLineBreak +
                                    'Email name - ' + aData.FileName + sLineBreak +
                                    'File name - '  + aData.Attachments[i].FileName);
@@ -479,7 +482,8 @@ begin
   if not TPath.HasValidFileNameChars(aFileName, False) then
   begin
     aFileName := Concat('[', Data.ShortName, '] ', TFileUtils.GetCorrectFileName(aFileName));
-    LogWriter.Write(ddText, 'TPerformer.DoSaveAttachment',
+    LogWriter.Write(ddText, Self,
+                            'DoSaveAttachment',
                             'Email file name - '      + Data.FileName  + sLineBreak +
                             'Email short name - '     + Data.ShortName + sLineBreak +
                             'Attachment file name - ' + aFileName      + sLineBreak +
@@ -489,7 +493,8 @@ begin
   if aFileName.Trim.IsEmpty or (not TPath.HasValidFileNameChars(aFileName, False)) then
   begin
     var NewName := Concat('[', Data.ShortName, '] (', aBody.Index.ToString, ')');
-    LogWriter.Write(ddWarning, 'TPerformer.DoSaveAttachment',
+    LogWriter.Write(ddWarning, Self,
+                               'DoSaveAttachment',
                                'Bad file name - ' + aFileName  + sLineBreak +
                                'New file name - ' + NewName);
     aFileName := NewName;
@@ -507,10 +512,11 @@ begin
   {$WARN SYMBOL_PLATFORM ON}
   except
     on E:Exception do
-      LogWriter.Write(ddError, 'TPerformer.DoSaveAttachment',
-                                E.Message + sLineBreak +
-                                'Bad file name - ' + aFileName  + sLineBreak +
-                                'New file name - ' + Data.Attachments[High(Data.Attachments)].FileName);
+      LogWriter.Write(ddError, Self,
+                               'DoSaveAttachment',
+                               E.Message + sLineBreak +
+                               'Bad file name - ' + aFileName  + sLineBreak +
+                               'New file name - ' + Data.Attachments[High(Data.Attachments)].FileName);
   end;
   Handled := True;
 end;
@@ -533,7 +539,7 @@ begin
       end;
     except
       on E: Exception do
-        LogWriter.Write(ddError, 'TPerformer.GetTextFromPDFFile', 'File name - ' + aFileName);
+        LogWriter.Write(ddError, Self, 'GetTextFromPDFFile', 'File name - ' + aFileName);
     end;
   finally
     FreeAndNil(PDFCtrl);

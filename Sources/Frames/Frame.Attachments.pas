@@ -62,7 +62,7 @@ implementation
 constructor TframeAttachments.Create(AOwner: TComponent);
 begin
   inherited;
-  vstTree.NodeDataSize := SizeOf(TAttachments);
+  vstTree.NodeDataSize := SizeOf(TAttachment);
   TPublishers.EmailPublisher.Subscribe(Self);
 end;
 
@@ -102,7 +102,7 @@ end;
 
 procedure TframeAttachments.FocusChanged(const aData: PResultData);
 var
-  Data: PAttachments;
+  Data: PAttachment;
   NewNode: PVirtualNode;
 begin
   vstTree.BeginUpdate;
@@ -123,7 +123,7 @@ end;
 
 procedure TframeAttachments.aOpenAttachFileExecute(Sender: TObject);
 var
-  Data: PAttachments;
+  Data: PAttachment;
 begin
   inherited;
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
@@ -144,7 +144,7 @@ end;
 
 procedure TframeAttachments.aOpenParsedTextExecute(Sender: TObject);
 var
-  Data: PAttachments;
+  Data: PAttachment;
 begin
   inherited;
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
@@ -156,7 +156,7 @@ end;
 
 procedure TframeAttachments.aSaveExecute(Sender: TObject);
 var
-  Data: PAttachments;
+  Data: PAttachment;
 begin
   inherited;
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
@@ -177,7 +177,7 @@ end;
 
 procedure TframeAttachments.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
 var
-  Data1, Data2: PAttachments;
+  Data1, Data2: PAttachment;
 begin
   inherited;
   Data1 := Node1^.GetData;
@@ -198,7 +198,7 @@ end;
 
 procedure TframeAttachments.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
-  Data: PAttachments;
+  Data: PAttachment;
 begin
   inherited;
   Data := Node^.GetData;
@@ -208,7 +208,7 @@ end;
 
 procedure TframeAttachments.vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
 var
-  Data: PAttachments;
+  Data: PAttachment;
 begin
   inherited;
   if (Column = COL_SHORT_NAME) and (Kind in [ikNormal, ikSelected]) then
@@ -220,7 +220,7 @@ end;
 
 procedure TframeAttachments.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
-  Data: PAttachments;
+  Data: PAttachment;
 begin
   inherited;
   CellText := '';
