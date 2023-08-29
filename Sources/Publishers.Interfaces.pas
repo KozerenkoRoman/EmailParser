@@ -19,7 +19,7 @@ type
     procedure EndProgress;
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
-    procedure CompletedItem(const aResultData: TResultData);
+    procedure CompletedItem(const aResultData: PResultData);
   end;
 
   IEmailChange = interface

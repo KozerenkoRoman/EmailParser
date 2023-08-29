@@ -12,14 +12,17 @@ uses
   FireDAC.Stan.ExprFuncs, FireDAC.Phys.SQLiteWrapper.Stat, FireDAC.Phys.SQLiteDef, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
   FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.SQLite, FireDAC.VCLUI.Wait, FireDAC.Stan.Param, FireDAC.DatS,
-  FireDAC.DApt.Intf, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Entity.Emails,
-  FireDAC.Phys.SQLiteIniFile;
+  FireDAC.DApt.Intf, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Thread.Emails,
+  FireDAC.Phys.SQLiteIniFile, DaModule.Resources, Utils.Zip;
 {$ENDREGION}
 
 type
   TDaMod = class(TDataModule, IProgress)
-    FDConnection1: TFDConnection;
-    FDTransaction1: TFDTransaction;
+    Connection             : TFDConnection;
+    FDPhysSQLiteDriverLink : TFDPhysSQLiteDriverLink;
+    qEmail                 : TFDQuery;
+    qEmailBodyAndText      : TFDQuery;
+    qEmailByHash           : TFDQuery;
   private
     FThreadEmails: TThreadEmails;
 
@@ -27,10 +30,18 @@ type
     procedure EndProgress;
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
-    procedure CompletedItem(const aResultData: TResultData);
+    procedure CompletedItem(const aResultData: PResultData);
+
+    class function GetDecompressStr(const aSQLText, aHash: string): string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function GetBodyAndText(const aHash: string): TArray<string>;
+    function IsEmailExistsByHash(const aHash: string): Boolean;
+    procedure FillEmailRecord(const aResultData: PResultData);
+
+    class function GetBodyAsHTML(const aHash: string): string;
+    class function GetBodyAsParsedText(const aHash: string): string;
 
     procedure Initialize;
     procedure Deinitialize;
@@ -62,15 +73,113 @@ begin
 end;
 
 procedure TDaMod.Initialize;
+var
+  DBFile: TFileName;
 begin
   if not FThreadEmails.Started then
     FThreadEmails.Start;
+
+  DBFile := TPath.Combine(TPath.GetDirectoryName(Application.ExeName), C_SQLITE_DB_FILE);
+  with Connection do
+  begin
+    FetchOptions.Mode := fmAll;
+    TxOptions.DisconnectAction := xdNone;
+    LoginPrompt := False;
+    UpdateOptions.LockWait := True;
+    Params.Clear;
+    Params.Add('Database=' + DBFile);
+    Params.Add('DriverID=SQLite');
+    Params.Add('LockingMode=Normal');
+    Params.Add('OpenMode=omReadOnly');
+    Params.Add('SharedCache=False');
+    Params.Add('StringFormat=sfUnicode');
+    Params.Add('SQLiteAdvanced=temp_store=MEMORY;page_size=4096;auto_vacuum=FULL');
+  end;
+  try
+    Connection.Connected := True;
+    qEmail.Prepare;
+    qEmailBodyAndText.Prepare;
+    qEmailByHash.Prepare;
+  except
+    on E: Exception do
+      LogWriter.Write(ddError, Self, 'Initialize', E.Message);
+  end;
+end;
+
+class function TDaMod.GetDecompressStr(const aSQLText, aHash: string): string;
+var
+  Connection: TFDConnection;
+  Query: TFDQuery;
+  DBFile: TFileName;
+begin
+  DBFile := TPath.Combine(TPath.GetDirectoryName(Application.ExeName), C_SQLITE_DB_FILE);
+  Connection := TFDConnection.Create(nil);
+  try
+    with Connection do
+    begin
+      FetchOptions.Mode := fmAll;
+      TxOptions.DisconnectAction := xdNone;
+      UpdateOptions.LockWait := True;
+      LoginPrompt := False;
+      Params.Clear;
+      Params.Add('Database=' + DBFile);
+      Params.Add('DriverID=SQLite');
+      Params.Add('LockingMode=Normal');
+      Params.Add('OpenMode=omReadOnly');
+      Params.Add('SharedCache=False');
+      Params.Add('StringFormat=sfUnicode');
+      Params.Add('SQLiteAdvanced=temp_store=MEMORY;page_size=4096;auto_vacuum=FULL');
+    end;
+
+    try
+      Connection.Connected := True;
+      Query := TFDQuery.Create(nil);
+      try
+        Query.Connection := Connection;
+        Query.SQL.Add(aSQLText);
+        Query.Params[0].AsString := aHash;
+        Query.Prepare;
+        Query.Open;
+        if not Query.IsEmpty then
+          try
+            Result := TZipPack.DecompressStr(Query.Fields[0].AsBytes);
+          except
+            on Dec: Exception do
+              LogWriter.Write(ddError, 'GetDecompressStr', Dec.Message + sLineBreak +
+                                                           'Hash - ' + aHash);
+          end;
+        Query.Close;
+      finally
+        Query.Unprepare;
+        FreeAndNil(Query);
+      end;
+    except
+      on E: Exception do
+        LogWriter.Write(ddError, 'DaMod.GetQuery', E.Message);
+    end;
+  finally
+    FreeAndNil(Connection);
+  end;
+end;
+
+class function TDaMod.GetBodyAsHTML(const aHash: string): string;
+begin
+  Result := TDaMod.GetDecompressStr(rsSQLSelectBodyAsHtml, aHash);
+end;
+
+class function TDaMod.GetBodyAsParsedText(const aHash: string): string;
+begin
+  Result := TDaMod.GetDecompressStr(rsSQLSelectBodyAsParsedText, aHash);
 end;
 
 procedure TDaMod.Deinitialize;
 begin
   LogWriter.Write(ddWarning, Self, 'Deinitialize', 'QueueSize - ' + FThreadEmails.ResultDataQueue.QueueSize.ToString);
   FThreadEmails.Terminate;
+  qEmail.Unprepare;
+  qEmailBodyAndText.Unprepare;
+  qEmailByHash.Unprepare;
+  Connection.Connected := False;
 end;
 
 procedure TDaMod.Translate;
@@ -83,7 +192,7 @@ begin
   // nothing
 end;
 
-procedure TDaMod.CompletedItem(const aResultData: TResultData);
+procedure TDaMod.CompletedItem(const aResultData: PResultData);
 begin
   if FThreadEmails.Started then
     FThreadEmails.ResultDataQueue.PushItem(aResultData);
@@ -97,6 +206,52 @@ end;
 procedure TDaMod.EndProgress;
 begin
   // nothing
+end;
+
+procedure TDaMod.FillEmailRecord(const aResultData: PResultData);
+begin
+  qEmail.ParamByName('HASH').AsString := aResultData.Hash;
+  try
+    qEmail.Open;
+    aResultData.ShortName   := qEmail.FieldByName('SHORT_NAME').AsString;
+    aResultData.MessageId   := qEmail.FieldByName('MESSAGE_ID').AsString;
+    aResultData.Subject     := qEmail.FieldByName('SUBJECT').AsString;
+    aResultData.From        := qEmail.FieldByName('ADDRESS_FROM').AsString;
+    aResultData.ContentType := qEmail.FieldByName('CONTENT_TYPE').AsString;
+    aResultData.TimeStamp   := qEmail.FieldByName('TIME_STAMP').AsDateTime;
+  finally
+    qEmail.Close;
+  end;
+end;
+
+function TDaMod.GetBodyAndText(const aHash: string): TArray<string>;
+begin
+  SetLength(Result, 2);
+  qEmailBodyAndText.ParamByName('HASH').AsString := aHash;
+  try
+    qEmailBodyAndText.Open;
+    try
+      Result[0] := TZipPack.DecompressStr(qEmailBodyAndText.FieldByName('BODY').AsBytes);
+      Result[1] := TZipPack.DecompressStr(qEmailBodyAndText.FieldByName('PARSED_TEXT').AsBytes);
+    except
+      on Dec: Exception do
+        LogWriter.Write(ddError, Self, 'GetBodyAndText', Dec.Message + sLineBreak +
+                                                         'Hash - ' + aHash);
+    end;
+  finally
+    qEmailBodyAndText.Close;
+  end;
+end;
+
+function TDaMod.IsEmailExistsByHash(const aHash: string): Boolean;
+begin
+  qEmailByHash.ParamByName('HASH').AsString := aHash;
+  try
+    qEmailByHash.Open;
+    Result := qEmailByHash.FieldByName('cnt').AsInteger > 0;
+  finally
+    qEmailByHash.Close;
+  end;
 end;
 
 end.

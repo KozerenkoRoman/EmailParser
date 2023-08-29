@@ -9,32 +9,33 @@ interface
 uses
   Winapi.Windows, System.Classes, Vcl.Forms, System.SysUtils, System.Variants, System.IOUtils, Vcl.Graphics,
   System.DateUtils, System.Threading, Utils.VerInfo, Utils.LocalInformation, Html.Lib, Html.Consts, XmlFiles,
-  System.Types, Common.Types;
+  System.Types, Common.Types, System.Generics.Collections;
 {$ENDREGION}
 
 type
-  TFileWriter = class
+  TFileWriter = class(TThread)
   private
-    FCriticalSection : TRTLCriticalSection;
-    FFileStream      : TFileStream;
-    FFileName        : string;
-    FLogPath         : string;
-    FStarted         : Boolean;
+    FFileStream : TFileStream;
+    FFileName   : string;
+    FLogPath    : string;
+    FQueue      : TThreadedQueue<string>;
     function GetSize: Int64;
     procedure SetLogPath(const Value: string);
+    procedure Write(const aLogText: string);
+  protected
+    procedure Execute; override;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Finish;
-    procedure Start;
-    procedure Write(const aInfo: string);
+
     property FileName : string  read FFileName write FFileName;
     property LogPath  : string  read FLogPath  write SetLogPath;
     property Size     : Int64   read GetSize;
-    property Started  : Boolean read FStarted;
+    property LogQueue : TThreadedQueue<string> read FQueue;
   end;
 
-  TLogWriter = class(TComponent)
+  TLogWriter = class
   private const
     C_FOLDER_LOG     : string = 'log\';
     C_CHAR_ENTER     : Char = #13;
@@ -83,7 +84,7 @@ type
     C_CFG_KEY_MAX_SIZE  = 'MaxSizeOfLogFile';
     C_CFG_SECTION_DEBUG = 'Debug';
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create;
     destructor Destroy; override;
 
     procedure Write(const aDetailType: TLogDetailType; const aInfo: string); overload;
@@ -105,7 +106,7 @@ implementation
 
 { TLogWriter }
 
-constructor TLogWriter.Create(AOwner: TComponent);
+constructor TLogWriter.Create;
 begin
   inherited;
   FCountFiles       := 0;
@@ -127,6 +128,17 @@ begin
   end;
 end;
 
+destructor TLogWriter.Destroy;
+begin
+  FIsExistHtmlClose := True;
+  Finish;
+  FLogFile.Terminate;
+  if Assigned(FLogFile) then
+    FreeAndNil(FLogFile);
+  inherited;
+end;
+
+
 procedure TLogWriter.DeleteOldFiles;
 begin
   TTask.Create(
@@ -142,15 +154,6 @@ begin
           end;
       end;
     end).Start;
-end;
-
-destructor TLogWriter.Destroy;
-begin
-  FIsExistHtmlClose := True;
-  Finish;
-  if Assigned(FLogFile) then
-    FreeAndNil(FLogFile);
-  inherited;
 end;
 
 procedure TLogWriter.WriteFileInfo;
@@ -227,7 +230,7 @@ begin
   if Active then
   begin
     CheckSize;
-    FLogFile.Write(aInfo);
+    FLogFile.LogQueue.PushItem(aInfo);
   end;
 end;
 
@@ -240,31 +243,26 @@ begin
     FLogFile := TFileWriter.Create;
     FLogFile.FileName := GetDebugFileName;
     FLogFile.LogPath  := GetLog;
-  end;
-
-  if (not FLogFile.Started) then
-  begin
     FLogFile.Start;
-    if not FIsExistHtmlOpen then
-    begin
-      FIsExistHtmlOpen := True;
-      sText := Concat(C_HTML_OPEN,
-                      C_HTML_HEAD_OPEN,
-                      C_STYLE,
-                      C_HTML_HEAD_CLOSE,
-                      THtmlLib.GetTableTag(VarArrayOf([C_HTML_NBSP,
-                                                        'Line &#8470;',
-                                                        'Time',
-                                                        'Unit name',
-                                                        'Class name',
-                                                        'Method name',
-                                                        'Description'])));
-    end
-    else
-      WriteText(THtmlLib.GetColorTag(THtmlLib.GetBoldText('Log session already started'), clNavy));
-    if (sText <> '') then
-      WriteText(sText);
   end;
+  if not FIsExistHtmlOpen then
+  begin
+    FIsExistHtmlOpen := True;
+    sText := Concat(C_HTML_OPEN,
+                    C_HTML_HEAD_OPEN,
+                    C_STYLE,
+                    C_HTML_HEAD_CLOSE,
+                    THtmlLib.GetTableTag(VarArrayOf([C_HTML_NBSP,
+                                                      'Line &#8470;',
+                                                      'Time',
+                                                      'Unit name',
+                                                      'Class name',
+                                                      'Method name',
+                                                      'Description'])));
+    WriteText(sText);
+  end
+  else
+    WriteText(THtmlLib.GetColorTag(THtmlLib.GetBoldText('Log session already started'), clNavy));
 end;
 
 procedure TLogWriter.Finish;
@@ -275,6 +273,7 @@ begin
   begin
     sText := THtmlLib.GetColorTag(THtmlLib.GetBoldText('Log session finished'), clNavy);
     sText := Concat(C_HTML_TABLE_CLOSE, sText, C_HTML_CLOSE);
+    FLogFile.Terminate;
   end;
 end;
 
@@ -385,15 +384,15 @@ begin
     aInfo := aInfo.Replace(sLineBreak, C_HTML_BREAK).Replace(C_CHAR_ENTER, C_HTML_BREAK).Replace(C_CHAR_LINE_FEED, C_HTML_BREAK);
     case aDetailType of
       ddEnterMethod:
-        FLogFile.Write(Format(C_TABLE_METHOD_TAG, [C_IMG_ENTER_HTM, Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
+        FLogFile.LogQueue.PushItem(Format(C_TABLE_METHOD_TAG, [C_IMG_ENTER_HTM, Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
       ddExitMethod:
-        FLogFile.Write(Format(C_TABLE_METHOD_TAG, [C_IMG_EXIT_HTM, Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
+        FLogFile.LogQueue.PushItem(Format(C_TABLE_METHOD_TAG, [C_IMG_EXIT_HTM, Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
       ddError:
-        FLogFile.Write(Format(C_TABLE_ERROR_TAG, [C_IMG_ERROR_HTM, Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
+        FLogFile.LogQueue.PushItem(Format(C_TABLE_ERROR_TAG, [C_IMG_ERROR_HTM, Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
       ddText:
-        FLogFile.Write(Format(C_TABLE_TEXT_TAG, ['', Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
+        FLogFile.LogQueue.PushItem(Format(C_TABLE_TEXT_TAG, ['', Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
       ddWarning:
-        FLogFile.Write(Format(C_TABLE_WARN_TAG, ['', Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
+        FLogFile.LogQueue.PushItem(Format(C_TABLE_WARN_TAG, ['', Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
     end;
   end;
 end;
@@ -409,7 +408,7 @@ begin
     FIsExistHtmlOpen := False;
     Inc(FCountFiles);
     sNewFileName := GetDebugFileName;
-    FLogFile.Write(Concat(C_HTML_TABLE_CLOSE, Format(C_TAG_LINK, [sNewFileName]), C_HTML_CLOSE));
+    FLogFile.LogQueue.PushItem(Concat(C_HTML_TABLE_CLOSE, Format(C_TAG_LINK, [sNewFileName]), C_HTML_CLOSE));
     FLogFile.Finish;
     FLogFile.FileName := sNewFileName;
     Start;
@@ -421,21 +420,48 @@ end;
 
 constructor TFileWriter.Create;
 begin
-  inherited;
-  FStarted := False;
+  inherited Create(True);
+  Priority := tpLowest;
+  FQueue := TThreadedQueue<string>.Create(1000);
 end;
 
 destructor TFileWriter.Destroy;
 begin
+  FQueue.DoShutDown;
   if Assigned(FFileStream) then
     FreeAndNil(FFileStream);
+  FreeAndNil(FQueue);
   inherited;
+end;
+
+procedure TFileWriter.Execute;
+var
+  WaitResult: TWaitResult;
+  LogText: string;
+  BOM: TBytes;
+begin
+  inherited;
+  TThread.NameThreadForDebugging('TFileWriter');
+  FFileStream := TFileStream.Create(TPath.Combine(LogPath, FileName), fmCreate or fmShareDenyWrite);
+  BOM := TEncoding.UTF8.GetPreamble;
+
+  FFileStream.WriteBuffer(BOM[0], Length(BOM));
+  try
+    while not Terminated do
+    begin
+      WaitResult := FQueue.PopItem(LogText);
+      if (WaitResult = TWaitResult.wrSignaled) then
+        if not(LogText.IsEmpty) then
+          Write(LogText);
+    end;
+  except
+    on E: Exception do
+      LogWriter.Write(ddError, Self, 'Execute', E.Message);
+  end;
 end;
 
 procedure TFileWriter.Finish;
 begin
-  FStarted := False;
-  DeleteCriticalSection(FCriticalSection);
   if Assigned(FFileStream) then
     FreeAndNil(FFileStream);
   inherited;
@@ -461,48 +487,19 @@ begin
       FLogPath := '';
 end;
 
-procedure TFileWriter.Start;
-var
-  sFileName : string;
-  BOM: TBytes;
-begin
-  InitializeCriticalSection(FCriticalSection);
-  FStarted  := True;
-  sFileName := Concat(LogPath, FileName);
-  if not Assigned(FFileStream) then
-  begin
-    if FileExists(sFileName) then
-    begin
-      FFileStream := TFileStream.Create(sFileName, fmOpenWrite or fmShareDenyWrite);
-      FFileStream.Seek(0, soFromEnd);
-    end
-    else
-    begin
-      FFileStream := TFileStream.Create(sFileName, fmCreate or fmShareDenyWrite);
-      BOM := TEncoding.UTF8.GetPreamble;
-      FFileStream.WriteBuffer(Bom[0], Length(BOM));
-    end;
-  end;
-end;
-
-procedure TFileWriter.Write(const aInfo: string);
+procedure TFileWriter.Write(const aLogText: string);
 var
   Buff: TBytes;
 begin
-  if FStarted then
+  if Self.Started then
   begin
-    EnterCriticalSection(FCriticalSection);
-    try
-      Buff := TEncoding.UTF8.GetBytes(aInfo);
-      FFileStream.WriteBuffer(Buff, Length(Buff));
-    finally
-      LeaveCriticalSection(FCriticalSection);
-    end;
+    Buff := TEncoding.UTF8.GetBytes(aLogText);
+    FFileStream.WriteBuffer(Buff, Length(Buff));
   end;
 end;
 
 initialization
   if not Assigned(LogWriter) and not System.IsLibrary then
-    LogWriter := TLogWriter.Create(Application);
+    LogWriter := TLogWriter.Create;
 
 end.

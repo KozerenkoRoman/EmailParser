@@ -27,7 +27,7 @@ type
     procedure EndProgress;
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
-    procedure CompletedItem(const aResultData: TResultData);
+    procedure CompletedItem(const aResultData: PResultData);
   end;
 
   TEmailPublisher = class(TCustomPublisher)
@@ -81,7 +81,7 @@ end;
 
 { TProgressPublisher }
 
-procedure TProgressPublisher.CompletedItem(const aResultData: TResultData);
+procedure TProgressPublisher.CompletedItem(const aResultData: PResultData);
 var
   Item: TObject;
   obj: IProgress;

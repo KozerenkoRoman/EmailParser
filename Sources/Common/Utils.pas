@@ -11,16 +11,11 @@ uses
 
   function BoolToChar(const aValue: Boolean): string; inline;
   function FloatToStrEx(Value: Double): string;
-  function GetCmdLineValue(aCmdLine, aArg: string; aSwitch, aSeparator: Char): string;
-  function GetDateFromHistoricalChart(aDate: string): TDateTime;
-  function GetExpiryDate(aDate: string): TDateTime;
   function GetLeftPadString(aText: string; aLength: Integer): string;
-  function GetOccurrenceDay(aYear: SmallInt; aMonth, aDayOfWeek, aOccurrence: Byte): TDate;
   function GetRightPadString(aText: string; aLength: Integer): string;
   function GetUniqueList(List: string; Delimiter: Char = ','): string; inline;
   function IntToStrEx(Value: Integer): string;
   function IsFloat(str: string): Boolean;
-  function IsInternetConnected: Boolean;
   function IsNumber(str: string): Boolean;
   function LeftStr(const aText: string; aLength: Word): string;
   function NullIf(Value, Value1: Integer): Variant; overload;
@@ -44,8 +39,6 @@ var
   NoDecimalSeparator: string;
 
 implementation
-
-function InternetGetConnectedState(lpdwFlags: LPDWORD; dwReserved:DWORD):BOOL; stdcall; external 'wininet.dll' name 'InternetGetConnectedState';
 
 function NullIf(Value, Value1: Integer): Variant;
 begin
@@ -194,59 +187,6 @@ begin
   end;
 end;
 
-function GetDateFromHistoricalChart(aDate: string): TDateTime;
-var
-  FormatSettings : TFormatSettings;
-begin
-  if CharInSet(aDate[2], ['0' .. '9']) then
-  begin
-  {$WARN SYMBOL_PLATFORM OFF}
-    FormatSettings := TFormatSettings.Create(LOCALE_USER_DEFAULT);
-  {$WARN SYMBOL_PLATFORM ON}
-    FormatSettings.ShortDateFormat := 'YYYY-MM-DD';
-    FormatSettings.DateSeparator := '-';
-    FormatSettings.LongTimeFormat := 'hh:nn:ss';
-    FormatSettings.TimeSeparator := ':';
-    Result := StrToDateTime(Copy(aDate, 1, 4) + '-' + Copy(aDate, 5, 2) + '-' + Copy(aDate, 7, 2) + ' ' + Copy(aDate, 11, 8), FormatSettings);
-  end
-  else
-    Result := RoundToNearest(Now, C_ROUND_SEC);
-end;
-
-function GetExpiryDate(aDate: string): TDateTime;
-var
-  FormatSettings: TFormatSettings;
-begin
-{$WARN SYMBOL_PLATFORM OFF}
-  FormatSettings := TFormatSettings.Create(LOCALE_USER_DEFAULT);
-{$WARN SYMBOL_PLATFORM ON}
-  FormatSettings.ShortDateFormat := 'YYYY-MM-DD';
-  FormatSettings.DateSeparator := '-';
-  FormatSettings.LongTimeFormat := 'hh:nn';
-  FormatSettings.TimeSeparator := ':';
-  Result := StrToDateTime(Copy(aDate, 1, 4) + '-' + Copy(aDate, 5, 2) + '-' + Copy(aDate, 7, 2) + ' ' + Copy(aDate, 10, 5), FormatSettings);
-end;
-
-function GetOccurrenceDay(aYear: SmallInt; aMonth, aDayOfWeek, aOccurrence: Byte): TDate;
-var
-  DiffDays        : SmallInt;
-  FirstDayOfMonth : SmallInt;
-  ResultedDay     : SmallInt;
-begin
-  if (aOccurrence < 1) or (aOccurrence > 5) then
-    raise Exception.Create('Occurrence is invalid')
-  else if (aMonth < 1) or (aMonth > 12) then
-    raise Exception.Create('Month is invalid')
-  else if (aDayOfWeek < 1) or (aDayOfWeek > 7) then
-    raise Exception.Create('DayOfWeek is invalid');
-  FirstDayOfMonth := DayOfTheWeek(StartOfAMonth(aYear, aMonth));
-  DiffDays := aDayOfWeek - FirstDayOfMonth;
-  if (DiffDays < 0) then
-    Inc(DiffDays, 7);
-  ResultedDay := (DiffDays + 1) + (7 * (aOccurrence - 1));
-  Result := EncodeDate(aYear, aMonth, ResultedDay);
-end;
-
 function BoolToChar(const aValue: Boolean): string;
 begin
   if aValue then
@@ -290,41 +230,6 @@ begin
   if Assigned(aControl) then
     if aControl.CanFocus and aControl.Enabled then
       aControl.SetFocus;
-end;
-
-function IsInternetConnected: Boolean;
-const
-  INTERNET_CONNECTION_MODEM = 1;
-  INTERNET_CONNECTION_LAN   = 2;
-  INTERNET_CONNECTION_PROXY = 4;
-var
-  dwConnectionTypes: DWORD;
-begin
-  dwConnectionTypes := INTERNET_CONNECTION_MODEM or
-                       INTERNET_CONNECTION_LAN or
-                       INTERNET_CONNECTION_PROXY;
-  Result := InternetGetConnectedState(@dwConnectionTypes, 0);
-end;
-
-function GetCmdLineValue(aCmdLine, aArg: string; aSwitch, aSeparator: Char): string;
-var
-  ArgIndex: Integer;
-  LenghtValue: Integer;
-  NextSwitchIndex: Integer;
-  SepIndex: Integer;
-begin
-  ArgIndex := aCmdLine.IndexOf(aArg);
-  SepIndex := aCmdLine.IndexOf(aSeparator, ArgIndex);
-  NextSwitchIndex := aCmdLine.IndexOf(aSwitch, ArgIndex + 1);
-
-  if (SepIndex = -1) or (SepIndex > NextSwitchIndex) and (NextSwitchIndex > -1) then
-    Exit('');
-
-  if (NextSwitchIndex = -1) then
-    LenghtValue := aCmdLine.Length - SepIndex + 2
-  else
-    LenghtValue := NextSwitchIndex - SepIndex - 1;
-  Result := Copy(aCmdLine, SepIndex + 2, LenghtValue).Trim;
 end;
 
 end.

@@ -1,4 +1,4 @@
-unit Entity.Emails;
+unit Thread.Emails;
 
 interface
 
@@ -9,22 +9,22 @@ uses
   System.IOUtils, ArrayHelper, Utils, XmlFiles, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Vcl.Forms,
   FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
   FireDAC.DApt.Intf, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, System.Generics.Collections,
-  System.Threading, System.Types, FireDAC.Stan.Param, FireDAC.Phys.SQLiteWrapper, DaModule.Resources;
+  System.Threading, System.Types, FireDAC.Stan.Param, FireDAC.Phys.SQLiteWrapper, DaModule.Resources, FireDAC.Phys.SQLite,
+  Utils.Zip;
 {$ENDREGION}
 
 type
   TThreadEmails = class(TThread)
   private
-    FConnection : TFDConnection;
-    FQueryEmail : TFDQuery;
+    FConnection      : TFDConnection;
     FQueryAttachment : TFDQuery;
-    FQueue      : TThreadedQueue<TResultData>;
+    FQueryEmail      : TFDQuery;
+    FQueue           : TThreadedQueue<PResultData>;
     function GetSQLiteDatabase: TSQLiteDatabase;
     procedure CreateConnection;
     procedure ExecSQL(const aSQL: string);
-    procedure InsertAttachment(const aAttachment: TAttachment; const aMessageId: string);
-    procedure InsertData(const aResultData: TResultData);
-    procedure UpdateData(const aResultData: TResultData);
+    procedure InsertAttachment(const aAttachment: TAttachment; const aParentHash: string);
+    procedure InsertData(const aResultData: PResultData);
   protected
     procedure Commit;
     procedure RollBack;
@@ -35,7 +35,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    property ResultDataQueue: TThreadedQueue<TResultData> read FQueue;
+    property ResultDataQueue: TThreadedQueue<PResultData> read FQueue;
   end;
 
 implementation
@@ -46,7 +46,7 @@ constructor TThreadEmails.Create;
 begin
   inherited Create(True);
   Priority := tpLowest;
-  FQueue := TThreadedQueue<TResultData>.Create(100000);
+  FQueue := TThreadedQueue<PResultData>.Create(100000);
   CreateConnection;
 end;
 
@@ -62,6 +62,30 @@ begin
   inherited;
 end;
 
+procedure TThreadEmails.Execute;
+var
+  ResultData: PResultData;
+  WaitResult: TWaitResult;
+begin
+  inherited;
+  TThread.NameThreadForDebugging('Entity.Emails.TThreadEmails');
+  try
+    if not FConnection.Connected then
+      FConnection.Connected := True;
+
+    while not Terminated do
+    begin
+      WaitResult := FQueue.PopItem(ResultData);
+      if (WaitResult = TWaitResult.wrSignaled) then
+        if not(ResultData.MessageId.IsEmpty) then
+          InsertData(ResultData);
+    end;
+  except
+    on E: Exception do
+      LogWriter.Write(ddError, Self, 'Execute', E.Message);
+  end;
+end;
+
 procedure TThreadEmails.CreateConnection;
 var
   IsStartTransaction: Boolean;
@@ -71,17 +95,20 @@ begin
   FConnection := TFDConnection.Create(nil);
   with FConnection do
   begin
-    FetchOptions.Mode := fmAll;
+    FetchOptions.Mode          := fmAll;
     TxOptions.DisconnectAction := xdNone;
-    LoginPrompt := False;
+    LoginPrompt                := False;
+    UpdateOptions.LockWait := True;
     Params.Clear;
+    Params.Add('Database=' + DBFile);
     Params.Add('DriverID=SQLite');
     Params.Add('LockingMode=Normal');
-    Params.Add('Database=' + DBFile);
-    Params.Add('LockingMode=Normal');
-    Params.Add('SQLiteAdvanced=temp_store=memory'); // ;page_size=4096
-    Connected := True;
+    Params.Add('OpenMode=omReadWrite');
+    Params.Add('SharedCache=False');
+    Params.Add('StringFormat=sfUnicode');
+    Params.Add('SQLiteAdvanced=temp_store=MEMORY;page_size=4096;auto_vacuum=FULL');
   end;
+  FConnection.Connected := True;
 
   IsStartTransaction := StartTransaction;
   try
@@ -138,75 +165,54 @@ begin
     end;
 end;
 
-procedure TThreadEmails.Execute;
+procedure TThreadEmails.InsertData(const aResultData: PResultData);
 var
-  ResultData: TResultData;
-  WaitResult: TWaitResult;
+  IsStartTransaction: Boolean;
 begin
-  inherited;
-  TThread.NameThreadForDebugging('Entity.Emails.TThreadEmails');
+  if aResultData^.IsDuplicate then
+    Exit;
+  if Terminated or not FConnection.Connected then
+    Exit;
+
+  IsStartTransaction := StartTransaction;
   try
-    if not FConnection.Connected then
+    FQueryEmail.ParamByName('BODY').DataType := ftBlob;
+    FQueryEmail.ParamByName('BODY').AsStream := TZipPack.GetCompressStr(aResultData^.Body);
+
+    FQueryEmail.ParamByName('PARSED_TEXT').DataType := ftBlob;
+    FQueryEmail.ParamByName('PARSED_TEXT').AsStream := TZipPack.GetCompressStr(aResultData^.ParsedText);
+
+    FQueryEmail.ParamByName('HASH').AsString         := aResultData^.Hash;
+    FQueryEmail.ParamByName('MESSAGE_ID').AsString   := aResultData^.MessageId;
+    FQueryEmail.ParamByName('FILE_NAME').AsString    := aResultData^.FileName;
+    FQueryEmail.ParamByName('SHORT_NAME').AsString   := aResultData^.ShortName;
+    FQueryEmail.ParamByName('SUBJECT').AsString      := aResultData^.Subject;
+    FQueryEmail.ParamByName('ADDRESS_FROM').AsString := aResultData^.From;
+    FQueryEmail.ParamByName('CONTENT_TYPE').AsString := aResultData^.ContentType;
+    FQueryEmail.ParamByName('TIME_STAMP').AsDateTime := aResultData^.TimeStamp;
+    FQueryEmail.ExecSQL;
+    if IsStartTransaction then
+      Commit;
+    aResultData^.ParsedText := '';
+    aResultData^.Body       := '';
+
+    for var i := Low(aResultData^.Attachments) to High (aResultData^.Attachments) do
     begin
-      FConnection.Connected := True;
-      FQueryEmail.Prepare;
-      FQueryAttachment.Prepare;
+      InsertAttachment(aResultData^.Attachments[i], aResultData^.Hash);
+      aResultData^.Attachments[i].ParsedText := '';
     end;
 
-    while not Terminated do
-    begin
-      WaitResult := FQueue.PopItem(ResultData);
-      if (WaitResult = TWaitResult.wrSignaled) then
-        if not(ResultData.MessageId.IsEmpty) then
-          InsertData(ResultData);
-    end;
   except
     on E: Exception do
-      LogWriter.Write(ddError, Self, 'Execute', E.Message);
-  end;
-end;
-
-procedure TThreadEmails.UpdateData(const aResultData: TResultData);
-begin
-
-end;
-
-procedure TThreadEmails.InsertData(const aResultData: TResultData);
-var
-  IsStartTransaction: Boolean;
-begin
-  if (not Terminated) and FConnection.Connected then
-  begin
-    IsStartTransaction := StartTransaction;
-    try
-      FQueryEmail.ParamByName('MESSAGE_ID').AsString   := aResultData.MessageId;
-      FQueryEmail.ParamByName('FILE_NAME').AsString    := aResultData.FileName;
-      FQueryEmail.ParamByName('SHORT_NAME').AsString   := aResultData.ShortName;
-      FQueryEmail.ParamByName('SUBJECT').AsString      := aResultData.Subject;
-      FQueryEmail.ParamByName('BODY').AsString         := aResultData.Body;
-      FQueryEmail.ParamByName('PARSED_TEXT').AsString  := aResultData.ParsedText;
-      FQueryEmail.ParamByName('ADDRESS_FROM').AsString := aResultData.From;
-      FQueryEmail.ParamByName('CONTENT_TYPE').AsString := aResultData.ContentType;
-      FQueryEmail.ParamByName('TIME_STAMP').AsDateTime := aResultData.TimeStamp;
-      FQueryEmail.ExecSQL;
+    begin
+      LogWriter.Write(ddError, Self, 'InsertData', E.Message);
       if IsStartTransaction then
-        Commit;
-
-      for var attach in aResultData.Attachments do
-        InsertAttachment(attach, aResultData.MessageId);
-
-    except
-      on E: Exception do
-      begin
-        LogWriter.Write(ddError, Self, 'InsertData', E.Message);
-        if IsStartTransaction then
-          RollBack;
-      end;
+        RollBack;
     end;
   end;
 end;
 
-procedure TThreadEmails.InsertAttachment(const aAttachment: TAttachment; const aMessageId: string);
+procedure TThreadEmails.InsertAttachment(const aAttachment: TAttachment; const aParentHash: string);
 var
   IsStartTransaction: Boolean;
 begin
@@ -214,7 +220,8 @@ begin
   begin
     IsStartTransaction := StartTransaction;
     try
-      FQueryAttachment.ParamByName('MESSAGE_ID').AsString   := aMessageId;
+      FQueryAttachment.ParamByName('HASH').AsString         := aAttachment.Hash;
+      FQueryAttachment.ParamByName('PARENT_HASH').AsString  := aParentHash;
       FQueryAttachment.ParamByName('CONTENT_ID').AsString   := aAttachment.ContentID;
       FQueryAttachment.ParamByName('FILE_NAME').AsString    := aAttachment.FileName;
       FQueryAttachment.ParamByName('SHORT_NAME').AsString   := aAttachment.ShortName;

@@ -17,7 +17,6 @@ uses
   DaModule.Resources in 'Sources\DataModules\DaModule.Resources.pas',
   DebugWriter in 'Sources\Common\DebugWriter.pas',
   dEXIF.Helper in 'Sources\dEXIF\dEXIF.Helper.pas',
-  Entity.Emails in 'Sources\DataModules\Entity.Emails.pas',
   ExecConsoleProgram in 'Sources\Common\ExecConsoleProgram.pas',
   Files.Utils in 'Sources\Common\Files.Utils.pas',
   FireDAC.Phys.SQLiteIniFile in 'Sources\DataModules\FireDAC.Phys.SQLiteIniFile.pas',
@@ -48,6 +47,7 @@ uses
   RegExp.Editor in 'Sources\RegExp.Editor.pas' {frmRegExpEditor},
   RegExp.Types in 'Sources\Common\RegExp.Types.pas',
   SplashScreen in 'Sources\SplashScreen.pas' {frmSplashScreen},
+  Thread.Emails in 'Sources\DataModules\Thread.Emails.pas',
   Translate.Lang in 'Sources\Translate\Translate.Lang.pas',
   Translate.Resources in 'Sources\Translate\Translate.Resources.pas',
   UHtmlParse in 'Sources\HTMLParse\UHtmlParse.pas',
@@ -55,6 +55,7 @@ uses
   Utils.Exceptions in 'Sources\Common\Utils.Exceptions.pas',
   Utils.LocalInformation in 'Sources\Common\Utils.LocalInformation.pas',
   Utils.VerInfo in 'Sources\Common\Utils.VerInfo.pas',
+  Utils.Zip in 'Sources\Common\Utils.Zip.pas',
   VirtualTrees.ExportHelper in 'Sources\Virtual TreeView\VirtualTrees.ExportHelper.pas',
   VirtualTrees.Helper in 'Sources\Virtual TreeView\VirtualTrees.Helper.pas',
   XmlFiles in 'Sources\Common\XmlFiles.pas';

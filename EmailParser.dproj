@@ -73,10 +73,10 @@
         <DCC_OutputDRCFile>true</DCC_OutputDRCFile>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=Email Parser;FileVersion=0.0.1.132;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=0.0.1.132;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=Email Parser;FileVersion=0.0.1.143;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=0.0.1.143;Comments=</VerInfo_Keys>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_Release>1</VerInfo_Release>
-        <VerInfo_Build>132</VerInfo_Build>
+        <VerInfo_Build>143</VerInfo_Build>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
         <DCC_UnitSearchPath>D:\Components\VirtualTreeView\Source;.\Sources\CleverInternetSuite;.\Sources\JCL;.\Sources\JCL\jedi;.\Sources\dExif;.\Sources\HTMLParse;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
@@ -105,6 +105,8 @@
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
         <DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
         <DCC_RemoteDebug>true</DCC_RemoteDebug>
+        <VerInfo_Build>143</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=Email Parser;FileVersion=0.0.1.143;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=0.0.1.143;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
@@ -119,10 +121,10 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.1.138;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=0.0.1.132;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.1.151;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=0.0.1.132;Comments=</VerInfo_Keys>
         <Icon_MainIcon>EmailParser_Icon.ico</Icon_MainIcon>
         <VerInfo_Debug>true</VerInfo_Debug>
-        <VerInfo_Build>138</VerInfo_Build>
+        <VerInfo_Build>151</VerInfo_Build>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -170,7 +172,6 @@
         <DCCReference Include="Sources\DataModules\DaModule.Resources.pas"/>
         <DCCReference Include="Sources\Common\DebugWriter.pas"/>
         <DCCReference Include="Sources\dEXIF\dEXIF.Helper.pas"/>
-        <DCCReference Include="Sources\DataModules\Entity.Emails.pas"/>
         <DCCReference Include="Sources\Common\ExecConsoleProgram.pas"/>
         <DCCReference Include="Sources\Common\Files.Utils.pas"/>
         <DCCReference Include="Sources\DataModules\FireDAC.Phys.SQLiteIniFile.pas"/>
@@ -247,6 +248,7 @@
         <DCCReference Include="Sources\SplashScreen.pas">
             <Form>frmSplashScreen</Form>
         </DCCReference>
+        <DCCReference Include="Sources\DataModules\Thread.Emails.pas"/>
         <DCCReference Include="Sources\Translate\Translate.Lang.pas"/>
         <DCCReference Include="Sources\Translate\Translate.Resources.pas"/>
         <DCCReference Include="Sources\HTMLParse\UHtmlParse.pas">
@@ -256,6 +258,7 @@
         <DCCReference Include="Sources\Common\Utils.Exceptions.pas"/>
         <DCCReference Include="Sources\Common\Utils.LocalInformation.pas"/>
         <DCCReference Include="Sources\Common\Utils.VerInfo.pas"/>
+        <DCCReference Include="Sources\Common\Utils.Zip.pas"/>
         <DCCReference Include="Sources\Virtual TreeView\VirtualTrees.ExportHelper.pas"/>
         <DCCReference Include="Sources\Virtual TreeView\VirtualTrees.Helper.pas">
             <Form>$R *.res</Form>

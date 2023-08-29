@@ -12,7 +12,7 @@ uses
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Vcl.Samples.Gauges,
   Performer, Winapi.ShellAPI, Vcl.OleCtrls, SHDocVw, Winapi.ActiveX, Frame.Attachments, Files.Utils,
   VirtualTrees.ExportHelper, Global.Resources, Publishers, Publishers.Interfaces, Vcl.WinXPanels, Frame.Custom,
-  Frame.Emails, Frame.AllAttachments;
+  Frame.Emails, Frame.AllAttachments, DaModule;
 {$ENDREGION}
 
 type
@@ -121,12 +121,15 @@ begin
 end;
 
 procedure TframeResultView.FocusChanged(const aData: PResultData);
+var
+  arr: TArray<string>;
 begin
   inherited;
-  if Assigned(aData) then
+  if Assigned(aData) and (not aData.MessageId.IsEmpty) then
   begin
-    memTextPlain.Lines.Text := aData^.ParsedText;
-    THtmlLib.LoadStringToBrowser(wbBody, aData^.Body);
+    arr := DaMod.GetBodyAndText(aData.Hash);
+    memTextPlain.Lines.Text := arr[1];
+    THtmlLib.LoadStringToBrowser(wbBody, arr[0]);
     if Assigned(wbBody.Document) then
       with wbBody.Application as IOleobject do
         DoVerb(OLEIVERB_UIACTIVATE, nil, wbBody, 0, Handle, GetClientRect);

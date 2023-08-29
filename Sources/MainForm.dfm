@@ -81,7 +81,7 @@ inherited frmMain: TfrmMain
       Left = 217
       Top = 0
       Width = 143
-      Height = 19
+      Height = 41
       Align = alLeft
       Caption = 'Paths to find files'
       Color = clBtnFace
@@ -93,6 +93,7 @@ inherited frmMain: TfrmMain
       ParentColor = False
       ParentFont = False
       Layout = tlCenter
+      ExplicitHeight = 19
     end
     object pnlLeft: TPanel
       Left = 0
@@ -317,8 +318,8 @@ inherited frmMain: TfrmMain
               Control = frameCommonSettings.cbParseBodyAsHTML
               Row = 4
             end>
-          ExplicitWidth = 767
-          ExplicitHeight = 526
+          ExplicitWidth = 777
+          ExplicitHeight = 544
         end
       end
     end

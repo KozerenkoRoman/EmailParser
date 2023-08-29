@@ -31,8 +31,7 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
-    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
-      Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure aRefreshExecute(Sender: TObject);
   private const
     COL_POSITION     = 0;
@@ -52,7 +51,7 @@ type
     procedure EndProgress;
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
-    procedure CompletedItem(const aResultData: TResultData);
+    procedure CompletedItem(const aResultData: PResultData);
 
     procedure UpdateColumns;
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
@@ -152,29 +151,14 @@ end;
 
 procedure TframeAllAttachments.aRefreshExecute(Sender: TObject);
 var
-  Node: PVirtualNode;
-  Data: PAttachment;
-  AttachmentArray : TAttachmentArray;
-  Counter: Integer;
   Performer: TPerformer;
 begin
   inherited;
-  if (vstTree.RootNode.ChildCount > 0) then
+  if not vstTree.IsEmpty then
   begin
-    SetLength(AttachmentArray, vstTree.RootNode.ChildCount);
-    Node := vstTree.RootNode.FirstChild;
-    Counter := 0;
-    while Assigned(Node) do
-    begin
-      Data := Node^.GetData;
-      AttachmentArray[Counter] := Data^;
-      Node := Node.NextSibling;
-      Inc(Counter);
-    end;
-
     Performer := TPerformer.Create;
     try
-      Performer.RefreshAttachment(@AttachmentArray);
+      Performer.RefreshAttachment;
     finally
       FreeAndNil(Performer);
     end;
@@ -324,18 +308,19 @@ begin
   vstTree.Clear;
 end;
 
-procedure TframeAllAttachments.CompletedItem(const aResultData: TResultData);
+procedure TframeAllAttachments.CompletedItem(const aResultData: PResultData);
 var
   Data: PAttachment;
   Node: PVirtualNode;
 begin
   for var i := Low(aResultData.Attachments) to High(aResultData.Attachments) do
-  begin
-    Node := vstTree.AddChild(nil);
-    Data := Node^.GetData;
-    Data^.Assign(aResultData.Attachments[i]);
-    Data^.Position := vstTree.TotalCount;
-  end;
+    if (not aResultData.MessageId.IsEmpty) then
+    begin
+      Node := vstTree.AddChild(nil);
+      Data := Node^.GetData;
+      Data^.Assign(aResultData.Attachments[i]);
+      Data^.Position := vstTree.TotalCount;
+    end;
 end;
 
 procedure TframeAllAttachments.UpdateColumns;

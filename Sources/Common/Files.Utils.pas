@@ -7,7 +7,7 @@ interface
 uses
   System.SysUtils, System.Variants, System.Classes, System.Generics.Defaults, System.Generics.Collections,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Winapi.Windows, System.DateUtils, System.IniFiles,
-  Vcl.Controls, Winapi.ShellAPI, System.IOUtils, Vcl.Forms;
+  Vcl.Controls, Winapi.ShellAPI, System.IOUtils, Vcl.Forms, System.Hash;
 {$ENDREGION}
 
 type
@@ -19,9 +19,11 @@ type
 
   TFileUtils = class
   public
-    class function CheckSignature(const aFilename: string; const aSignature: TFileSignature): Boolean;
-    class function GetSignature(const aFilename: string): TFileSignature;
+    class function CheckSignature(const aFileName: string; const aSignature: TFileSignature): Boolean;
+    class function GetCmdLineValue(aCmdLine, aArg: string; aSwitch, aSeparator: Char): string;
     class function GetCorrectFileName(const aFileName: string): string; inline;
+    class function GetHash(const aFileName: string): string;
+    class function GetSignature(const aFileName: string): TFileSignature;
     class function ShellExecuteAndWait(const aFileName, aParams: string): Boolean; inline;
     class procedure ShellOpen(const aUrl: string; const aParams: string = '');
   end;
@@ -50,8 +52,8 @@ implementation
 
 class function TFileUtils.ShellExecuteAndWait(const aFileName, aParams: string): Boolean;
 var
-  seInfo: TShellExecuteInfo;
-  Ph: DWORD;
+  seInfo : TShellExecuteInfo;
+  Ph     : DWORD;
 begin
   FillChar(seInfo, SizeOf(seInfo), 0);
   with seInfo do
@@ -81,18 +83,38 @@ begin
     Result := Result.Replace(TPath.GetInvalidFileNameChars[i], '');
 end;
 
+class function TFileUtils.GetHash(const aFileName: string): string;
+var
+  Buffer: array [0 .. 16383] of Byte;
+  FileStream : TFileStream;
+  HashSHA1   : THashSHA1;
+  ReadSize   : Integer;
+begin
+  HashSHA1 := THashSHA1.Create;
+  FileStream := TFile.OpenRead(aFileName);
+  try
+    repeat
+      ReadSize := FileStream.Read(Buffer, SizeOf(Buffer));
+      HashSHA1.Update(Buffer, ReadSize);
+    until ReadSize <> SizeOf(Buffer);
+    Result := HashSHA1.HashAsString;
+  finally
+    FreeAndNil(FileStream)
+  end;
+end;
+
 class procedure TFileUtils.ShellOpen(const aUrl: string; const aParams: string = '');
 begin
   Winapi.ShellAPI.ShellExecute(0, 'Open', PChar(aUrl), PChar(aParams), nil, SW_SHOWNORMAL);
 end;
 
-class function TFileUtils.GetSignature(const aFilename: string): TFileSignature;
+class function TFileUtils.GetSignature(const aFileName: string): TFileSignature;
 var
-  FileSignature: TBytes;
-  FileStream: TFileStream;
+  FileSignature : TBytes;
+  FileStream    : TFileStream;
 begin
   Result := fsUnknown;
-  FileStream := TFileStream.Create(aFilename, fmOpenRead or fmShareDenyWrite);
+  FileStream := TFile.OpenRead(aFileName);
   try
     SetLength(FileSignature, LENGTH_SIGNATURE);
     if (FileStream.Read(FileSignature, SizeOf(FileSignature)) > 0) then
@@ -114,7 +136,7 @@ var
   FileStream    : TFileStream;
 begin
   Result := False;
-  FileStream := TFileStream.Create(aFilename, fmOpenRead or fmShareDenyWrite);
+  FileStream := TFile.OpenRead(aFileName);
   try
     SetLength(FileSignature, LENGTH_SIGNATURE);
     if (FileStream.Read(FileSignature, SizeOf(FileSignature)) > 0) then
@@ -127,6 +149,27 @@ begin
   finally
     FreeAndNil(FileStream);
   end;
+end;
+
+class function TFileUtils.GetCmdLineValue(aCmdLine, aArg: string; aSwitch, aSeparator: Char): string;
+var
+  ArgIndex        : Integer;
+  LenghtValue     : Integer;
+  NextSwitchIndex : Integer;
+  SepIndex        : Integer;
+begin
+  ArgIndex := aCmdLine.IndexOf(aArg);
+  SepIndex := aCmdLine.IndexOf(aSeparator, ArgIndex);
+  NextSwitchIndex := aCmdLine.IndexOf(aSwitch, ArgIndex + 1);
+
+  if (SepIndex = -1) or (SepIndex > NextSwitchIndex) and (NextSwitchIndex > -1) then
+    Exit('');
+
+  if (NextSwitchIndex = -1) then
+    LenghtValue := aCmdLine.Length - SepIndex + 2
+  else
+    LenghtValue := NextSwitchIndex - SepIndex - 1;
+  Result := Copy(aCmdLine, SepIndex + 2, LenghtValue).Trim;
 end;
 
 end.

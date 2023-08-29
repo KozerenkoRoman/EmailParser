@@ -10,7 +10,7 @@ uses
   Html.Lib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExpParameters,Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.CommonSettings, Global.Types, Vcl.Samples.Gauges,
-  Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule;
+  Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule, System.ZLib;
 {$ENDREGION}
 
 type
@@ -62,7 +62,7 @@ type
     procedure EndProgress;
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
-    procedure CompletedItem(const aResultData: TResultData);
+    procedure CompletedItem(const aResultData: PResultData);
   protected
     function GetIdentityName: string; override;
   public
@@ -236,7 +236,7 @@ begin
 end;
 
 
-procedure TfrmMain.CompletedItem(const aResultData: TResultData);
+procedure TfrmMain.CompletedItem(const aResultData: PResultData);
 begin
   //nothing
 end;

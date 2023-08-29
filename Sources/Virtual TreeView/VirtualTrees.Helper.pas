@@ -16,6 +16,12 @@ type
     class procedure Initialize(Sender: TVirtualStringTree);
   end;
 
+  TVirtualStringTreeHelper = class helper for TVirtualStringTree
+  public
+    procedure ReplaceNodeData(aNode: PVirtualNode; aUserData: Pointer);
+  end;
+
+
 implementation
 
 { TVirtualTree }
@@ -38,8 +44,22 @@ begin
   Sender.Header.Options     := [hoColumnResize, hoDblClickResize, hoDrag, hoShowHint, hoShowImages, hoShowSortGlyphs, hoVisible, hoHeaderClickAutoSort];
   Sender.TreeOptions.AutoOptions      := Sender.TreeOptions.AutoOptions + [toDisableAutoscrollOnFocus, toAutoDropExpand, toAutoExpand, toAutoTristateTracking, toAutoChangeScale];
   Sender.TreeOptions.MiscOptions      := Sender.TreeOptions.MiscOptions + [toAcceptOLEDrop, toCheckSupport, {toFullRepaintOnResize,} toGridExtensions, toInitOnSave, toToggleOnDblClick, toWheelPanning, toEditOnClick];
-  Sender.TreeOptions.PaintOptions     := Sender.TreeOptions.PaintOptions + [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowTreeLines, toShowVertGridLines, toThemeAware];
+  Sender.TreeOptions.PaintOptions     := Sender.TreeOptions.PaintOptions + [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowTreeLines, toShowVertGridLines, toThemeAware, toShowBackground];
   Sender.TreeOptions.SelectionOptions := Sender.TreeOptions.SelectionOptions + [toExtendedFocus, toAlwaysSelectNode] - [toFullRowSelect];
+end;
+
+{ TVirtualStringTreeHelper }
+
+procedure TVirtualStringTreeHelper.ReplaceNodeData(aNode: PVirtualNode; aUserData: Pointer);
+var
+  NodeData: ^Pointer;
+begin
+  if Assigned(aUserData) then
+    if NodeDataSize >= 4 then
+    begin
+      NodeData := Pointer(PByte(@NodeData) + TotalInternalDataSize);
+      NodeData^ := aUserData;
+    end
 end;
 
 end.

@@ -8,9 +8,8 @@ uses
 {$ENDREGION}
 
 type
-  TStringFileInfoType = (sfiCompanyName, sfiFileDescription, sfiFileVersion,
-                         sfiInternalName, sfiLegalCopyright, sfiOriginalFilename,
-                         sfiProductName, sfiProductVersion);
+  TStringFileInfoType = (sfiCompanyName, sfiFileDescription, sfiFileVersion, sfiInternalName, sfiLegalCopyright,
+                         sfiOriginalFilename, sfiProductName, sfiProductVersion);
 
   TVersionInfo = class
   private

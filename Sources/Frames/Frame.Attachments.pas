@@ -108,7 +108,7 @@ begin
   vstTree.BeginUpdate;
   try
     vstTree.Clear;
-    if Assigned(aData) then
+    if Assigned(aData) and (not aData.MessageId.IsEmpty) then
       for var i := Low(aData.Attachments) to High(aData.Attachments) do
       begin
         NewNode := vstTree.AddChild(nil);

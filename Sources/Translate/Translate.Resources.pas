@@ -113,6 +113,8 @@ resourcestring
   en_Time                 = 'Time';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
+  en_SearchComplete       = 'Search complete';
+  en_DuplicateCount       = 'Found %d records in DB';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -207,9 +209,11 @@ resourcestring
   uk_Time                 = 'Час';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
+  uk_SearchComplete       = 'Пошук завершено';
+  uk_DuplicateCount       = 'Знайдено %d записів в БД';
 
 const
-   ArrayMessages: array[1 .. 90] of TMessageItem = (
+   ArrayMessages: array[1 .. 92] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
@@ -249,6 +253,7 @@ const
     (Key: 'FileIsDisabled'       ; En: en_FileIsDisabled;       Uk: uk_FileIsDisabled),
     (Key: 'FileName'             ; En: en_FileName;             Uk: uk_FileName),
     (Key: 'FileNotFound'         ; En: en_FileNotFound;         Uk: uk_FileNotFound),
+    (Key: 'DuplicateCount'       ; En: en_DuplicateCount;       Uk: uk_DuplicateCount),
     (Key: 'FoundFiles'           ; En: en_FoundFiles;           Uk: uk_FoundFiles),
     (Key: 'From'                 ; En: en_From;                 Uk: uk_From),
     (Key: 'GettingStarted'       ; En: en_GettingStarted;       Uk: uk_GettingStarted),
@@ -289,6 +294,7 @@ const
     (Key: 'Save'                 ; En: en_Save;                 Uk: uk_Save),
     (Key: 'SaveAs'               ; En: en_SaveAs;               Uk: uk_SaveAs),
     (Key: 'Search'               ; En: en_Search;               Uk: uk_Search),
+    (Key: 'SearchComplete'       ; En: en_SearchComplete;       Uk: uk_SearchComplete),
     (Key: 'SelectAll'            ; En: en_SelectAll;            Uk: uk_SelectAll),
     (Key: 'SetOfTemplates'       ; En: en_SetOfTemplates;       Uk: uk_SetOfTemplates),
     (Key: 'StartSearch'          ; En: en_StartSearch;          Uk: uk_StartSearch),

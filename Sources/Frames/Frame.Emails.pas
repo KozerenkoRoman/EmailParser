@@ -10,7 +10,7 @@ uses
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Vcl.Samples.Gauges,
-  Performer, Winapi.ShellAPI, Vcl.OleCtrls, SHDocVw, Winapi.ActiveX, Frame.Attachments, Files.Utils,
+  Performer, Winapi.ShellAPI, Vcl.OleCtrls, SHDocVw, Winapi.ActiveX, Frame.Attachments, Files.Utils, DaModule,
   VirtualTrees.ExportHelper, Global.Resources, Publishers, Publishers.Interfaces, Vcl.WinXPanels, Frame.Custom;
 {$ENDREGION}
 
@@ -41,8 +41,8 @@ type
     procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeFocusChanged(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex);
-    procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
   private const
     COL_POSITION      = 0;
     COL_SHORT_NAME    = 1;
@@ -69,7 +69,7 @@ type
     procedure EndProgress;
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
-    procedure CompletedItem(const aResultData: TResultData);
+    procedure CompletedItem(const aResultData: PResultData);
 
     procedure UpdateColumns;
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
@@ -95,7 +95,7 @@ implementation
 constructor TframeEmails.Create(AOwner: TComponent);
 begin
   inherited;
-  vstTree.NodeDataSize := SizeOf(TResultData);
+  vstTree.NodeDataSize := SizeOf(TEmail);
   FPerformer := TPerformer.Create;
   TPublishers.UpdateXMLPublisher.Subscribe(Self);
   TPublishers.ProgressPublisher.Subscribe(Self);
@@ -148,29 +148,18 @@ end;
 procedure TframeEmails.UpdateColumns;
 var
   Column: TVirtualTreeColumn;
-  FRegExpList: TArrayRecord<TRegExpData>;
-  Node: PVirtualNode;
-  Data: PResultData;
+  RegExpList: TArrayRecord<TRegExpData>;
 begin
   vstTree.BeginUpdate;
-  FRegExpList := TGeneral.GetRegExpParametersList;
+  RegExpList := TGeneral.GetRegExpParametersList;
   while (C_FIXED_COLUMNS < vstTree.Header.Columns.Count) do
     vstTree.Header.Columns.Delete(C_FIXED_COLUMNS);
 
-  if (FRegExpList.Count + C_FIXED_COLUMNS <> vstTree.Header.Columns.Count) then
-    if (vstTree.RootNode.ChildCount > 0) then
-    begin
-      Node := vstTree.RootNode.FirstChild;
-      while Assigned(Node) do
-      begin
-        Data := Node^.GetData;
-        Data^.Matches.Count := FRegExpList.Count;
-        Node := Node.NextSibling;
-      end;
-    end;
+  for var item in TGeneral.EmailList.Values do
+    item.Matches.Count := RegExpList.Count;
 
   try
-    for var item in FRegExpList do
+    for var item in RegExpList do
     begin
       Column := vstTree.Header.Columns.Add;
       Column.Text             := item.ParameterName;
@@ -208,9 +197,13 @@ var
   Data1, Data2: PResultData;
 begin
   inherited;
-  Data1 := Node1^.GetData;
-  Data2 := Node2^.GetData;
-  case Column of
+  Data1 := TGeneral.EmailList.GetItem(PEmail(Node1^.GetData).Hash);
+  Data2 := TGeneral.EmailList.GetItem(PEmail(Node2^.GetData).Hash);
+
+  if (not Assigned(Data1)) or (not Assigned(Data2)) then
+    Result := 0
+  else
+    case Column of
     COL_POSITION:
       Result := CompareValue(Data1^.Position, Data2^.Position);
     COL_FILE_NAME:
@@ -248,8 +241,9 @@ begin
     Exit;
   if Assigned(Node) then
   begin
-    Data := Node^.GetData;
-    TPublishers.EmailPublisher.FocusChanged(Data);
+    Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
+    if Assigned(Data) then
+      TPublishers.EmailPublisher.FocusChanged(Data);
   end
   else
     TPublishers.EmailPublisher.FocusChanged(nil);
@@ -261,23 +255,14 @@ var
 begin
   if (Column >= C_FIXED_COLUMNS) then
   begin
-    Data := Node^.GetData;
-    if not Data^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
-    begin
-      TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
-      TargetCanvas.FillRect(CellRect);
-    end;
+    Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
+    if Assigned(Data) then
+      if not Data^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
+      begin
+        TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+        TargetCanvas.FillRect(CellRect);
+      end;
   end;
-end;
-
-procedure TframeEmails.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
-var
-  Data: PResultData;
-begin
-  inherited;
-  Data := Node^.GetData;
-  if Assigned(Data) then
-    Data^.Clear;
 end;
 
 procedure TframeEmails.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
@@ -285,34 +270,48 @@ var
   Data: PResultData;
 begin
   inherited;
-  CellText := '';
-  Data := Sender.GetNodeData(Node);
-  case Column of
-    COL_POSITION:
-      CellText := Data^.Position.ToString;
-    COL_FILE_NAME:
-      CellText := Data^.FileName;
-    COL_SHORT_NAME:
-      CellText := Data^.ShortName;
-    COL_MESSAGE_ID:
-      CellText := Data^.MessageId;
-    COL_DATE:
-      CellText := DateTimeToStr(Data^.TimeStamp);
-    COL_SUBJECT:
-      CellText := Data^.Subject;
-    COL_ATTACH:
-      if (Length(Data^.Attachments) = 0) then
-        CellText := ''
-      else
-        CellText := Length(Data^.Attachments).ToString;
-    COL_FROM:
-      CellText := Data^.From;
-    COL_CONTENT_TYPE:
-      CellText := Data^.ContentType;
-  else
-    if (Column >= 0) and (Data^.Matches.Count >= Column - C_FIXED_COLUMNS) then
-      CellText := Data^.Matches.Items[Column - C_FIXED_COLUMNS];
-  end;
+  Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
+  if Assigned(Data) then
+    case Column of
+      COL_POSITION:
+        CellText := Data^.Position.ToString;
+      COL_FILE_NAME:
+        CellText := Data^.FileName;
+      COL_SHORT_NAME:
+        CellText := Data^.ShortName;
+      COL_MESSAGE_ID:
+        CellText := Data^.MessageId;
+      COL_DATE:
+        CellText := DateTimeToStr(Data^.TimeStamp);
+      COL_SUBJECT:
+        CellText := Data^.Subject;
+      COL_ATTACH:
+        if (Length(Data^.Attachments) = 0) then
+          CellText := ''
+        else
+          CellText := Length(Data^.Attachments).ToString;
+      COL_FROM:
+        CellText := Data^.From;
+      COL_CONTENT_TYPE:
+        CellText := Data^.ContentType;
+    else
+      if (Column >= 0) and (Data^.Matches.Count >= Column - C_FIXED_COLUMNS) then
+        CellText := Data^.Matches.Items[Column - C_FIXED_COLUMNS];
+    end;
+end;
+
+procedure TframeEmails.vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
+var
+  Data: PResultData;
+begin
+  inherited;
+  Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
+  if Assigned(Data) then
+    if (Column in [COL_FILE_NAME, COL_SHORT_NAME]) and Data^.IsDuplicate then
+    begin
+      TargetCanvas.Font.Style := [fsBold];
+      TargetCanvas.Font.Color := clNavy;
+    end;
 end;
 
 procedure TframeEmails.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
@@ -363,11 +362,14 @@ begin
   inherited;
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
   begin
-    Data := vstTree.FocusedNode.GetData;
-    if TFile.Exists(Data^.FileName) then
-      TFileUtils.ShellOpen(Data^.FileName)
-    else
-      TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+    Data := TGeneral.EmailList.GetItem(PEmail(vstTree.FocusedNode^.GetData).Hash);
+    if Assigned(Data) then
+    begin
+      if TFile.Exists(Data^.FileName) then
+        TFileUtils.ShellOpen(Data^.FileName)
+      else
+        TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+    end;
   end;
 end;
 
@@ -385,35 +387,10 @@ begin
 end;
 
 procedure TframeEmails.aRefreshExecute(Sender: TObject);
-var
-  Node: PVirtualNode;
-  Data: PResultData;
-  ResultDataArray : TResultDataArray;
-  Counter: Integer;
 begin
   inherited;
   if (vstTree.RootNode.ChildCount > 0) then
-  begin
-    ResultDataArray.Count := vstTree.RootNode.ChildCount;
-    Node := vstTree.RootNode.FirstChild;
-    Counter := 0;
-
-    vstTree.BeginUpdate;
-    try
-      while Assigned(Node) do
-      begin
-        Data := Node^.GetData;
-        ResultDataArray[Counter] := Data^;
-        vstTree.IsVisible[Node] := not FIsFiltered or Data^.IsMatch;
-        vstTree.InvalidateNode(Node);
-        Node := Node.NextSibling;
-        Inc(Counter);
-      end;
-    FPerformer.RefreshEmails(@ResultDataArray);
-  finally
-      vstTree.EndUpdate;
-    end;
-  end;
+    FPerformer.RefreshEmails;
 end;
 
 procedure TframeEmails.aSaveExecute(Sender: TObject);
@@ -423,16 +400,17 @@ begin
   inherited;
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
   begin
-    Data := vstTree.FocusedNode.GetData;
-    if TFile.Exists(Data^.FileName) then
-    begin
-      SaveDialogEmail.InitialDir := TPath.GetDirectoryName(Data^.FileName);
-      SaveDialogEmail.FileName   := Data^.FileName;
-      if SaveDialogEmail.Execute and (SaveDialogEmail.FileName <> Data^.FileName) then
-        TFile.Copy(Data^.FileName, SaveDialogEmail.FileName);
-    end
-    else
-      TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+    Data := TGeneral.EmailList.GetItem(PEmail(vstTree.FocusedNode^.GetData).Hash);
+    if Assigned(Data) then
+      if TFile.Exists(Data^.FileName) then
+      begin
+        SaveDialogEmail.InitialDir := TPath.GetDirectoryName(Data^.FileName);
+        SaveDialogEmail.FileName := Data^.FileName;
+        if SaveDialogEmail.Execute and (SaveDialogEmail.FileName <> Data^.FileName) then
+          TFile.Copy(Data^.FileName, SaveDialogEmail.FileName);
+      end
+      else
+        TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
   end;
 end;
 
@@ -455,9 +433,12 @@ begin
     try
       while Assigned(Node) do
       begin
-        Data := Node^.GetData;
-        vstTree.IsVisible[Node] := not FIsFiltered or Data^.IsMatch;
-        vstTree.InvalidateNode(Node);
+        Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
+        if Assigned(Data) then
+        begin
+          vstTree.IsVisible[Node] := not FIsFiltered or Data^.IsMatch;
+          vstTree.InvalidateNode(Node);
+        end;
         Node := Node.NextSibling;
       end;
     finally
@@ -470,40 +451,43 @@ procedure TframeEmails.aSearchExecute(Sender: TObject);
 begin
   inherited;
   vstTree.Clear;
+  TGeneral.EmailList.ClearData;
   FIsLoaded := True;
   Application.ProcessMessages;
   FPerformer.Start;
 end;
 
-procedure TframeEmails.CompletedItem(const aResultData: TResultData);
+procedure TframeEmails.CompletedItem(const aResultData: PResultData);
 var
-  Data: PResultData;
   Node: PVirtualNode;
+  Data: PEmail;
 begin
-  if Assigned(aResultData.ParentNode) then
-    Node := aResultData.ParentNode
-  else
-    Node := vstTree.AddChild(nil);
+  if not Assigned(aResultData) then
+    Exit;
+  Node := vstTree.AddChild(nil);
   Data := Node^.GetData;
-  Data^.Assign(aResultData);
-  Data^.ParentNode := Node;
-  vstTree.IsVisible[Node] := not FIsFiltered or Data^.IsMatch;
-  vstTree.InvalidateNode(Node);
-  if (Data^.Position = -1) then
-    Data^.Position := vstTree.TotalCount;
+  Data^.Hash := aResultData.Hash;
+  vstTree.IsVisible[Node] := not FIsFiltered or aResultData^.IsMatch;
+  vstTree.ValidateNode(Node, False);
+  aResultData^.Position := vstTree.AbsoluteIndex(Node) + 1;
 end;
 
 procedure TframeEmails.StartProgress(const aMaxPosition: Integer);
 begin
   vstTree.BeginUpdate;
-  TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('FoundFiles'), [aMaxPosition]));
   TPublishers.EmailPublisher.FocusChanged(nil);
+  TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('FoundFiles'), [aMaxPosition]));
 end;
 
 procedure TframeEmails.EndProgress;
 begin
   FIsLoaded := False;
   vstTree.EndUpdate;
+  if (FPerformer.DuplicateCount > 0) then
+    TMessageDialog.ShowInfo(TLang.Lang.Translate('SearchComplete') + sLineBreak +
+                            Format(TLang.Lang.Translate('DuplicateCount'), [FPerformer.DuplicateCount]))
+  else
+    TMessageDialog.ShowInfo(TLang.Lang.Translate('SearchComplete'));
   FPerformer.Clear;
 end;
 

@@ -96,9 +96,13 @@ type
       Returns IP address and domain
      }
     class procedure GetLocalIPAddressName(var aIP, aDomain: string);
+
+    class function IsInternetConnected: Boolean;
   end;
 
 implementation
+
+function InternetGetConnectedState(lpdwFlags: LPDWORD; dwReserved: DWORD): BOOL; stdcall; external 'wininet.dll' name 'InternetGetConnectedState';
 
 class function TLocalInformationDialog.GetLocaleInformationDialog(aFlag: Integer): string;
 var
@@ -212,6 +216,20 @@ begin
   Result := IntToStr(SerialNumber);
 end;
 
+class function TLocalInformationDialog.IsInternetConnected: Boolean;
+const
+  INTERNET_CONNECTION_MODEM = 1;
+  INTERNET_CONNECTION_LAN   = 2;
+  INTERNET_CONNECTION_PROXY = 4;
+var
+  dwConnectionTypes: DWORD;
+begin
+  dwConnectionTypes := INTERNET_CONNECTION_MODEM or
+                       INTERNET_CONNECTION_LAN or
+                       INTERNET_CONNECTION_PROXY;
+  Result := InternetGetConnectedState(@dwConnectionTypes, 0);
+end;
+
 class function TLocalInformationDialog.IsOLEObjectInstalled(aName: string): boolean;
 var
   ClassID : TCLSID;
@@ -262,4 +280,3 @@ begin
 end;
 
 end.
-

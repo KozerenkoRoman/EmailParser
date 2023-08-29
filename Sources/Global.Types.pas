@@ -31,6 +31,8 @@ type
 
   PAttachment = ^TAttachment;
   TAttachment = record
+    Hash        : string;
+    ParentHash  : string;
     Position    : Integer;
     ShortName   : string;
     FileName    : string;
@@ -47,10 +49,10 @@ type
 
   PResultData = ^TResultData;
   TResultData = record
-    Position    : Integer;
     Attachments : TAttachmentArray;
     Body        : string;
     FileName    : TFileName;
+    Hash        : string;
     From        : string;
     MessageId   : string;
     ShortName   : string;
@@ -60,12 +62,27 @@ type
     ParsedText  : string;
     Matches     : TStringArray;
     ParentNode  : PVirtualNode;
+    IsDuplicate : Boolean;
+    Position    : Integer;
     function IsMatch: Boolean;
-    procedure Assign(const aData: TResultData);
     procedure Clear;
   end;
-  TResultDataArray = TArrayRecord<TResultData>;
+  TResultDataArray = TArrayRecord<PResultData>;
   PResultDataArray = ^TResultDataArray;
+
+  PEmail = ^TEmail;
+  TEmail = record
+    Hash: string;
+  end;
+
+  TEmailList = class(TObjectDictionary<string, PResultData>)
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function GetItem(const aKey: string): PResultData;
+    procedure AddItem(const aResultData: PResultData);
+    procedure ClearData;
+  end;
 
   TGeneral = record
   public
@@ -74,6 +91,8 @@ type
     class function GetRegExpParametersList: TArrayRecord<TRegExpData>; static;
     class function XMLFile: TXMLFile; static;
     class function XMLParams: TXMLFile; static;
+    class var
+      EmailList: TEmailList;
   end;
 
   TAttachmentDir = (adAttachment, adSubAttachment, adUserDefined);
@@ -196,35 +215,12 @@ end;
 
 { TResultData }
 
-procedure TResultData.Assign(const aData: TResultData);
-begin
-  Self.Position    := aData.Position;
-  Self.ShortName   := aData.ShortName;
-  Self.FileName    := aData.FileName;
-  Self.MessageId   := aData.MessageId;
-  Self.Subject     := aData.Subject;
-  Self.Attachments := aData.Attachments;
-  Self.TimeStamp   := aData.TimeStamp;
-//  Self.Body        := aData.Body;
-//  Self.ParsedText  := aData.ParsedText;
-  Self.From        := aData.From;
-  Self.ContentType := aData.ContentType;
-  Self.ParentNode  := aData.ParentNode;
-  SetLength(Self.Attachments, Length(aData.Attachments));
-  for var att := Low(Self.Attachments) to High(Self.Attachments) do
-    Self.Attachments[att].Assign(aData.Attachments[att]);
-  Self.Matches.Count := aData.Matches.Count;
-  for var i := 0 to Self.Matches.Count - 1 do
-    Self.Matches[i] := aData.Matches[i];
-end;
-
 procedure TResultData.Clear;
 begin
   Matches.Clear;
   for var att := Low(Self.Attachments) to High(Self.Attachments) do
     Self.Attachments[att].Clear;
   Self := Default(TResultData);
-  Self.Position := -1;
   Self.ParentNode := nil;
 end;
 
@@ -240,6 +236,8 @@ end;
 
 procedure TAttachment.Assign(const aData: TAttachment);
 begin
+  Self.Hash        := aData.Hash;
+  Self.ParentHash  := aData.ParentHash;
   Self.ShortName   := aData.ShortName;
   Self.FileName    := aData.FileName;
   Self.ContentID   := aData.ContentID;
@@ -278,7 +276,41 @@ begin
   Result := Ord(Self);
 end;
 
+{ TEmailList }
+
+constructor TEmailList.Create;
+begin
+  inherited Create([], 500000);
+
+end;
+
+destructor TEmailList.Destroy;
+begin
+  ClearData;
+  inherited;
+end;
+
+function TEmailList.GetItem(const aKey: string): PResultData;
+begin
+  Result := nil;
+  if Self.ContainsKey(aKey) then
+    Result := Self.Items[aKey];
+end;
+
+procedure TEmailList.AddItem(const aResultData: PResultData);
+begin
+  Self.AddOrSetValue(aResultData.Hash, aResultData);
+end;
+
+procedure TEmailList.ClearData;
+begin
+  for var item in Self do
+    Dispose(item.Value);
+  Self.Clear;
+end;
+
 initialization
+  TGeneral.EmailList := TEmailList.Create;
 
 finalization
   if Assigned(FXMLFile) then
@@ -286,8 +318,7 @@ finalization
     FXMLFile.Save;
     FreeAndNil(FXMLFile);
   end;
-
-  if Assigned(FXMLParams) then
-    FreeAndNil(FXMLParams);
+  if Assigned(TGeneral.EmailList) then
+    FreeAndNil(TGeneral.EmailList);
 
 end.

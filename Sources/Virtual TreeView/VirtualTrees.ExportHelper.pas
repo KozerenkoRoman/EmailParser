@@ -280,7 +280,7 @@ begin
       TypeItem.FileMask := '*.*';
       if SaveDialog.Execute then
       begin
-        str := aTree.ContentToHTML(tstSelected);
+        str := aTree.ContentToHTML(tstAll);
         TFile.WriteAllText(SaveDialog.FileName, str);
       end;
     finally

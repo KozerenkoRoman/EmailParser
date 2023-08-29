@@ -218,7 +218,7 @@ begin
     if Match.Success then
     begin
       AddMatchToTree(Match);
-      edtResult.Text := TPerformer.GetRegExpCollection(edSample.Text, Pattern, edtGroupIndex.ValueInt);
+      edtResult.Text := GetRegExpCollection(edSample.Text, Pattern, edtGroupIndex.ValueInt);
     end
     else
       TMessageDialog.ShowInfo(TLang.Lang.Translate('NoMatchFound'));
