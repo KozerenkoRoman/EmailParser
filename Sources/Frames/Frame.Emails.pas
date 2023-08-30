@@ -66,6 +66,7 @@ type
     procedure UpdateXML;
 
     //IProgress
+    procedure ClearTree;
     procedure EndProgress;
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
@@ -307,7 +308,7 @@ begin
   inherited;
   Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
   if Assigned(Data) then
-    if (Column in [COL_FILE_NAME, COL_SHORT_NAME]) and Data^.IsDuplicate then
+    if (Column in [COL_FILE_NAME, COL_SHORT_NAME]) and Data^.FromDB then
     begin
       TargetCanvas.Font.Style := [fsBold];
       TargetCanvas.Font.Color := clNavy;
@@ -450,11 +451,20 @@ end;
 procedure TframeEmails.aSearchExecute(Sender: TObject);
 begin
   inherited;
-  vstTree.Clear;
-  TGeneral.EmailList.ClearData;
   FIsLoaded := True;
   Application.ProcessMessages;
   FPerformer.Start;
+end;
+
+procedure TframeEmails.ClearTree;
+begin
+  TGeneral.EmailList.ClearData;
+  vstTree.BeginUpdate;
+  try
+    vstTree.Clear;
+  finally
+    vstTree.EndUpdate;
+  end;
 end;
 
 procedure TframeEmails.CompletedItem(const aResultData: PResultData);

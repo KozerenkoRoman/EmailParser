@@ -20,6 +20,7 @@ type
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
     procedure CompletedItem(const aResultData: PResultData);
+    procedure ClearTree;
   end;
 
   IEmailChange = interface

@@ -28,6 +28,7 @@ type
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
     procedure CompletedItem(const aResultData: PResultData);
+    procedure ClearTree;
   end;
 
   TEmailPublisher = class(TCustomPublisher)
@@ -80,6 +81,25 @@ begin
 end;
 
 { TProgressPublisher }
+
+procedure TProgressPublisher.ClearTree;
+var
+  Item: TObject;
+  obj: IProgress;
+begin
+  if not Application.Terminated then
+    TThread.Queue(nil,
+      procedure
+      begin
+        for var i := 0 to Self.Count - 1 do
+        begin
+          Item := Self.Items[i];
+          if Assigned(Item) then
+            if Supports(Item, IProgress, obj) then
+              obj.ClearTree;
+        end;
+      end);
+end;
 
 procedure TProgressPublisher.CompletedItem(const aResultData: PResultData);
 var

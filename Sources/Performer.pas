@@ -10,7 +10,8 @@ uses
   System.IOUtils, Vcl.Forms, ArrayHelper, Common.Types, Translate.Lang, System.IniFiles, Global.Types,
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
-  Files.Utils, System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule;
+  Files.Utils, System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
+  System.Math;
 {$ENDREGION}
 
 type
@@ -97,6 +98,7 @@ begin
     else
       FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FFileExt, TSearchOption.soTopDirectoryOnly));
 
+  TPublishers.ProgressPublisher.ClearTree;
   TPublishers.ProgressPublisher.StartProgress(Length(FileList));
 
   LogWriter.Write(ddText, Self, 'Length FileList - ' + Length(FileList).ToString);
@@ -277,20 +279,32 @@ begin
   begin
     Inc(FDuplicates);
     DaMod.FillEmailRecord(Data);
-    Data^.IsDuplicate := True;
-    LogWriter.Write(ddWarning, Self, 'ParserHTML', 'File "' + Data^.ShortName + '" parameters loaded from DB');
+    LogWriter.Write(ddWarning, Self, 'ParserHTML', 'Parameters of file "' + Data^.ShortName + '" loaded from DB');
 
     if FParseBodyAsHTML then
       Text := TDaMod.GetBodyAsHTML(Data^.Hash)
     else
       Text := TDaMod.GetBodyAsParsedText(Data^.Hash);
 
-    for var i := 0 to FRegExpList.Count - 1 do
-      if FParseBodyAsHTML then
-        Data^.Matches[i] := GetRegExpCollection(Text, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex)
-      else
-        Data^.Matches[i] := GetRegExpCollection(Text, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex);
-    TPublishers.ProgressPublisher.CompletedItem(Data);
+    TTask.Create(
+      procedure()
+      begin
+        for var i := 0 to FRegExpList.Count - 1 do
+        begin
+          if FParseBodyAsHTML then
+            Data^.Matches[i] := GetRegExpCollection(Text, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex)
+          else
+            Data^.Matches[i] := GetRegExpCollection(Text, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex);
+
+          for var j := Low(Data^.Attachments) to High(Data^.Attachments) do
+          begin
+            Data^.Attachments[j].Matches.Count := FRegExpList.Count;
+            if not Data^.Attachments[j].ParsedText.IsEmpty then
+              Data^.Attachments[j].Matches[i] := GetRegExpCollection(Data^.Attachments[j].ParsedText, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex);
+          end;
+        end;
+        TPublishers.ProgressPublisher.CompletedItem(Data);
+      end).Start;
     Exit;
   end;
 
@@ -372,8 +386,10 @@ end;
 procedure TPerformer.ParseAttachmentFiles(aData: PResultData);
 var
   Ext: string;
+  i: Integer;
 begin
-  for var i := Low(aData.Attachments) to High(aData.Attachments) do
+  i := 0;
+  while i < High(aData.Attachments) do
   begin
     aData.Attachments[i].Hash          := TFileUtils.GetHash(aData.Attachments[i].FileName);
     aData.Attachments[i].Matches.Count := FRegExpList.Count;
@@ -499,6 +515,7 @@ begin
                                    'Email name - ' + aData.FileName + sLineBreak +
                                    'File name - '  + aData.Attachments[i].FileName);
       end;
+    Inc(i);
   end;
 end;
 
@@ -511,40 +528,44 @@ begin
     Exit;
 
   Data := TclMailMessage(Sender).ResultData;
-  SetLength(Data.Attachments, Length(Data.Attachments) + 1);
-  Path := GetAttchmentPath(Data.FileName);
+  SetLength(Data^.Attachments, Length(Data^.Attachments) + 1);
+  Path := GetAttchmentPath(Data^.FileName);
+  aFileName := Concat('[', Data^.ShortName, '] ', TFileUtils.GetCorrectFileName(aFileName));
+  SetLength(aFileName, Min(Length(aFileName), 255));
 
   if not TPath.HasValidFileNameChars(aFileName, False) then
   begin
-    aFileName := Concat('[', Data.ShortName, '] ', TFileUtils.GetCorrectFileName(aFileName));
+    aFileName := Format('[%s] (%d)', [Data^.ShortName, aBody.Index]);
     LogWriter.Write(ddText, Self,
                             'DoSaveAttachment',
-                            'Email file name - '      + Data.FileName  + sLineBreak +
-                            'Email short name - '     + Data.ShortName + sLineBreak +
+                            'Email file name - '      + Data^.FileName  + sLineBreak +
+                            'Email short name - '     + Data^.ShortName + sLineBreak +
                             'Attachment file name - ' + aFileName      + sLineBreak +
                             'Attachment index - '     + aBody.Index.ToString);
   end;
 
   if aFileName.Trim.IsEmpty or (not TPath.HasValidFileNameChars(aFileName, False)) then
   begin
-    var NewName := Concat('[', Data.ShortName, '] (', aBody.Index.ToString, ')');
+    var NewName := Concat('[', Data^.ShortName, '] (', aBody.Index.ToString, ')');
     LogWriter.Write(ddWarning, Self,
                                'DoSaveAttachment',
                                'Bad file name - ' + aFileName  + sLineBreak +
                                'New file name - ' + NewName);
     aFileName := NewName;
   end;
-
   aBody.FileName := aFileName;
-  Data.Attachments[High(Data.Attachments)].ShortName   := aFileName;
-  Data.Attachments[High(Data.Attachments)].FileName    := TPath.Combine(Path, aFileName);
-  Data.Attachments[High(Data.Attachments)].ParentHash  := Data.Hash;
-  Data.Attachments[High(Data.Attachments)].ContentID   := aBody.ContentID;
-  Data.Attachments[High(Data.Attachments)].ContentType := aBody.ContentType;
+
+  Data^.Attachments[High(Data^.Attachments)].ShortName   := aFileName;
+  Data^.Attachments[High(Data^.Attachments)].FileName    := TPath.Combine(Path, aFileName);
+  Data^.Attachments[High(Data^.Attachments)].ParentHash  := Data^.Hash;
+  Data^.Attachments[High(Data^.Attachments)].ParentName  := Data^.ShortName;
+  Data^.Attachments[High(Data^.Attachments)].ContentID   := aBody.ContentID;
+  Data^.Attachments[High(Data^.Attachments)].ContentType := aBody.ContentType;
+  Data^.Attachments[High(Data^.Attachments)].Matches.Count := FRegExpList.Count;
 
   try
   {$WARN SYMBOL_PLATFORM OFF}
-    aStreamData := TFileStream.Create(Data.Attachments[High(Data.Attachments)].FileName, fmCreate or fmOpenReadWrite {$IFDEF MSWINDOWS}or fmShareDenyRead{$ENDIF});
+    aStreamData := TFileStream.Create(Data^.Attachments[High(Data^.Attachments)].FileName, fmCreate or fmOpenReadWrite {$IFDEF MSWINDOWS}or fmShareDenyRead{$ENDIF});
   {$WARN SYMBOL_PLATFORM ON}
   except
     on E:Exception do
@@ -552,7 +573,7 @@ begin
                                'DoSaveAttachment',
                                E.Message + sLineBreak +
                                'Bad file name - ' + aFileName  + sLineBreak +
-                               'New file name - ' + Data.Attachments[High(Data.Attachments)].FileName);
+                               'New file name - ' + Data^.Attachments[High(Data^.Attachments)].FileName);
   end;
   Handled := True;
 end;

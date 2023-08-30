@@ -10,7 +10,7 @@ uses
   Html.Lib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExpParameters,Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.CommonSettings, Global.Types, Vcl.Samples.Gauges,
-  Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule, System.ZLib;
+  Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule;
 {$ENDREGION}
 
 type
@@ -59,6 +59,7 @@ type
     procedure CreateProgressBar;
 
     //IProgress
+    procedure ClearTree;
     procedure EndProgress;
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
@@ -235,6 +236,11 @@ begin
 //    frameRegExpParameters.SearchText(srchBox.Text);
 end;
 
+
+procedure TfrmMain.ClearTree;
+begin
+  //nothing
+end;
 
 procedure TfrmMain.CompletedItem(const aResultData: PResultData);
 begin

@@ -20,6 +20,7 @@ type
   TDaMod = class(TDataModule, IProgress)
     Connection             : TFDConnection;
     FDPhysSQLiteDriverLink : TFDPhysSQLiteDriverLink;
+    qAttachments           : TFDQuery;
     qEmail                 : TFDQuery;
     qEmailBodyAndText      : TFDQuery;
     qEmailByHash           : TFDQuery;
@@ -27,6 +28,7 @@ type
     FThreadEmails: TThreadEmails;
 
     // IProgress
+    procedure ClearTree;
     procedure EndProgress;
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
@@ -192,6 +194,11 @@ begin
   // nothing
 end;
 
+procedure TDaMod.ClearTree;
+begin
+  // nothing
+end;
+
 procedure TDaMod.CompletedItem(const aResultData: PResultData);
 begin
   if FThreadEmails.Started then
@@ -209,6 +216,8 @@ begin
 end;
 
 procedure TDaMod.FillEmailRecord(const aResultData: PResultData);
+var
+  i : Integer;
 begin
   qEmail.ParamByName('HASH').AsString := aResultData.Hash;
   try
@@ -219,8 +228,36 @@ begin
     aResultData.From        := qEmail.FieldByName('ADDRESS_FROM').AsString;
     aResultData.ContentType := qEmail.FieldByName('CONTENT_TYPE').AsString;
     aResultData.TimeStamp   := qEmail.FieldByName('TIME_STAMP').AsDateTime;
+    aResultData.FromDB      := True;
   finally
     qEmail.Close;
+  end;
+
+  qAttachments.ParamByName('PARENT_HASH').AsString := aResultData.Hash;
+  try
+    qAttachments.Open;
+    qAttachments.FetchAll;
+    SetLength(aResultData.Attachments, qAttachments.RecordCount);
+    qAttachments.First;
+    i := 0;
+    while not qAttachments.Eof do
+    begin
+      aResultData.Attachments[i].Hash          := qAttachments.FieldByName('HASH').AsString;
+      aResultData.Attachments[i].ParentHash    := aResultData.Hash;
+      aResultData.Attachments[i].ParentName    := aResultData.ShortName;
+      aResultData.Attachments[i].Position      := i;
+      aResultData.Attachments[i].ShortName     := qAttachments.FieldByName('SHORT_NAME').AsString;
+      aResultData.Attachments[i].FileName      := qAttachments.FieldByName('FILE_NAME').AsString;
+      aResultData.Attachments[i].ContentID     := qAttachments.FieldByName('CONTENT_ID').AsString;
+      aResultData.Attachments[i].ContentType   := qAttachments.FieldByName('CONTENT_TYPE').AsString;
+      aResultData.Attachments[i].ParsedText    := TZipPack.DecompressStr(qAttachments.FieldByName('PARSED_TEXT').AsBytes);
+      aResultData.Attachments[i].ImageIndex    := qAttachments.FieldByName('IMAGE_INDEX').AsInteger;
+      aResultData.Attachments[i].Matches.Count := aResultData.Matches.Count;
+      qAttachments.Next;
+      Inc(i);
+    end;
+  finally
+    qAttachments.Close;
   end;
 end;
 

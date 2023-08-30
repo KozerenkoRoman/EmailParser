@@ -26,21 +26,22 @@ type
     procedure aOpenAttachFileExecute(Sender: TObject);
     procedure aOpenAttachFileUpdate(Sender: TObject);
     procedure aOpenParsedTextExecute(Sender: TObject);
+    procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
+    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
-    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
-    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
-    procedure aRefreshExecute(Sender: TObject);
+    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
   private const
     COL_POSITION     = 0;
-    COL_SHORT_NAME   = 1;
-    COL_FILE_NAME    = 2;
-    COL_CONTENT_TYPE = 3;
-    COL_PARSED_TEXT  = 4;
+    COL_EMAIL_NAME   = 1;
+    COL_SHORT_NAME   = 2;
+    COL_FILE_NAME    = 3;
+    COL_CONTENT_TYPE = 4;
+    COL_PARSED_TEXT  = 5;
 
-    C_FIXED_COLUMNS  = 5;
+    C_FIXED_COLUMNS  = 6;
 
     C_IDENTITY_NAME = 'frameAllAttachment';
   private
@@ -48,6 +49,7 @@ type
     procedure UpdateXML;
 
     //IProgress
+    procedure ClearTree;
     procedure EndProgress;
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
@@ -111,6 +113,7 @@ begin
   inherited;
   aOpenAttachFile.Hint := TLang.Lang.Translate('OpenFile');
   vstTree.Header.Columns[COL_SHORT_NAME].Text   := TLang.Lang.Translate('FileName');
+  vstTree.Header.Columns[COL_EMAIL_NAME].Text   := TLang.Lang.Translate('Email');
   vstTree.Header.Columns[COL_FILE_NAME].Text    := TLang.Lang.Translate('Path');
   vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
   vstTree.Header.Columns[COL_PARSED_TEXT].Text  := TLang.Lang.Translate('Text');
@@ -213,6 +216,8 @@ begin
       Result := CompareValue(Data1^.Position, Data2^.Position);
     COL_SHORT_NAME:
       Result := CompareText(Data1^.ShortName, Data2^.ShortName);
+    COL_EMAIL_NAME:
+      Result := CompareText(Data1^.ParentName, Data2^.ParentName);
     COL_FILE_NAME:
       Result := CompareText(Data1^.FileName, Data2^.FileName);
     COL_CONTENT_TYPE:
@@ -263,6 +268,8 @@ begin
       CellText := Data^.Position.ToString;
     COL_SHORT_NAME:
       CellText := Data^.ShortName;
+    COL_EMAIL_NAME:
+      CellText := Data^.ParentName;
     COL_FILE_NAME:
       CellText := Data^.FileName;
     COL_CONTENT_TYPE:
@@ -305,7 +312,16 @@ end;
 procedure TframeAllAttachments.StartProgress(const aMaxPosition: Integer);
 begin
   vstTree.BeginUpdate;
-  vstTree.Clear;
+end;
+
+procedure TframeAllAttachments.ClearTree;
+begin
+  vstTree.BeginUpdate;
+  try
+    vstTree.Clear;
+  finally
+    vstTree.EndUpdate;
+  end;
 end;
 
 procedure TframeAllAttachments.CompletedItem(const aResultData: PResultData);
@@ -314,13 +330,12 @@ var
   Node: PVirtualNode;
 begin
   for var i := Low(aResultData.Attachments) to High(aResultData.Attachments) do
-    if (not aResultData.MessageId.IsEmpty) then
-    begin
-      Node := vstTree.AddChild(nil);
-      Data := Node^.GetData;
-      Data^.Assign(aResultData.Attachments[i]);
-      Data^.Position := vstTree.TotalCount;
-    end;
+  begin
+    Node := vstTree.AddChild(nil);
+    Data := Node^.GetData;
+    Data^.Assign(aResultData.Attachments[i]);
+    Data^.Position := vstTree.AbsoluteIndex(Node) + 1;
+  end;
 end;
 
 procedure TframeAllAttachments.UpdateColumns;

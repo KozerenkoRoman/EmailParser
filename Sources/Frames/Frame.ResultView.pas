@@ -20,6 +20,7 @@ type
     frameAllAttachments : TframeAllAttachments;
     frameAttachments    : TframeAttachments;
     frameEmails         : TframeEmails;
+    memTextBody         : TMemo;
     memTextPlain        : TMemo;
     pcInfo              : TPageControl;
     pcMain              : TPageControl;
@@ -27,6 +28,7 @@ type
     splInfo             : TSplitter;
     tsAllAttachments    : TTabSheet;
     tsAttachments       : TTabSheet;
+    tsBodyText          : TTabSheet;
     tsEmail             : TTabSheet;
     tsHtmlText          : TTabSheet;
     tsPlainText         : TTabSheet;
@@ -98,6 +100,7 @@ begin
   frameAttachments.Translate;
   tsAllAttachments.Caption := TLang.Lang.Translate('AllAttachments');
   tsAttachments.Caption    := TLang.Lang.Translate('Attachment');
+  tsBodyText.Caption       := TLang.Lang.Translate('Body');
   tsEmail.Caption          := TLang.Lang.Translate('Emails');
   tsPlainText.Caption      := TLang.Lang.Translate('PlainText');
 end;
@@ -128,6 +131,7 @@ begin
   if Assigned(aData) and (not aData.MessageId.IsEmpty) then
   begin
     arr := DaMod.GetBodyAndText(aData.Hash);
+    memTextBody.Lines.Text  := arr[0];
     memTextPlain.Lines.Text := arr[1];
     THtmlLib.LoadStringToBrowser(wbBody, arr[0]);
     if Assigned(wbBody.Document) then

@@ -33,6 +33,7 @@ type
   TAttachment = record
     Hash        : string;
     ParentHash  : string;
+    ParentName  : string;
     Position    : Integer;
     ShortName   : string;
     FileName    : string;
@@ -62,7 +63,7 @@ type
     ParsedText  : string;
     Matches     : TStringArray;
     ParentNode  : PVirtualNode;
-    IsDuplicate : Boolean;
+    FromDB      : Boolean;
     Position    : Integer;
     function IsMatch: Boolean;
     procedure Clear;
@@ -244,6 +245,7 @@ begin
   Self.ContentType := aData.ContentType;
   Self.ParsedText  := aData.ParsedText;
   Self.ImageIndex  := aData.ImageIndex;
+  Self.ParentName  := aData.ParentName;
   Self.Matches.Count := aData.Matches.Count;
   for var i := 0 to Self.Matches.Count - 1 do
     Self.Matches[i] := aData.Matches[i];

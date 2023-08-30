@@ -46,6 +46,7 @@ resourcestring
   en_EditCommonParameters = 'Common parameters';
   en_EditRegExpParameters = 'RegExp parameters';
   en_Emails               = 'Emails';
+  en_Email                = 'Email';
   en_Enabled              = 'Enabled';
   en_End                  = 'end';
   en_Error                = 'Error';
@@ -142,6 +143,7 @@ resourcestring
   uk_EditCommonParameters = 'Загальні параметри';
   uk_EditRegExpParameters = 'RegExp параметри';
   uk_Emails               = 'Листи';
+  uk_Email                = 'Лист';
   uk_Enabled              = 'Увімкнено';
   uk_End                  = 'кінець';
   uk_Error                = 'Помилка';
@@ -213,7 +215,7 @@ resourcestring
   uk_DuplicateCount       = 'Знайдено %d записів в БД';
 
 const
-   ArrayMessages: array[1 .. 92] of TMessageItem = (
+   ArrayMessages: array[1 .. 93] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
@@ -239,6 +241,7 @@ const
     (Key: 'EditCommonParameters' ; En: en_EditCommonParameters; Uk: uk_EditCommonParameters),
     (Key: 'EditRegExpParameters' ; En: en_EditRegExpParameters; Uk: uk_EditRegExpParameters),
     (Key: 'Emails'               ; En: en_Emails;               Uk: uk_Emails),
+    (Key: 'Email'                ; En: en_Email;                Uk: uk_Email),
     (Key: 'Enabled'              ; En: en_Enabled;              Uk: uk_Enabled),
     (Key: 'End'                  ; En: en_End;                  Uk: uk_End),
     (Key: 'Error'                ; En: en_Error;                Uk: uk_Error),

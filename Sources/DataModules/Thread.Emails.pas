@@ -77,7 +77,7 @@ begin
     begin
       WaitResult := FQueue.PopItem(ResultData);
       if (WaitResult = TWaitResult.wrSignaled) then
-        if not(ResultData.MessageId.IsEmpty) then
+        if (not Terminated) and (not ResultData.MessageId.IsEmpty) then
           InsertData(ResultData);
     end;
   except
@@ -169,7 +169,7 @@ procedure TThreadEmails.InsertData(const aResultData: PResultData);
 var
   IsStartTransaction: Boolean;
 begin
-  if aResultData^.IsDuplicate then
+  if aResultData^.FromDB then
     Exit;
   if Terminated or not FConnection.Connected then
     Exit;
@@ -220,13 +220,15 @@ begin
   begin
     IsStartTransaction := StartTransaction;
     try
+      FQueryAttachment.ParamByName('PARSED_TEXT').DataType := ftBlob;
+      FQueryAttachment.ParamByName('PARSED_TEXT').AsStream := TZipPack.GetCompressStr(aAttachment.ParsedText);
+
       FQueryAttachment.ParamByName('HASH').AsString         := aAttachment.Hash;
       FQueryAttachment.ParamByName('PARENT_HASH').AsString  := aParentHash;
       FQueryAttachment.ParamByName('CONTENT_ID').AsString   := aAttachment.ContentID;
       FQueryAttachment.ParamByName('FILE_NAME').AsString    := aAttachment.FileName;
       FQueryAttachment.ParamByName('SHORT_NAME').AsString   := aAttachment.ShortName;
       FQueryAttachment.ParamByName('CONTENT_TYPE').AsString := aAttachment.ContentType;
-      FQueryAttachment.ParamByName('PARSED_TEXT').AsString  := aAttachment.ParsedText;
       FQueryAttachment.ParamByName('IMAGE_INDEX').AsInteger := aAttachment.ImageIndex;
       FQueryAttachment.ExecSQL;
       if IsStartTransaction then

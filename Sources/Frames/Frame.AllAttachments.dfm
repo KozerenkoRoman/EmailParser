@@ -52,6 +52,12 @@ inherited frameAllAttachments: TframeAllAttachments
         CaptionAlignment = taCenter
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 1
+        Text = 'Email Name'
+      end
+      item
+        CaptionAlignment = taCenter
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 2
         Text = 'File Name'
         Width = 130
       end
@@ -59,7 +65,7 @@ inherited frameAllAttachments: TframeAllAttachments
         CaptionAlignment = taCenter
         MaxWidth = 1000
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 2
+        Position = 3
         Text = 'Path'
         Width = 200
       end
@@ -67,7 +73,7 @@ inherited frameAllAttachments: TframeAllAttachments
         CaptionAlignment = taCenter
         MaxWidth = 1000
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 3
+        Position = 4
         Text = 'Content Type'
         Width = 129
       end
@@ -75,7 +81,7 @@ inherited frameAllAttachments: TframeAllAttachments
         CaptionAlignment = taCenter
         MaxWidth = 1000
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 4
+        Position = 5
         Text = 'Text'
         Width = 172
       end>

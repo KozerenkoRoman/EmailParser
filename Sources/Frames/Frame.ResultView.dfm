@@ -61,6 +61,23 @@ inherited frameResultView: TframeResultView
         ActivePage = tsHtmlText
         Align = alBottom
         TabOrder = 1
+        object tsBodyText: TTabSheet
+          Caption = 'Body Text'
+          ImageIndex = 3
+          object memTextBody: TMemo
+            Left = 0
+            Top = 0
+            Width = 924
+            Height = 250
+            Align = alClient
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            BorderStyle = bsNone
+            ReadOnly = True
+            ScrollBars = ssVertical
+            TabOrder = 0
+          end
+        end
         object tsPlainText: TTabSheet
           Caption = 'Plain Text'
           object memTextPlain: TMemo

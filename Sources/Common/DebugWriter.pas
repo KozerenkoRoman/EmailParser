@@ -244,6 +244,7 @@ begin
     FLogFile.FileName := GetDebugFileName;
     FLogFile.LogPath  := GetLog;
     FLogFile.Start;
+    Sleep(10);
   end;
   if not FIsExistHtmlOpen then
   begin
@@ -455,8 +456,7 @@ begin
           Write(LogText);
     end;
   except
-    on E: Exception do
-      LogWriter.Write(ddError, Self, 'Execute', E.Message);
+
   end;
 end;
 

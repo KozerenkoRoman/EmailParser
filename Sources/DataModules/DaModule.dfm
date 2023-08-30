@@ -73,4 +73,26 @@ object DaMod: TDaMod
         Value = Null
       end>
   end
+  object qAttachments: TFDQuery
+    Connection = Connection
+    SQL.Strings = (
+      'select HASH, '
+      '       CONTENT_ID, '
+      '       FILE_NAME, '
+      '       SHORT_NAME, '
+      '       CONTENT_TYPE, '
+      '       PARSED_TEXT, '
+      '       IMAGE_INDEX'
+      'from attachments '
+      'where  PARENT_HASH = :PARENT_HASH')
+    Left = 320
+    Top = 96
+    ParamData = <
+      item
+        Name = 'PARENT_HASH'
+        DataType = ftString
+        ParamType = ptInput
+        Value = Null
+      end>
+  end
 end
