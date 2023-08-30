@@ -11,7 +11,7 @@ uses
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
-  Vcl.WinXPanels, Publishers.Interfaces, Publishers;
+  Vcl.WinXPanels, Publishers.Interfaces, Publishers, Html.Utils;
 {$ENDREGION}
 
 type
@@ -30,6 +30,10 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
+      Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+    procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode;
+      Column: TColumnIndex; TextType: TVSTTextType);
   private const
     COL_POSITION     = 0;
     COL_SHORT_NAME   = 1;
@@ -150,7 +154,7 @@ begin
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
   begin
     Data := vstTree.FocusedNode.GetData;
-    TInformationDialog.ShowMessage(Data^.ParsedText, GetIdentityName);
+    TInformationDialog.ShowMessage(THtmlUtils.GetHighlightText(Data^.ParsedText, Data^.Matches), GetIdentityName);
   end;
 end;
 
@@ -173,6 +177,19 @@ begin
     else
       TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
   end;
+end;
+
+procedure TframeAttachments.vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+var
+  Data: PAttachment;
+begin
+  inherited;
+  Data := Node^.GetData;
+    if Data.FromZip then
+    begin
+      TargetCanvas.Brush.Color := clWebLightgrey;
+      TargetCanvas.FillRect(CellRect);
+    end;
 end;
 
 procedure TframeAttachments.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
@@ -237,6 +254,16 @@ begin
     COL_PARSED_TEXT:
       CellText := Data^.ParsedText;
   end;
+end;
+
+procedure TframeAttachments.vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
+var
+  Data: PAttachment;
+begin
+  inherited;
+  Data := Node^.GetData;
+  if (Column in [COL_FILE_NAME, COL_SHORT_NAME]) and Data^.FromDB then
+    TargetCanvas.Font.Color := clNavy;
 end;
 
 procedure TframeAttachments.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);

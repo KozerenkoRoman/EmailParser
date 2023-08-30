@@ -42,6 +42,8 @@ type
     ParsedText  : string;
     ImageIndex  : Byte;
     Matches     : TStringArray;
+    FromZip     : Boolean;
+    FromDB      : Boolean;
     procedure Assign(const aData: TAttachment);
     procedure Clear;
   end;
@@ -246,6 +248,8 @@ begin
   Self.ParsedText  := aData.ParsedText;
   Self.ImageIndex  := aData.ImageIndex;
   Self.ParentName  := aData.ParentName;
+  Self.FromZip     := aData.FromZip;
+  Self.FromDB      := aData.FromDB;
   Self.Matches.Count := aData.Matches.Count;
   for var i := 0 to Self.Matches.Count - 1 do
     Self.Matches[i] := aData.Matches[i];

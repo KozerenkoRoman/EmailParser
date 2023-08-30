@@ -31,13 +31,14 @@ resourcestring
                      '  SHORT_NAME   text,'                                                    + sLineBreak +
                      '  CONTENT_TYPE text,'                                                    + sLineBreak +
                      '  PARSED_TEXT  blob,'                                                    + sLineBreak +
+                     '  FROM_ZIP     integer,'                                                 + sLineBreak +
                      '  IMAGE_INDEX  integer);'                                                + sLineBreak +
                      'create unique index if not exists UI_HASH on ATTACHMENTS(HASH);';
   rsSQLInsertEmail = 'insert or ignore into EMAILS(HASH, MESSAGE_ID, FILE_NAME, SHORT_NAME, SUBJECT, BODY, PARSED_TEXT, ADDRESS_FROM, CONTENT_TYPE, TIME_STAMP) ' + sLineBreak +
                      '                      values(:HASH, :MESSAGE_ID, :FILE_NAME, :SHORT_NAME, :SUBJECT, :BODY, :PARSED_TEXT, :ADDRESS_FROM, :CONTENT_TYPE, :TIME_STAMP)';
 
-  rsSQLInsertAttachment = 'insert or ignore into ATTACHMENTS(HASH, PARENT_HASH, CONTENT_ID, FILE_NAME, SHORT_NAME, CONTENT_TYPE, PARSED_TEXT, IMAGE_INDEX) ' + sLineBreak +
-                          '                           values(:HASH, :PARENT_HASH, :CONTENT_ID, :FILE_NAME, :SHORT_NAME, :CONTENT_TYPE, :PARSED_TEXT, :IMAGE_INDEX)';
+  rsSQLInsertAttachment = 'insert or ignore into ATTACHMENTS(HASH, PARENT_HASH, CONTENT_ID, FILE_NAME, SHORT_NAME, CONTENT_TYPE, PARSED_TEXT, FROM_ZIP, IMAGE_INDEX) ' + sLineBreak +
+                          '                           values(:HASH, :PARENT_HASH, :CONTENT_ID, :FILE_NAME, :SHORT_NAME, :CONTENT_TYPE, :PARSED_TEXT, :FROM_ZIP, :IMAGE_INDEX)';
 
   rsSQLSelectBodyAsParsedText = 'select PARSED_TEXT from emails where HASH = :HASH';
   rsSQLSelectBodyAsHtml       = 'select BODY from emails where HASH = :HASH';

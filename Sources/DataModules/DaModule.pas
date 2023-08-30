@@ -253,6 +253,8 @@ begin
       aResultData.Attachments[i].ParsedText    := TZipPack.DecompressStr(qAttachments.FieldByName('PARSED_TEXT').AsBytes);
       aResultData.Attachments[i].ImageIndex    := qAttachments.FieldByName('IMAGE_INDEX').AsInteger;
       aResultData.Attachments[i].Matches.Count := aResultData.Matches.Count;
+      aResultData.Attachments[i].FromDB        := True;
+      aResultData.Attachments[i].FromZip       := qAttachments.FieldByName('FROM_ZIP').AsInteger.ToBoolean;
       qAttachments.Next;
       Inc(i);
     end;

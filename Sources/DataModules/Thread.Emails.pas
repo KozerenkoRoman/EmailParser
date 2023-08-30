@@ -229,6 +229,7 @@ begin
       FQueryAttachment.ParamByName('FILE_NAME').AsString    := aAttachment.FileName;
       FQueryAttachment.ParamByName('SHORT_NAME').AsString   := aAttachment.ShortName;
       FQueryAttachment.ParamByName('CONTENT_TYPE').AsString := aAttachment.ContentType;
+      FQueryAttachment.ParamByName('FROM_ZIP').AsInteger    := aAttachment.FromZip.ToInteger;
       FQueryAttachment.ParamByName('IMAGE_INDEX').AsInteger := aAttachment.ImageIndex;
       FQueryAttachment.ExecSQL;
       if IsStartTransaction then

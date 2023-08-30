@@ -33,6 +33,8 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode;
+      Column: TColumnIndex; TextType: TVSTTextType);
   private const
     COL_POSITION     = 0;
     COL_EMAIL_NAME   = 1;
@@ -193,15 +195,31 @@ procedure TframeAllAttachments.vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; 
 var
   Data: PAttachment;
 begin
-  if (Column >= C_FIXED_COLUMNS) then
+  inherited;
+  Data := Node^.GetData;
+  if (Column < C_FIXED_COLUMNS) then
   begin
-    Data := Node^.GetData;
-    if not Data^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
+    if Data.FromZip then
     begin
-      TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+      TargetCanvas.Brush.Color := clWebLightgrey;
       TargetCanvas.FillRect(CellRect);
     end;
+  end
+  else if not Data^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
+  begin
+    TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+    TargetCanvas.FillRect(CellRect);
   end;
+end;
+
+procedure TframeAllAttachments.vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
+var
+  Data: PAttachment;
+begin
+  inherited;
+  Data := Node^.GetData;
+  if (Column in [COL_FILE_NAME, COL_SHORT_NAME]) and Data^.FromDB then
+    TargetCanvas.Font.Color := clNavy;
 end;
 
 procedure TframeAllAttachments.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);

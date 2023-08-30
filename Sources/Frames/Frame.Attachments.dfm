@@ -34,9 +34,11 @@ inherited frameAttachments: TframeAttachments
     Width = 663
     Height = 335
     Header.MainColumn = 0
+    OnBeforeCellPaint = vstTreeBeforeCellPaint
     OnCompareNodes = vstTreeCompareNodes
     OnDblClick = aOpenParsedTextExecute
     OnGetText = vstTreeGetText
+    OnPaintText = vstTreePaintText
     OnGetImageIndex = vstTreeGetImageIndex
     ExplicitWidth = 663
     ExplicitHeight = 335

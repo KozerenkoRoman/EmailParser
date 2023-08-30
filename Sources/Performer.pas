@@ -11,7 +11,7 @@ uses
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
   Files.Utils, System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
-  System.Math;
+  System.Math, System.ZLib, System.Zip;
 {$ENDREGION}
 
 type
@@ -30,10 +30,11 @@ type
     function GetAttchmentPath(const aFileName: TFileName): string;
     function GetEXIFInfo(const aFileName: TFileName): string;
     function GetTextFromPDFFile(const aFileName: TFileName): string;
+    function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
     procedure DeleteAttachmentFiles(const aData: PResultData);
     procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
     procedure FillStartParameters;
-    procedure ParseAttachmentFiles(aData: PResultData);
+    procedure ParseAttachmentFiles(const aData: PResultData);
     procedure ParseFile(const aFileName: TFileName);
   public
     procedure Start;
@@ -78,7 +79,7 @@ begin
   FParseBodyAsHTML  := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'ParseBodyAsHTML', False);
   FUserDefinedDir   := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachment', C_ATTACHMENTS_SUB_DIR);
   FAttachmentDir    := FAttachmentDir.FromString(FUserDefinedDir);
-  FDeleteAttachment := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachment', True);
+  FDeleteAttachment := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
   FFileExt          := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
 end;
 
@@ -241,6 +242,49 @@ begin
   end;
 end;
 
+function TPerformer.GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
+var
+  ZipFile: TZipFile;
+  FileName: string;
+  Path: string;
+  OldLength: Integer;
+begin
+  ZipFile := TZipFile.Create;
+  try
+    Path := TPath.Combine(GetAttchmentPath(aData.FileName), TPath.GetFileNameWithoutExtension(aData.FileName));
+
+    if not TDirectory.Exists(Path) then
+      try
+        TDirectory.CreateDirectory(Path)
+      except
+        on E: Exception do
+          LogWriter.Write(ddError, Self, 'GetZipFileList', E.Message + sLineBreak + 'Directory - ' + Path);
+      end;
+
+    ZipFile.Open(aFileName, zmRead);
+    ZipFile.ExtractAll(Path);
+    OldLength := Length(aData^.Attachments);
+    SetLength(aData^.Attachments, OldLength + ZipFile.FileCount);
+    for var i := Low(ZipFile.FileNames) to High(ZipFile.FileNames) do
+    begin
+      FileName := Concat('[', aData^.ShortName, '] ', TFileUtils.GetCorrectFileName(ZipFile.FileNames[i]));
+      SetLength(FileName, Min(Length(FileName), 255));
+      aData^.Attachments[i + OldLength].ShortName     := FileName;
+      aData^.Attachments[i + OldLength].FileName      := TPath.Combine(Path, FileName);
+      aData^.Attachments[i + OldLength].ParentHash    := aData^.Hash;
+      aData^.Attachments[i + OldLength].ParentName    := aData^.ShortName;
+      aData^.Attachments[i + OldLength].Matches.Count := FRegExpList.Count;
+      aData^.Attachments[i + OldLength].FromZip       := True;
+      RenameFile(TPath.Combine(Path, ZipFile.FileNames[i]), TPath.Combine(Path, FileName));
+    end;
+
+    Result := string.Join(';', ZipFile.FileNames);
+    ZipFile.Close;
+  finally
+    FreeAndNil(ZipFile);
+  end;
+end;
+
 procedure TPerformer.DeleteAttachmentFiles(const aData: PResultData);
 begin
   if FDeleteAttachment then
@@ -383,13 +427,13 @@ begin
   end;
 end;
 
-procedure TPerformer.ParseAttachmentFiles(aData: PResultData);
+procedure TPerformer.ParseAttachmentFiles(const aData: PResultData);
 var
   Ext: string;
   i: Integer;
 begin
   i := 0;
-  while i < High(aData.Attachments) do
+  while (i <= High(aData.Attachments)) do
   begin
     aData.Attachments[i].Hash          := TFileUtils.GetHash(aData.Attachments[i].FileName);
     aData.Attachments[i].Matches.Count := FRegExpList.Count;
@@ -443,7 +487,7 @@ begin
               end
               else if Ext.Contains('.zip') then
               begin
-                aData.Attachments[i].ParsedText  := 'zip';
+                aData.Attachments[i].ParsedText  := GetZipFileList(aData^.Attachments[i].FileName, aData);
                 aData.Attachments[i].ContentType := 'application/zip';
                 aData.Attachments[i].ImageIndex  := TExtIcon.eiZip.ToByte;
               end
@@ -492,6 +536,12 @@ begin
               begin
                 aData.Attachments[i].ParsedText  := TFile.ReadAllText(aData^.Attachments[i].FileName);
                 aData.Attachments[i].ContentType := 'text/plain';
+                aData.Attachments[i].ImageIndex  := TExtIcon.eiTxt.ToByte;
+              end
+              else if Ext.Contains('.xml') then
+              begin
+                aData.Attachments[i].ParsedText  := TFile.ReadAllText(aData^.Attachments[i].FileName);
+                aData.Attachments[i].ContentType := 'text/xml';
                 aData.Attachments[i].ImageIndex  := TExtIcon.eiTxt.ToByte;
               end
               else if Ext.Contains('.htm') then

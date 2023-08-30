@@ -309,10 +309,7 @@ begin
   Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
   if Assigned(Data) then
     if (Column in [COL_FILE_NAME, COL_SHORT_NAME]) and Data^.FromDB then
-    begin
-      TargetCanvas.Font.Style := [fsBold];
       TargetCanvas.Font.Color := clNavy;
-    end;
 end;
 
 procedure TframeEmails.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);

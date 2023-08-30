@@ -35,6 +35,7 @@ inherited frameAllAttachments: TframeAllAttachments
     OnCompareNodes = vstTreeCompareNodes
     OnDblClick = aOpenParsedTextExecute
     OnGetText = vstTreeGetText
+    OnPaintText = vstTreePaintText
     OnGetImageIndex = vstTreeGetImageIndex
     ExplicitWidth = 663
     ExplicitHeight = 335

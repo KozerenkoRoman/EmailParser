@@ -82,6 +82,7 @@ object DaMod: TDaMod
       '       SHORT_NAME, '
       '       CONTENT_TYPE, '
       '       PARSED_TEXT, '
+      '       FROM_ZIP,'
       '       IMAGE_INDEX'
       'from attachments '
       'where  PARENT_HASH = :PARENT_HASH')
