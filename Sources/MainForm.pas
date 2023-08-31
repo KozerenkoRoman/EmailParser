@@ -10,7 +10,7 @@ uses
   Html.Lib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExpParameters,Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.CommonSettings, Global.Types, Vcl.Samples.Gauges,
-  Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule;
+  Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule, Frame.Sorter;
 {$ENDREGION}
 
 type
@@ -32,6 +32,9 @@ type
     framePathes           : TframePathes;
     frameRegExpParameters : TframeRegExpParameters;
     frameResultView       : TframeResultView;
+    frameSorter           : TframeSorter;
+    gbPathes              : TGroupBox;
+    gbSorter              : TGroupBox;
     imgMenu               : TImage;
     lblTitle              : TLabel;
     pnlCard               : TCardPanel;
@@ -39,6 +42,7 @@ type
     pnlSrchBox            : TPanel;
     pnlTop                : TPanel;
     sbMain                : TStatusBar;
+    splPath               : TSplitter;
     splView               : TSplitView;
     srchBox               : TSearchBox;
     procedure aEditCommonParametersExecute(Sender: TObject);
@@ -104,6 +108,7 @@ begin
   frameRegExpParameters.Initialize;
   framePathes.Initialize;
   frameResultView.Initialize;
+  frameSorter.Initialize;
   frameCommonSettings.Initialize;
   frameCommonSettings.btnSave.Action := aSaveCommonSettings;
 
@@ -117,23 +122,27 @@ procedure TfrmMain.Deinitialize;
 begin
   frameRegExpParameters.Deinitialize;
   framePathes.Deinitialize;
+  frameSorter.Deinitialize;
   frameResultView.Deinitialize;
   frameCommonSettings.Deinitialize;
   DaMod.Deinitialize;
   SaveFormPosition;
+  LogWriter.Active := False;
 end;
 
 procedure TfrmMain.Translate;
 begin
   aEditCommonParameters.Caption := TLang.Lang.Translate('EditCommonParameters');
   aEditRegExpParameters.Caption := TLang.Lang.Translate('EditRegExpParameters');
-  aPathsFindFiles.Caption       := TLang.Lang.Translate('PathsToFindFiles');
-  aSearch.Caption               := TLang.Lang.Translate('Search');
+  aPathsFindFiles.Caption       := TLang.Lang.Translate('PathsToFindSaveFiles');
 
+  aSearch.Caption               := TLang.Lang.Translate('Search');
   crdCommonParams.Caption       := TLang.Lang.Translate('EditCommonParameters');
   crdPathsToFindScripts.Caption := TLang.Lang.Translate('PathsToFindFiles');
   crdRegExpParameters.Caption   := TLang.Lang.Translate('EditRegExpParameters');
   crdResultView.Caption         := TLang.Lang.Translate('Search');
+  gbPathes.Caption              := TLang.Lang.Translate('PathsToFindFiles');
+  gbSorter.Caption              := TLang.Lang.Translate('PathsToSaveFiles');
 
   lblTitle.Caption := pnlCard.ActiveCard.Caption;
 end;
@@ -216,6 +225,7 @@ begin
   Translate;
   frameRegExpParameters.Translate;
   framePathes.Translate;
+  frameSorter.Translate;
   frameResultView.Translate;
   frameCommonSettings.Translate;
 end;

@@ -15,7 +15,7 @@ uses
 {$ENDREGION}
 
 type
-  TframeAttachments = class(TFrameSource, IEmailChange)
+  TframeAttachments = class(TframeSource, IEmailChange)
     aOpenAttachFile      : TAction;
     aOpenParsedText      : TAction;
     btnOpenAttachFile    : TToolButton;
@@ -26,14 +26,12 @@ type
     procedure aOpenAttachFileUpdate(Sender: TObject);
     procedure aOpenParsedTextExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
+    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
-    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
-      Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
-    procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode;
-      Column: TColumnIndex; TextType: TVSTTextType);
+    procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
   private const
     COL_POSITION     = 0;
     COL_SHORT_NAME   = 1;

@@ -15,7 +15,7 @@ uses
 {$ENDREGION}
 
 type
-  TframeRegExpParameters = class(TFrameSource)
+  TframeRegExpParameters = class(TframeSource)
     aDeleteSet        : TAction;
     aSaveSet          : TAction;
     aSaveSetAs        : TAction;

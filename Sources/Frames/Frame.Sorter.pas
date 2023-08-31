@@ -1,4 +1,4 @@
-﻿unit Frame.Pathes;
+﻿unit Frame.Sorter;
 
 interface
 
@@ -14,16 +14,14 @@ uses
 {$ENDREGION}
 
 type
-  TframePathes = class(TframeSource)
+  TframeSorter = class(TframeSource)
     OpenDialog: TFileOpenDialog;
     procedure aAddExecute(Sender: TObject);
     procedure aDeleteExecute(Sender: TObject);
     procedure aDeleteUpdate(Sender: TObject);
     procedure aEditExecute(Sender: TObject);
-    procedure aEditUpdate(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
-    procedure vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeClick(Sender: TObject);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
@@ -33,12 +31,12 @@ type
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
   private const
-    COL_PATH        = 0;
-    COL_OPEN_DIALOG = 1;
-    COL_INFO        = 2;
-    COL_WITH_SUBDIR = 3;
+    COL_MASK        = 0;
+    COL_PATH        = 1;
+    COL_OPEN_DIALOG = 2;
+    COL_INFO        = 3;
 
-    C_IDENTITY_NAME = 'framePathes';
+    C_IDENTITY_NAME = 'frameSorter';
   private
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
@@ -58,26 +56,21 @@ implementation
 
 {$R *.dfm}
 
-{ TframeActiveOrders }
+{ TframeSorter }
 
-constructor TframePathes.Create(AOwner: TComponent);
+constructor TframeSorter.Create(AOwner: TComponent);
 begin
   inherited;
-  vstTree.NodeDataSize := SizeOf(TParamPath);
+  vstTree.NodeDataSize := SizeOf(TSorterPath);
 end;
 
-destructor TframePathes.Destroy;
+destructor TframeSorter.Destroy;
 begin
 
   inherited;
 end;
 
-function TframePathes.GetIdentityName: string;
-begin
-  Result := C_IDENTITY_NAME;
-end;
-
-procedure TframePathes.Initialize;
+procedure TframeSorter.Initialize;
 begin
   inherited Initialize;
   LoadFromXML;
@@ -85,74 +78,41 @@ begin
   Translate;
 end;
 
-procedure TframePathes.Translate;
+procedure TframeSorter.Deinitialize;
 begin
   inherited;
-  vstTree.Header.Columns[COL_INFO].Text        := TLang.Lang.Translate('Info');
-  vstTree.Header.Columns[COL_PATH].Text        := TLang.Lang.Translate('Path');
-  vstTree.Header.Columns[COL_WITH_SUBDIR].Text := TLang.Lang.Translate('WithSubdir');
+
 end;
 
-procedure TframePathes.Deinitialize;
-begin
-  inherited Deinitialize;
-end;
-
-procedure TframePathes.SaveToXML;
-
-  procedure SaveNode(const aNode: PVirtualNode);
-  var
-    Data: PParamPath;
-  begin
-    Data := aNode^.GetData;
-    TGeneral.XMLParams.Attributes.AddNode;
-    TGeneral.XMLParams.Attributes.SetAttributeValue('Path', Data.Path);
-    TGeneral.XMLParams.Attributes.SetAttributeValue('Info', Data.Info);
-    TGeneral.XMLParams.Attributes.SetAttributeValue('WithSubdir', Data.WithSubdir);
-    TGeneral.XMLParams.WriteAttributes;
-  end;
-
-var
-  Node: PVirtualNode;
+procedure TframeSorter.Translate;
 begin
   inherited;
-  TGeneral.XMLParams.Open;
-  try
-    TGeneral.XMLParams.EraseSection('Path');
-    TGeneral.XMLParams.CurrentSection := 'Path';
-    Node := vstTree.GetFirst;
-    while Assigned(Node) do
-    begin
-      SaveNode(Node);
-      Node := Node.NextSibling;
-    end;
-  finally
-    TGeneral.XMLParams.CurrentSection := '';
-    TGeneral.XMLParams.Save;
-  end;
+  vstTree.Header.Columns[COL_MASK].Text := TLang.Lang.Translate('Mask');
+  vstTree.Header.Columns[COL_PATH].Text := TLang.Lang.Translate('Path');
+  vstTree.Header.Columns[COL_INFO].Text := TLang.Lang.Translate('Info');
 end;
 
-procedure TframePathes.LoadFromXML;
+function TframeSorter.GetIdentityName: string;
+begin
+  Result := C_IDENTITY_NAME;
+end;
 
-  procedure LoadNode;
+procedure TframeSorter.LoadFromXML;
+
+ procedure LoadNode;
   var
-    arrData: TParamPath;
-    Data: PParamPath;
+    arrData: TSorterPath;
+    Data: PSorterPath;
     NewNode: PVirtualNode;
-    arrPath: TArrayRecord<TParamPath>;
+    arrPath: TSorterPathArray;
   begin
     inherited;
-    arrPath := TGeneral.GetPathList;
+    arrPath := TGeneral.GetSorterPathList;
     for arrData in arrPath do
     begin
       NewNode := vstTree.AddChild(nil);
       Data := NewNode.GetData;
       Data^ := arrData;
-      vstTree.CheckType[NewNode] := ctCheckBox;
-      if arrData.WithSubdir then
-        NewNode.CheckState := csCheckedNormal
-      else
-        NewNode.CheckState := csUnCheckedNormal;
     end;
   end;
 
@@ -167,33 +127,66 @@ begin
   end;
 end;
 
-procedure TframePathes.aAddExecute(Sender: TObject);
+procedure TframeSorter.SaveToXML;
+
+  procedure SaveNode(const aNode: PVirtualNode);
+  var
+    Data: PSorterPath;
+  begin
+    Data := aNode^.GetData;
+    TGeneral.XMLParams.Attributes.AddNode;
+    TGeneral.XMLParams.Attributes.SetAttributeValue('Path', Data.Path);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('Mask', Data.Mask);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('Info', Data.Info);
+    TGeneral.XMLParams.WriteAttributes;
+  end;
+
+var
+  Node: PVirtualNode;
+begin
+  inherited;
+  TGeneral.XMLParams.Open;
+  try
+    TGeneral.XMLParams.EraseSection('Sorter');
+    TGeneral.XMLParams.CurrentSection := 'Sorter';
+    Node := vstTree.GetFirst;
+    while Assigned(Node) do
+    begin
+      SaveNode(Node);
+      Node := Node.NextSibling;
+    end;
+  finally
+    TGeneral.XMLParams.CurrentSection := '';
+    TGeneral.XMLParams.Save;
+  end;
+end;
+
+procedure TframeSorter.aAddExecute(Sender: TObject);
 var
   NewNode: PVirtualNode;
 begin
   inherited;
   vstTree.ClearSelection;
   NewNode := vstTree.AddChild(nil);
-  vstTree.CheckType[NewNode] := ctCheckBox;
   vstTree.Selected[NewNode] := True;
 end;
 
-procedure TframePathes.aDeleteExecute(Sender: TObject);
+procedure TframeSorter.aDeleteExecute(Sender: TObject);
 begin
   inherited;
   if Assigned(vstTree.FocusedNode) then
     vstTree.DeleteNode(vstTree.FocusedNode);
 end;
 
-procedure TframePathes.aDeleteUpdate(Sender: TObject);
+procedure TframeSorter.aDeleteUpdate(Sender: TObject);
 begin
   inherited;
   TAction(Sender).Enabled := not vstTree.IsEmpty;
 end;
 
-procedure TframePathes.aEditExecute(Sender: TObject);
+procedure TframeSorter.aEditExecute(Sender: TObject);
 var
-  Data: PParamPath;
+  Data: PSorterPath;
 begin
   inherited;
    if Assigned(vstTree.FocusedNode) then
@@ -203,36 +196,21 @@ begin
    end;
 end;
 
-procedure TframePathes.aEditUpdate(Sender: TObject);
-begin
-  inherited;
-  TAction(Sender).Enabled := not vstTree.IsEmpty;
-end;
-
-procedure TframePathes.aRefreshExecute(Sender: TObject);
+procedure TframeSorter.aRefreshExecute(Sender: TObject);
 begin
   inherited;
   LoadFromXML;
 end;
 
-procedure TframePathes.aSaveExecute(Sender: TObject);
+procedure TframeSorter.aSaveExecute(Sender: TObject);
 begin
   inherited;
   SaveToXML;
 end;
 
-procedure TframePathes.vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
+procedure TframeSorter.vstTreeClick(Sender: TObject);
 var
-  Data: PParamPath;
-begin
-  inherited;
-  Data := Node.GetData;
-  Data.WithSubdir := Node.CheckState = csCheckedNormal;
-end;
-
-procedure TframePathes.vstTreeClick(Sender: TObject);
-var
-  Data: PParamPath;
+  Data: PSorterPath;
 begin
   inherited;
   if Assigned(vstTree.FocusedNode) and (vstTree.FocusedColumn = COL_OPEN_DIALOG) then
@@ -247,14 +225,16 @@ begin
   end;
 end;
 
-procedure TframePathes.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+procedure TframeSorter.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
 var
-  Data1, Data2: PParamPath;
+  Data1, Data2: PSorterPath;
 begin
   inherited;
   Data1 := Node1^.GetData;
   Data2 := Node2^.GetData;
   case Column of
+    COL_MASK:
+      Result := CompareText(Data1^.Mask, Data2^.Mask);
     COL_INFO:
       Result := CompareText(Data1^.Info, Data2^.Info);
     COL_PATH:
@@ -262,35 +242,21 @@ begin
   end;
 end;
 
-procedure TframePathes.vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
+procedure TframeSorter.vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
 begin
   inherited;
   EditLink := TStringEditLink.Create;
 end;
 
-procedure TframePathes.vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
-var
-  Data: PParamPath;
+procedure TframeSorter.vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
 begin
   inherited;
-  Data := Node^.GetData;
-  case Column of
-    COL_PATH:
-      Data^.Path := NewText;
-    COL_INFO:
-      Data^.Info := NewText;
-  end;
+  Allowed := (Column in [COL_PATH, COL_INFO, COL_MASK]);
 end;
 
-procedure TframePathes.vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
-begin
-  inherited;
-  Allowed := (Column in [COL_PATH, COL_INFO]);
-end;
-
-procedure TframePathes.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+procedure TframeSorter.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
-  Data: PParamPath;
+  Data: PSorterPath;
 begin
   inherited;
   Data := Node^.GetData;
@@ -298,16 +264,16 @@ begin
     Data^.Clear;
 end;
 
-procedure TframePathes.vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
+procedure TframeSorter.vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
 begin
   inherited;
   if (Column = COL_OPEN_DIALOG) and (Kind in [ikNormal, ikSelected]) then
     ImageIndex := 5;
 end;
 
-procedure TframePathes.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+procedure TframeSorter.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
-  Data: PParamPath;
+  Data: PSorterPath;
 begin
   inherited;
   CellText := '';
@@ -317,18 +283,36 @@ begin
       CellText := Data^.Path;
     COL_INFO:
       CellText := Data^.Info;
+    COL_MASK:
+      CellText := Data^.Mask;
   end
 end;
 
-procedure TframePathes.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
+procedure TframeSorter.vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;NewText: string);
+var
+  Data: PSorterPath;
+begin
+  inherited;
+  Data := Node^.GetData;
+  case Column of
+    COL_PATH:
+      Data^.Path := NewText;
+    COL_INFO:
+      Data^.Info := NewText;
+    COL_MASK:
+      Data^.Mask := NewText;
+  end;
+end;
+
+procedure TframeSorter.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
 var
   CellText: string;
 begin
-  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
+//  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
   Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
 end;
 
-procedure TframePathes.SearchText(const aText: string);
+procedure TframeSorter.SearchText(const aText: string);
 var
   Node: PVirtualNode;
 begin

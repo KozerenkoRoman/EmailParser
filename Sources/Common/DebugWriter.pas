@@ -15,24 +15,18 @@ uses
 type
   TFileWriter = class(TThread)
   private
-    FFileStream : TFileStream;
-    FFileName   : string;
-    FLogPath    : string;
-    FQueue      : TThreadedQueue<string>;
+    FQueue: TThreadedQueue<string>;
+    FFileName: TFileName;
     function GetSize: Int64;
-    procedure SetLogPath(const Value: string);
-    procedure Write(const aLogText: string);
+    procedure SetFileName(const Value: TFileName);
   protected
     procedure Execute; override;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Finish;
-
-    property FileName : string  read FFileName write FFileName;
-    property LogPath  : string  read FLogPath  write SetLogPath;
     property Size     : Int64   read GetSize;
     property LogQueue : TThreadedQueue<string> read FQueue;
+    property FileName : TFileName read FFileName write SetFileName;
   end;
 
   TLogWriter = class
@@ -44,17 +38,15 @@ type
     FBaseFileName     : string;
     FCountFiles       : Integer;
     FCountOfDays      : Integer;
-    FIsExistHtmlClose : Boolean;
+    FFileWriter       : TFileWriter;
     FIsExistHtmlOpen  : Boolean;
     FLineCount        : Integer;
-    FLogFile          : TFileWriter;
     FMaxSize          : Int64;
     function GetActive: Boolean;
     function GetDebugFileName: string;
     function GetLineCount: Integer;
     function GetLog(const aFileName: string = ''): string;
-    function GetLogFileName: string;
-    function IsStartDebug: Boolean;
+    function GetLogFileName: TFileName;
     procedure CheckSize;
     procedure DeleteOldFiles;
     procedure Finish;
@@ -81,7 +73,7 @@ type
 
     C_CFG_COUNT_OF_DAYS = 'CountOfDays';
     C_CFG_KEY_IS_START  = 'IsStartDebug';
-    C_CFG_KEY_MAX_SIZE  = 'MaxSizeOfLogFile';
+    C_CFG_KEY_MAX_SIZE  = 'MaxSizeOFFileWriter';
     C_CFG_SECTION_DEBUG = 'Debug';
   public
     constructor Create;
@@ -93,10 +85,10 @@ type
     procedure Write(const aDetailType: TLogDetailType; const aObject: TObject; const aInfo: string); overload;
     procedure Write(const aDetailType: TLogDetailType; const aObject: TObject; const aMethod, aInfo: string); overload;
 
-    property Active      : Boolean read GetActive    write SetActive;
-    property LogFileName : string  read GetLogFileName;
-    property CountOfDays : Integer read FCountOfDays write FCountOfDays default 30;    //Number of days during which logs are stored
-    property MaxSize     : Int64   read FMaxSize     write FMaxSize     default 0;     //Maximum log file size(MB). When <0 do not control
+    property LogFileName : TFileName read GetLogFileName;
+    property Active      : Boolean   read GetActive    write SetActive;
+    property CountOfDays : Integer   read FCountOfDays write FCountOfDays default 30;    //Number of days during which logs are stored
+    property MaxSize     : Int64     read FMaxSize     write FMaxSize     default 2;     //Maximum log file size(MB). When <0 do not control
   end;
 
 var
@@ -109,18 +101,14 @@ implementation
 constructor TLogWriter.Create;
 begin
   inherited;
-  FCountFiles       := 0;
+  FCountFiles       := 1;
   FIsExistHtmlOpen  := False;
-  FIsExistHtmlClose := False;
   FCountOfDays      := 30;
-  FBaseFileName     := '';
-
-  if IsStartDebug then
-  begin
-    RestoreStartParams;
-    Start;
-  end;
-
+  FBaseFileName     := GetLog(TPath.GetFileNameWithoutExtension(Application.ExeName) +
+                              FormatDateTime('_yyyy.mm.dd hh.nn.ss', Now) +
+                              '_part_%d.html').ToLower;
+  RestoreStartParams;
+  Start;
   if Active then
   begin
     WriteFileInfo;
@@ -130,14 +118,11 @@ end;
 
 destructor TLogWriter.Destroy;
 begin
-  FIsExistHtmlClose := True;
-  Finish;
-  FLogFile.Terminate;
-  if Assigned(FLogFile) then
-    FreeAndNil(FLogFile);
+  FFileWriter.Terminate;
+  if Assigned(FFileWriter) then
+    FreeAndNil(FFileWriter);
   inherited;
 end;
-
 
 procedure TLogWriter.DeleteOldFiles;
 begin
@@ -145,11 +130,11 @@ begin
     procedure()
     begin
       TThread.NameThreadForDebugging('TLogWriter.DeleteOldFiles');
-      for var FileName in TDirectory.GetFiles(GetLog, '*.html', TSearchOption.soAllDirectories) do
+      for var ItemName in TDirectory.GetFiles(GetLog, '*.html', TSearchOption.soAllDirectories) do
       begin
-        if (DaysBetween(Now, TFile.GetCreationTime(FileName)) >= CountOfDays) then
+        if (DaysBetween(Now, TFile.GetCreationTime(ItemName)) >= CountOfDays) then
           try
-            TFile.Delete(FileName);
+            TFile.Delete(ItemName);
           except
           end;
       end;
@@ -186,19 +171,6 @@ begin
   end;
 end;
 
-function TLogWriter.IsStartDebug: Boolean;
-//var
-//  loXmlFile : TXmlFile;
-begin
-  Result := True;
-//  loXmlFile := TXmlFile.Create(GetEnvironmentVariable('USERPROFILE') + '\RoboTrade.xml');
-//  try
-//    Result := loXmlFile.ReadBool(C_CFG_SECTION_DEBUG, C_CFG_KEY_IS_START, True);
-//  finally
-//    FreeAndNil(loXmlFile);
-//  end;
-end;
-
 procedure TLogWriter.RestoreStartParams;
 var
   loXmlFile : TXmlFile;
@@ -206,7 +178,7 @@ begin
   loXmlFile := TXmlFile.Create(GetEnvironmentVariable('USERPROFILE') + '\' + TPath.GetFileNameWithoutExtension(Application.ExeName) + '.xml');
   try
     loXmlFile.UsedAttributes := [uaCodeType, uaValue, uaComment];
-    FMaxSize     := loXmlFile.ReadInt64(C_CFG_SECTION_DEBUG, C_CFG_KEY_MAX_SIZE, 0) * 1024 * 1024;
+    FMaxSize     := loXmlFile.ReadInt64(C_CFG_SECTION_DEBUG, C_CFG_KEY_MAX_SIZE, 2) * 1024 * 1024;
     FCountOfDays := loXmlFile.ReadInteger(C_CFG_SECTION_DEBUG, C_CFG_COUNT_OF_DAYS, 30);
     if not loXmlFile.ValueExists(C_CFG_SECTION_DEBUG, C_CFG_KEY_MAX_SIZE) then
       loXmlFile.WriteInt64(C_CFG_SECTION_DEBUG, C_CFG_KEY_MAX_SIZE, FMaxSize, 'Max Size Of Log File (Mb)');
@@ -219,8 +191,8 @@ end;
 
 function TLogWriter.GetActive: Boolean;
 begin
-  if Assigned(FLogFile) then
-    Result := FLogFile.Started
+  if Assigned(FFileWriter) then
+    Result := FFileWriter.Started
   else
     Result := False;
 end;
@@ -230,7 +202,7 @@ begin
   if Active then
   begin
     CheckSize;
-    FLogFile.LogQueue.PushItem(aInfo);
+    FFileWriter.LogQueue.PushItem(aInfo);
   end;
 end;
 
@@ -238,12 +210,11 @@ procedure TLogWriter.Start;
 var
   sText : string;
 begin
-  if not Assigned(FLogFile) then
+  if not Assigned(FFileWriter) then
   begin
-    FLogFile := TFileWriter.Create;
-    FLogFile.FileName := GetDebugFileName;
-    FLogFile.LogPath  := GetLog;
-    FLogFile.Start;
+    FFileWriter := TFileWriter.Create;
+    FFileWriter.FileName := GetDebugFileName;
+    FFileWriter.Start;
     Sleep(10);
   end;
   if not FIsExistHtmlOpen then
@@ -270,11 +241,12 @@ procedure TLogWriter.Finish;
 var
   sText : string;
 begin
-  if Assigned(FLogFile) and FLogFile.Started then
+  if Assigned(FFileWriter) and FFileWriter.Started then
   begin
-    sText := THtmlLib.GetColorTag(THtmlLib.GetBoldText('Log session finished'), clNavy);
-    sText := Concat(C_HTML_TABLE_CLOSE, sText, C_HTML_CLOSE);
-    FLogFile.Terminate;
+    sText := Concat(C_HTML_TABLE_CLOSE,
+                    THtmlLib.GetColorTag(THtmlLib.GetBoldText('Log session finished'), clNavy),
+                    C_HTML_CLOSE);
+    WriteText(sText);
   end;
 end;
 
@@ -288,12 +260,7 @@ end;
 
 function TLogWriter.GetDebugFileName: string;
 begin
-  if FBaseFileName.IsEmpty then
-    FBaseFileName := Concat(ChangeFileExt(ExtractFileName(Application.ExeName), '_'), FormatDateTime('yyyy.mm.dd hh.nn.ss', Now)).ToLower;
-  if (FCountFiles > 0) then
-    Result := Concat(FBaseFileName, FormatFloat('_000', FCountFiles), '.html')
-  else
-    Result := Concat(FBaseFileName, '.html');
+  Result := Format(FBaseFileName, [FCountFiles]);
 end;
 
 function TLogWriter.GetLineCount: Integer;
@@ -306,26 +273,16 @@ end;
 
 function TLogWriter.GetLog(const aFileName: string): string;
 var
-  sPath: string;
-  sRootPath: string;
+  Path: string;
 begin
-  sRootPath := ExtractFilePath(Application.ExeName);
-  sPath := IncludeTrailingPathDelimiter(sRootPath + C_FOLDER_LOG);
-  if (ExtractFileDrive(sPath) <> '') and (not DirectoryExists(sPath)) then
+  Path := TPath.Combine(TPath.GetDirectoryName(Application.ExeName), C_FOLDER_LOG);
+  if (ExtractFileDrive(Path) <> '') and (not TDirectory.Exists(Path)) then
     try
-      ForceDirectories(sPath);
+      ForceDirectories(Path);
     except
-      raise Exception.Create(Format('Do not create folder [%s].', [sPath]));
+      raise Exception.Create(Format('Do not create folder [%s].', [Path]));
     end;
-  Result := Concat(sPath, aFileName);
-end;
-
-function TLogWriter.GetLogFileName: string;
-begin
-  if Assigned(FLogFile) then
-    Result := TPath.Combine(FLogFile.LogPath, FLogFile.FileName)
-  else
-    Result := '';
+  Result := TPath.Combine(Path, aFileName);
 end;
 
 procedure TLogWriter.Write(const aDetailType: TLogDetailType; const aInfo: string);
@@ -385,15 +342,15 @@ begin
     aInfo := aInfo.Replace(sLineBreak, C_HTML_BREAK).Replace(C_CHAR_ENTER, C_HTML_BREAK).Replace(C_CHAR_LINE_FEED, C_HTML_BREAK);
     case aDetailType of
       ddEnterMethod:
-        FLogFile.LogQueue.PushItem(Format(C_TABLE_METHOD_TAG, [C_IMG_ENTER_HTM, Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
+        FFileWriter.LogQueue.PushItem(Format(C_TABLE_METHOD_TAG, [C_IMG_ENTER_HTM, Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
       ddExitMethod:
-        FLogFile.LogQueue.PushItem(Format(C_TABLE_METHOD_TAG, [C_IMG_EXIT_HTM, Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
+        FFileWriter.LogQueue.PushItem(Format(C_TABLE_METHOD_TAG, [C_IMG_EXIT_HTM, Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
       ddError:
-        FLogFile.LogQueue.PushItem(Format(C_TABLE_ERROR_TAG, [C_IMG_ERROR_HTM, Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
+        FFileWriter.LogQueue.PushItem(Format(C_TABLE_ERROR_TAG, [C_IMG_ERROR_HTM, Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
       ddText:
-        FLogFile.LogQueue.PushItem(Format(C_TABLE_TEXT_TAG, ['', Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
+        FFileWriter.LogQueue.PushItem(Format(C_TABLE_TEXT_TAG, ['', Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
       ddWarning:
-        FLogFile.LogQueue.PushItem(Format(C_TABLE_WARN_TAG, ['', Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
+        FFileWriter.LogQueue.PushItem(Format(C_TABLE_WARN_TAG, ['', Format('%.6u', [LineCount]), FormatDateTime(C_DATE_FORMAT, Now), aUnit, aClassName, aMethod, aInfo]));
     end;
   end;
 end;
@@ -404,17 +361,21 @@ const
 var
   sNewFileName: string;
 begin
-  if (MaxSize > 0) and (FLogFile.Size >= MaxSize) then
+  if (MaxSize > 0) and (FFileWriter.Size >= MaxSize) then
   begin
     FIsExistHtmlOpen := False;
     Inc(FCountFiles);
     sNewFileName := GetDebugFileName;
-    FLogFile.LogQueue.PushItem(Concat(C_HTML_TABLE_CLOSE, Format(C_TAG_LINK, [sNewFileName]), C_HTML_CLOSE));
-    FLogFile.Finish;
-    FLogFile.FileName := sNewFileName;
-    Start;
-    FIsExistHtmlClose := False;
+    FFileWriter.LogQueue.PushItem(Concat(C_HTML_TABLE_CLOSE, Format(C_TAG_LINK, [sNewFileName]), C_HTML_CLOSE));
+    FFileWriter.FileName := sNewFileName;
+    Self.Start;
   end;
+end;
+
+function TLogWriter.GetLogFileName: TFileName;
+begin
+  if Assigned(FFileWriter) then
+    Result := FFileWriter.FileName;
 end;
 
 { TFileWriter }
@@ -429,8 +390,6 @@ end;
 destructor TFileWriter.Destroy;
 begin
   FQueue.DoShutDown;
-  if Assigned(FFileStream) then
-    FreeAndNil(FFileStream);
   FreeAndNil(FQueue);
   inherited;
 end;
@@ -439,67 +398,39 @@ procedure TFileWriter.Execute;
 var
   WaitResult: TWaitResult;
   LogText: string;
-  BOM: TBytes;
 begin
   inherited;
   TThread.NameThreadForDebugging('TFileWriter');
-  FFileStream := TFileStream.Create(TPath.Combine(LogPath, FileName), fmCreate or fmShareDenyWrite);
-  BOM := TEncoding.UTF8.GetPreamble;
-
-  FFileStream.WriteBuffer(BOM[0], Length(BOM));
+  TFile.WriteAllBytes(FFileName, TEncoding.UTF8.GetPreamble);
   try
     while not Terminated do
     begin
       WaitResult := FQueue.PopItem(LogText);
       if (WaitResult = TWaitResult.wrSignaled) then
         if not(LogText.IsEmpty) then
-          Write(LogText);
+          TFile.AppendAllText(FFileName, LogText);
     end;
   except
 
   end;
 end;
 
-procedure TFileWriter.Finish;
-begin
-  if Assigned(FFileStream) then
-    FreeAndNil(FFileStream);
-  inherited;
-end;
-
 function TFileWriter.GetSize: Int64;
 begin
-  if Assigned(FFileStream) then
-    Result := FFileStream.Size
-  else
-    Result := 0;
+  Result := TFile.GetSize(FileName);
 end;
 
-procedure TFileWriter.SetLogPath(const Value: string);
+procedure TFileWriter.SetFileName(const Value: TFileName);
 begin
-  if (Value <> '') then
-    FLogPath := IncludeTrailingPathDelimiter(Value)
-  else
-    FLogPath := ExtractFilePath(Application.ExeName);
-
-  if not DirectoryExists(Value) then
-    if not CreateDir(Value) then
-      FLogPath := '';
-end;
-
-procedure TFileWriter.Write(const aLogText: string);
-var
-  Buff: TBytes;
-begin
-  if Self.Started then
-  begin
-    Buff := TEncoding.UTF8.GetBytes(aLogText);
-    FFileStream.WriteBuffer(Buff, Length(Buff));
-  end;
+  FFileName := Value;
 end;
 
 initialization
   if not Assigned(LogWriter) and not System.IsLibrary then
     LogWriter := TLogWriter.Create;
+
+finalization
+//  if Assigned(LogWriter) then
+//    FreeAndNil(LogWriter);
 
 end.

@@ -28,7 +28,7 @@ uses
   Frame.Pathes in 'Sources\Frames\Frame.Pathes.pas' {framePathes: TFrame},
   Frame.RegExpParameters in 'Sources\Frames\Frame.RegExpParameters.pas' {frameRegExpParameters: TFrame},
   Frame.ResultView in 'Sources\Frames\Frame.ResultView.pas' {frameResultView: TFrame},
-  Frame.Source in 'Sources\Frames\Frame.Source.pas' {FrameSource: TFrame},
+  Frame.Source in 'Sources\Frames\Frame.Source.pas' {frameSource: TFrame},
   Global.Resources in 'Sources\Global.Resources.pas',
   Global.Types in 'Sources\Global.Types.pas',
   Html.Consts in 'Sources\Common\Html.Consts.pas',
@@ -58,7 +58,8 @@ uses
   Utils.Zip in 'Sources\Common\Utils.Zip.pas',
   VirtualTrees.ExportHelper in 'Sources\Virtual TreeView\VirtualTrees.ExportHelper.pas',
   VirtualTrees.Helper in 'Sources\Virtual TreeView\VirtualTrees.Helper.pas',
-  XmlFiles in 'Sources\Common\XmlFiles.pas';
+  XmlFiles in 'Sources\Common\XmlFiles.pas',
+  Frame.Sorter in 'Sources\Frames\Frame.Sorter.pas' {frameSorter: TFrame};
 
 {$R *.res}
 

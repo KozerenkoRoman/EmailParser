@@ -69,6 +69,7 @@ resourcestring
   en_Info                 = 'Info ';
   en_Language             = 'Language';
   en_Matches              = 'Matches';
+  en_Mask                 = 'Mask';
   en_MessageId            = 'Message Id';
   en_ModuleName           = 'Module name';
   en_NewNamePrompt        = 'Enter a name for the new template set';
@@ -87,7 +88,9 @@ resourcestring
   en_Paste                = 'Paste';
   en_Path                 = 'Path';
   en_PathForAttachments   = 'Paths for saving attachments';
+  en_PathsToFindSaveFiles = 'Paths for search and saving attachments';
   en_PathsToFindFiles     = 'Paths to find files';
+  en_PathsToSaveFiles     = 'Paths for saving files';
   en_PlainText            = 'Plain Text';
   en_Position             = 'Position';
   en_Print                = 'Print';
@@ -166,6 +169,7 @@ resourcestring
   uk_Info                 = 'Опис ';
   uk_Language             = 'Мова';
   uk_Matches              = 'Співпадіння';
+  uk_Mask                 = 'Маска';
   uk_MessageId            = 'Id листа';
   uk_ModuleName           = 'Назва модуля';
   uk_NewNamePrompt        = 'Введіть назву нового набору шаблонів';
@@ -184,7 +188,9 @@ resourcestring
   uk_Paste                = 'Вставити';
   uk_Path                 = 'Шлях';
   uk_PathForAttachments   = 'Шляхи для збереження вкладень';
+  uk_PathsToSaveFiles     = 'Шляхи для збереження файлів';
   uk_PathsToFindFiles     = 'Шляхи для пошуку файлів';
+  uk_PathsToFindSaveFiles = 'Шляхи для пошуку та збереження файлів';
   uk_PlainText            = 'Простий текст';
   uk_Position             = 'Позиція';
   uk_Print                = 'Друк';
@@ -215,7 +221,7 @@ resourcestring
   uk_DuplicateCount       = 'Знайдено %d записів в БД';
 
 const
-   ArrayMessages: array[1 .. 93] of TMessageItem = (
+   ArrayMessages: array[1 .. 96] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
@@ -265,6 +271,7 @@ const
     (Key: 'Info'                 ; En: en_Info;                 Uk: uk_Info),
     (Key: 'Language'             ; En: en_Language;             Uk: uk_Language),
     (Key: 'Matches'              ; En: en_Matches;              Uk: uk_Matches),
+    (Key: 'Mask'                 ; En: en_Mask;                 Uk: uk_Mask),
     (Key: 'MessageId'            ; En: en_MessageId;            Uk: uk_MessageId),
     (Key: 'ModuleName'           ; En: en_ModuleName;           Uk: uk_ModuleName),
     (Key: 'NewNamePrompt'        ; En: en_NewNamePrompt;        Uk: uk_NewNamePrompt),
@@ -284,6 +291,8 @@ const
     (Key: 'Path'                 ; En: en_Path;                 Uk: uk_Path),
     (Key: 'PathForAttachments'   ; En: en_PathForAttachments;   Uk: uk_PathForAttachments),
     (Key: 'PathsToFindFiles'     ; En: en_PathsToFindFiles;     Uk: uk_PathsToFindFiles),
+    (Key: 'PathsToFindSaveFiles' ; En: en_PathsToFindSaveFiles; Uk: uk_PathsToFindSaveFiles),
+    (Key: 'PathsToSaveFiles'     ; En: en_PathsToSaveFiles;     Uk: uk_PathsToSaveFiles),
     (Key: 'PlainText'            ; En: en_PlainText;            Uk: uk_PlainText),
     (Key: 'Position'             ; En: en_Position;             Uk: uk_Position),
     (Key: 'Print'                ; En: en_Print;                Uk: uk_Print),

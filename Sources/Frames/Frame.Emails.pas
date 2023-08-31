@@ -15,7 +15,7 @@ uses
 {$ENDREGION}
 
 type
-  TframeEmails = class(TFrameSource, IProgress, IUpdateXML)
+  TframeEmails = class(TframeSource, IProgress, IUpdateXML)
     aBreak          : TAction;
     aFilter         : TAction;
     aOpenEmail      : TAction;
@@ -43,6 +43,9 @@ type
     procedure vstTreeFocusChanged(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
+    procedure vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
+      out EditLink: IVTEditLink);
+    procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
   private const
     COL_POSITION      = 0;
     COL_SHORT_NAME    = 1;
@@ -231,6 +234,18 @@ begin
        (Data2^.Matches.Count >= Column - C_FIXED_COLUMNS) then
       Result := CompareText(Data1^.Matches.Items[Column - C_FIXED_COLUMNS], Data2^.Matches.Items[Column - C_FIXED_COLUMNS]);
   end;
+end;
+
+procedure TframeEmails.vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
+begin
+  inherited;
+  EditLink := TStringEditLink.Create;
+end;
+
+procedure TframeEmails.vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
+begin
+  inherited;
+  Allowed := True;
 end;
 
 procedure TframeEmails.vstTreeFocusChanged(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex);

@@ -13,7 +13,7 @@ uses
 {$ENDREGION}
 
 type
-  TFrameSource = class(TFrameCustom)
+  TframeSource = class(TFrameCustom)
     aColumnSettings   : TAction;
     aExportToCSV      : TAction;
     aExportToExcel    : TAction;
@@ -54,19 +54,19 @@ implementation
 
 { TFrameSource }
 
-constructor TFrameSource.Create(AOwner: TComponent);
+constructor TframeSource.Create(AOwner: TComponent);
 begin
   inherited;
   TVirtualTree.Initialize(vstTree);
 end;
 
-destructor TFrameSource.Destroy;
+destructor TframeSource.Destroy;
 begin
 
   inherited;
 end;
 
-procedure TFrameSource.Initialize;
+procedure TframeSource.Initialize;
 begin
   TStoreHelper.LoadFromXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
   tbMain.ButtonHeight := C_ICON_SIZE;
@@ -75,7 +75,7 @@ begin
   vstTree.FullExpand;
 end;
 
-procedure TFrameSource.Translate;
+procedure TframeSource.Translate;
 begin
   aAdd.Hint            := TLang.Lang.Translate('Add');
   aColumnSettings.Hint := TLang.Lang.Translate('ColumnSettings');
@@ -88,44 +88,44 @@ begin
   aSave.Hint           := TLang.Lang.Translate('Save');
 end;
 
-procedure TFrameSource.Deinitialize;
+procedure TframeSource.Deinitialize;
 begin
   TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
 end;
 
-function TFrameSource.GetIdentityName: string;
+function TframeSource.GetIdentityName: string;
 begin
   Result := C_IDENTITY_NAME;
 end;
 
-procedure TFrameSource.LoadFromXML;
+procedure TframeSource.LoadFromXML;
 begin
   inherited;
 
 end;
 
-procedure TFrameSource.SaveToXML;
+procedure TframeSource.SaveToXML;
 begin
   inherited;
 
 end;
 
-procedure TFrameSource.vstTreeColumnResize(Sender: TVTHeader; Column: TColumnIndex);
+procedure TframeSource.vstTreeColumnResize(Sender: TVTHeader; Column: TColumnIndex);
 begin
   TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
 end;
 
-procedure TFrameSource.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+procedure TframeSource.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 begin
 //
 end;
 
-procedure TFrameSource.vstTreeHeaderDragged(Sender: TVTHeader; Column: TColumnIndex; OldPosition: Integer);
+procedure TframeSource.vstTreeHeaderDragged(Sender: TVTHeader; Column: TColumnIndex; OldPosition: Integer);
 begin
   TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
 end;
 
-procedure TFrameSource.vstTreeMeasureItem(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; var NodeHeight: Integer);
+procedure TframeSource.vstTreeMeasureItem(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; var NodeHeight: Integer);
 begin
   if Sender.MultiLine[Node] then
   begin
@@ -134,13 +134,13 @@ begin
   end;
 end;
 
-procedure TFrameSource.aColumnSettingsExecute(Sender: TObject);
+procedure TframeSource.aColumnSettingsExecute(Sender: TObject);
 begin
   if TfrmColumnSettings.ShowSettings(vstTree, GetIdentityName, 0) = mrOk then
     TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
 end;
 
-procedure TFrameSource.aExportToCSVExecute(Sender: TObject);
+procedure TframeSource.aExportToCSVExecute(Sender: TObject);
 begin
   Screen.Cursor := crHourGlass;
   try
@@ -150,7 +150,7 @@ begin
   end;
 end;
 
-procedure TFrameSource.aExportToExcelExecute(Sender: TObject);
+procedure TframeSource.aExportToExcelExecute(Sender: TObject);
 begin
   Screen.Cursor := crHourGlass;
   try
@@ -160,7 +160,7 @@ begin
   end;
 end;
 
-procedure TFrameSource.aExportToHTMLExecute(Sender: TObject);
+procedure TframeSource.aExportToHTMLExecute(Sender: TObject);
 begin
   Screen.Cursor := crHourGlass;
   try
@@ -170,7 +170,7 @@ begin
   end;
 end;
 
-procedure TFrameSource.aPrintExecute(Sender: TObject);
+procedure TframeSource.aPrintExecute(Sender: TObject);
 begin
   Printer.Orientation := poLandscape;
   vstTree.Print(Printer, True);

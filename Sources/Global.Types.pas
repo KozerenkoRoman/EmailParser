@@ -19,6 +19,7 @@ type
     GroupIndex     : Integer;
     procedure Clear;
   end;
+  TRegExpArray = TArrayRecord<TRegExpData>;
 
   PParamPath = ^TParamPath;
   TParamPath = record
@@ -28,6 +29,15 @@ type
     procedure Clear;
   end;
   TParamPathArray = TArrayRecord<TParamPath>;
+
+  PSorterPath = ^TSorterPath;
+  TSorterPath = record
+    Mask       : string;
+    Path       : string;
+    Info       : string;
+    procedure Clear;
+  end;
+  TSorterPathArray = TArrayRecord<TSorterPath>;
 
   PAttachment = ^TAttachment;
   TAttachment = record
@@ -90,8 +100,9 @@ type
   TGeneral = record
   public
     class function GetCounterValue: Integer; static;
-    class function GetPathList: TArrayRecord<TParamPath>; static;
-    class function GetRegExpParametersList: TArrayRecord<TRegExpData>; static;
+    class function GetPathList: TParamPathArray; static;
+    class function GetSorterPathList: TSorterPathArray;  static;
+    class function GetRegExpParametersList: TRegExpArray; static;
     class function XMLFile: TXMLFile; static;
     class function XMLParams: TXMLFile; static;
     class var
@@ -141,7 +152,7 @@ begin
   Result := FXMLParams;
 end;
 
-class function TGeneral.GetRegExpParametersList: TArrayRecord<TRegExpData>;
+class function TGeneral.GetRegExpParametersList: TRegExpArray;
 var
   Data: TRegExpData;
   i: Integer;
@@ -168,7 +179,7 @@ begin
   end;
 end;
 
-class function TGeneral.GetPathList: TArrayRecord<TParamPath>;
+class function TGeneral.GetPathList: TParamPathArray;
 var
   Data: TParamPath;
   i: Integer;
@@ -186,6 +197,33 @@ begin
         Data.Path       := XMLParams.Attributes.GetAttributeValue('Path', '');
         Data.Info       := XMLParams.Attributes.GetAttributeValue('Info', '');
         Result[i]       := Data;
+        Inc(i);
+      end;
+      XMLParams.NextKey;
+    end;
+  finally
+    XMLParams.CurrentSection := '';
+  end;
+end;
+
+class function TGeneral.GetSorterPathList: TSorterPathArray;
+var
+  Data: TSorterPath;
+  i: Integer;
+begin
+  XMLParams.Open;
+  XMLParams.CurrentSection := 'Sorter';
+  try
+    i := 0;
+    Result.Count := XMLParams.ChildCount;
+    while not XMLParams.IsLastKey do
+    begin
+      if XMLParams.ReadAttributes then
+      begin
+        Data.Mask := XMLParams.Attributes.GetAttributeValue('Mask', '');
+        Data.Path := XMLParams.Attributes.GetAttributeValue('Path', '');
+        Data.Info := XMLParams.Attributes.GetAttributeValue('Info', '');
+        Result[i] := Data;
         Inc(i);
       end;
       XMLParams.NextKey;
@@ -313,6 +351,13 @@ begin
   for var item in Self do
     Dispose(item.Value);
   Self.Clear;
+end;
+
+{ TSorterPath }
+
+procedure TSorterPath.Clear;
+begin
+  Self := Default(TSorterPath);
 end;
 
 initialization

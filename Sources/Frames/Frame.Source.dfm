@@ -1,4 +1,4 @@
-inherited FrameSource: TFrameSource
+inherited frameSource: TframeSource
   Width = 551
   Height = 399
   ExplicitWidth = 551

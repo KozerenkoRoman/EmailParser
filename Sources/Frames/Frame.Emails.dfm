@@ -65,7 +65,9 @@ inherited frameEmails: TframeEmails
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowVertGridLines, toThemeAware, toShowFilteredNodes]
     OnBeforeCellPaint = vstTreeBeforeCellPaint
     OnCompareNodes = vstTreeCompareNodes
+    OnCreateEditor = vstTreeCreateEditor
     OnDblClick = aOpenEmailExecute
+    OnEditing = vstTreeEditing
     OnFocusChanged = vstTreeFocusChanged
     OnGetText = vstTreeGetText
     OnPaintText = vstTreePaintText

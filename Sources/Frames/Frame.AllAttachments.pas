@@ -16,7 +16,7 @@ uses
 {$ENDREGION}
 
 type
-  TframeAllAttachments = class(TFrameSource, IProgress, IUpdateXML)
+  TframeAllAttachments = class(TframeSource, IProgress, IUpdateXML)
     aOpenAttachFile      : TAction;
     aOpenParsedText      : TAction;
     btnOpenAttachFile    : TToolButton;

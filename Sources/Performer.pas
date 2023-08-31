@@ -11,7 +11,7 @@ uses
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
   Files.Utils, System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
-  System.Math, System.ZLib, System.Zip;
+  System.Math, System.ZLib, System.Zip, System.Masks;
 {$ENDREGION}
 
 type
@@ -20,18 +20,20 @@ type
     FAttachmentDir    : TAttachmentDir;
     FCriticalSection  : TCriticalSection;
     FDeleteAttachment : Boolean;
+    FDuplicates       : Integer;
     FFileExt          : string;
     FIsBreak          : Boolean;
     FParseBodyAsHTML  : Boolean;
-    FPathList         : TArrayRecord<TParamPath>;
-    FRegExpList       : TArrayRecord<TRegExpData>;
+    FPathList         : TParamPathArray;
+    FRegExpList       : TRegExpArray;
+    FSorterPathList   : TSorterPathArray;
     FUserDefinedDir   : string;
-    FDuplicates       : Integer;
     function GetAttchmentPath(const aFileName: TFileName): string;
     function GetEXIFInfo(const aFileName: TFileName): string;
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
-    procedure DeleteAttachmentFiles(const aData: PResultData);
+    procedure DoCopyAttachmentFiles(const aData: PResultData);
+    procedure DoDeleteAttachmentFiles(const aData: PResultData);
     procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
     procedure FillStartParameters;
     procedure ParseAttachmentFiles(const aData: PResultData);
@@ -76,6 +78,7 @@ procedure TPerformer.FillStartParameters;
 begin
   FRegExpList       := TGeneral.GetRegExpParametersList;
   FPathList         := TGeneral.GetPathList;
+  FSorterPathList   := TGeneral.GetSorterPathList;
   FParseBodyAsHTML  := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'ParseBodyAsHTML', False);
   FUserDefinedDir   := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachment', C_ATTACHMENTS_SUB_DIR);
   FAttachmentDir    := FAttachmentDir.FromString(FUserDefinedDir);
@@ -285,7 +288,36 @@ begin
   end;
 end;
 
-procedure TPerformer.DeleteAttachmentFiles(const aData: PResultData);
+procedure TPerformer.DoCopyAttachmentFiles(const aData: PResultData);
+var
+  NewFileName: TFileName;
+begin
+  for var item in FSorterPathList do
+  begin
+    for var i := Low(aData.Attachments) to High(aData.Attachments) do
+      if TFile.Exists(aData.Attachments[i].FileName) and MatchesMask(aData.Attachments[i].FileName, item.Mask) then
+        try
+          NewFileName := TPath.Combine(item.Path, TPath.GetFileName(aData.Attachments[i].FileName));
+          if not TFile.Exists(NewFileName) then
+          begin
+            TFile.Copy(aData.Attachments[i].FileName, NewFileName);
+            LogWriter.Write(ddText, Self, 'DoCopyAttachmentFiles',
+                                          'File - ' + aData.Attachments[i].FileName + sLineBreak +
+                                          'has been copied to - ' + NewFileName);
+          end;
+        except
+          on E: Exception do
+          LogWriter.Write(ddError, Self,
+                                   'DoCopyAttachmentFiles',
+                                   E.Message + sLineBreak +
+                                   'Email name - ' + aData.FileName + sLineBreak +
+                                   'File name - ' + aData.Attachments[i].FileName);
+      end;
+
+  end;
+end;
+
+procedure TPerformer.DoDeleteAttachmentFiles(const aData: PResultData);
 begin
   if FDeleteAttachment then
   begin
@@ -296,7 +328,7 @@ begin
       except
         on E: Exception do
           LogWriter.Write(ddError, Self,
-                                   'TPerformer.DeleteAttachmentFiles',
+                                   'DoDeleteAttachmentFiles',
                                    E.Message + sLineBreak +
                                    'Email name - ' + aData.FileName + sLineBreak +
                                    'File name - ' + aData.Attachments[i].FileName);
@@ -418,7 +450,8 @@ begin
           else
             Data^.Matches[i] := GetRegExpCollection(Data^.ParsedText, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex);
 
-        DeleteAttachmentFiles(Data);
+        DoCopyAttachmentFiles(Data);
+        DoDeleteAttachmentFiles(Data);
         TPublishers.ProgressPublisher.CompletedItem(Data);
       end).Start;
   finally
@@ -485,7 +518,7 @@ begin
                 aData.Attachments[i].ContentType := 'application/word';
                 aData.Attachments[i].ImageIndex  := TExtIcon.eiDoc.ToByte;
               end
-              else if Ext.Contains('.zip') then
+              else if Ext.Contains('.zip') or Ext.Contains('.7z') then
               begin
                 aData.Attachments[i].ParsedText  := GetZipFileList(aData^.Attachments[i].FileName, aData);
                 aData.Attachments[i].ContentType := 'application/zip';
