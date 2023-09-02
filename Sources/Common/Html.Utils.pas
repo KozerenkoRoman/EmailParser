@@ -10,25 +10,25 @@ uses
 
 type
   THtmlUtils = class(TObject)
-    class function GetHighlightText(const aText: string; const aArray: TStringArray): string;
+    class function GetHighlightText(const aText: string; const aMatches: TArrayRecord<TStringArray>): string;
   end;
 
 implementation
 
 { THtmlUtils }
 
-class function THtmlUtils.GetHighlightText(const aText: string; const aArray: TStringArray): string;
+class function THtmlUtils.GetHighlightText(const aText: string; const aMatches: TArrayRecord<TStringArray>): string;
 var
   refRGB   : TColorRef;
-  subArray : TArray<string>;
+  subArray : TStringArray;
   WebColor : string;
 begin
   if aText.IsEmpty then
     Exit;
   Result := aText;
-  for var i := Low(aArray.Items) to High(aArray.Items) do
+  for var i := Low(aMatches.Items) to High(aMatches.Items) do
   begin
-    subArray := aArray[i].Split(['; ']);
+    subArray := aMatches[i];
     refRGB   := ColorToRGB(arrWebColors[i]);
     WebColor := Format('#%.2x%.2x%.2x', [GetRValue(refRGB), GetGValue(refRGB), GetBValue(refRGB)]);
     for var str in subArray do

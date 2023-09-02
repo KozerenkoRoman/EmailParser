@@ -78,7 +78,8 @@ inherited frameRegExpParameters: TframeRegExpParameters
     Height = 366
     Alignment = taRightJustify
     DefaultNodeHeight = 18
-    Header.MainColumn = 0
+    Header.MainColumn = 3
+    OnChecked = vstTreeChecked
     OnCompareNodes = vstTreeCompareNodes
     OnCreateEditor = vstTreeCreateEditor
     OnDblClick = aEditExecute
@@ -112,6 +113,15 @@ inherited frameRegExpParameters: TframeRegExpParameters
         Position = 2
         Text = 'Group index'
         Width = 100
+      end
+      item
+        Alignment = taCenter
+        CaptionAlignment = taCenter
+        Layout = blGlyphBottom
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coStyleColor]
+        Position = 3
+        Text = 'Use Raw Text'
+        Width = 103
       end>
   end
   inherited alFrame: TActionList

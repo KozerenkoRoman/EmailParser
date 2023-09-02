@@ -9,7 +9,7 @@ interface
 uses
   Winapi.Windows, System.Classes, Vcl.Forms, System.SysUtils, System.Variants, System.IOUtils, Vcl.Graphics,
   System.DateUtils, System.Threading, Utils.VerInfo, Utils.LocalInformation, Html.Lib, Html.Consts, XmlFiles,
-  System.Types, Common.Types, System.Generics.Collections;
+  System.Types, Common.Types, System.Generics.Collections, Global.Resources;
 {$ENDREGION}
 
 type
@@ -149,8 +149,8 @@ var
   sText         : string;
   sModuleName   : string;
 begin
-  sText         := '';
-  sModuleName   := Application.ExeName;
+  sText       := '';
+  sModuleName := Application.ExeName;
   TLocalInformationDialog.GetLocalIPAddressName(sIP, sHostName);
   loVersionInfo := TVersionInfo.Create(sModuleName);
   try
@@ -175,7 +175,7 @@ procedure TLogWriter.RestoreStartParams;
 var
   loXmlFile : TXmlFile;
 begin
-  loXmlFile := TXmlFile.Create(GetEnvironmentVariable('USERPROFILE') + '\' + TPath.GetFileNameWithoutExtension(Application.ExeName) + '.xml');
+  loXmlFile := TXmlFile.Create(GetEnvironmentVariable('USERPROFILE') + '\' + C_XML_PARAMS_FILE);
   try
     loXmlFile.UsedAttributes := [uaCodeType, uaValue, uaComment];
     FMaxSize     := loXmlFile.ReadInt64(C_CFG_SECTION_DEBUG, C_CFG_KEY_MAX_SIZE, 2) * 1024 * 1024;

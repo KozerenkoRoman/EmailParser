@@ -19,7 +19,6 @@ type
     aPathForAttachments    : TAction;
     cbDeleteAttachments    : TCheckBox;
     cbLanguage             : TComboBox;
-    cbParseBodyAsHTML      : TCheckBox;
     dlgAttachmments        : TFileOpenDialog;
     edtExtensions          : TEdit;
     edtPathForAttachments  : TButtonedEdit;
@@ -27,7 +26,6 @@ type
     lblDeleteAttachments   : TLabel;
     lblExtensions          : TLabel;
     lblLanguage            : TLabel;
-    lblParseBodyAsHTML     : TLabel;
     lblPathForAttachments  : TLabel;
     miAttachmentsMain      : TMenuItem;
     miAttachmentsSub       : TMenuItem;
@@ -82,7 +80,6 @@ begin
   lblDeleteAttachments.Caption  := TLang.Lang.Translate('DeleteAttachments');
   lblExtensions.Caption         := TLang.Lang.Translate('FileExtensions');
   lblLanguage.Caption           := TLang.Lang.Translate('Language');
-  lblParseBodyAsHTML.Caption    := TLang.Lang.Translate('ParseBodyAsHTML');
   lblPathForAttachments.Caption := TLang.Lang.Translate('PathForAttachments');
 end;
 
@@ -104,7 +101,6 @@ begin
     cbLanguage.Items.Add(lang.ToString);
   cbDeleteAttachments.Checked   := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
   cbLanguage.ItemIndex          := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0);
-  cbParseBodyAsHTML.Checked     := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'ParseBodyAsHTML', False);
   edtExtensions.Text            := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
   edtPathForAttachments.Text    := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
 end;
@@ -113,7 +109,6 @@ procedure TframeCommonSettings.SaveToXML;
 begin
   inherited;
   TGeneral.XMLParams.WriteBool(C_SECTION_MAIN, 'DeleteAttachments', cbDeleteAttachments.Checked, lblDeleteAttachments.Caption);
-  TGeneral.XMLParams.WriteBool(C_SECTION_MAIN, 'ParseBodyAsHTML', cbParseBodyAsHTML.Checked, lblParseBodyAsHTML.Caption);
   TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'Language', cbLanguage.ItemIndex, cbLanguage.Text);
   TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'Extensions', edtExtensions.Text, lblExtensions.Caption);
   TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'PathForAttachments', edtPathForAttachments.Text, lblPathForAttachments.Caption);

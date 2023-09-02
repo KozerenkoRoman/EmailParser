@@ -61,14 +61,15 @@ inherited frameEmails: TframeEmails
     Height = 307
     Header.MainColumn = 0
     Images = DMImage.vil16
+    Indent = 12
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toVariableNodeHeight, toFullRowDrag]
-    TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowVertGridLines, toThemeAware, toShowFilteredNodes]
+    TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowRoot, toShowVertGridLines, toThemeAware, toShowFilteredNodes]
     OnBeforeCellPaint = vstTreeBeforeCellPaint
     OnCompareNodes = vstTreeCompareNodes
     OnCreateEditor = vstTreeCreateEditor
     OnDblClick = aOpenEmailExecute
     OnEditing = vstTreeEditing
-    OnFocusChanged = vstTreeFocusChanged
+    OnFocusChanging = vstTreeFocusChanging
     OnGetText = vstTreeGetText
     OnPaintText = vstTreePaintText
     ExplicitWidth = 752
@@ -151,6 +152,7 @@ inherited frameEmails: TframeEmails
         Position = 8
         Text = 'Content Type'
       end>
+    DefaultText = ''
   end
   inherited alFrame: TActionList
     Left = 508
@@ -201,10 +203,30 @@ inherited frameEmails: TframeEmails
       OnExecute = aFilterExecute
       OnUpdate = aSearchUpdate
     end
+    object aExpandAll: TAction
+      Caption = 'Expand all'
+      ImageIndex = 68
+      ImageName = 'ShowDetail_32x32'
+      OnExecute = aExpandAllExecute
+      OnUpdate = aExpandAllUpdate
+    end
+    object aCollapseAll: TAction
+      Caption = 'Collapse All'
+      ImageIndex = 67
+      ImageName = 'HideDetail_32x32'
+      OnExecute = aCollapseAllExecute
+      OnUpdate = aExpandAllUpdate
+    end
   end
   inherited pmFrame: TPopupMenu
     Left = 588
     Top = 116
+    object miExpandAll: TMenuItem
+      Action = aExpandAll
+    end
+    object miCollapseAll: TMenuItem
+      Action = aCollapseAll
+    end
   end
   object SaveDialogEmail: TSaveDialog
     DefaultExt = '*.eml'

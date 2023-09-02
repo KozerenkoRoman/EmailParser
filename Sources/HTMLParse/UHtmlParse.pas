@@ -12,7 +12,6 @@ uses System.Classes, System.SysUtils, System.Generics.Collections,
 
 type
   TtagType = (ttOpen, ttClose, ttNone);
-  TstringArray = Tarray<string>;
 
   THTMLelement = class;
 

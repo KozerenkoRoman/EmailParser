@@ -8,9 +8,6 @@ inherited framePathes: TframePathes
     ExplicitWidth = 711
   end
   inherited vstTree: TVirtualStringTree
-    Width = 711
-    Height = 397
-    Colors.GridLineColor = cl3DLight
     Header.MainColumn = 3
     Images = DMImage.vil16
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toEditable, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toFullRowDrag, toEditOnClick, toEditOnDblClick]
@@ -20,8 +17,8 @@ inherited framePathes: TframePathes
     OnCompareNodes = vstTreeCompareNodes
     OnCreateEditor = vstTreeCreateEditor
     OnEditing = vstTreeEditing
-    OnGetText = vstTreeGetText
     OnGetImageIndex = vstTreeGetImageIndex
+    OnGetText = vstTreeGetText
     OnNewText = vstTreeNewText
     ExplicitWidth = 711
     ExplicitHeight = 397

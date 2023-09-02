@@ -45,10 +45,12 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
+    procedure vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
   private const
     COL_PARAM_NAME      = 0;
     COL_REGEXP_TEMPLATE = 1;
     COL_GROUP_INDEX     = 2;
+    COL_USE_RAW_TEXT    = 3;
 
     C_IDENTITY_NAME = 'frameRegExpParameters';
   private
@@ -121,6 +123,7 @@ begin
   vstTree.Header.Columns[COL_PARAM_NAME].Text      := TLang.Lang.Translate('TemplateName');
   vstTree.Header.Columns[COL_REGEXP_TEMPLATE].Text := TLang.Lang.Translate('RegExpTemplate');
   vstTree.Header.Columns[COL_GROUP_INDEX].Text     := TLang.Lang.Translate('GroupIndex');
+  vstTree.Header.Columns[COL_USE_RAW_TEXT].Text    := TLang.Lang.Translate('UseRawText');
 end;
 
 procedure TframeRegExpParameters.SaveToXML;
@@ -134,6 +137,7 @@ procedure TframeRegExpParameters.SaveToXML;
     TGeneral.XMLParams.Attributes.SetAttributeValue('ParameterName', Data.ParameterName);
     TGeneral.XMLParams.Attributes.SetAttributeValue('RegExpTemplate', Data.RegExpTemplate);
     TGeneral.XMLParams.Attributes.SetAttributeValue('GroupIndex', Data.GroupIndex);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('UseRawText', Data.UseRawText);
     TGeneral.XMLParams.WriteAttributes;
   end;
 
@@ -226,6 +230,11 @@ procedure TframeRegExpParameters.LoadFromXML;
       NewNode := vstTree.AddChild(nil);
       Data    := NewNode.GetData;
       Data^   := Param;
+      vstTree.CheckType[NewNode] := ctCheckBox;
+      if Param.UseRawText then
+        NewNode.CheckState := csCheckedNormal
+      else
+        NewNode.CheckState := csUnCheckedNormal;
     end;
   end;
 
@@ -265,6 +274,15 @@ begin
   inherited;
   SaveToXML;
   TPublishers.UpdateXMLPublisher.UpdateXML;
+end;
+
+procedure TframeRegExpParameters.vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
+var
+  Data: PRegExpData;
+begin
+  inherited;
+  Data := Node.GetData;
+  Data.UseRawText := Node.CheckState = csCheckedNormal;
 end;
 
 procedure TframeRegExpParameters.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
@@ -447,6 +465,13 @@ begin
         Data^.ParameterName  := TGeneral.XMLParams.Attributes.GetAttributeValue('ParameterName', '');
         Data^.RegExpTemplate := TGeneral.XMLParams.Attributes.GetAttributeValue('RegExpTemplate', '');
         Data^.GroupIndex     := TGeneral.XMLParams.Attributes.GetAttributeValue('GroupIndex', 0);
+        Data^.UseRawText     := TGeneral.XMLParams.Attributes.GetAttributeValue('UseRawText', False);
+
+        vstTree.CheckType[Node] := ctCheckBox;
+        if Data^.UseRawText then
+          Node.CheckState := csCheckedNormal
+        else
+          Node.CheckState := csUnCheckedNormal;
       end;
       TGeneral.XMLParams.NextKey;
     end;
@@ -471,6 +496,7 @@ function TframeRegExpParameters.SaveSetOfTemplate(const aSection, aName: string)
         Attributes.SetAttributeValue('ParameterName', Data^.ParameterName);
         Attributes.SetAttributeValue('RegExpTemplate', Data^.RegExpTemplate);
         Attributes.SetAttributeValue('GroupIndex', Data^.GroupIndex);
+        Attributes.SetAttributeValue('UseRawText', Data^.UseRawText);
         WriteAttributes;
       end;
     end;

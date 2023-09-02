@@ -17,13 +17,21 @@ uses
 
 type
   TframeResultView = class(TFrameCustom, IEmailChange)
+    aCopy               : TAction;
+    alMemo              : TActionList;
+    aPaste              : TAction;
+    aSelectAll          : TAction;
     frameAllAttachments : TframeAllAttachments;
     frameAttachments    : TframeAttachments;
     frameEmails         : TframeEmails;
     memTextBody         : TMemo;
     memTextPlain        : TMemo;
+    miCopy              : TMenuItem;
+    miPaste             : TMenuItem;
+    miSelectAll         : TMenuItem;
     pcInfo              : TPageControl;
     pcMain              : TPageControl;
+    pmMemo              : TPopupMenu;
     SaveDialogEmail     : TSaveDialog;
     splInfo             : TSplitter;
     tsAllAttachments    : TTabSheet;
@@ -34,6 +42,9 @@ type
     tsPlainText         : TTabSheet;
     wbBody              : TWebBrowser;
     procedure wbBodyBeforeNavigate2(ASender: TObject; const pDisp: IDispatch; const URL, Flags, TargetFrameName, PostData, Headers: OleVariant; var Cancel: WordBool);
+    procedure aCopyExecute(Sender: TObject);
+    procedure aPasteExecute(Sender: TObject);
+    procedure aSelectAllExecute(Sender: TObject);
   private const
     C_IDENTITY_NAME = 'frameResultView';
   private
@@ -98,6 +109,9 @@ begin
   frameEmails.Translate;
   frameAllAttachments.Translate;
   frameAttachments.Translate;
+  aCopy.Caption            := TLang.Lang.Translate('Copy');
+  aPaste.Caption           := TLang.Lang.Translate('Paste');
+  aSelectAll.Caption       := TLang.Lang.Translate('SelectAll');
   tsAllAttachments.Caption := TLang.Lang.Translate('AllAttachments');
   tsAttachments.Caption    := TLang.Lang.Translate('Attachment');
   tsBodyText.Caption       := TLang.Lang.Translate('Body');
@@ -139,5 +153,27 @@ begin
         DoVerb(OLEIVERB_UIACTIVATE, nil, wbBody, 0, Handle, GetClientRect);
   end;
 end;
+
+procedure TframeResultView.aCopyExecute(Sender: TObject);
+begin
+  inherited;
+  if (Screen.ActiveControl is TMemo) then
+    TMemo(Screen.ActiveControl).CopyToClipboard;
+end;
+
+procedure TframeResultView.aPasteExecute(Sender: TObject);
+begin
+  inherited;
+  if (Screen.ActiveControl is TMemo) then
+    TMemo(Screen.ActiveControl).PasteFromClipboard;
+end;
+
+procedure TframeResultView.aSelectAllExecute(Sender: TObject);
+begin
+  inherited;
+  if (Screen.ActiveControl is TMemo) then
+    TMemo(Screen.ActiveControl).SelectAll;
+end;
+
 
 end.

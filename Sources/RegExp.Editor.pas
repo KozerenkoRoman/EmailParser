@@ -24,6 +24,7 @@ type
     btnCancel             : TBitBtn;
     btnOk                 : TBitBtn;
     btnTest               : TToolButton;
+    cbSetOfTemplates      : TComboBox;
     chkExplicitCapture    : TCheckBox;
     chkIgnoreCase         : TCheckBox;
     chkIgnorePatternSpace : TCheckBox;
@@ -31,11 +32,15 @@ type
     chkSingleLine         : TCheckBox;
     edRegEx               : TMemo;
     edSample              : TMemo;
+    edtGroupIndex         : TNumberBox;
+    edtResult             : TEdit;
     edtTemplateName       : TEdit;
     gbOptions             : TGroupBox;
     gbRegularExpression   : TGroupBox;
     gbResults             : TGroupBox;
     gbSampleText          : TGroupBox;
+    lblExamples           : TLabel;
+    lblGroupIndex         : TLabel;
     lblTemplateName       : TLabel;
     miCopy                : TMenuItem;
     miPaste               : TMenuItem;
@@ -45,15 +50,10 @@ type
     pnlMain               : TPanel;
     pnlRight              : TPanel;
     pnlSettings           : TPanel;
+    pnlTemplateName       : TPanel;
     splPattern            : TSplitter;
     tbPattern             : TToolBar;
     tvResults             : TTreeView;
-    pnlTemplateName: TPanel;
-    lblExamples: TLabel;
-    cbSetOfTemplates: TComboBox;
-    lblGroupIndex: TLabel;
-    edtGroupIndex: TNumberBox;
-    edtResult: TEdit;
     procedure aCopyExecute(Sender: TObject);
     procedure aPasteExecute(Sender: TObject);
     procedure aSelectAllExecute(Sender: TObject);
@@ -218,7 +218,7 @@ begin
     if Match.Success then
     begin
       AddMatchToTree(Match);
-      edtResult.Text := GetRegExpCollection(edSample.Text, Pattern, edtGroupIndex.ValueInt);
+      edtResult.Text := GetStringFromMatches(edSample.Text, Pattern, edtGroupIndex.ValueInt);
     end
     else
       TMessageDialog.ShowInfo(TLang.Lang.Translate('NoMatchFound'));

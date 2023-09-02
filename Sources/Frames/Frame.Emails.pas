@@ -17,6 +17,8 @@ uses
 type
   TframeEmails = class(TframeSource, IProgress, IUpdateXML)
     aBreak          : TAction;
+    aCollapseAll    : TAction;
+    aExpandAll      : TAction;
     aFilter         : TAction;
     aOpenEmail      : TAction;
     aOpenLogFile    : TAction;
@@ -28,8 +30,13 @@ type
     btnSearch       : TToolButton;
     btnSep04        : TToolButton;
     btnSep05        : TToolButton;
+    miCollapseAll   : TMenuItem;
+    miExpandAll     : TMenuItem;
     SaveDialogEmail : TSaveDialog;
     procedure aBreakExecute(Sender: TObject);
+    procedure aCollapseAllExecute(Sender: TObject);
+    procedure aExpandAllExecute(Sender: TObject);
+    procedure aExpandAllUpdate(Sender: TObject);
     procedure aFilterExecute(Sender: TObject);
     procedure aOpenEmailExecute(Sender: TObject);
     procedure aOpenEmailUpdate(Sender: TObject);
@@ -40,12 +47,11 @@ type
     procedure aSearchUpdate(Sender: TObject);
     procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
-    procedure vstTreeFocusChanged(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex);
+    procedure vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
+    procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
+    procedure vstTreeFocusChanging(Sender: TBaseVirtualTree; OldNode, NewNode: PVirtualNode; OldColumn, NewColumn: TColumnIndex; var Allowed: Boolean);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
-    procedure vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-      out EditLink: IVTEditLink);
-    procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
   private const
     COL_POSITION      = 0;
     COL_SHORT_NAME    = 1;
@@ -144,23 +150,39 @@ begin
   vstTree.Header.Columns[COL_FROM].Text         := TLang.Lang.Translate('From');
   vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
 
-  aOpenEmail.Hint   := TLang.Lang.Translate('OpenEmail');
-  aOpenLogFile.Hint := TLang.Lang.Translate('OpenLogFile');
-  aSearch.Hint      := TLang.Lang.Translate('StartSearch');
+  aCollapseAll.Caption := TLang.Lang.Translate('CollapseAll');
+  aExpandAll.Caption   := TLang.Lang.Translate('ExpandAll');
+  aOpenEmail.Hint      := TLang.Lang.Translate('OpenEmail');
+  aOpenLogFile.Hint    := TLang.Lang.Translate('OpenLogFile');
+  aSearch.Hint         := TLang.Lang.Translate('StartSearch');
 end;
 
 procedure TframeEmails.UpdateColumns;
 var
-  Column: TVirtualTreeColumn;
-  RegExpList: TArrayRecord<TRegExpData>;
+  Column     : TVirtualTreeColumn;
+  CurrNode   : PVirtualNode;
+  DataEmail  : PEmail;
+  RegExpList : TArrayRecord<TRegExpData>;
 begin
   vstTree.BeginUpdate;
-  RegExpList := TGeneral.GetRegExpParametersList;
   while (C_FIXED_COLUMNS < vstTree.Header.Columns.Count) do
     vstTree.Header.Columns.Delete(C_FIXED_COLUMNS);
 
-  for var item in TGeneral.EmailList.Values do
-    item.Matches.Count := RegExpList.Count;
+  RegExpList := TGeneral.GetRegExpParametersList;
+  for var ResultData in TGeneral.EmailList.Values do
+  begin
+    ResultData.Matches.Count := RegExpList.Count;
+    if Assigned(ResultData.ParentNode) and (ResultData.ParentNode.ChildCount > 0) then
+    begin
+      CurrNode := ResultData.ParentNode.FirstChild;
+      while Assigned(CurrNode) do
+      begin
+        DataEmail := CurrNode^.GetData;
+        DataEmail^.Matches.Count := RegExpList.Count;
+        CurrNode := CurrNode.NextSibling;
+      end;
+    end;
+  end;
 
   try
     for var item in RegExpList do
@@ -208,32 +230,25 @@ begin
     Result := 0
   else
     case Column of
-    COL_POSITION:
-      Result := CompareValue(Data1^.Position, Data2^.Position);
-    COL_FILE_NAME:
-      Result := CompareText(Data1^.FileName, Data2^.FileName);
-    COL_SHORT_NAME:
-      Result := CompareText(Data1^.ShortName, Data2^.ShortName);
-    COL_MESSAGE_ID:
-      Result := CompareText(Data1^.MessageId, Data2^.MessageId);
-    COL_DATE:
-      Result := CompareValue(Data1^.TimeStamp, Data2^.TimeStamp);
-    COL_SUBJECT:
-      Result := CompareText(Data1^.Subject, Data2^.Subject);
-    COL_ATTACH:
-      Result := CompareValue(Length(Data1^.Attachments), Length(Data2^.Attachments));
-    COL_FROM:
-      Result := CompareText(Data1^.From, Data2^.From);
-    COL_CONTENT_TYPE:
-      Result := CompareText(Data1^.ContentType, Data2^.ContentType);
-  else
-    if (Column >= 0) and
-       (Data1^.Matches.Count > 0) and
-       (Data2^.Matches.Count > 0) and
-       (Data1^.Matches.Count >= Column - C_FIXED_COLUMNS) and
-       (Data2^.Matches.Count >= Column - C_FIXED_COLUMNS) then
-      Result := CompareText(Data1^.Matches.Items[Column - C_FIXED_COLUMNS], Data2^.Matches.Items[Column - C_FIXED_COLUMNS]);
-  end;
+      COL_POSITION:
+        Result := CompareValue(Data1^.Position, Data2^.Position);
+      COL_FILE_NAME:
+        Result := CompareText(Data1^.FileName, Data2^.FileName);
+      COL_SHORT_NAME:
+        Result := CompareText(Data1^.ShortName, Data2^.ShortName);
+      COL_MESSAGE_ID:
+        Result := CompareText(Data1^.MessageId, Data2^.MessageId);
+      COL_DATE:
+        Result := CompareValue(Data1^.TimeStamp, Data2^.TimeStamp);
+      COL_SUBJECT:
+        Result := CompareText(Data1^.Subject, Data2^.Subject);
+      COL_ATTACH:
+        Result := CompareValue(Length(Data1^.Attachments), Length(Data2^.Attachments));
+      COL_FROM:
+        Result := CompareText(Data1^.From, Data2^.From);
+      COL_CONTENT_TYPE:
+        Result := CompareText(Data1^.ContentType, Data2^.ContentType);
+    end;
 end;
 
 procedure TframeEmails.vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
@@ -248,18 +263,28 @@ begin
   Allowed := True;
 end;
 
-procedure TframeEmails.vstTreeFocusChanged(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex);
+procedure TframeEmails.vstTreeFocusChanging(Sender: TBaseVirtualTree; OldNode, NewNode: PVirtualNode; OldColumn, NewColumn: TColumnIndex; var Allowed: Boolean);
 var
-  Data: PResultData;
+  NewData: PResultData;
+  OldData: PResultData;
 begin
   inherited;
   if FIsLoaded then
     Exit;
-  if Assigned(Node) then
+  if (OldNode = NewNode) and (OldColumn <> NewColumn) then
+    Exit;
+  if Assigned(NewNode) then
   begin
-    Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
-    if Assigned(Data) then
-      TPublishers.EmailPublisher.FocusChanged(Data);
+    NewData := TGeneral.EmailList.GetItem(PEmail(NewNode^.GetData).Hash);
+    if Assigned(OldNode) then
+    begin
+      OldData := TGeneral.EmailList.GetItem(PEmail(OldNode^.GetData).Hash);
+      if Assigned(OldData) and Assigned(NewData) then
+        if (OldData.Hash <> NewData.Hash) then
+          TPublishers.EmailPublisher.FocusChanged(NewData);
+    end
+    else if Assigned(NewData) then
+      TPublishers.EmailPublisher.FocusChanged(NewData);
   end
   else
     TPublishers.EmailPublisher.FocusChanged(nil);
@@ -267,52 +292,78 @@ end;
 
 procedure TframeEmails.vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
 var
+  DataEmail: PEmail;
   Data: PResultData;
 begin
   if (Column >= C_FIXED_COLUMNS) then
   begin
-    Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
-    if Assigned(Data) then
-      if not Data^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
-      begin
-        TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
-        TargetCanvas.FillRect(CellRect);
-      end;
+    if (Sender.GetNodeLevel(Node) >= 1) then
+    begin
+      DataEmail := Node^.GetData;
+      if Assigned(DataEmail) then
+        if not DataEmail^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
+        begin
+          TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+          TargetCanvas.FillRect(CellRect);
+        end;
+    end
+    else
+    begin
+      Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
+      if Assigned(Data) then
+        if Data^.IsMatch then
+        begin
+          TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+          TargetCanvas.FillRect(CellRect);
+        end;
+    end
   end;
 end;
 
 procedure TframeEmails.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
   Data: PResultData;
+  DataEmail: PEmail;
 begin
   inherited;
-  Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
-  if Assigned(Data) then
-    case Column of
-      COL_POSITION:
-        CellText := Data^.Position.ToString;
-      COL_FILE_NAME:
-        CellText := Data^.FileName;
-      COL_SHORT_NAME:
-        CellText := Data^.ShortName;
-      COL_MESSAGE_ID:
-        CellText := Data^.MessageId;
-      COL_DATE:
-        CellText := DateTimeToStr(Data^.TimeStamp);
-      COL_SUBJECT:
-        CellText := Data^.Subject;
-      COL_ATTACH:
-        if (Length(Data^.Attachments) = 0) then
-          CellText := ''
-        else
-          CellText := Length(Data^.Attachments).ToString;
-      COL_FROM:
-        CellText := Data^.From;
-      COL_CONTENT_TYPE:
-        CellText := Data^.ContentType;
-    else
-      if (Column >= 0) and (Data^.Matches.Count >= Column - C_FIXED_COLUMNS) then
-        CellText := Data^.Matches.Items[Column - C_FIXED_COLUMNS];
+  if (Column >= C_FIXED_COLUMNS) then
+  begin
+    if (Sender.GetNodeLevel(Node) >= 1) then
+    begin
+      DataEmail := Node^.GetData;
+      if Assigned(DataEmail) then
+        CellText := DataEmail^.Matches.Items[Column - C_FIXED_COLUMNS];
+    end
+  end
+  else
+  begin
+    Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
+    if Assigned(Data) then
+      case Column of
+        COL_POSITION:
+          CellText := Data^.Position.ToString;
+        COL_FILE_NAME:
+          CellText := Data^.FileName;
+        COL_SHORT_NAME:
+          CellText := Data^.ShortName;
+        COL_MESSAGE_ID:
+          CellText := Data^.MessageId;
+        COL_DATE:
+          CellText := DateTimeToStr(Data^.TimeStamp);
+        COL_SUBJECT:
+          CellText := Data^.Subject;
+        COL_ATTACH:
+          if (Length(Data^.Attachments) = 0) then
+            CellText := ''
+          else
+            CellText := Length(Data^.Attachments).ToString;
+        COL_FROM:
+          CellText := Data^.From;
+        COL_CONTENT_TYPE:
+          CellText := Data^.ContentType;
+      else
+        CellText :='';
+      end;
     end;
 end;
 
@@ -358,7 +409,7 @@ procedure TframeEmails.aBreakExecute(Sender: TObject);
 begin
   inherited;
   FIsLoaded := False;
-  FPerformer.Break;
+  FPerformer.Stop;
   vstTree.EndUpdate;
 end;
 
@@ -427,6 +478,34 @@ begin
   end;
 end;
 
+procedure TframeEmails.aCollapseAllExecute(Sender: TObject);
+begin
+  inherited;
+  vstTree.BeginUpdate;
+  try
+    vstTree.FullCollapse;
+  finally
+    vstTree.EndUpdate;
+  end;
+end;
+
+procedure TframeEmails.aExpandAllExecute(Sender: TObject);
+begin
+  inherited;
+  vstTree.BeginUpdate;
+  try
+    vstTree.FullExpand;
+  finally
+    vstTree.EndUpdate;
+  end;
+end;
+
+procedure TframeEmails.aExpandAllUpdate(Sender: TObject);
+begin
+  inherited;
+  TAction(Sender).Enabled := not FIsLoaded
+end;
+
 procedure TframeEmails.aFilterExecute(Sender: TObject);
 var
   Node: PVirtualNode;
@@ -481,30 +560,73 @@ end;
 
 procedure TframeEmails.CompletedItem(const aResultData: PResultData);
 var
-  Node: PVirtualNode;
+  arr:  array of array of string;
+  ChildNode: PVirtualNode;
   Data: PEmail;
+  MaxCol: Integer;
+  Node: PVirtualNode;
 begin
   if not Assigned(aResultData) then
     Exit;
-  Node := vstTree.AddChild(nil);
+
+  if not Assigned(aResultData^.ParentNode) then
+  begin
+    Node := vstTree.AddChild(nil);
+    aResultData^.ParentNode := Node;
+  end
+  else
+    Node := aResultData^.ParentNode;
+
   Data := Node^.GetData;
   Data^.Hash := aResultData.Hash;
+  if (aResultData^.Position <= 0) then
+    aResultData^.Position := vstTree.RootNode.ChildCount;
+
+  MaxCol := 0;
+  for var i := 0 to aResultData.Matches.Count - 1 do
+    MaxCol := Max(MaxCol, aResultData.Matches[i].Count);
+
+  SetLength(arr, MaxCol, aResultData.Matches.Count);
+  for var i := 0 to aResultData.Matches.Count - 1 do
+    for var j := 0 to aResultData.Matches[i].Count - 1 do
+      arr[j, i] := aResultData.Matches[i].Items[j];
+
+  for var i := Low(arr) to High(arr) do
+  begin
+    ChildNode := vstTree.AddChild(Node);
+    Data := ChildNode^.GetData;
+    Data^.Hash := aResultData.Hash;
+    Data^.Matches.AddRange(arr[i]);
+    aResultData^.IsMatch := True;
+    vstTree.ValidateNode(ChildNode, False);
+  end;
+
   vstTree.IsVisible[Node] := not FIsFiltered or aResultData^.IsMatch;
   vstTree.ValidateNode(Node, False);
-  aResultData^.Position := vstTree.AbsoluteIndex(Node) + 1;
 end;
 
 procedure TframeEmails.StartProgress(const aMaxPosition: Integer);
+var
+  CurrNode : PVirtualNode;
 begin
   vstTree.BeginUpdate;
   TPublishers.EmailPublisher.FocusChanged(nil);
   TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('FoundFiles'), [aMaxPosition]));
+
+  CurrNode := vstTree.RootNode.FirstChild;
+  while Assigned(CurrNode) do
+  begin
+    if (CurrNode.ChildCount > 0) then
+      vstTree.DeleteChildren(CurrNode);
+    CurrNode := CurrNode.NextSibling;
+  end;
 end;
 
 procedure TframeEmails.EndProgress;
 begin
   FIsLoaded := False;
   vstTree.EndUpdate;
+
   if (FPerformer.DuplicateCount > 0) then
     TMessageDialog.ShowInfo(TLang.Lang.Translate('SearchComplete') + sLineBreak +
                             Format(TLang.Lang.Translate('DuplicateCount'), [FPerformer.DuplicateCount]))

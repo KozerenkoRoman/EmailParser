@@ -58,7 +58,7 @@ inherited frameResultView: TframeResultView
         Top = 363
         Width = 932
         Height = 280
-        ActivePage = tsHtmlText
+        ActivePage = tsPlainText
         Align = alBottom
         TabOrder = 1
         object tsBodyText: TTabSheet
@@ -73,6 +73,7 @@ inherited frameResultView: TframeResultView
             BevelInner = bvNone
             BevelOuter = bvNone
             BorderStyle = bsNone
+            PopupMenu = pmMemo
             ReadOnly = True
             ScrollBars = ssVertical
             TabOrder = 0
@@ -89,6 +90,7 @@ inherited frameResultView: TframeResultView
             BevelInner = bvNone
             BevelOuter = bvNone
             BorderStyle = bsNone
+            PopupMenu = pmMemo
             ReadOnly = True
             ScrollBars = ssVertical
             TabOrder = 0
@@ -161,6 +163,15 @@ inherited frameResultView: TframeResultView
           Height = 319
           ExplicitWidth = 932
           ExplicitHeight = 319
+          DefaultText = ''
+        end
+        inherited pmFrame: TPopupMenu
+          inherited miExpandAll: TMenuItem
+            ImageName = 'ShowDetail_16x16'
+          end
+          inherited miCollapseAll: TMenuItem
+            ImageName = 'HideDetail_16x16'
+          end
         end
       end
     end
@@ -205,5 +216,43 @@ inherited frameResultView: TframeResultView
     Filter = 'Email|*.eml|All files|*.*'
     Left = 80
     Top = 184
+  end
+  object alMemo: TActionList
+    Images = DMImage.vil32
+    Left = 88
+    Top = 472
+    object aCopy: TAction
+      Caption = 'Copy'
+      ImageIndex = 76
+      ImageName = 'page_copy'
+      ShortCut = 16451
+      OnExecute = aCopyExecute
+    end
+    object aPaste: TAction
+      Caption = 'Paste'
+      ImageIndex = 77
+      ImageName = 'page_paste'
+      ShortCut = 16470
+      OnExecute = aPasteExecute
+    end
+    object aSelectAll: TAction
+      Caption = 'Select All'
+      ShortCut = 16449
+      OnExecute = aSelectAllExecute
+    end
+  end
+  object pmMemo: TPopupMenu
+    Images = DMImage.vil16
+    Left = 211
+    Top = 480
+    object miCopy: TMenuItem
+      Action = aCopy
+    end
+    object miPaste: TMenuItem
+      Action = aPaste
+    end
+    object miSelectAll: TMenuItem
+      Action = aSelectAll
+    end
   end
 end

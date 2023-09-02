@@ -8,7 +8,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
   System.IOUtils, Vcl.Forms, ArrayHelper, Data.DB, System.Win.Registry, Common.Types, Translate.Lang,
-  System.IniFiles, VirtualTrees;
+  System.IniFiles, VirtualTrees, System.RegularExpressions, System.Math;
 {$ENDREGION}
 
 type
@@ -17,6 +17,7 @@ type
     ParameterName  : string;
     RegExpTemplate : string;
     GroupIndex     : Integer;
+    UseRawText     : Boolean;
     procedure Clear;
   end;
   TRegExpArray = TArrayRecord<TRegExpData>;
@@ -38,6 +39,7 @@ type
     procedure Clear;
   end;
   TSorterPathArray = TArrayRecord<TSorterPath>;
+  TMatchCollectionArray = TArrayRecord<TMatchCollection>;
 
   PAttachment = ^TAttachment;
   TAttachment = record
@@ -51,11 +53,12 @@ type
     ContentType : string;
     ParsedText  : string;
     ImageIndex  : Byte;
-    Matches     : TStringArray;
+    Matches     : TArrayRecord<TStringArray>;
     FromZip     : Boolean;
     FromDB      : Boolean;
     procedure Assign(const aData: TAttachment);
     procedure Clear;
+    procedure LengthAlignment;
   end;
   TAttachmentArray = TArray<TAttachment>;
   PAttachmentArray = ^TAttachmentArray;
@@ -73,19 +76,21 @@ type
     TimeStamp   : TDateTime;
     ContentType : string;
     ParsedText  : string;
-    Matches     : TStringArray;
+    Matches     : TArrayRecord<TStringArray>;
     ParentNode  : PVirtualNode;
     FromDB      : Boolean;
     Position    : Integer;
-    function IsMatch: Boolean;
+    IsMatch     : Boolean;
     procedure Clear;
+    procedure LengthAlignment;
   end;
   TResultDataArray = TArrayRecord<PResultData>;
   PResultDataArray = ^TResultDataArray;
 
   PEmail = ^TEmail;
   TEmail = record
-    Hash: string;
+    Hash    : string;
+    Matches : TStringArray;
   end;
 
   TEmailList = class(TObjectDictionary<string, PResultData>)
@@ -169,6 +174,7 @@ begin
         Data.ParameterName  := XMLParams.Attributes.GetAttributeValue('ParameterName', '');
         Data.RegExpTemplate := XMLParams.Attributes.GetAttributeValue('RegExpTemplate', '');
         Data.GroupIndex     := XMLParams.Attributes.GetAttributeValue('GroupIndex', 0);
+        Data.UseRawText     := XMLParams.Attributes.GetAttributeValue('UseRawText', False);
         Result[i] := Data;
         Inc(i);
       end;
@@ -265,12 +271,16 @@ begin
   Self.ParentNode := nil;
 end;
 
-function TResultData.IsMatch: Boolean;
+procedure TResultData.LengthAlignment;
+var
+  MaxLen: Integer;
+  i: Integer;
 begin
-  Result := False;
-  for var item in Matches do
-    if not item.IsEmpty then
-      Exit(True);
+  MaxLen := 0;
+  for i := Low(Matches.Items) to High(Matches.Items) do
+    MaxLen := Max(MaxLen, Matches[i].Count);
+  for i := Low(Matches.Items) to High(Matches.Items) do
+    Matches[i].Count := MaxLen;
 end;
 
 { TAttachment }
@@ -297,6 +307,18 @@ procedure TAttachment.Clear;
 begin
   Self := Default(TAttachment);
   Matches.Clear;
+end;
+
+procedure TAttachment.LengthAlignment;
+var
+  MaxLen: Integer;
+  i: Integer;
+begin
+  MaxLen := 0;
+  for i := Low(Matches.Items) to High(Matches.Items) do
+    MaxLen := Max(MaxLen, Matches[i].Count);
+  for i := Low(Matches.Items) to High(Matches.Items) do
+    Matches[i].Count := MaxLen;
 end;
 
 { TAttachmentDirHelper }

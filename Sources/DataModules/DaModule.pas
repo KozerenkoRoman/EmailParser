@@ -42,7 +42,7 @@ type
     function IsEmailExistsByHash(const aHash: string): Boolean;
     procedure FillEmailRecord(const aResultData: PResultData);
 
-    class function GetBodyAsHTML(const aHash: string): string;
+    class function GetBodyAsRawText(const aHash: string): string;
     class function GetBodyAsParsedText(const aHash: string): string;
 
     procedure Initialize;
@@ -164,7 +164,7 @@ begin
   end;
 end;
 
-class function TDaMod.GetBodyAsHTML(const aHash: string): string;
+class function TDaMod.GetBodyAsRawText(const aHash: string): string;
 begin
   Result := TDaMod.GetDecompressStr(rsSQLSelectBodyAsHtml, aHash);
 end;

@@ -33,8 +33,7 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
-    procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode;
-      Column: TColumnIndex; TextType: TVSTTextType);
+    procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
   private const
     COL_POSITION     = 0;
     COL_EMAIL_NAME   = 1;
@@ -205,7 +204,7 @@ begin
       TargetCanvas.FillRect(CellRect);
     end;
   end
-  else if not Data^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
+  else if (Data^.Matches[Column - C_FIXED_COLUMNS].Count > 0) then
   begin
     TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
     TargetCanvas.FillRect(CellRect);
@@ -243,12 +242,12 @@ begin
     COL_PARSED_TEXT:
       Result := CompareText(Data1^.ParsedText, Data2^.ParsedText);
   else
-    if (Column >= 0) and
-       (Data1^.Matches.Count > 0) and
-       (Data2^.Matches.Count > 0) and
-       (Data1^.Matches.Count >= Column - C_FIXED_COLUMNS) and
-       (Data2^.Matches.Count >= Column - C_FIXED_COLUMNS) then
-      Result := CompareText(Data1^.Matches.Items[Column - C_FIXED_COLUMNS], Data2^.Matches.Items[Column - C_FIXED_COLUMNS]);
+//    if (Column >= 0) and
+//       (Data1^.Matches.Count > 0) and
+//       (Data2^.Matches.Count > 0) and
+//       (Data1^.Matches.Count >= Column - C_FIXED_COLUMNS) and
+//       (Data2^.Matches.Count >= Column - C_FIXED_COLUMNS) then
+//      Result := CompareText(Data1^.Matches.Items[Column - C_FIXED_COLUMNS], Data2^.Matches.Items[Column - C_FIXED_COLUMNS]); !!!!
   end;
 end;
 
@@ -295,8 +294,8 @@ begin
     COL_PARSED_TEXT:
       CellText := Data^.ParsedText;
   else
-    if (Column >= 0) and (Data^.Matches.Count >= Column - C_FIXED_COLUMNS) then
-      CellText := Data^.Matches.Items[Column - C_FIXED_COLUMNS];
+//    if (Column >= 0) and (Data^.Matches.Count >= Column - C_FIXED_COLUMNS) then
+//      CellText := Data^.Matches.Items[Column - C_FIXED_COLUMNS]; !!!!
   end;
 end;
 

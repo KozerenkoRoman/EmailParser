@@ -42,11 +42,12 @@ resourcestring
   en_DeletePrompt         = 'Delete item "%s"?';
   en_DirectoryNotFound    = 'Directory "%s" not found';
   en_Disabled             = 'Disabled';
+  en_DuplicateCount       = 'Found %d records in DB';
   en_Edit                 = 'Edit';
   en_EditCommonParameters = 'Common parameters';
   en_EditRegExpParameters = 'RegExp parameters';
-  en_Emails               = 'Emails';
   en_Email                = 'Email';
+  en_Emails               = 'Emails';
   en_Enabled              = 'Enabled';
   en_End                  = 'end';
   en_Error                = 'Error';
@@ -68,8 +69,8 @@ resourcestring
   en_GroupIndex           = 'Group index';
   en_Info                 = 'Info ';
   en_Language             = 'Language';
-  en_Matches              = 'Matches';
   en_Mask                 = 'Mask';
+  en_Matches              = 'Matches';
   en_MessageId            = 'Message Id';
   en_ModuleName           = 'Module name';
   en_NewNamePrompt        = 'Enter a name for the new template set';
@@ -84,12 +85,12 @@ resourcestring
   en_Options              = 'Options';
   en_Parameter            = 'Parameter';
   en_Parameters           = 'Parameters';
-  en_ParseBodyAsHTML      = 'Parse body with RegExp as HTML-text';
+  en_UseRawText           = 'Use raw text';
   en_Paste                = 'Paste';
   en_Path                 = 'Path';
   en_PathForAttachments   = 'Paths for saving attachments';
-  en_PathsToFindSaveFiles = 'Paths for search and saving attachments';
   en_PathsToFindFiles     = 'Paths to find files';
+  en_PathsToFindSaveFiles = 'Paths for search and saving attachments';
   en_PathsToSaveFiles     = 'Paths for saving files';
   en_PlainText            = 'Plain Text';
   en_Position             = 'Position';
@@ -105,6 +106,7 @@ resourcestring
   en_SaveAs               = 'Save as...';
   en_Script               = 'Script';
   en_Search               = 'Search';
+  en_SearchComplete       = 'Search complete';
   en_SelectAll            = 'SelectAll';
   en_Server               = 'Server';
   en_SetOfTemplates       = 'Set of templates';
@@ -117,8 +119,6 @@ resourcestring
   en_Time                 = 'Time';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
-  en_SearchComplete       = 'Search complete';
-  en_DuplicateCount       = 'Found %d records in DB';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -142,11 +142,12 @@ resourcestring
   uk_DeletePrompt         = 'Видалити запис "%s"?';
   uk_DirectoryNotFound    = 'Каталог "%s" не знайдено';
   uk_Disabled             = 'Вимкнено';
+  uk_DuplicateCount       = 'Знайдено %d записів в БД';
   uk_Edit                 = 'Редагувати';
   uk_EditCommonParameters = 'Загальні параметри';
   uk_EditRegExpParameters = 'RegExp параметри';
-  uk_Emails               = 'Листи';
   uk_Email                = 'Лист';
+  uk_Emails               = 'Листи';
   uk_Enabled              = 'Увімкнено';
   uk_End                  = 'кінець';
   uk_Error                = 'Помилка';
@@ -168,8 +169,8 @@ resourcestring
   uk_GroupIndex           = 'Індекс групи';
   uk_Info                 = 'Опис ';
   uk_Language             = 'Мова';
-  uk_Matches              = 'Співпадіння';
   uk_Mask                 = 'Маска';
+  uk_Matches              = 'Співпадіння';
   uk_MessageId            = 'Id листа';
   uk_ModuleName           = 'Назва модуля';
   uk_NewNamePrompt        = 'Введіть назву нового набору шаблонів';
@@ -184,13 +185,13 @@ resourcestring
   uk_Options              = 'Опції';
   uk_Parameter            = 'Параметр';
   uk_Parameters           = 'Параметри';
-  uk_ParseBodyAsHTML      = 'Парсити тіло регулярними виразами як HTML-текст';
+  uk_UseRawText           = 'Парсити сирий текст';
   uk_Paste                = 'Вставити';
   uk_Path                 = 'Шлях';
   uk_PathForAttachments   = 'Шляхи для збереження вкладень';
-  uk_PathsToSaveFiles     = 'Шляхи для збереження файлів';
   uk_PathsToFindFiles     = 'Шляхи для пошуку файлів';
   uk_PathsToFindSaveFiles = 'Шляхи для пошуку та збереження файлів';
+  uk_PathsToSaveFiles     = 'Шляхи для збереження файлів';
   uk_PlainText            = 'Простий текст';
   uk_Position             = 'Позиція';
   uk_Print                = 'Друк';
@@ -205,6 +206,7 @@ resourcestring
   uk_SaveAs               = 'Зберегти як...';
   uk_Script               = 'Сценарій';
   uk_Search               = 'Пошук';
+  uk_SearchComplete       = 'Пошук завершено';
   uk_SelectAll            = 'Виділити все';
   uk_Server               = 'Сервер';
   uk_SetOfTemplates       = 'Набір шаблонів';
@@ -217,8 +219,6 @@ resourcestring
   uk_Time                 = 'Час';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
-  uk_SearchComplete       = 'Пошук завершено';
-  uk_DuplicateCount       = 'Знайдено %d записів в БД';
 
 const
    ArrayMessages: array[1 .. 96] of TMessageItem = (
@@ -286,7 +286,6 @@ const
     (Key: 'Options'              ; En: en_Options;              Uk: uk_Options),
     (Key: 'Parameter'            ; En: en_Parameter;            Uk: uk_Parameter),
     (Key: 'Parameters'           ; En: en_Parameters;           Uk: uk_Parameters),
-    (Key: 'ParseBodyAsHTML'      ; En: en_ParseBodyAsHTML;      Uk: uk_ParseBodyAsHTML),
     (Key: 'Paste'                ; En: en_Paste;                Uk: uk_Paste),
     (Key: 'Path'                 ; En: en_Path;                 Uk: uk_Path),
     (Key: 'PathForAttachments'   ; En: en_PathForAttachments;   Uk: uk_PathForAttachments),
@@ -316,6 +315,7 @@ const
     (Key: 'TemplateName'         ; En: en_TemplateName;         Uk: uk_TemplateName),
     (Key: 'Text'                 ; En: en_Text;                 Uk: uk_Text),
     (Key: 'Time'                 ; En: en_Time;                 Uk: uk_Time),
+    (Key: 'UseRawText'           ; En: en_UseRawText;           Uk: uk_UseRawText),
     (Key: 'Value'                ; En: en_Value;                Uk: uk_Value),
     (Key: 'WithSubdir'           ; En: en_WithSubdir;           Uk: uk_WithSubdir)
      );
