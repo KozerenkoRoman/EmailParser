@@ -168,6 +168,7 @@ begin
   inherited;
   vstTree.ClearSelection;
   NewNode := vstTree.AddChild(nil);
+  vstTree.CheckType[NewNode] := ctCheckBox;
   vstTree.Selected[NewNode] := True;
 end;
 

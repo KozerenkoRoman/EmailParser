@@ -78,7 +78,7 @@ inherited frmMain: TfrmMain
     TabOrder = 1
     ExplicitWidth = 971
     object lblTitle: TLabel
-      Left = 233
+      Left = 250
       Top = 0
       Width = 143
       Height = 41
@@ -98,7 +98,7 @@ inherited frmMain: TfrmMain
     object pnlLeft: TPanel
       Left = 0
       Top = 0
-      Width = 233
+      Width = 250
       Height = 41
       Align = alLeft
       BevelOuter = bvNone
@@ -181,26 +181,12 @@ inherited frmMain: TfrmMain
         end
         inherited tbSettings: TToolBar
           Width = 723
-          ButtonHeight = 75
-          ButtonWidth = 65
-          ExplicitWidth = 723
+          ExplicitWidth = 372
           inherited pnlSettings: TPanel
-            Height = 75
-            ExplicitHeight = 75
             inherited cbSetOfTemplates: TComboBox
               Height = 21
               ExplicitHeight = 21
             end
-          end
-          inherited btnSaveSet: TToolButton
-            ExplicitWidth = 80
-            ExplicitHeight = 75
-          end
-          inherited btnDeleteSet: TToolButton
-            Left = 529
-            ExplicitLeft = 529
-            ExplicitWidth = 65
-            ExplicitHeight = 75
           end
         end
         inherited vstTree: TVirtualStringTree
@@ -216,7 +202,7 @@ inherited frmMain: TfrmMain
       Top = 1
       Width = 723
       Height = 582
-      Caption = 'crdPathsToFindScripts'
+      Caption = 'crdPathsToFindFiles'
       CardIndex = 1
       TabOrder = 1
       object splPath: TSplitter
@@ -344,9 +330,6 @@ inherited frmMain: TfrmMain
         inherited tbMain: TToolBar
           Width = 723
           ExplicitWidth = 723
-          inherited btnSave: TToolButton
-            Action = aSaveCommonSettings
-          end
         end
         inherited grdCommonParams: TGridPanel
           Width = 723
@@ -391,19 +374,9 @@ inherited frmMain: TfrmMain
               Column = 1
               Control = frameCommonSettings.cbDeleteAttachments
               Row = 3
-            end
-            item
-              Column = 0
-              Control = frameCommonSettings.lblParseBodyAsHTML
-              Row = 4
-            end
-            item
-              Column = 1
-              Control = frameCommonSettings.cbParseBodyAsHTML
-              Row = 4
             end>
-          ExplicitWidth = 723
-          ExplicitHeight = 543
+          ExplicitWidth = 372
+          ExplicitHeight = 339
         end
       end
     end
@@ -451,7 +424,7 @@ inherited frmMain: TfrmMain
               Top = 268
               Width = 715
               ExplicitTop = 358
-              ExplicitWidth = 715
+              ExplicitWidth = 719
             end
             inherited pcInfo: TPageControl
               Top = 273
@@ -484,7 +457,7 @@ inherited frmMain: TfrmMain
                   ControlData = {
                     4C00000012490000F11900000000000000000000000000000000000000000000
                     000000004C000000000000000000000001000000E0D057007335CF11AE690800
-                    2B2E126208000000000000004C0000000114020000000000C000000000000046
+                    2B2E126200000000000000004C0000000114020000000000C000000000000046
                     8000000000000000000000000000000000000000000000000000000000000000
                     00000000000000000100000000000000000000000000000000000000}
                 end
@@ -515,6 +488,7 @@ inherited frmMain: TfrmMain
                 Height = 229
                 ExplicitWidth = 715
                 ExplicitHeight = 229
+                DefaultText = ''
               end
             end
           end

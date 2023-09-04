@@ -132,7 +132,7 @@ end;
 
 procedure TfrmRegExpEditor.LoadFromXML;
 begin
-  edSample.Text  := TGeneral.XMLFile.ReadString(C_SECTION_MAIN, 'SampleText', '');
+  edSample.Text  := TGeneral.XMLFile.ReadString(C_SECTION_MAIN, 'SampleText', '').Replace(#10, #13#10);
   pnlRight.Width := TGeneral.XMLFile.ReadInteger(C_SECTION_MAIN, 'pnlRight.Width', 350);
 end;
 

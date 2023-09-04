@@ -58,7 +58,7 @@ inherited frameResultView: TframeResultView
         Top = 363
         Width = 932
         Height = 280
-        ActivePage = tsPlainText
+        ActivePage = tsHtmlText
         Align = alBottom
         TabOrder = 1
         object tsBodyText: TTabSheet
@@ -164,14 +164,6 @@ inherited frameResultView: TframeResultView
           ExplicitWidth = 932
           ExplicitHeight = 319
           DefaultText = ''
-        end
-        inherited pmFrame: TPopupMenu
-          inherited miExpandAll: TMenuItem
-            ImageName = 'ShowDetail_16x16'
-          end
-          inherited miCollapseAll: TMenuItem
-            ImageName = 'HideDetail_16x16'
-          end
         end
       end
     end

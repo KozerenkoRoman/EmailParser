@@ -931,7 +931,7 @@ end;
 
 procedure TXMLFile.WriteString(const aSection, aKey, aValue: string; aComment: string);
 begin
-  Write(GetXPath(aSection, aKey), aValue, varOleStr, aComment);
+  Write(GetXPath(aSection, aKey), aValue, varString, aComment);
 end;
 
 procedure TXMLFile.WriteTime(const aSection, aKey: string; aValue: TTime; aComment: string);

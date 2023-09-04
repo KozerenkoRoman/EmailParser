@@ -11,7 +11,7 @@ uses
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
   Files.Utils, System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
-  System.Math, System.ZLib, System.Zip, System.Masks;
+  System.Math, System.ZLib, System.Zip, System.Masks, System.StrUtils;
 {$ENDREGION}
 
 type
@@ -20,7 +20,8 @@ type
     FAttachmentDir    : TAttachmentDir;
     FCriticalSection  : TCriticalSection;
     FDeleteAttachment : Boolean;
-    FDuplicates       : Integer;
+    FFromDBCount      : Integer;
+    FCount            : Integer;
     FFileExt          : string;
     FIsBreak          : Boolean;
     FPathList         : TParamPathArray;
@@ -47,7 +48,8 @@ type
 
     constructor Create;
     destructor Destroy; override;
-    property DuplicateCount: Integer read FDuplicates;
+    property FromDBCount: Integer read FFromDBCount;
+    property Count      : Integer read FCount;
   end;
 
 function GetStringFromMatches(const aText, aPattern: string; const aGroupIndex: Integer): string; inline;
@@ -58,8 +60,9 @@ implementation
 
 procedure TPerformer.Clear;
 begin
-  FIsBreak := False;
-  FDuplicates := 0;
+  FCount       := 0;
+  FFromDBCount := 0;
+  FIsBreak     := False;
 end;
 
 constructor TPerformer.Create;
@@ -87,19 +90,28 @@ end;
 procedure TPerformer.Start;
 var
   FileList: TStringDynArray;
+  DirList: string;
 begin
   LogWriter.Write(ddEnterMethod, Self, 'Start');
   FillStartParameters;
-  FIsBreak := False;
-  FileList := [];
-  FDuplicates := 0;
+  FIsBreak     := False;
+  FileList     := [];
+  FFromDBCount := 0;
 
+
+  DirList := '';
   for var Dir in FPathList do
+  begin
+    DirList := DirList + sLineBreak + Dir.Path + IfThen(Dir.WithSubdir, ' with subdir');
     if Dir.WithSubdir then
       FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FFileExt, TSearchOption.soAllDirectories))
     else
       FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FFileExt, TSearchOption.soTopDirectoryOnly));
+  end;
+  LogWriter.Write(ddText, Self, '<b>Paths to find files:</b>' + DirList);
 
+
+  FCount := Length(FileList);
   TPublishers.ProgressPublisher.ClearTree;
   TPublishers.ProgressPublisher.StartProgress(Length(FileList));
 
@@ -113,7 +125,6 @@ begin
           LogWriter.Write(ddWarning, Self, 'Click Break button');
           Exit;
         end;
-        LogWriter.Write(ddText, Self, 'ParseFile - ' + FileName);
         ParseFile(FileName);
       end;
     finally
@@ -158,6 +169,7 @@ begin
     Pool.SetMaxWorkerThreads(TThread.ProcessorCount);
     try
       arrKeys := TGeneral.EmailList.Keys.ToArray;
+      FCount := Length(arrKeys);
       TParallel.For(Low(arrKeys), High(arrKeys),
         procedure(i: Int64; LoopState: TParallel.TLoopState)
         var
@@ -176,6 +188,7 @@ begin
           Data := TGeneral.EmailList.Items[arrKeys[i]];
           if Assigned(Data) then
           begin
+            LogWriter.Write(ddText, Self, 'RefreshEmails', Data^.ShortName);
             Data^.IsMatch := False;
             Data^.Matches.Count := FRegExpList.Count;
 
@@ -353,6 +366,7 @@ var
   Data        : PResultData;
   MailMessage : TclMailMessage;
 begin
+  LogWriter.Write(ddText, Self, 'File - ' + aFileName);
   New(Data);
   Data^.Clear;
   Data^.Hash          := TFileUtils.GetHash(aFileName);
@@ -364,7 +378,7 @@ begin
 
   if DaMod.IsEmailExistsByHash(Data^.Hash) then
   begin
-    Inc(FDuplicates);
+    Inc(FFromDBCount);
     DaMod.FillEmailRecord(Data);
     LogWriter.Write(ddWarning, Self, 'ParseFile', 'File "' + Data^.ShortName + '" loaded from DB');
 
@@ -404,6 +418,7 @@ begin
         end;
         Data^.LengthAlignment;
         TPublishers.ProgressPublisher.CompletedItem(Data);
+        TPublishers.ProgressPublisher.Progress;
       end).Start;
     Exit;
   end;

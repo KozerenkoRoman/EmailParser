@@ -57,7 +57,7 @@ type
     procedure FormResize(Sender: TObject);
     procedure srchBoxInvokeSearch(Sender: TObject);
   private const
-    C_IDENTITY_NAME = 'Settings';
+    C_IDENTITY_NAME = 'MainForm';
   private
     FProgressBar: TGauge;
     procedure CreateProgressBar;

@@ -106,7 +106,7 @@ resourcestring
   en_SaveAs               = 'Save as...';
   en_Script               = 'Script';
   en_Search               = 'Search';
-  en_SearchComplete       = 'Search complete';
+  en_SearchComplete       = 'Search %d files complete';
   en_SelectAll            = 'SelectAll';
   en_Server               = 'Server';
   en_SetOfTemplates       = 'Set of templates';
@@ -206,7 +206,7 @@ resourcestring
   uk_SaveAs               = 'Зберегти як...';
   uk_Script               = 'Сценарій';
   uk_Search               = 'Пошук';
-  uk_SearchComplete       = 'Пошук завершено';
+  uk_SearchComplete       = 'Парсинг %d файлів завершено.';
   uk_SelectAll            = 'Виділити все';
   uk_Server               = 'Сервер';
   uk_SetOfTemplates       = 'Набір шаблонів';

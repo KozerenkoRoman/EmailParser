@@ -133,7 +133,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       824
       42)
     object btnCancel: TBitBtn
-      Left = 580
+      Left = 588
       Top = 1
       Width = 110
       Height = 40
@@ -150,10 +150,10 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 2
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 576
+      ExplicitLeft = 584
     end
     object btnOk: TBitBtn
-      Left = 692
+      Left = 700
       Top = 1
       Width = 110
       Height = 40
@@ -170,7 +170,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 1
       ParentFont = False
       TabOrder = 1
-      ExplicitLeft = 688
+      ExplicitLeft = 696
     end
   end
   object tbPattern: TToolBar
@@ -250,8 +250,6 @@ inherited frmRegExpEditor: TfrmRegExpEditor
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitLeft = 467
-    ExplicitHeight = 530
     object gbOptions: TGroupBox
       AlignWithMargins = True
       Left = 3
@@ -312,7 +310,6 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       Align = alClient
       Caption = 'Results'
       TabOrder = 1
-      ExplicitHeight = 376
       object tvResults: TTreeView
         Left = 2
         Top = 19
@@ -321,15 +318,11 @@ inherited frmRegExpEditor: TfrmRegExpEditor
         Align = alClient
         BevelInner = bvNone
         BevelOuter = bvNone
-        Ctl3D = True
-        Indent = 19
-        ParentCtl3D = False
+        Indent = 15
         ParentShowHint = False
         ReadOnly = True
         ShowButtons = False
         ShowHint = False
-        ShowLines = False
-        ShowRoot = False
         TabOrder = 0
         ToolTips = False
         ExplicitHeight = 327

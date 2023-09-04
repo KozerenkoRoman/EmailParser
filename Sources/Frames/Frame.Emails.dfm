@@ -223,9 +223,11 @@ inherited frameEmails: TframeEmails
     Top = 116
     object miExpandAll: TMenuItem
       Action = aExpandAll
+      ImageName = 'ShowDetail_16x16'
     end
     object miCollapseAll: TMenuItem
       Action = aCollapseAll
+      ImageName = 'HideDetail_16x16'
     end
   end
   object SaveDialogEmail: TSaveDialog

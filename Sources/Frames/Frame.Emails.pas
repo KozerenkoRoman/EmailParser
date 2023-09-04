@@ -454,7 +454,14 @@ procedure TframeEmails.aRefreshExecute(Sender: TObject);
 begin
   inherited;
   if (vstTree.RootNode.ChildCount > 0) then
+  begin
+    FIsLoaded   := True;
+    FIsFiltered := True;
+    aFilter.Checked    := True;
+    aFilter.ImageIndex := 56;
+    Application.ProcessMessages;
     FPerformer.RefreshEmails;
+  end;
 end;
 
 procedure TframeEmails.aSaveExecute(Sender: TObject);
@@ -542,7 +549,10 @@ end;
 procedure TframeEmails.aSearchExecute(Sender: TObject);
 begin
   inherited;
-  FIsLoaded := True;
+  FIsLoaded   := True;
+  FIsFiltered := True;
+  aFilter.Checked    := True;
+  aFilter.ImageIndex := 56;
   Application.ProcessMessages;
   FPerformer.Start;
 end;
@@ -565,6 +575,7 @@ var
   Data: PEmail;
   MaxCol: Integer;
   Node: PVirtualNode;
+  IsEmpty: Boolean;
 begin
   if not Assigned(aResultData) then
     Exit;
@@ -586,20 +597,25 @@ begin
   for var i := 0 to aResultData.Matches.Count - 1 do
     MaxCol := Max(MaxCol, aResultData.Matches[i].Count);
 
+  IsEmpty := False;
   SetLength(arr, MaxCol, aResultData.Matches.Count);
   for var i := 0 to aResultData.Matches.Count - 1 do
     for var j := 0 to aResultData.Matches[i].Count - 1 do
-      arr[j, i] := aResultData.Matches[i].Items[j];
+    begin
+      arr[j, i] := aResultData.Matches[i].Items[j].Trim;
+      IsEmpty := IsEmpty or arr[j, i].IsEmpty;
+    end;
 
-  for var i := Low(arr) to High(arr) do
-  begin
-    ChildNode := vstTree.AddChild(Node);
-    Data := ChildNode^.GetData;
-    Data^.Hash := aResultData.Hash;
-    Data^.Matches.AddRange(arr[i]);
-    aResultData^.IsMatch := True;
-    vstTree.ValidateNode(ChildNode, False);
-  end;
+  if not IsEmpty then
+    for var i := Low(arr) to High(arr) do
+    begin
+      ChildNode := vstTree.AddChild(Node);
+      Data := ChildNode^.GetData;
+      Data^.Hash := aResultData.Hash;
+      Data^.Matches.AddRange(arr[i]);
+      aResultData^.IsMatch := True;
+      vstTree.ValidateNode(ChildNode, False);
+    end;
 
   vstTree.IsVisible[Node] := not FIsFiltered or aResultData^.IsMatch;
   vstTree.ValidateNode(Node, False);
@@ -627,11 +643,13 @@ begin
   FIsLoaded := False;
   vstTree.EndUpdate;
 
-  if (FPerformer.DuplicateCount > 0) then
-    TMessageDialog.ShowInfo(TLang.Lang.Translate('SearchComplete') + sLineBreak +
-                            Format(TLang.Lang.Translate('DuplicateCount'), [FPerformer.DuplicateCount]))
+  if (FPerformer.FromDBCount > 0) then
+    TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('SearchComplete') + sLineBreak +
+                                   TLang.Lang.Translate('DuplicateCount'),
+                                   [FPerformer.Count, FPerformer.FromDBCount]))
   else
-    TMessageDialog.ShowInfo(TLang.Lang.Translate('SearchComplete'));
+    TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('SearchComplete'),
+                                   [FPerformer.Count]));
   FPerformer.Clear;
 end;
 

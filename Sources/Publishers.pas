@@ -144,10 +144,10 @@ var
   Item: TObject;
   obj: IProgress;
 begin
-  if not Application.Terminated then
-    TThread.Queue(nil,
-      procedure
-      begin
+  TThread.Queue(nil,
+    procedure
+    begin
+      if not Application.Terminated then
         for var i := 0 to Self.Count - 1 do
         begin
           Item := Self.Items[i];
@@ -155,7 +155,7 @@ begin
             if Supports(Item, IProgress, obj) then
               obj.Progress;
         end;
-      end);
+    end);
 end;
 
 procedure TProgressPublisher.StartProgress(const aMaxPosition: Integer);
