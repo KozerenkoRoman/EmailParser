@@ -96,4 +96,18 @@ object DaMod: TDaMod
         Value = Null
       end>
   end
+  object qAllEmails: TFDQuery
+    Connection = Connection
+    SQL.Strings = (
+      'select HASH,'
+      '       MESSAGE_ID,'
+      '       SHORT_NAME,'
+      '       SUBJECT, '
+      '       ADDRESS_FROM, '
+      '       CONTENT_TYPE, '
+      '       TIME_STAMP'
+      'from emails')
+    Left = 216
+    Top = 232
+  end
 end

@@ -156,7 +156,7 @@ inherited frmMain: TfrmMain
     Width = 725
     Height = 584
     Align = alClient
-    ActiveCard = crdPathsToFindScripts
+    ActiveCard = crdResultView
     TabOrder = 2
     object crdRegExpParameters: TCard
       Left = 1
@@ -181,7 +181,7 @@ inherited frmMain: TfrmMain
         end
         inherited tbSettings: TToolBar
           Width = 723
-          ExplicitWidth = 372
+          ExplicitWidth = 723
           inherited pnlSettings: TPanel
             inherited cbSetOfTemplates: TComboBox
               Height = 21
@@ -375,8 +375,8 @@ inherited frmMain: TfrmMain
               Control = frameCommonSettings.cbDeleteAttachments
               Row = 3
             end>
-          ExplicitWidth = 372
-          ExplicitHeight = 339
+          ExplicitWidth = 723
+          ExplicitHeight = 543
         end
       end
     end

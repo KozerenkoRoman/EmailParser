@@ -169,8 +169,6 @@ procedure TThreadEmails.InsertData(const aResultData: PResultData);
 var
   IsStartTransaction: Boolean;
 begin
-  if aResultData^.FromDB then
-    Exit;
   if Terminated or not FConnection.Connected then
     Exit;
 

@@ -612,7 +612,7 @@ begin
   if (P > 0) then
   begin
     DayName := Copy(DateTimeStr, 1, Pred(P));
-    Day := StrToInt(DayName);
+    Day := StrToIntDef(DayName, 0);
     system.Delete(DateTimeStr, 1, P);
   end;
   s := Trim(DateTimeStr);
@@ -636,7 +636,7 @@ begin
   if (P > 0) then
   begin
     YearName := Copy(DateTimeStr, 1, Pred(P));
-    Year := StrToInt(YearName);
+    Year := StrToIntDef(YearName, CurrentYear);
     if (Year < 100) then
     begin
       if (Year > 10) then

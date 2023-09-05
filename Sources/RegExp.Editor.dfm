@@ -250,6 +250,8 @@ inherited frmRegExpEditor: TfrmRegExpEditor
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitLeft = 467
+    ExplicitHeight = 530
     object gbOptions: TGroupBox
       AlignWithMargins = True
       Left = 3
@@ -310,6 +312,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       Align = alClient
       Caption = 'Results'
       TabOrder = 1
+      ExplicitHeight = 376
       object tvResults: TTreeView
         Left = 2
         Top = 19

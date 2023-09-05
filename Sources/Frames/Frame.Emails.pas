@@ -172,16 +172,17 @@ begin
   for var ResultData in TGeneral.EmailList.Values do
   begin
     ResultData.Matches.Count := RegExpList.Count;
-    if Assigned(ResultData.ParentNode) and (ResultData.ParentNode.ChildCount > 0) then
-    begin
-      CurrNode := ResultData.ParentNode.FirstChild;
-      while Assigned(CurrNode) do
+    if Assigned(ResultData.ParentNode) then
+      if (ResultData.ParentNode.ChildCount > 0) then
       begin
-        DataEmail := CurrNode^.GetData;
-        DataEmail^.Matches.Count := RegExpList.Count;
-        CurrNode := CurrNode.NextSibling;
+        CurrNode := ResultData.ParentNode.FirstChild;
+        while Assigned(CurrNode) do
+        begin
+          DataEmail := CurrNode^.GetData;
+          DataEmail^.Matches.Count := RegExpList.Count;
+          CurrNode := CurrNode.NextSibling;
+        end;
       end;
-    end;
   end;
 
   try
@@ -374,7 +375,7 @@ begin
   inherited;
   Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
   if Assigned(Data) then
-    if (Column in [COL_FILE_NAME, COL_SHORT_NAME]) and Data^.FromDB then
+    if (Column in [COL_FILE_NAME, COL_SHORT_NAME]) then
       TargetCanvas.Font.Color := clNavy;
 end;
 

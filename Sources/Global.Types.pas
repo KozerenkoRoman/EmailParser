@@ -78,7 +78,6 @@ type
     ParsedText  : string;
     Matches     : TArrayRecord<TStringArray>;
     ParentNode  : PVirtualNode;
-    FromDB      : Boolean;
     Position    : Integer;
     IsMatch     : Boolean;
     procedure Clear;

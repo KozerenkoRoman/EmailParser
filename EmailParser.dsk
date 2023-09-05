@@ -1,52 +1,57 @@
 ﻿[Closed Files]
-File_0=TSourceModule,'D:\Work\EmailParser\Sources\Publishers.pas',0,1,118,1,147,0,0,,
-File_1=TSourceModule,'D:\Work\EmailParser\Sources\Common\RegExp.Types.pas',0,1,1,1,41,0,0,{{5,0}
-File_2=TSourceModule,'D:\Work\Examples\Delphi11 Demos-main\Object Pascal\RTL\RegExpression\vcl\Main.pas',0,1,76,30,99,0,0,,
-File_3=TSourceModule,'D:\Work\EmailParser\Sources\MainForm.pas',0,1,229,1,268,0,0,{{5,0}
-File_4=TSourceModule,'D:\Work\EmailParser\Sources\Common\ArrayHelper.pas',0,1,111,1,133,0,0,{{50,0}
-File_5=TSourceModule,'D:\Work\EmailParser\Sources\Common\Common.Types.pas',0,1,1,1,19,0,0,{{5,0}
-File_6=TSourceModule,'D:\Work\EmailParser\Sources\Common\DebugWriter.pas',0,1,31,34,55,0,0,,
-File_7=TSourceModule,'D:\Work\EmailParser\Sources\Common\XmlFiles.pas',0,1,595,1,612,0,0,{{68,0}
-File_8=TSourceModule,'D:\Work\EmailParser\Sources\DataModules\DaModule.pas',0,1,268,1,285,0,0,{{5,0}
-File_9=TSourceModule,'D:\Work\EmailParser\Sources\Global.Types.pas',0,1,157,90,176,0,0,{{5,0}
-File_10=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Threading.pas',0,1,2169,1,2186,0,0,,
-File_11=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.pas',0,1,26323,1,26343,0,0,,
-File_12=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Classes.pas',0,1,665,1,677,0,0,,
-File_13=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.StdCtrls.pas',0,1,342,17,360,0,0,{{1773,4}
-File_14=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Controls.pas',0,1,6466,1,6469,0,0,,
+File_0=TSourceModule,'D:\Work\EmailParser\Sources\Translate\Translate.Resources.pas',0,1,94,40,109,0,0,,
+File_1=TSourceModule,'D:\Work\EmailParser\Sources\Common\Files.Utils.pas',0,1,1,1,24,0,0,{{5,0},{11,11},{'Region uses'}},{1,137,67}
+File_2=TSourceModule,'C:\Program Files (x86)\Embarcadero\Studio\22.0\source\rtl\common\System.Threading.pas',0,1,2897,74,2918,0,0,,
+File_3=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.SyncObjs.pas',0,1,2012,1,2034,0,0,,
+File_4=TSourceModule,'D:\Work\EmailParser\Sources\DataModules\Thread.Emails.pas',0,1,160,1,172,0,0,{{5,0},{14,11},{'Region uses'}},
+File_5=TSourceModule,'D:\Work\EmailParser\Sources\DataModules\DaModule.Resources.pas',0,1,18,1,1,0,0,{{5,0},{10,11},{'Region uses'}},
+File_6=TSourceModule,'D:\Work\EmailParser\Sources\CleverInternetSuite\clMailMessage.pas',0,1,926,6,942,0,0,,
+File_7=TSourceModule,'D:\Work\EmailParser\Sources\CleverInternetSuite\clUtils.pas',0,1,587,31,615,0,0,,
+File_8=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.SysUtils.pas',0,1,19762,1,19779,0,0,,
+File_9=TSourceModule,'D:\Work\EmailParser\Sources\RegExp.Editor.pas',0,1,69,48,123,0,0,{{5,0},{15,11},{'Region uses'}},
+File_10=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.pas',0,1,1891,36,1908,0,0,,
+File_11=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Zip.pas',0,1,1496,54,1498,0,0,,
+File_12=TSourceModule,'D:\Work\EmailParser\Sources\PDFiumLib\PdfiumCtrl.pas',0,1,934,9,932,0,0,,
+File_13=TSourceModule,'D:\Work\EmailParser\Sources\PDFiumLib\PdfiumCore.pas',0,1,1235,1,1240,0,0,,
+File_14=TSourceModule,'D:\Work\EmailParser\Sources\Publishers.pas',0,1,118,1,147,0,0,,
 
 [Modules]
-Module0=D:\Work\EmailParser\Sources\Performer.pas
-Module1=D:\Work\EmailParser\Sources\RegExp.Editor.pas
-Module2=D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas
-Module3=D:\Work\EmailParser\Sources\Translate\Translate.Resources.pas
-Module4=D:\Work\EmailParser\Sources\Frames\Frame.RegExpParameters.pas
-Count=5
+Module0=D:\Work\EmailParser\Sources\Frames\Frame.RegExpParameters.pas
+Module1=D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas
+Module2=D:\Work\EmailParser\Sources\DataModules\DaModule.pas
+Module3=D:\Work\EmailParser\Sources\Global.Types.pas
+Module4=D:\Work\EmailParser\Sources\Performer.pas
+Module5=D:\Work\EmailParser\Sources\MainForm.pas
+Count=6
 EditWindowCount=1
 
-[D:\Work\EmailParser\Sources\Performer.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\RegExp.Editor.pas]
+[D:\Work\EmailParser\Sources\Frames\Frame.RegExpParameters.pas]
 ModuleType=TSourceModule
 
 [D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\Sources\Translate\Translate.Resources.pas]
+[D:\Work\EmailParser\Sources\DataModules\DaModule.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\Sources\Frames\Frame.RegExpParameters.pas]
+[D:\Work\EmailParser\Sources\Global.Types.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\Performer.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\MainForm.pas]
 ModuleType=TSourceModule
 
 [EditWindow0]
-ViewCount=5
-CurrentEditView=D:\Work\EmailParser\Sources\Performer.pas
+ViewCount=6
+CurrentEditView=D:\Work\EmailParser\Sources\Frames\Frame.RegExpParameters.pas
 View0=0
 View1=1
 View2=2
 View3=3
 View4=4
+View5=5
 PercentageSizes=1
 Create=1
 Visible=1
@@ -66,12 +71,12 @@ TopPanelSize=0
 LeftPanelSize=1896
 LeftPanelClients=PropertyInspector,DockSite3
 LeftPanelData=000008000101000000000B1300000000000001680700000000000001000000002308000009000000446F636B53697465330100000000DB2100001100000050726F7065727479496E73706563746F72FFFFFFFF
-RightPanelSize=2000
+RightPanelSize=1474
 RightPanelClients=DockSite2,DockSite4
-RightPanelData=0000080001010100000009000000446F636B53697465340B1300000000000001D0070000000000000100000000DB21000009000000446F636B5369746532FFFFFFFF
+RightPanelData=0000080001010100000009000000446F636B53697465340B1300000000000001C2050000000000000100000000DB21000009000000446F636B5369746532FFFFFFFF
 BottomPanelSize=0
 BottomPanelClients=MessageView,DockSite1
-BottomPanelData=000008000102020000000F0000004D65737361676556696577466F726D09000000446F636B5369746531DE44000000000000023906000000000000FFFFFFFF
+BottomPanelData=000008000102020000000F0000004D65737361676556696577466F726D09000000446F636B5369746531DE440000000000000214060000000000000100000000DE4400000F0000004D65737361676556696577466F726DFFFFFFFF
 BottomMiddlePanelSize=0
 BottomMiddlePanelClients=DockSite0,GraphDrawingModel
 BottomMiddelPanelData=0000080001020200000009000000446F636B536974653010000000477261706844726177696E67566965773C29000000000000024B06000000000000FFFFFFFF
@@ -79,53 +84,64 @@ BottomMiddelPanelData=0000080001020200000009000000446F636B5369746530100000004772
 [View0]
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\Performer.pas
-CursorX=26
-CursorY=192
-TopLine=168
+CursorX=37
+CursorY=435
+TopLine=357
 LeftCol=1
 Elisions=
-Bookmarks={2,196,16}{3,384,1}
+Bookmarks={1,290,1}{2,195,16}{3,454,1}
 EditViewName=D:\Work\EmailParser\Sources\Performer.pas
 
 [View1]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\RegExp.Editor.pas
-CursorX=48
-CursorY=123
-TopLine=69
+Module=D:\Work\EmailParser\Sources\Global.Types.pas
+CursorX=1
+CursorY=81
+TopLine=64
 LeftCol=1
-Elisions={{5,0},{15,11},{'Region uses'}}
+Elisions={{5,0},{12,11},{'Region uses'}}
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\RegExp.Editor.pas
+EditViewName=D:\Work\EmailParser\Sources\Global.Types.pas
 
 [View2]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas
-CursorX=36
-CursorY=647
-TopLine=628
+Module=D:\Work\EmailParser\Sources\DataModules\DaModule.pas
+CursorX=1
+CursorY=286
+TopLine=268
 LeftCol=1
-Elisions={{5,0},{15,11},{'Region uses'}}
-Bookmarks={1,456,21}
-EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas
+Elisions=
+Bookmarks={1,272,1}
+EditViewName=D:\Work\EmailParser\Sources\DataModules\DaModule.pas
 
 [View3]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Translate\Translate.Resources.pas
-CursorX=40
-CursorY=109
-TopLine=94
+Module=D:\Work\EmailParser\Sources\MainForm.pas
+CursorX=1
+CursorY=1
+TopLine=37
 LeftCol=1
-Elisions=
+Elisions={{5,0},{14,11},{'Region uses'}}
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Translate\Translate.Resources.pas
+EditViewName=D:\Work\EmailParser\Sources\MainForm.pas
 
 [View4]
 CustomEditViewType=TEditView
+Module=D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas
+CursorX=52
+CursorY=378
+TopLine=360
+LeftCol=1
+Elisions={{5,0},{15,11},{'Region uses'}}
+Bookmarks={1,457,21}
+EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas
+
+[View5]
+CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\Frames\Frame.RegExpParameters.pas
-CursorX=10
-CursorY=170
-TopLine=143
+CursorX=42
+CursorY=228
+TopLine=222
 LeftCol=1
 Elisions={{5,0},{15,11},{'Region uses'}}
 Bookmarks={1,169,1}
@@ -159,13 +175,14 @@ Dockable=1
 StayOnTop=0
 
 [Breakpoints]
-Count=6
+Count=7
 Breakpoint0='D:\Work\EmailParser\CleverInternetSuite\clMailMessage.pas',2058,'',0,1,'',1,0,0,'',1,'','','',0,''
 Breakpoint1='D:\Work\EmailParser\CleverInternetSuite\clMailMessage.pas',1154,'',0,1,'',1,0,0,'',1,'','','',0,''
 Breakpoint2='D:\Work\EmailParser\PDFiumLib\PdfiumCtrl.pas',933,'',0,1,'',1,0,0,'',1,'','','',0,''
 Breakpoint3='D:\Work\EmailParser\Sources\PDFiumLib\PdfiumCore.pas',1240,'',0,1,'',1,0,0,'',1,'','','',0,''
 Breakpoint4='D:\Work\EmailParser\Sources\Common\Html.Parser.pas',1010,'',0,1,'',1,0,0,'',1,'','','',0,''
 Breakpoint5='D:\Work\EmailParser\Sources\Common\Html.Parser.pas',775,'',0,1,'',1,0,0,'',1,'','','',0,''
+Breakpoint6='D:\Work\EmailParser\Sources\PDFiumLib\PdfiumCtrl.pas',933,'',0,1,'',1,0,0,'',1,'','','',0,''
 
 [EmbarcaderoWin32Debugger_AddressBreakpoints]
 Count=0
@@ -201,11 +218,11 @@ Docked=1
 State=0
 Left=0
 Top=0
-Width=2000
+Width=1474
 Height=8462
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=2000
+ClientWidth=1474
 ClientHeight=8462
 TBDockHeight=5904
 LRDockWidth=2349
@@ -219,14 +236,14 @@ Visible=0
 Docked=1
 State=0
 Left=0
-Top=0
-Width=2771
-Height=1385
+Top=28
+Width=9917
+Height=1346
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=2771
-ClientHeight=1385
-TBDockHeight=1385
+ClientWidth=9917
+ClientHeight=1346
+TBDockHeight=1346
 LRDockWidth=2771
 Dockable=1
 StayOnTop=0
@@ -270,6 +287,11 @@ Dockable=1
 StayOnTop=0
 SplitPos=149
 
+[PropInspDesignerSelection]
+ArrangeBy=Name
+SelectedItem=Caption,CustomHint
+ExpandedItems="LiveBindings Designer=0",ActiveStoredUsage=0,Connection=0,FetchOptions=0,FieldOptions=0,FilterChanges=0,FilterOptions=0,FormatOptions=0,ResourceOptions=0,Anchors=0,BorderIcons=0,Constraints=0,ImageMargins=0,LiveBindings=0,Margins=0,Action=0
+
 [frmDesignPreview]
 PercentageSizes=1
 Create=1
@@ -278,12 +300,12 @@ Docked=1
 State=0
 Left=0
 Top=0
-Width=2000
-Height=8462
+Width=1474
+Height=6394
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=2000
-ClientHeight=8462
+ClientWidth=1474
+ClientHeight=6394
 TBDockHeight=5962
 LRDockWidth=2510
 Dockable=1
@@ -295,8 +317,8 @@ Create=1
 Visible=0
 Docked=1
 State=0
-Left=0
-Top=0
+Left=-1637
+Top=265
 Width=276
 Height=365
 MaxLeft=-1
@@ -400,11 +422,11 @@ State=0
 Left=0
 Top=0
 Width=2339
-Height=1135
+Height=971
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=2339
-ClientHeight=1135
+ClientHeight=971
 TBDockHeight=2317
 LRDockWidth=2823
 Dockable=1
@@ -464,12 +486,12 @@ Docked=1
 State=0
 Left=0
 Top=0
-Width=2000
-Height=8462
+Width=1474
+Height=6394
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=2000
-ClientHeight=8462
+ClientWidth=1474
+ClientHeight=6394
 TBDockHeight=4885
 LRDockWidth=7151
 Dockable=1
@@ -481,8 +503,8 @@ Create=1
 Visible=0
 Docked=1
 State=0
-Left=0
-Top=0
+Left=380
+Top=817
 Width=2854
 Height=3212
 MaxLeft=-1
@@ -501,7 +523,7 @@ Visible=0
 Docked=1
 State=0
 Left=-8
-Top=-8
+Top=-124
 Width=1849
 Height=3144
 MaxLeft=-1
@@ -642,12 +664,12 @@ Docked=1
 State=0
 Left=0
 Top=0
-Width=2000
-Height=8462
+Width=1474
+Height=6394
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=2000
-ClientHeight=8462
+ClientWidth=1474
+ClientHeight=6394
 TBDockHeight=4885
 LRDockWidth=5307
 Dockable=1
@@ -707,8 +729,8 @@ Create=1
 Visible=0
 Docked=1
 State=0
-Left=8
-Top=8
+Left=952
+Top=28
 Width=3823
 Height=1423
 MaxLeft=-1
@@ -733,14 +755,14 @@ Docked=1
 State=0
 Left=0
 Top=28
-Width=2000
+Width=1474
 Height=8731
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=2000
+ClientWidth=1474
 ClientHeight=8731
 TBDockHeight=8731
-LRDockWidth=2000
+LRDockWidth=1474
 Dockable=1
 StayOnTop=0
 TabPosition=1

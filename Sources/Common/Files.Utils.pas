@@ -24,6 +24,7 @@ type
     class function GetCorrectFileName(const aFileName: string): string; inline;
     class function GetHash(const aFileName: string): string;
     class function GetSignature(const aFileName: string): TFileSignature;
+    class function IsForbidden(const aFileName: TFileName): Boolean; inline;
     class function ShellExecuteAndWait(const aFileName, aParams: string): Boolean; inline;
     class procedure ShellOpen(const aUrl: string; const aParams: string = '');
   end;
@@ -45,6 +46,7 @@ const
     (TypeSignature: fsUnknown; Signature: [])
     );
   LENGTH_SIGNATURE = 12;
+  FORBIDDEN_EXT: string = '.exe.com.cmd.bat';
 
 implementation
 
@@ -128,6 +130,11 @@ begin
   finally
     FreeAndNil(FileStream);
   end;
+end;
+
+class function TFileUtils.IsForbidden(const aFileName: TFileName): Boolean;
+begin
+  Result := FORBIDDEN_EXT.Contains(TPath.GetExtension(aFileName));
 end;
 
 class function TFileUtils.CheckSignature(const aFileName: string; const aSignature: TFileSignature): Boolean;
