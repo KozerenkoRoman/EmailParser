@@ -461,6 +461,7 @@ begin
     aFilter.Checked    := True;
     aFilter.ImageIndex := 56;
     Application.ProcessMessages;
+    FPerformer.Count := vstTree.RootNode.ChildCount;
     FPerformer.RefreshEmails;
   end;
 end;
@@ -560,7 +561,7 @@ end;
 
 procedure TframeEmails.ClearTree;
 begin
-  TGeneral.EmailList.ClearData;
+  TGeneral.EmailList.ClearParentNodePointer;
   vstTree.BeginUpdate;
   try
     vstTree.Clear;
@@ -628,7 +629,10 @@ var
 begin
   vstTree.BeginUpdate;
   TPublishers.EmailPublisher.FocusChanged(nil);
-  TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('FoundFiles'), [aMaxPosition]));
+  if (aMaxPosition > 0) then
+    TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('FoundFiles'), [aMaxPosition]))
+  else
+    TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('FoundFiles'), [vstTree.RootNode.ChildCount]));
 
   CurrNode := vstTree.RootNode.FirstChild;
   while Assigned(CurrNode) do

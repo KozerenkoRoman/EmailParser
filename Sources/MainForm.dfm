@@ -1,7 +1,7 @@
 inherited frmMain: TfrmMain
   Caption = 'Email Parser'
-  ClientHeight = 645
-  ClientWidth = 975
+  ClientHeight = 644
+  ClientWidth = 1174
   Constraints.MinHeight = 500
   Constraints.MinWidth = 600
   Position = poScreenCenter
@@ -9,24 +9,24 @@ inherited frmMain: TfrmMain
   OnClose = FormClose
   OnCreate = FormCreate
   OnResize = FormResize
-  ExplicitWidth = 987
-  ExplicitHeight = 683
+  ExplicitWidth = 1186
+  ExplicitHeight = 682
   TextHeight = 13
   object splView: TSplitView
     Left = 0
     Top = 41
     Width = 250
-    Height = 584
+    Height = 583
     Color = clMedGray
     OpenedWidth = 250
     Placement = svpLeft
     TabOrder = 0
-    ExplicitHeight = 583
+    ExplicitHeight = 582
     object catMenuItems: TCategoryButtons
       Left = 0
       Top = 0
       Width = 250
-      Height = 584
+      Height = 583
       Align = alClient
       BevelInner = bvNone
       BevelOuter = bvNone
@@ -63,20 +63,20 @@ inherited frmMain: TfrmMain
       RegularButtonColor = clNone
       SelectedButtonColor = clNone
       TabOrder = 0
-      ExplicitHeight = 583
+      ExplicitHeight = 582
     end
   end
   object pnlTop: TPanel
     Left = 0
     Top = 0
-    Width = 975
+    Width = 1174
     Height = 41
     Align = alTop
     BevelOuter = bvNone
     Color = 1986047
     ParentBackground = False
     TabOrder = 1
-    ExplicitWidth = 971
+    ExplicitWidth = 1170
     object lblTitle: TLabel
       Left = 250
       Top = 0
@@ -122,14 +122,14 @@ inherited frmMain: TfrmMain
       end
     end
     object pnlSrchBox: TPanel
-      Left = 787
+      Left = 986
       Top = 0
       Width = 188
       Height = 41
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitLeft = 783
+      ExplicitLeft = 982
       object srchBox: TSearchBox
         Left = 16
         Top = 8
@@ -153,62 +153,77 @@ inherited frmMain: TfrmMain
   object pnlCard: TCardPanel
     Left = 250
     Top = 41
-    Width = 725
-    Height = 584
+    Width = 924
+    Height = 583
     Align = alClient
-    ActiveCard = crdResultView
+    ActiveCard = crdPathsToFindScripts
     TabOrder = 2
     object crdRegExpParameters: TCard
       Left = 1
       Top = 1
-      Width = 723
-      Height = 582
+      Width = 922
+      Height = 581
       Caption = 'crdRegExpParameters'
       CardIndex = 0
       TabOrder = 0
       inline frameRegExpParameters: TframeRegExpParameters
         Left = 0
         Top = 0
-        Width = 723
-        Height = 582
+        Width = 922
+        Height = 581
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 723
-        ExplicitHeight = 582
+        ExplicitWidth = 922
+        ExplicitHeight = 581
         inherited tbMain: TToolBar
-          Width = 723
-          ExplicitWidth = 723
-        end
-        inherited tbSettings: TToolBar
-          Width = 723
-          ExplicitWidth = 723
-          inherited pnlSettings: TPanel
+          Width = 922
+          ExplicitWidth = 922
+          inherited pnlSettings: TPanel [9]
+            Left = 289
+            ExplicitLeft = 289
             inherited cbSetOfTemplates: TComboBox
               Height = 21
               ExplicitHeight = 21
             end
           end
+          inherited btnPrint: TToolButton [10]
+            Left = 738
+            ExplicitLeft = 738
+          end
+          inherited btnSep03: TToolButton [11]
+            Left = 777
+            ExplicitLeft = 777
+          end
+          inherited btnColumnSettings: TToolButton [12]
+            Left = 785
+            ExplicitLeft = 785
+          end
+          inherited btnSep04: TToolButton [13]
+            Left = 824
+            ExplicitLeft = 824
+          end
         end
         inherited vstTree: TVirtualStringTree
-          Width = 723
-          Height = 504
-          ExplicitWidth = 723
-          ExplicitHeight = 504
+          Width = 922
+          Height = 540
+          ExplicitTop = 41
+          ExplicitWidth = 922
+          ExplicitHeight = 540
         end
       end
     end
     object crdPathsToFindScripts: TCard
       Left = 1
       Top = 1
-      Width = 723
-      Height = 582
+      Width = 922
+      Height = 581
       Caption = 'crdPathsToFindFiles'
       CardIndex = 1
       TabOrder = 1
       object splPath: TSplitter
         Left = 0
         Top = 316
-        Width = 723
+        Width = 922
         Height = 3
         Cursor = crVSplit
         Align = alTop
@@ -219,7 +234,7 @@ inherited frmMain: TfrmMain
         AlignWithMargins = True
         Left = 3
         Top = 3
-        Width = 717
+        Width = 916
         Height = 310
         Align = alTop
         Caption = 'gbPathes'
@@ -227,22 +242,22 @@ inherited frmMain: TfrmMain
         inline framePathes: TframePathes
           Left = 2
           Top = 15
-          Width = 713
+          Width = 912
           Height = 293
           Align = alClient
           TabOrder = 0
           ExplicitLeft = 2
           ExplicitTop = 15
-          ExplicitWidth = 713
+          ExplicitWidth = 912
           ExplicitHeight = 293
           inherited tbMain: TToolBar
-            Width = 713
-            ExplicitWidth = 709
+            Width = 912
+            ExplicitWidth = 908
           end
           inherited vstTree: TVirtualStringTree
-            Width = 713
+            Width = 912
             Height = 254
-            ExplicitWidth = 713
+            ExplicitWidth = 912
             ExplicitHeight = 254
             Columns = <
               item
@@ -281,31 +296,31 @@ inherited frmMain: TfrmMain
         AlignWithMargins = True
         Left = 3
         Top = 322
-        Width = 717
-        Height = 257
+        Width = 916
+        Height = 256
         Align = alClient
         Caption = 'gbSorter'
         TabOrder = 1
         inline frameSorter: TframeSorter
           Left = 2
           Top = 15
-          Width = 713
-          Height = 240
+          Width = 912
+          Height = 239
           Align = alClient
           TabOrder = 0
           ExplicitLeft = 2
           ExplicitTop = 15
-          ExplicitWidth = 713
-          ExplicitHeight = 240
+          ExplicitWidth = 912
+          ExplicitHeight = 239
           inherited tbMain: TToolBar
-            Width = 713
-            ExplicitWidth = 709
+            Width = 912
+            ExplicitWidth = 908
           end
           inherited vstTree: TVirtualStringTree
-            Width = 713
-            Height = 201
-            ExplicitWidth = 713
-            ExplicitHeight = 201
+            Width = 912
+            Height = 200
+            ExplicitWidth = 912
+            ExplicitHeight = 200
           end
         end
       end
@@ -313,27 +328,27 @@ inherited frmMain: TfrmMain
     object crdCommonParams: TCard
       Left = 1
       Top = 1
-      Width = 723
-      Height = 582
+      Width = 922
+      Height = 581
       Caption = 'crdCommonParams'
       CardIndex = 2
       TabOrder = 2
       inline frameCommonSettings: TframeCommonSettings
         Left = 0
         Top = 0
-        Width = 723
-        Height = 582
+        Width = 922
+        Height = 581
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 723
-        ExplicitHeight = 582
+        ExplicitWidth = 922
+        ExplicitHeight = 581
         inherited tbMain: TToolBar
-          Width = 723
-          ExplicitWidth = 723
+          Width = 922
+          ExplicitWidth = 922
         end
         inherited grdCommonParams: TGridPanel
-          Width = 723
-          Height = 543
+          Width = 922
+          Height = 542
           ControlCollection = <
             item
               Column = 0
@@ -374,25 +389,35 @@ inherited frmMain: TfrmMain
               Column = 1
               Control = frameCommonSettings.cbDeleteAttachments
               Row = 3
+            end
+            item
+              Column = 0
+              Control = frameCommonSettings.lblLoadRecordsFromDB
+              Row = 4
+            end
+            item
+              Column = 1
+              Control = frameCommonSettings.cbLoadRecordsFromDB
+              Row = 4
             end>
-          ExplicitWidth = 723
-          ExplicitHeight = 543
+          ExplicitWidth = 922
+          ExplicitHeight = 542
         end
       end
     end
     object crdResultView: TCard
       Left = 1
       Top = 1
-      Width = 723
-      Height = 582
+      Width = 922
+      Height = 581
       Caption = 'crdResultView'
       CardIndex = 3
       TabOrder = 3
       inline frameResultView: TframeResultView
         Left = 0
         Top = 0
-        Width = 723
-        Height = 582
+        Width = 922
+        Height = 581
         Margins.Left = 0
         Margins.Top = 0
         Margins.Right = 0
@@ -405,32 +430,32 @@ inherited frmMain: TfrmMain
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitWidth = 723
-        ExplicitHeight = 582
+        ExplicitWidth = 922
+        ExplicitHeight = 581
         inherited tbMain: TToolBar
-          Width = 723
-          ExplicitWidth = 723
+          Width = 922
+          ExplicitWidth = 922
         end
         inherited pcMain: TPageControl
-          Width = 723
-          Height = 582
-          ExplicitWidth = 723
-          ExplicitHeight = 582
+          Width = 922
+          Height = 581
+          ExplicitWidth = 922
+          ExplicitHeight = 581
           inherited tsEmail: TTabSheet
             ExplicitTop = 25
-            ExplicitWidth = 715
-            ExplicitHeight = 553
+            ExplicitWidth = 914
+            ExplicitHeight = 552
             inherited splInfo: TSplitter
-              Top = 268
-              Width = 715
+              Top = 267
+              Width = 914
               ExplicitTop = 358
-              ExplicitWidth = 719
+              ExplicitWidth = 914
             end
             inherited pcInfo: TPageControl
-              Top = 273
-              Width = 715
-              ExplicitTop = 273
-              ExplicitWidth = 715
+              Top = 272
+              Width = 914
+              ExplicitTop = 272
+              ExplicitWidth = 914
               inherited tsBodyText: TTabSheet
                 ExplicitHeight = 252
                 inherited memTextBody: TMemo
@@ -447,17 +472,17 @@ inherited frmMain: TfrmMain
               end
               inherited tsHtmlText: TTabSheet
                 ExplicitTop = 25
-                ExplicitWidth = 707
+                ExplicitWidth = 906
                 ExplicitHeight = 251
                 inherited wbBody: TWebBrowser
-                  Width = 707
+                  Width = 906
                   Height = 251
-                  ExplicitWidth = 707
+                  ExplicitWidth = 906
                   ExplicitHeight = 251
                   ControlData = {
-                    4C00000012490000F11900000000000000000000000000000000000000000000
+                    4C000000A35D0000F11900000000000000000000000000000000000000000000
                     000000004C000000000000000000000001000000E0D057007335CF11AE690800
-                    2B2E126200000000000000004C0000000114020000000000C000000000000046
+                    2B2E126208000000000000004C0000000114020000000000C000000000000046
                     8000000000000000000000000000000000000000000000000000000000000000
                     00000000000000000100000000000000000000000000000000000000}
                 end
@@ -475,19 +500,19 @@ inherited frmMain: TfrmMain
               end
             end
             inherited frameEmails: TframeEmails
-              Width = 715
-              Height = 268
-              ExplicitWidth = 715
-              ExplicitHeight = 268
+              Width = 914
+              Height = 267
+              ExplicitWidth = 914
+              ExplicitHeight = 267
               inherited tbMain: TToolBar
-                Width = 715
-                ExplicitWidth = 715
+                Width = 914
+                ExplicitWidth = 914
               end
               inherited vstTree: TVirtualStringTree
-                Width = 715
-                Height = 229
-                ExplicitWidth = 715
-                ExplicitHeight = 229
+                Width = 914
+                Height = 228
+                ExplicitWidth = 914
+                ExplicitHeight = 228
                 DefaultText = ''
               end
             end
@@ -509,12 +534,12 @@ inherited frmMain: TfrmMain
   end
   object sbMain: TStatusBar
     Left = 0
-    Top = 625
-    Width = 975
+    Top = 624
+    Width = 1174
     Height = 20
     Panels = <>
-    ExplicitTop = 624
-    ExplicitWidth = 971
+    ExplicitTop = 623
+    ExplicitWidth = 1170
   end
   object alSettings: TActionList
     Images = DMImage.vil32

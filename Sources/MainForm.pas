@@ -28,7 +28,6 @@ type
     crdPathsToFindScripts : TCard;
     crdRegExpParameters   : TCard;
     crdResultView         : TCard;
-    frameCommonSettings   : TframeCommonSettings;
     framePathes           : TframePathes;
     frameRegExpParameters : TframeRegExpParameters;
     frameResultView       : TframeResultView;
@@ -45,6 +44,7 @@ type
     splPath               : TSplitter;
     splView               : TSplitView;
     srchBox               : TSearchBox;
+    frameCommonSettings: TframeCommonSettings;
     procedure aEditCommonParametersExecute(Sender: TObject);
     procedure aEditRegExpParametersExecute(Sender: TObject);
     procedure aPathsFindFilesExecute(Sender: TObject);
@@ -245,7 +245,6 @@ begin
 //  else
 //    frameRegExpParameters.SearchText(srchBox.Text);
 end;
-
 
 procedure TfrmMain.ClearTree;
 begin

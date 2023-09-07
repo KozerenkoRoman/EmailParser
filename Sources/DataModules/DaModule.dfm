@@ -101,6 +101,7 @@ object DaMod: TDaMod
     SQL.Strings = (
       'select HASH,'
       '       MESSAGE_ID,'
+      '       FILE_NAME,'
       '       SHORT_NAME,'
       '       SUBJECT, '
       '       ADDRESS_FROM, '

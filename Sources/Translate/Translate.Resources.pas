@@ -69,6 +69,7 @@ resourcestring
   en_GroupIndex           = 'Group index';
   en_Info                 = 'Info ';
   en_Language             = 'Language';
+  en_LoadRecordsFromDB    = 'Load records from DB at startup';
   en_Mask                 = 'Mask';
   en_Matches              = 'Matches';
   en_MessageId            = 'Message Id';
@@ -85,7 +86,6 @@ resourcestring
   en_Options              = 'Options';
   en_Parameter            = 'Parameter';
   en_Parameters           = 'Parameters';
-  en_UseRawText           = 'Use raw text';
   en_Paste                = 'Paste';
   en_Path                 = 'Path';
   en_PathForAttachments   = 'Paths for saving attachments';
@@ -117,8 +117,10 @@ resourcestring
   en_TemplateName         = 'Template name';
   en_Text                 = 'Text';
   en_Time                 = 'Time';
+  en_UseRawText           = 'Use raw text';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
+  en_Import               = 'Import';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -169,6 +171,7 @@ resourcestring
   uk_GroupIndex           = 'Індекс групи';
   uk_Info                 = 'Опис ';
   uk_Language             = 'Мова';
+  uk_LoadRecordsFromDB    = 'Завантажувати записи з БД при старті';
   uk_Mask                 = 'Маска';
   uk_Matches              = 'Співпадіння';
   uk_MessageId            = 'Id листа';
@@ -185,7 +188,6 @@ resourcestring
   uk_Options              = 'Опції';
   uk_Parameter            = 'Параметр';
   uk_Parameters           = 'Параметри';
-  uk_UseRawText           = 'Парсити сирий текст';
   uk_Paste                = 'Вставити';
   uk_Path                 = 'Шлях';
   uk_PathForAttachments   = 'Шляхи для збереження вкладень';
@@ -217,11 +219,13 @@ resourcestring
   uk_TemplateName         = 'Назва шаблону';
   uk_Text                 = 'Текст';
   uk_Time                 = 'Час';
+  uk_UseRawText           = 'Парсити сирий текст';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
+  uk_Import               = 'Імпорт';
 
 const
-   ArrayMessages: array[1 .. 96] of TMessageItem = (
+   ArrayMessages: array[1 .. 98] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
@@ -246,8 +250,10 @@ const
     (Key: 'Edit'                 ; En: en_Edit;                 Uk: uk_Edit),
     (Key: 'EditCommonParameters' ; En: en_EditCommonParameters; Uk: uk_EditCommonParameters),
     (Key: 'EditRegExpParameters' ; En: en_EditRegExpParameters; Uk: uk_EditRegExpParameters),
+    (Key: 'LoadRecordsFromDB'    ; En: en_LoadRecordsFromDB;    Uk: uk_LoadRecordsFromDB),
     (Key: 'Emails'               ; En: en_Emails;               Uk: uk_Emails),
     (Key: 'Email'                ; En: en_Email;                Uk: uk_Email),
+    (Key: 'Import'               ; En: en_Import;               Uk: uk_Import),
     (Key: 'Enabled'              ; En: en_Enabled;              Uk: uk_Enabled),
     (Key: 'End'                  ; En: en_End;                  Uk: uk_End),
     (Key: 'Error'                ; En: en_Error;                Uk: uk_Error),

@@ -48,12 +48,12 @@ implementation
 
 procedure TFrameCustom.Initialize;
 begin
-
+  TGeneral.XMLParams.Open;
 end;
 
 procedure TFrameCustom.Deinitialize;
 begin
-
+  TGeneral.XMLParams.Save;
 end;
 
 procedure TFrameCustom.Translate;

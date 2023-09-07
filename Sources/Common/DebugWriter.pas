@@ -14,7 +14,6 @@ uses
 
 type
   TLogDetailType = (ddEnterMethod, ddExitMethod, ddError, ddText, ddWarning);
-  TLogDetailTypes = set of TLogDetailType;
   TLogDetailTypeHelper = record helper for TLogDetailType
   private
     const LogDetailTypesString: array[TLogDetailType] of string = ('Enter Method', 'Exit Method', 'Error', 'Text', 'Warning');

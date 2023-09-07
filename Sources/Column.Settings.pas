@@ -52,7 +52,7 @@ type
     class function ShowDocument(const aArrayColumns: PArrayColumns; const aIdentityName: string): TModalResult;
     class function ShowSettings(const aTree: TVirtualStringTree; const aIdentityName: string; const aFixedColumn: Integer): TModalResult;
     procedure Initialize;
-    procedure Denitialize;
+    procedure Deinitialize;
   end;
 
 implementation
@@ -68,7 +68,7 @@ begin
       Initialize;
       Result := ShowModal;
       if (Result = mrOk) then
-        Denitialize;
+        Deinitialize;
     finally
       Free;
     end;
@@ -170,7 +170,7 @@ begin
   btnCancel.Caption := TLang.Lang.Translate('Cancel');
 end;
 
-procedure TfrmColumnSettings.Denitialize;
+procedure TfrmColumnSettings.Deinitialize;
 var
   Data: PColumnSetting;
   Node: PVirtualNode;

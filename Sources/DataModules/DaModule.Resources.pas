@@ -33,7 +33,8 @@ resourcestring
                      '  PARSED_TEXT  blob,'                                                    + sLineBreak +
                      '  FROM_ZIP     integer,'                                                 + sLineBreak +
                      '  IMAGE_INDEX  integer);'                                                + sLineBreak +
-                     'create unique index if not exists UI_HASH on ATTACHMENTS(HASH);';
+                     'create unique index if not exists UI_HASH on ATTACHMENTS(HASH);'         + sLineBreak +
+                     'create index if not exists IDX_PARENT_HASH on ATTACHMENTS(PARENT_HASH ASC);';
   rsSQLInsertEmail = 'insert or ignore into EMAILS(HASH, MESSAGE_ID, FILE_NAME, SHORT_NAME, SUBJECT, BODY, PARSED_TEXT, ADDRESS_FROM, CONTENT_TYPE, TIME_STAMP) ' + sLineBreak +
                      '                      values(:HASH, :MESSAGE_ID, :FILE_NAME, :SHORT_NAME, :SUBJECT, :BODY, :PARSED_TEXT, :ADDRESS_FROM, :CONTENT_TYPE, :TIME_STAMP)';
 

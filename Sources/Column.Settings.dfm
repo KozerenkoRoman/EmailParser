@@ -25,6 +25,8 @@ object frmColumnSettings: TfrmColumnSettings
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitTop = 466
+    ExplicitWidth = 357
     object btnCancel: TBitBtn
       Left = 140
       Top = 1
@@ -81,15 +83,13 @@ object frmColumnSettings: TfrmColumnSettings
     OnGetText = vstColumnsGetText
     Touch.InteractiveGestures = [igPan, igPressAndTap]
     Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
-    ExplicitWidth = 365
-    ExplicitHeight = 468
     Columns = <
       item
         CaptionAlignment = taCenter
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 0
         Text = 'Name'
-        Width = 317
+        Width = 305
       end
       item
         Alignment = taRightJustify

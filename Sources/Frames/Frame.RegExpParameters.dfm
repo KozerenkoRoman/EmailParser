@@ -1,84 +1,49 @@
 inherited frameRegExpParameters: TframeRegExpParameters
-  Width = 753
+  Width = 950
   Height = 444
-  ExplicitWidth = 753
+  ExplicitWidth = 950
   ExplicitHeight = 444
   inherited tbMain: TToolBar
-    Top = 39
-    Width = 753
-    ExplicitTop = 39
-    ExplicitWidth = 753
-  end
-  object tbSettings: TToolBar [1]
-    Left = 0
-    Top = 0
-    Width = 753
-    Height = 39
-    ButtonHeight = 47
-    ButtonWidth = 45
-    EdgeInner = esNone
-    EdgeOuter = esNone
-    Images = DMImage.vil32
+    Top = 41
+    Width = 950
+    Height = 41
     TabOrder = 2
-    object pnlSettings: TPanel
-      Left = 0
-      Top = 0
-      Width = 449
-      Height = 47
-      Align = alLeft
-      BevelOuter = bvNone
-      TabOrder = 0
-      object lblSetOfTemplates: TLabel
-        AlignWithMargins = True
-        Left = 3
-        Top = 1
-        Width = 108
-        Height = 33
-        Alignment = taRightJustify
-        AutoSize = False
-        Caption = 'Set of templates'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        Layout = tlCenter
-      end
-      object cbSetOfTemplates: TComboBox
-        AlignWithMargins = True
-        Left = 117
-        Top = 8
-        Width = 332
-        Height = 23
-        Style = csDropDownList
-        TabOrder = 0
-        OnChange = cbSetOfTemplatesChange
-      end
+    ExplicitTop = 41
+    ExplicitWidth = 950
+    ExplicitHeight = 41
+    inherited btnSave: TToolButton
+      Action = nil
+      Visible = False
+      OnClick = aSaveExecute
     end
-    object btnSaveSet: TToolButton
-      Left = 449
+    object btnSep05: TToolButton
+      Left = 375
       Top = 0
-      Caption = 'Save template set'
-      DropdownMenu = pmFrame
-      ImageIndex = 26
-      ImageName = 'SaveAll_32x32'
-      Style = tbsDropDown
-      OnClick = aSaveSetExecute
+      Width = 8
+      Caption = 'btnSep05'
+      ImageIndex = 31
+      ImageName = 'transform_rotate'
+      Style = tbsSeparator
     end
-    object btnDeleteSet: TToolButton
-      Left = 509
+    object btnUp: TToolButton
+      Left = 383
       Top = 0
-      Action = aDeleteSet
+      Action = aUp
+    end
+    object btnDown: TToolButton
+      Left = 422
+      Top = 0
+      Action = aDown
     end
   end
   inherited vstTree: TVirtualStringTree
-    Top = 78
-    Width = 753
-    Height = 366
+    Top = 82
+    Width = 950
+    Height = 362
     Alignment = taRightJustify
     DefaultNodeHeight = 18
     Header.MainColumn = 3
+    Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowHint, hoShowImages, hoShowSortGlyphs, hoVisible]
     OnChecked = vstTreeChecked
     OnCompareNodes = vstTreeCompareNodes
     OnCreateEditor = vstTreeCreateEditor
@@ -86,9 +51,9 @@ inherited frameRegExpParameters: TframeRegExpParameters
     OnEditing = vstTreeEditing
     OnGetText = vstTreeGetText
     OnNewText = vstTreeNewText
-    ExplicitTop = 78
-    ExplicitWidth = 753
-    ExplicitHeight = 366
+    ExplicitTop = 82
+    ExplicitWidth = 950
+    ExplicitHeight = 362
     Columns = <
       item
         CaptionAlignment = taCenter
@@ -124,6 +89,84 @@ inherited frameRegExpParameters: TframeRegExpParameters
         Width = 103
       end>
   end
+  object tbSettings: TToolBar [2]
+    Left = 0
+    Top = 0
+    Width = 950
+    Height = 41
+    ButtonHeight = 39
+    ButtonWidth = 39
+    EdgeInner = esNone
+    EdgeOuter = esNone
+    Images = DMImage.vil32
+    TabOrder = 0
+    object pnlSettings: TPanel
+      Left = 0
+      Top = 0
+      Width = 336
+      Height = 39
+      Align = alLeft
+      BevelOuter = bvNone
+      TabOrder = 0
+      object lblSetOfTemplates: TLabel
+        AlignWithMargins = True
+        Left = 3
+        Top = 1
+        Width = 108
+        Height = 33
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'Set of templates'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+        Transparent = False
+        Layout = tlCenter
+      end
+      object cbSetOfTemplates: TComboBox
+        AlignWithMargins = True
+        Left = 117
+        Top = 8
+        Width = 213
+        Height = 23
+        Style = csDropDownList
+        TabOrder = 0
+        OnChange = cbSetOfTemplatesChange
+      end
+    end
+    object btnSave02: TToolButton
+      Left = 336
+      Top = 0
+      Action = aSave
+    end
+    object btnSaveSetAs: TToolButton
+      Left = 375
+      Top = 0
+      Action = aSaveAs
+    end
+    object btnDeleteSet: TToolButton
+      Left = 414
+      Top = 0
+      Action = aDeleteSet
+    end
+    object btnSep04: TToolButton
+      Left = 453
+      Top = 0
+      Width = 8
+      Caption = 'btnSep04'
+      ImageIndex = 64
+      ImageName = 'sql'
+      Style = tbsSeparator
+    end
+    object btnImportFromXML: TToolButton
+      Left = 461
+      Top = 0
+      Action = aImportFromXML
+    end
+  end
   inherited alFrame: TActionList
     Left = 96
     inherited aAdd: TAction
@@ -150,32 +193,37 @@ inherited frameRegExpParameters: TframeRegExpParameters
     end
     inherited aSave: TAction [7]
       OnExecute = aSaveExecute
+      OnUpdate = aSaveUpdate
     end
-    object aSaveSet: TAction
-      Caption = 'Save template set'
-      ImageIndex = 10
-      ImageName = 'Save_32x32'
-      OnExecute = aSaveSetExecute
-      OnUpdate = aSaveSetUpdate
-    end
-    object aSaveSetAs: TAction
+    object aSaveAs: TAction [8]
       Caption = 'Save temlate set as...'
-      OnExecute = aSaveSetAsExecute
+      ImageIndex = 26
+      ImageName = 'SaveAll_32x32'
+      OnExecute = aSaveAsExecute
     end
     object aDeleteSet: TAction
       ImageIndex = 65
       ImageName = 'DeleteList2_32x32'
       OnExecute = aDeleteSetExecute
-      OnUpdate = aSaveSetUpdate
     end
-  end
-  inherited pmFrame: TPopupMenu
-    object miSaveSet: TMenuItem
-      Action = aSaveSet
-      Default = True
+    object aImportFromXML: TAction
+      ImageIndex = 62
+      ImageName = 'ImportXML'
+      OnExecute = aImportFromXMLExecute
     end
-    object miSaveSetAs: TMenuItem
-      Action = aSaveSetAs
+    object aUp: TAction
+      Caption = 'aUp'
+      ImageIndex = 29
+      ImageName = 'Up2_32x32'
+      OnExecute = aUpExecute
+      OnUpdate = aUpUpdate
+    end
+    object aDown: TAction
+      Caption = 'aDown'
+      ImageIndex = 30
+      ImageName = 'Fill_32x32'
+      OnExecute = aDownExecute
+      OnUpdate = aDownUpdate
     end
   end
 end

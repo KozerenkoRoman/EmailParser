@@ -46,7 +46,7 @@ const
     (TypeSignature: fsUnknown; Signature: [])
     );
   LENGTH_SIGNATURE = 12;
-  FORBIDDEN_EXT: string = '.exe.com.cmd.bat';
+  FORBIDDEN_EXT: string = '.exe.com.cmd.bat.eml';
 
 implementation
 

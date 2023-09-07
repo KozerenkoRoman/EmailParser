@@ -28,6 +28,7 @@ uses
   Frame.Pathes in 'Sources\Frames\Frame.Pathes.pas' {framePathes: TFrame},
   Frame.RegExpParameters in 'Sources\Frames\Frame.RegExpParameters.pas' {frameRegExpParameters: TFrame},
   Frame.ResultView in 'Sources\Frames\Frame.ResultView.pas' {frameResultView: TFrame},
+  Frame.Sorter in 'Sources\Frames\Frame.Sorter.pas' {frameSorter: TFrame},
   Frame.Source in 'Sources\Frames\Frame.Source.pas' {frameSource: TFrame},
   Global.Resources in 'Sources\Global.Resources.pas',
   Global.Types in 'Sources\Global.Types.pas',
@@ -45,8 +46,10 @@ uses
   Publishers in 'Sources\Publishers.pas',
   Publishers.Interfaces in 'Sources\Publishers.Interfaces.pas',
   RegExp.Editor in 'Sources\RegExp.Editor.pas' {frmRegExpEditor},
+  RegExp.Import in 'Sources\RegExp.Import.pas' {frmImportFromXML},
   RegExp.Types in 'Sources\Common\RegExp.Types.pas',
   SplashScreen in 'Sources\SplashScreen.pas' {frmSplashScreen},
+  SplashScreen.Resources in 'Sources\SplashScreen.Resources.pas',
   Thread.Emails in 'Sources\DataModules\Thread.Emails.pas',
   Translate.Lang in 'Sources\Translate\Translate.Lang.pas',
   Translate.Resources in 'Sources\Translate\Translate.Resources.pas',
@@ -59,7 +62,7 @@ uses
   VirtualTrees.ExportHelper in 'Sources\Virtual TreeView\VirtualTrees.ExportHelper.pas',
   VirtualTrees.Helper in 'Sources\Virtual TreeView\VirtualTrees.Helper.pas',
   XmlFiles in 'Sources\Common\XmlFiles.pas',
-  Frame.Sorter in 'Sources\Frames\Frame.Sorter.pas' {frameSorter: TFrame};
+  RegExp.Utils in 'Sources\RegExp.Utils.pas';
 
 {$R *.res}
 
@@ -75,9 +78,9 @@ begin
       TfrmSplashScreen.ShowSplashScreen;
 {$ENDIF}
       Application.CreateForm(TDMImage, DMImage);
-      Application.CreateForm(TDaMod, DaMod);
-      Application.CreateForm(TfrmMain, frmMain);
-      frmMain.Initialize;
+  Application.CreateForm(TDaMod, DaMod);
+  Application.CreateForm(TfrmMain, frmMain);
+  frmMain.Initialize;
     finally
       TfrmSplashScreen.HideSplashScreen;
     end;

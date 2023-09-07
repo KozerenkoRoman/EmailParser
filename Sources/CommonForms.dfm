@@ -1,8 +1,8 @@
 object CommonForm: TCommonForm
   Left = 0
   Top = 0
-  ClientHeight = 196
-  ClientWidth = 284
+  ClientHeight = 195
+  ClientWidth = 280
   Color = clBtnFace
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET

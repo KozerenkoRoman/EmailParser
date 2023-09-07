@@ -11,20 +11,27 @@ uses
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Publishers,
-  VCLTee.TeCanvas, Global.Resources, Winapi.msxml, RegExp.Editor, Vcl.WinXPanels, Frame.Custom;
+  VCLTee.TeCanvas, Global.Resources, Winapi.msxml, RegExp.Editor, Vcl.WinXPanels, Frame.Custom, RegExp.Import,
+  RegExp.Utils;
 {$ENDREGION}
 
 type
   TframeRegExpParameters = class(TframeSource)
     aDeleteSet        : TAction;
-    aSaveSet          : TAction;
-    aSaveSetAs        : TAction;
+    aDown             : TAction;
+    aImportFromXML    : TAction;
+    aSaveAs           : TAction;
+    aUp               : TAction;
     btnDeleteSet      : TToolButton;
-    btnSaveSet        : TToolButton;
+    btnDown           : TToolButton;
+    btnImportFromXML  : TToolButton;
+    btnSave02         : TToolButton;
+    btnSaveSetAs      : TToolButton;
+    btnSep04          : TToolButton;
+    btnSep05          : TToolButton;
+    btnUp             : TToolButton;
     cbSetOfTemplates  : TComboBox;
     lblSetOfTemplates : TLabel;
-    miSaveSet         : TMenuItem;
-    miSaveSetAs       : TMenuItem;
     pnlSettings       : TPanel;
     tbSettings        : TToolBar;
     procedure aAddExecute(Sender: TObject);
@@ -32,20 +39,24 @@ type
     procedure aDeleteExecute(Sender: TObject);
     procedure aDeleteSetExecute(Sender: TObject);
     procedure aDeleteUpdate(Sender: TObject);
+    procedure aDownExecute(Sender: TObject);
+    procedure aDownUpdate(Sender: TObject);
     procedure aEditExecute(Sender: TObject);
+    procedure aImportFromXMLExecute(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
+    procedure aSaveAsExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
-    procedure aSaveSetAsExecute(Sender: TObject);
-    procedure aSaveSetExecute(Sender: TObject);
-    procedure aSaveSetUpdate(Sender: TObject);
+    procedure aSaveUpdate(Sender: TObject);
+    procedure aUpExecute(Sender: TObject);
+    procedure aUpUpdate(Sender: TObject);
     procedure cbSetOfTemplatesChange(Sender: TObject);
+    procedure vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
     procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
-    procedure vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
   private const
     COL_PARAM_NAME      = 0;
     COL_REGEXP_TEMPLATE = 1;
@@ -54,8 +65,8 @@ type
 
     C_IDENTITY_NAME = 'frameRegExpParameters';
   private
-    function SaveSetOfTemplate(const aSection, aName: string): string;
-    procedure RestoreSetOfTemplate(const aSection: string);
+//    function SaveSetOfTemplate(const aTree: TVirtualStringTree; const aSection, aName: string): string;
+//    procedure RestoreSetOfTemplate(const aSection: string);
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
     function GetIdentityName: string; override;
@@ -105,6 +116,7 @@ begin
   LoadFromXML;
   vstTree.FullExpand;
   Translate;
+  btnSave.Left := btnSaveSetAs.Left;
 end;
 
 procedure TframeRegExpParameters.Deinitialize;
@@ -116,10 +128,11 @@ end;
 procedure TframeRegExpParameters.Translate;
 begin
   inherited;
-  aSaveSet.Caption                                 := TLang.Lang.Translate('Save');
-  aSaveSetAs.Caption                               := TLang.Lang.Translate('SaveAs');
-  aDeleteSet.Hint                                  := TLang.Lang.Translate('Delete');
-  lblSetOfTemplates.Caption                        := TLang.Lang.Translate('SetOfTemplates');
+  aDeleteSet.Hint           := TLang.Lang.Translate('Delete');
+  aImportFromXML.Hint       := TLang.Lang.Translate('Import');
+  aSave.Hint                := TLang.Lang.Translate('Save');
+  aSaveAs.Hint              := TLang.Lang.Translate('SaveAs');
+  lblSetOfTemplates.Caption := TLang.Lang.Translate('SetOfTemplates');
   vstTree.Header.Columns[COL_PARAM_NAME].Text      := TLang.Lang.Translate('TemplateName');
   vstTree.Header.Columns[COL_REGEXP_TEMPLATE].Text := TLang.Lang.Translate('RegExpTemplate');
   vstTree.Header.Columns[COL_GROUP_INDEX].Text     := TLang.Lang.Translate('GroupIndex');
@@ -210,6 +223,13 @@ begin
   end;
 end;
 
+procedure TframeRegExpParameters.aImportFromXMLExecute(Sender: TObject);
+begin
+  inherited;
+  TfrmImportFromXML.ShowDocument;
+  LoadFromXML;
+end;
+
 procedure TframeRegExpParameters.aRefreshExecute(Sender: TObject);
 begin
   inherited;
@@ -260,7 +280,6 @@ begin
   inherited;
   TGeneral.XMLParams.Open;
   LoadSetsOfTemplate;
-  cbSetOfTemplates.ItemIndex := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'TemplateIndex', -1);
   vstTree.BeginUpdate;
   try
     vstTree.Clear;
@@ -268,13 +287,9 @@ begin
   finally
     vstTree.EndUpdate;
   end;
-end;
-
-procedure TframeRegExpParameters.aSaveExecute(Sender: TObject);
-begin
-  inherited;
-  SaveToXML;
-  TPublishers.UpdateXMLPublisher.UpdateXML;
+  cbSetOfTemplates.ItemIndex := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'TemplateIndex', -1);
+  if (cbSetOfTemplates.ItemIndex > -1) then
+    cbSetOfTemplatesChange(nil);
 end;
 
 procedure TframeRegExpParameters.vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -291,6 +306,7 @@ var
   Data1, Data2: PRegExpData;
 begin
   inherited;
+  Exit;
   Data1 := Node1^.GetData;
   Data2 := Node2^.GetData;
   case Column of
@@ -385,7 +401,7 @@ begin
   end;
 end;
 
-procedure TframeRegExpParameters.aSaveSetExecute(Sender: TObject);
+procedure TframeRegExpParameters.aSaveExecute(Sender: TObject);
 var
   str: TStringObject;
 begin
@@ -393,11 +409,13 @@ begin
   if (cbSetOfTemplates.ItemIndex > -1) then
   begin
     str := TStringObject(cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex]);
-    SaveSetOfTemplate(str.StringValue, cbSetOfTemplates.Text);
+    TRegExpUtils.SaveSetOfTemplate(vstTree, str.StringValue, cbSetOfTemplates.Text);
   end;
+  SaveToXML;
+  TPublishers.UpdateXMLPublisher.UpdateXML;
 end;
 
-procedure TframeRegExpParameters.aSaveSetAsExecute(Sender: TObject);
+procedure TframeRegExpParameters.aSaveAsExecute(Sender: TObject);
 var
   NewName: string;
   Section: string;
@@ -410,23 +428,73 @@ begin
   NewName := InputBox(Application.Title, TLang.Lang.Translate('NewNamePrompt'), NewName);
   if not NewName.IsEmpty then
   begin
-    Section := SaveSetOfTemplate(string.Empty, NewName);
+    Section := TRegExpUtils.SaveSetOfTemplate(vstTree, string.Empty, NewName);
     cbSetOfTemplates.Items.AddObject(NewName, TStringObject.Create(Section));
     cbSetOfTemplates.ItemIndex := cbSetOfTemplates.Items.Count - 1;
   end;
 end;
 
-procedure TframeRegExpParameters.aSaveSetUpdate(Sender: TObject);
+procedure TframeRegExpParameters.aSaveUpdate(Sender: TObject);
 begin
   inherited;
   TAction(Sender).Enabled := (cbSetOfTemplates.ItemIndex > -1);
+end;
+
+procedure TframeRegExpParameters.aUpExecute(Sender: TObject);
+var
+  Node: PVirtualNode;
+  PrevNode: PVirtualNode;
+begin
+  inherited;
+  Node := vstTree.FocusedNode;
+  if Assigned(Node) then
+  begin
+    PrevNode := Node.PrevSibling;
+    if Assigned(PrevNode) then
+      vstTree.MoveTo(Node, PrevNode, amInsertBefore, False);
+  end;
+end;
+
+procedure TframeRegExpParameters.aDownExecute(Sender: TObject);
+var
+  Node: PVirtualNode;
+  NextNode: PVirtualNode;
+begin
+  inherited;
+  Node := vstTree.FocusedNode;
+  if Assigned(Node) then
+  begin
+    NextNode := Node.NextSibling;
+    if Assigned(NextNode) then
+      vstTree.MoveTo(Node, NextNode, amInsertAfter, False);
+  end;
+end;
+
+procedure TframeRegExpParameters.aUpUpdate(Sender: TObject);
+begin
+  inherited;
+  TAction(Sender).Enabled := False;
+  if Assigned(vstTree.FocusedNode) then
+    TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.FirstChild;
+end;
+
+procedure TframeRegExpParameters.aDownUpdate(Sender: TObject);
+begin
+  inherited;
+  TAction(Sender).Enabled := False;
+  if Assigned(vstTree.FocusedNode) then
+    TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.LastChild;
 end;
 
 procedure TframeRegExpParameters.cbSetOfTemplatesChange(Sender: TObject);
 begin
   inherited;
   if (cbSetOfTemplates.ItemIndex > -1) then
-    RestoreSetOfTemplate(TStringObject(cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex]).StringValue);
+  begin
+    TRegExpUtils.RestoreSetOfTemplate(TGeneral.XMLParams, vstTree, TStringObject(cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex]).StringValue);
+    SaveToXML;
+    TPublishers.UpdateXMLPublisher.UpdateXML;
+  end;
 end;
 
 procedure TframeRegExpParameters.aDeleteSetExecute(Sender: TObject);
@@ -445,101 +513,6 @@ begin
     cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex].Free;
     cbSetOfTemplates.Items.Delete(cbSetOfTemplates.ItemIndex);
     cbSetOfTemplates.ItemIndex := -1;
-  end;
-end;
-
-procedure TframeRegExpParameters.RestoreSetOfTemplate(const aSection: string);
-var
-  Data: PRegExpData;
-  Node: PVirtualNode;
-begin
-  TGeneral.XMLParams.CurrentSection := TGeneral.XMLParams.GetXPath(C_SECTION_TEMPLATE_SETS, aSection);
-  vstTree.BeginUpdate;
-  try
-    vstTree.Clear;
-    while not TGeneral.XMLParams.IsLastKey do
-    begin
-      if TGeneral.XMLParams.ReadAttributes then
-      begin
-        Node := vstTree.AddChild(nil);
-        Data := Node.GetData;
-        Data^.ParameterName  := TGeneral.XMLParams.Attributes.GetAttributeValue('ParameterName', '');
-        Data^.RegExpTemplate := TGeneral.XMLParams.Attributes.GetAttributeValue('RegExpTemplate', '');
-        Data^.GroupIndex     := TGeneral.XMLParams.Attributes.GetAttributeValue('GroupIndex', 0);
-        Data^.UseRawText     := TGeneral.XMLParams.Attributes.GetAttributeValue('UseRawText', False);
-
-        vstTree.CheckType[Node] := ctCheckBox;
-        if Data^.UseRawText then
-          Node.CheckState := csCheckedNormal
-        else
-          Node.CheckState := csUnCheckedNormal;
-      end;
-      TGeneral.XMLParams.NextKey;
-    end;
-  finally
-    TGeneral.XMLParams.CurrentSection := '';
-    vstTree.EndUpdate;
-  end;
-end;
-
-function TframeRegExpParameters.SaveSetOfTemplate(const aSection, aName: string): string;
-
- procedure SaveNode(const aXmlNode: IXMLDOMNode; const aTreeNode: PVirtualNode);
-  var
-    Data: PRegExpData;
-  begin
-    if Assigned(aXmlNode) and Assigned(aTreeNode) then
-    begin
-      Data := aTreeNode^.GetData;
-      with TGeneral.XMLParams do
-      begin
-        Attributes.Node := aXmlNode;
-        Attributes.SetAttributeValue('ParameterName', Data^.ParameterName);
-        Attributes.SetAttributeValue('RegExpTemplate', Data^.RegExpTemplate);
-        Attributes.SetAttributeValue('GroupIndex', Data^.GroupIndex);
-        Attributes.SetAttributeValue('UseRawText', Data^.UseRawText);
-        WriteAttributes;
-      end;
-    end;
-  end;
-
-var
-  iItemNode : IXMLDOMNode;
-  iSetNode  : IXMLDOMNode;
-  NewSet    : string;
-  TreeNode  : PVirtualNode;
-begin
-  inherited;
-  if aSection.IsEmpty then
-    NewSet := 'Set.' + TGeneral.GetCounterValue.ToString
-  else
-    NewSet := aSection;
-  Result := NewSet;
-
-  TGeneral.XMLParams.Open;
-  try
-    iSetNode := TGeneral.XMLParams.GetNode(TGeneral.XMLParams.GetXPath(C_SECTION_TEMPLATE_SETS, NewSet));
-    if aSection.IsEmpty then
-      with TGeneral.XMLParams do
-      begin
-        Attributes.Node := iSetNode;
-        Attributes.SetAttributeValue('Name', aName);
-        WriteAttributes;
-      end
-    else
-      TGeneral.XMLParams.EraseSection(TGeneral.XMLParams.GetXPath(C_SECTION_TEMPLATE_SETS, NewSet));
-
-    TreeNode := vstTree.GetFirst;
-    while Assigned(TreeNode) do
-    begin
-      iItemNode := TGeneral.XMLParams.XMLDomDocument.createNode(varNull, 'Item', '');
-      iSetNode.appendChild(iItemNode);
-      SaveNode(iItemNode, TreeNode);
-      TreeNode := TreeNode.NextSibling;
-    end;
-  finally
-    TGeneral.XMLParams.CurrentSection := '';
-    TGeneral.XMLParams.Save;
   end;
 end;
 

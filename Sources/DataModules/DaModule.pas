@@ -104,7 +104,8 @@ begin
     qEmailBodyAndText.Prepare;
     qEmailByHash.Prepare;
     qAttachments.Prepare;
-//    FillAllEmailsRecord;
+    if TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'LoadRecordsFromDB', True) then
+      FillAllEmailsRecord(True);
   except
     on E: Exception do
       LogWriter.Write(ddError, Self, 'Initialize', E.Message);
@@ -150,8 +151,9 @@ begin
             Result := TZipPack.DecompressStr(Query.Fields[0].AsBytes);
           except
             on Dec: Exception do
-              LogWriter.Write(ddError, 'GetDecompressStr', Dec.Message + sLineBreak +
-                                                           'Hash - ' + aHash);
+              LogWriter.Write(ddError, 'GetDecompressStr',
+                                       Dec.Message + sLineBreak +
+                                       'Hash - ' + aHash);
           end;
         Query.Close;
       finally
@@ -224,6 +226,7 @@ begin
   qEmail.ParamByName('HASH').AsString := aResultData.Hash;
   try
     qEmail.Open;
+    aResultData.FileName    := qEmail.FieldByName('FILE_NAME').AsString;
     aResultData.ShortName   := qEmail.FieldByName('SHORT_NAME').AsString;
     aResultData.MessageId   := qEmail.FieldByName('MESSAGE_ID').AsString;
     aResultData.Subject     := qEmail.FieldByName('SUBJECT').AsString;
@@ -269,6 +272,7 @@ var
   i: Integer;
   ResultData: PResultData;
 begin
+  LogWriter.Write(ddEnterMethod, Self, 'FillAllEmailsRecord');
   try
     qAllEmails.Open;
     qAllEmails.First;
@@ -320,6 +324,7 @@ begin
     end;
   finally
     qAllEmails.Close;
+    LogWriter.Write(ddExitMethod, Self, 'FillAllEmailsRecord');
   end;
 end;
 

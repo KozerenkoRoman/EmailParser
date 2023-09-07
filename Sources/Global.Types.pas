@@ -99,6 +99,7 @@ type
     function GetItem(const aKey: string): PResultData;
     procedure AddItem(const aResultData: PResultData);
     procedure ClearData;
+    procedure ClearParentNodePointer;
   end;
 
   TGeneral = record
@@ -109,6 +110,7 @@ type
     class function GetRegExpParametersList: TRegExpArray; static;
     class function XMLFile: TXMLFile; static;
     class function XMLParams: TXMLFile; static;
+    class procedure NoHibernate; static;
     class var
       EmailList: TEmailList;
   end;
@@ -138,6 +140,12 @@ var
   FXMLParams: TXMLFile = nil;
 
 { TGeneral }
+
+class procedure TGeneral.NoHibernate;
+begin
+  if Assigned(@SetThreadExecutionState) then
+    SetThreadExecutionState(ES_SYSTEM_REQUIRED or ES_CONTINUOUS {or ES_DISPLAY_REQUIRED});
+end;
 
 class function TGeneral.XMLFile: TXMLFile;
 begin
@@ -268,6 +276,7 @@ begin
     Self.Attachments[att].Clear;
   Self := Default(TResultData);
   Self.ParentNode := nil;
+  Self.IsMatch    := False;
 end;
 
 procedure TResultData.LengthAlignment;
@@ -372,6 +381,12 @@ begin
   for var item in Self do
     Dispose(item.Value);
   Self.Clear;
+end;
+
+procedure TEmailList.ClearParentNodePointer;
+begin
+  for var item in Self.Values do
+    item.ParentNode := nil;
 end;
 
 { TSorterPath }

@@ -63,6 +63,16 @@ inherited frameCommonSettings: TframeCommonSettings
         Column = 1
         Control = cbDeleteAttachments
         Row = 3
+      end
+      item
+        Column = 0
+        Control = lblLoadRecordsFromDB
+        Row = 4
+      end
+      item
+        Column = 1
+        Control = cbLoadRecordsFromDB
+        Row = 4
       end>
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -210,6 +220,30 @@ inherited frameCommonSettings: TframeCommonSettings
       Margins.Left = 10
       Align = alLeft
       TabOrder = 3
+    end
+    object lblLoadRecordsFromDB: TLabel
+      AlignWithMargins = True
+      Left = 3
+      Top = 143
+      Width = 314
+      Height = 29
+      Align = alClient
+      Alignment = taRightJustify
+      Caption = 'Load records from the database at startup'
+      Layout = tlCenter
+      ExplicitLeft = 67
+      ExplicitWidth = 250
+      ExplicitHeight = 17
+    end
+    object cbLoadRecordsFromDB: TCheckBox
+      AlignWithMargins = True
+      Left = 330
+      Top = 143
+      Width = 50
+      Height = 29
+      Margins.Left = 10
+      Align = alLeft
+      TabOrder = 4
     end
   end
   inherited alFrame: TActionList
