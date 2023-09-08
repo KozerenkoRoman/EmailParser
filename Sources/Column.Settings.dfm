@@ -79,8 +79,11 @@ object frmColumnSettings: TfrmColumnSettings
     TreeOptions.SelectionOptions = [toFullRowSelect]
     OnChecked = vstColumnsChecked
     OnCompareNodes = vstColumnsCompareNodes
+    OnCreateEditor = vstColumnsCreateEditor
+    OnEditing = vstColumnsEditing
     OnFreeNode = vstColumnsFreeNode
     OnGetText = vstColumnsGetText
+    OnNewText = vstColumnsNewText
     Touch.InteractiveGestures = [igPan, igPressAndTap]
     Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
     Columns = <

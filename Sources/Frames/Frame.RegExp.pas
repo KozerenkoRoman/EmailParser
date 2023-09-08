@@ -1,4 +1,4 @@
-unit Frame.RegExpParameters;
+unit Frame.RegExp;
 
 interface
 
@@ -16,7 +16,7 @@ uses
 {$ENDREGION}
 
 type
-  TframeRegExpParameters = class(TframeSource)
+  TframeRegExp = class(TframeSource)
     aDeleteSet        : TAction;
     aDown             : TAction;
     aImportFromXML    : TAction;
@@ -63,10 +63,8 @@ type
     COL_GROUP_INDEX     = 2;
     COL_USE_RAW_TEXT    = 3;
 
-    C_IDENTITY_NAME = 'frameRegExpParameters';
+    C_IDENTITY_NAME = 'frameRegExp';
   private
-//    function SaveSetOfTemplate(const aTree: TVirtualStringTree; const aSection, aName: string): string;
-//    procedure RestoreSetOfTemplate(const aSection: string);
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
     function GetIdentityName: string; override;
@@ -85,15 +83,15 @@ implementation
 
 {$R *.dfm}
 
-{ TframeRegExpParameters }
+{ TframeRegExp }
 
-constructor TframeRegExpParameters.Create(AOwner: TComponent);
+constructor TframeRegExp.Create(AOwner: TComponent);
 begin
   inherited;
   vstTree.NodeDataSize := SizeOf(TRegExpData);
 end;
 
-destructor TframeRegExpParameters.Destroy;
+destructor TframeRegExp.Destroy;
 begin
   for var i := 0 to cbSetOfTemplates.Items.Count - 1 do
     cbSetOfTemplates.Items.Objects[i].Free;
@@ -101,12 +99,12 @@ begin
   inherited;
 end;
 
-function TframeRegExpParameters.GetIdentityName: string;
+function TframeRegExp.GetIdentityName: string;
 begin
   Result := C_IDENTITY_NAME;
 end;
 
-procedure TframeRegExpParameters.Initialize;
+procedure TframeRegExp.Initialize;
 begin
   inherited Initialize;
   tbSettings.ButtonHeight := C_ICON_SIZE;
@@ -114,18 +112,18 @@ begin
   tbSettings.Height       := C_ICON_SIZE + 2;
 
   LoadFromXML;
-  vstTree.FullExpand;
   Translate;
+  vstTree.FullExpand;
   btnSave.Left := btnSaveSetAs.Left;
 end;
 
-procedure TframeRegExpParameters.Deinitialize;
+procedure TframeRegExp.Deinitialize;
 begin
   TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'TemplateIndex', cbSetOfTemplates.ItemIndex, lblSetOfTemplates.Caption);
   inherited Deinitialize;
 end;
 
-procedure TframeRegExpParameters.Translate;
+procedure TframeRegExp.Translate;
 begin
   inherited;
   aDeleteSet.Hint           := TLang.Lang.Translate('Delete');
@@ -139,104 +137,7 @@ begin
   vstTree.Header.Columns[COL_USE_RAW_TEXT].Text    := TLang.Lang.Translate('UseRawText');
 end;
 
-procedure TframeRegExpParameters.SaveToXML;
-
-  procedure SaveNode(const aNode: PVirtualNode);
-  var
-    Data: PRegExpData;
-  begin
-    Data := aNode^.GetData;
-    TGeneral.XMLParams.Attributes.AddNode;
-    TGeneral.XMLParams.Attributes.SetAttributeValue('ParameterName', Data.ParameterName);
-    TGeneral.XMLParams.Attributes.SetAttributeValue('RegExpTemplate', Data.RegExpTemplate);
-    TGeneral.XMLParams.Attributes.SetAttributeValue('GroupIndex', Data.GroupIndex);
-    TGeneral.XMLParams.Attributes.SetAttributeValue('UseRawText', Data.UseRawText);
-    TGeneral.XMLParams.WriteAttributes;
-  end;
-
-var
-  Node: PVirtualNode;
-begin
-  inherited;
-  TGeneral.XMLParams.Open;
-  try
-    TGeneral.XMLParams.EraseSection('RegExpParameters');
-    TGeneral.XMLParams.CurrentSection := 'RegExpParameters';
-    Node := vstTree.GetFirst;
-    while Assigned(Node) do
-    begin
-      SaveNode(Node);
-      Node := Node.NextSibling;
-    end;
-  finally
-    TGeneral.XMLParams.CurrentSection := '';
-    TGeneral.XMLParams.Save;
-  end;
-end;
-
-procedure TframeRegExpParameters.aAddExecute(Sender: TObject);
-var
-  NewNode: PVirtualNode;
-begin
-  inherited;
-  vstTree.ClearSelection;
-  NewNode := vstTree.AddChild(nil);
-  vstTree.CheckType[NewNode] := ctCheckBox;
-  vstTree.Selected[NewNode] := True;
-end;
-
-procedure TframeRegExpParameters.aAddUpdate(Sender: TObject);
-begin
-  inherited;
-  TAction(Sender).Enabled := True;
-end;
-
-procedure TframeRegExpParameters.aDeleteExecute(Sender: TObject);
-begin
-  inherited;
-  if Assigned(vstTree.FocusedNode) then
-    vstTree.DeleteNode(vstTree.FocusedNode);
-end;
-
-procedure TframeRegExpParameters.aDeleteUpdate(Sender: TObject);
-begin
-  inherited;
-  TAction(Sender).Enabled := not vstTree.IsEmpty and Assigned(vstTree.FocusedNode);
-end;
-
-procedure TframeRegExpParameters.aEditExecute(Sender: TObject);
-var
-  Data: PRegExpData;
-  PatternResult: TArray<string>;
-begin
-  inherited;
-  if Assigned(vstTree.FocusedNode) then
-  begin
-    Data := vstTree.FocusedNode.GetData;
-    PatternResult := TfrmRegExpEditor.GetPattern(Data^.RegExpTemplate, Data^.ParameterName, Data^.GroupIndex);
-    if (Length(PatternResult) >= 3) then
-    begin
-      Data^.RegExpTemplate := PatternResult[0];
-      Data^.ParameterName  := PatternResult[1];
-      Data^.GroupIndex     := String.ToInteger(PatternResult[2]);
-    end;
-  end;
-end;
-
-procedure TframeRegExpParameters.aImportFromXMLExecute(Sender: TObject);
-begin
-  inherited;
-  TfrmImportFromXML.ShowDocument;
-  LoadFromXML;
-end;
-
-procedure TframeRegExpParameters.aRefreshExecute(Sender: TObject);
-begin
-  inherited;
-  LoadFromXML;
-end;
-
-procedure TframeRegExpParameters.LoadFromXML;
+procedure TframeRegExp.LoadFromXML;
 
   procedure LoadNode;
   var
@@ -292,7 +193,104 @@ begin
     cbSetOfTemplatesChange(nil);
 end;
 
-procedure TframeRegExpParameters.vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
+procedure TframeRegExp.SaveToXML;
+
+  procedure SaveNode(const aNode: PVirtualNode);
+  var
+    Data: PRegExpData;
+  begin
+    Data := aNode^.GetData;
+    TGeneral.XMLParams.Attributes.AddNode;
+    TGeneral.XMLParams.Attributes.SetAttributeValue('ParameterName', Data.ParameterName);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('RegExpTemplate', Data.RegExpTemplate);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('GroupIndex', Data.GroupIndex);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('UseRawText', Data.UseRawText);
+    TGeneral.XMLParams.WriteAttributes;
+  end;
+
+var
+  Node: PVirtualNode;
+begin
+  inherited;
+  TGeneral.XMLParams.Open;
+  try
+    TGeneral.XMLParams.EraseSection(C_SECTION_REGEXP);
+    TGeneral.XMLParams.CurrentSection := C_SECTION_REGEXP;
+    Node := vstTree.GetFirst;
+    while Assigned(Node) do
+    begin
+      SaveNode(Node);
+      Node := Node.NextSibling;
+    end;
+  finally
+    TGeneral.XMLParams.CurrentSection := '';
+    TGeneral.XMLParams.Save;
+  end;
+end;
+
+procedure TframeRegExp.aAddExecute(Sender: TObject);
+var
+  NewNode: PVirtualNode;
+begin
+  inherited;
+  vstTree.ClearSelection;
+  NewNode := vstTree.AddChild(nil);
+  vstTree.CheckType[NewNode] := ctCheckBox;
+  vstTree.Selected[NewNode] := True;
+end;
+
+procedure TframeRegExp.aAddUpdate(Sender: TObject);
+begin
+  inherited;
+  TAction(Sender).Enabled := True;
+end;
+
+procedure TframeRegExp.aDeleteExecute(Sender: TObject);
+begin
+  inherited;
+  if Assigned(vstTree.FocusedNode) then
+    vstTree.DeleteNode(vstTree.FocusedNode);
+end;
+
+procedure TframeRegExp.aDeleteUpdate(Sender: TObject);
+begin
+  inherited;
+  TAction(Sender).Enabled := not vstTree.IsEmpty and Assigned(vstTree.FocusedNode);
+end;
+
+procedure TframeRegExp.aEditExecute(Sender: TObject);
+var
+  Data: PRegExpData;
+  PatternResult: TArray<string>;
+begin
+  inherited;
+  if Assigned(vstTree.FocusedNode) then
+  begin
+    Data := vstTree.FocusedNode.GetData;
+    PatternResult := TfrmRegExpEditor.GetPattern(Data^.RegExpTemplate, Data^.ParameterName, Data^.GroupIndex);
+    if (Length(PatternResult) >= 3) then
+    begin
+      Data^.RegExpTemplate := PatternResult[0];
+      Data^.ParameterName  := PatternResult[1];
+      Data^.GroupIndex     := String.ToInteger(PatternResult[2]);
+    end;
+  end;
+end;
+
+procedure TframeRegExp.aImportFromXMLExecute(Sender: TObject);
+begin
+  inherited;
+  TfrmImportFromXML.ShowDocument;
+  LoadFromXML;
+end;
+
+procedure TframeRegExp.aRefreshExecute(Sender: TObject);
+begin
+  inherited;
+  LoadFromXML;
+end;
+
+procedure TframeRegExp.vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
   Data: PRegExpData;
 begin
@@ -301,7 +299,7 @@ begin
   Data.UseRawText := Node.CheckState = csCheckedNormal;
 end;
 
-procedure TframeRegExpParameters.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+procedure TframeRegExp.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
 var
   Data1, Data2: PRegExpData;
 begin
@@ -319,13 +317,13 @@ begin
   end;
 end;
 
-procedure TframeRegExpParameters.vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
+procedure TframeRegExp.vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
 begin
   inherited;
   EditLink := TStringEditLink.Create;
 end;
 
-procedure TframeRegExpParameters.vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
+procedure TframeRegExp.vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
 var
   Data: PRegExpData;
 begin
@@ -341,13 +339,13 @@ begin
   end;
 end;
 
-procedure TframeRegExpParameters.vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
+procedure TframeRegExp.vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
 begin
   inherited;
   Allowed := (Column in [COL_PARAM_NAME, COL_REGEXP_TEMPLATE, COL_GROUP_INDEX]);
 end;
 
-procedure TframeRegExpParameters.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+procedure TframeRegExp.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
   Data: PRegExpData;
 begin
@@ -357,7 +355,7 @@ begin
     Data^.Clear;
 end;
 
-procedure TframeRegExpParameters.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+procedure TframeRegExp.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
   Data: PRegExpData;
 begin
@@ -374,7 +372,7 @@ begin
   end;
 end;
 
-procedure TframeRegExpParameters.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
+procedure TframeRegExp.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
 var
   CellText: string;
 begin
@@ -382,7 +380,7 @@ begin
   Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
 end;
 
-procedure TframeRegExpParameters.SearchText(const aText: string);
+procedure TframeRegExp.SearchText(const aText: string);
 var
   Node: PVirtualNode;
 begin
@@ -401,7 +399,7 @@ begin
   end;
 end;
 
-procedure TframeRegExpParameters.aSaveExecute(Sender: TObject);
+procedure TframeRegExp.aSaveExecute(Sender: TObject);
 var
   str: TStringObject;
 begin
@@ -415,7 +413,7 @@ begin
   TPublishers.UpdateXMLPublisher.UpdateXML;
 end;
 
-procedure TframeRegExpParameters.aSaveAsExecute(Sender: TObject);
+procedure TframeRegExp.aSaveAsExecute(Sender: TObject);
 var
   NewName: string;
   Section: string;
@@ -434,13 +432,13 @@ begin
   end;
 end;
 
-procedure TframeRegExpParameters.aSaveUpdate(Sender: TObject);
+procedure TframeRegExp.aSaveUpdate(Sender: TObject);
 begin
   inherited;
   TAction(Sender).Enabled := (cbSetOfTemplates.ItemIndex > -1);
 end;
 
-procedure TframeRegExpParameters.aUpExecute(Sender: TObject);
+procedure TframeRegExp.aUpExecute(Sender: TObject);
 var
   Node: PVirtualNode;
   PrevNode: PVirtualNode;
@@ -455,7 +453,7 @@ begin
   end;
 end;
 
-procedure TframeRegExpParameters.aDownExecute(Sender: TObject);
+procedure TframeRegExp.aDownExecute(Sender: TObject);
 var
   Node: PVirtualNode;
   NextNode: PVirtualNode;
@@ -470,7 +468,7 @@ begin
   end;
 end;
 
-procedure TframeRegExpParameters.aUpUpdate(Sender: TObject);
+procedure TframeRegExp.aUpUpdate(Sender: TObject);
 begin
   inherited;
   TAction(Sender).Enabled := False;
@@ -478,7 +476,7 @@ begin
     TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.FirstChild;
 end;
 
-procedure TframeRegExpParameters.aDownUpdate(Sender: TObject);
+procedure TframeRegExp.aDownUpdate(Sender: TObject);
 begin
   inherited;
   TAction(Sender).Enabled := False;
@@ -486,7 +484,7 @@ begin
     TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.LastChild;
 end;
 
-procedure TframeRegExpParameters.cbSetOfTemplatesChange(Sender: TObject);
+procedure TframeRegExp.cbSetOfTemplatesChange(Sender: TObject);
 begin
   inherited;
   if (cbSetOfTemplates.ItemIndex > -1) then
@@ -497,7 +495,7 @@ begin
   end;
 end;
 
-procedure TframeRegExpParameters.aDeleteSetExecute(Sender: TObject);
+procedure TframeRegExp.aDeleteSetExecute(Sender: TObject);
 var
   str: TStringObject;
   xPath: string;

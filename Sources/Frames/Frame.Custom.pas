@@ -9,11 +9,12 @@ uses
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} System.Threading, System.Generics.Collections, Vcl.ActnList,
   System.Generics.Defaults, DebugWriter, Global.Types, System.IniFiles, System.Math, System.Actions, Vcl.Menus,
   Vcl.ExtDlgs, Vcl.Printers, MessageDialog, VirtualTrees.ExportHelper, DaImages, Common.Types, Vcl.ComCtrls,
-  Vcl.ToolWin, Translate.Lang, VirtualTrees.Helper, Column.Settings, Global.Resources, Vcl.WinXPanels;
+  Vcl.ToolWin, Translate.Lang, VirtualTrees.Helper, Column.Settings, Global.Resources, Vcl.WinXPanels,
+  Publishers.Interfaces, Publishers;
 {$ENDREGION}
 
 type
-  TFrameCustom = class(TFrame)
+  TFrameCustom = class(TFrame, ITranslate)
     aAdd       : TAction;
     aDelete    : TAction;
     aEdit      : TAction;
@@ -31,10 +32,14 @@ type
     tbMain     : TToolBar;
   private const
     C_IDENTITY_NAME = 'frameCustom';
+  private
+    //ITranslate
+    procedure ITranslate.LanguageChange = Translate;
   protected
     function GetIdentityName: string; virtual;
     procedure Deinitialize; virtual;
     procedure Initialize; virtual;
+
     procedure LoadFromXML; virtual; abstract;
     procedure SaveToXML; virtual; abstract;
     procedure Translate; virtual;
@@ -49,11 +54,13 @@ implementation
 procedure TFrameCustom.Initialize;
 begin
   TGeneral.XMLParams.Open;
+  TPublishers.TranslatePublisher.Subscribe(Self);
 end;
 
 procedure TFrameCustom.Deinitialize;
 begin
   TGeneral.XMLParams.Save;
+  TPublishers.TranslatePublisher.Unsubscribe(Self);
 end;
 
 procedure TFrameCustom.Translate;

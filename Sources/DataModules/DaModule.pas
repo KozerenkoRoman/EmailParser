@@ -18,13 +18,12 @@ uses
 
 type
   TDaMod = class(TDataModule, IProgress)
-    Connection             : TFDConnection;
-    FDPhysSQLiteDriverLink : TFDPhysSQLiteDriverLink;
-    qAllEmails             : TFDQuery;
-    qAttachments           : TFDQuery;
-    qEmail                 : TFDQuery;
-    qEmailBodyAndText      : TFDQuery;
-    qEmailByHash           : TFDQuery;
+    Connection         : TFDConnection;
+    FDSQLiteDriverLink : TFDPhysSQLiteDriverLink;
+    qAllEmails         : TFDQuery;
+    qAttachments       : TFDQuery;
+    qEmail             : TFDQuery;
+    qEmailBodyAndText  : TFDQuery;
   private
     FThreadEmails: TThreadEmails;
 
@@ -36,7 +35,6 @@ type
     procedure CompletedItem(const aResultData: PResultData);
 
     class function GetDecompressStr(const aSQLText, aHash: string): string;
-    function IsEmailExistsByHash(const aHash: string): Boolean;
     procedure FillEmailRecord(const aResultData: PResultData);
     procedure FillAllEmailsRecord(const aWithAttachments: Boolean = False);
   public
@@ -48,7 +46,6 @@ type
 
     procedure Initialize;
     procedure Deinitialize;
-    procedure Translate;
   end;
 
 var
@@ -102,7 +99,6 @@ begin
     Connection.Connected := True;
     qEmail.Prepare;
     qEmailBodyAndText.Prepare;
-    qEmailByHash.Prepare;
     qAttachments.Prepare;
     if TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'LoadRecordsFromDB', True) then
       FillAllEmailsRecord(True);
@@ -184,13 +180,13 @@ begin
   FThreadEmails.Terminate;
   qEmail.Unprepare;
   qEmailBodyAndText.Unprepare;
-  qEmailByHash.Unprepare;
   Connection.Connected := False;
 end;
 
-procedure TDaMod.Translate;
+procedure TDaMod.CompletedItem(const aResultData: PResultData);
 begin
-
+  if FThreadEmails.Started then
+    FThreadEmails.ResultDataQueue.PushItem(aResultData);
 end;
 
 procedure TDaMod.StartProgress(const aMaxPosition: Integer);
@@ -201,12 +197,6 @@ end;
 procedure TDaMod.ClearTree;
 begin
   // nothing
-end;
-
-procedure TDaMod.CompletedItem(const aResultData: PResultData);
-begin
-  if FThreadEmails.Started then
-    FThreadEmails.ResultDataQueue.PushItem(aResultData);
 end;
 
 procedure TDaMod.Progress;
@@ -307,7 +297,7 @@ begin
             ResultData.Attachments[i].FileName      := qAttachments.FieldByName('FILE_NAME').AsString;
             ResultData.Attachments[i].ContentID     := qAttachments.FieldByName('CONTENT_ID').AsString;
             ResultData.Attachments[i].ContentType   := qAttachments.FieldByName('CONTENT_TYPE').AsString;
-  //          ResultData.Attachments[i].ParsedText    := TZipPack.DecompressStr(qAttachments.FieldByName('PARSED_TEXT').AsBytes);
+            ResultData.Attachments[i].ParsedText    := TZipPack.DecompressStr(qAttachments.FieldByName('PARSED_TEXT').AsBytes);
             ResultData.Attachments[i].ImageIndex    := qAttachments.FieldByName('IMAGE_INDEX').AsInteger;
             ResultData.Attachments[i].Matches.Count := ResultData.Matches.Count;
             ResultData.Attachments[i].FromDB        := True;
@@ -344,17 +334,6 @@ begin
     end;
   finally
     qEmailBodyAndText.Close;
-  end;
-end;
-
-function TDaMod.IsEmailExistsByHash(const aHash: string): Boolean;
-begin
-  qEmailByHash.ParamByName('HASH').AsString := aHash;
-  try
-    qEmailByHash.Open;
-    Result := qEmailByHash.FieldByName('cnt').AsInteger > 0;
-  finally
-    qEmailByHash.Close;
   end;
 end;
 

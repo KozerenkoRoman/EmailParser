@@ -170,7 +170,7 @@ var
   i: Integer;
 begin
   XMLParams.Open;
-  XMLParams.CurrentSection := 'RegExpParameters';
+  XMLParams.CurrentSection := C_SECTION_REGEXP;
   try
     i := 0;
     Result.Count := XMLParams.ChildCount;

@@ -345,6 +345,7 @@ end;
 destructor TFileWriter.Destroy;
 begin
   FQueue.DoShutDown;
+  Sleep(10);
   FreeAndNil(FQueue);
   inherited;
 end;

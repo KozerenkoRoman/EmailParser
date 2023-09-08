@@ -1,4 +1,4 @@
-inherited frameRegExpParameters: TframeRegExpParameters
+inherited frameRegExp: TframeRegExp
   Width = 950
   Height = 444
   ExplicitWidth = 950

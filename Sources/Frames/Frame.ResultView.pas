@@ -72,6 +72,7 @@ constructor TframeResultView.Create(AOwner: TComponent);
 begin
   inherited;
   TPublishers.EmailPublisher.Subscribe(Self);
+  wbBody.Silent := True;
 end;
 
 destructor TframeResultView.Destroy;

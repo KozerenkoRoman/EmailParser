@@ -1,4 +1,4 @@
-inherited frameCommonSettings: TframeCommonSettings
+inherited frameSettings: TframeSettings
   Width = 791
   Height = 356
   ExplicitWidth = 791
@@ -252,6 +252,9 @@ inherited frameCommonSettings: TframeCommonSettings
     end
     inherited aDelete: TAction
       Visible = False
+    end
+    inherited aSave: TAction
+      OnExecute = aSaveExecute
     end
     inherited aRefresh: TAction
       OnExecute = aRefreshExecute

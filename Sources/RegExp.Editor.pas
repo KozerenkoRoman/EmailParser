@@ -3,7 +3,6 @@ unit RegExp.Editor;
 interface
 
 {$REGION 'Region uses'}
-
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Translate.Lang, Vcl.ExtCtrls, DebugWriter,
@@ -80,9 +79,9 @@ type
   public
     class function GetPattern(const aPattern, aTemplateName: string; const aGroupIndex: Integer): TArray<string>;
 
-    procedure Initialize;
-    procedure Deinitialize;
-    procedure Translate;
+    procedure Initialize; override;
+    procedure Deinitialize; override;
+    procedure Translate; override;
   end;
 
 implementation
@@ -96,7 +95,7 @@ begin
       Initialize;
       Pattern      := aPattern;
       TemplateName := aTemplateName;
-      GroupIndex := aGroupIndex;
+      GroupIndex   := aGroupIndex;
       if (ShowModal = mrOk) then
       begin
         SetLength(Result, 3);
@@ -112,21 +111,22 @@ end;
 
 procedure TfrmRegExpEditor.Initialize;
 begin
+  inherited;
   edtGroupIndex.CurrencyString := '';
   tbPattern.ButtonHeight := C_ICON_SIZE;
   tbPattern.ButtonWidth  := C_ICON_SIZE;
   tbPattern.Height       := C_ICON_SIZE + 2;
 
-  LoadFormPosition;
   LoadFromXML;
   Translate;
+  cbSetOfTemplates.Clear;
   for var i := Low(ArrayPatterns) to High(ArrayPatterns) do
     cbSetOfTemplates.Items.AddObject(ArrayPatterns[i].Name, TStringObject.Create(ArrayPatterns[i].Pattern));
 end;
 
 procedure TfrmRegExpEditor.Deinitialize;
 begin
-  SaveFormPosition;
+  inherited;
   SaveToXML;
 end;
 
@@ -144,6 +144,7 @@ end;
 
 procedure TfrmRegExpEditor.Translate;
 begin
+  inherited;
   aCopy.Caption               := TLang.Lang.Translate('Copy');
   aPaste.Caption              := TLang.Lang.Translate('Paste');
   aSelectAll.Caption          := TLang.Lang.Translate('SelectAll');

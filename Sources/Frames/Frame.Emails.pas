@@ -72,7 +72,7 @@ type
     FPerformer  : TPerformer;
 
     //IUpdateXML
-    procedure UpdateXML;
+    procedure IUpdateXML.UpdateXML = UpdateColumns;
 
     //IProgress
     procedure ClearTree;
@@ -200,11 +200,6 @@ begin
   finally
     vstTree.EndUpdate;
   end;
-end;
-
-procedure TframeEmails.UpdateXML;
-begin
-  UpdateColumns;
 end;
 
 procedure TframeEmails.SaveToXML;

@@ -8,13 +8,13 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Translate.Lang, Vcl.ExtCtrls, DebugWriter,
   Common.Types, System.IniFiles, System.IOUtils, Global.Resources, Utils, MessageDialog, System.Threading,
   Html.Lib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
-  Vcl.CategoryButtons, Frame.Custom, Frame.RegExpParameters,Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
-  Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.CommonSettings, Global.Types, Vcl.Samples.Gauges,
+  Vcl.CategoryButtons, Frame.Custom, Frame.RegExp, Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
+  Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.Settings, Global.Types, Vcl.Samples.Gauges,
   Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule, Frame.Sorter;
 {$ENDREGION}
 
 type
-  TfrmMain = class(TCommonForm, IProgress)
+  TfrmMain = class(TCommonForm, IProgress, ITranslate)
     aEditCommonParameters : TAction;
     aEditRegExpParameters : TAction;
     alSettings            : TActionList;
@@ -29,8 +29,9 @@ type
     crdRegExpParameters   : TCard;
     crdResultView         : TCard;
     framePathes           : TframePathes;
-    frameRegExpParameters : TframeRegExpParameters;
+    frameRegExp           : TframeRegExp;
     frameResultView       : TframeResultView;
+    frameSettings         : TframeSettings;
     frameSorter           : TframeSorter;
     gbPathes              : TGroupBox;
     gbSorter              : TGroupBox;
@@ -44,12 +45,10 @@ type
     splPath               : TSplitter;
     splView               : TSplitView;
     srchBox               : TSearchBox;
-    frameCommonSettings: TframeCommonSettings;
     procedure aEditCommonParametersExecute(Sender: TObject);
     procedure aEditRegExpParametersExecute(Sender: TObject);
     procedure aPathsFindFilesExecute(Sender: TObject);
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
-    procedure aSaveCommonSettingsExecute(Sender: TObject);
     procedure aSearchExecute(Sender: TObject);
     procedure aToggleSplitPanelExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -62,6 +61,9 @@ type
     FProgressBar: TGauge;
     procedure CreateProgressBar;
 
+    //ITranslate
+    procedure ITranslate.LanguageChange = Translate;
+
     //IProgress
     procedure ClearTree;
     procedure EndProgress;
@@ -71,9 +73,9 @@ type
   protected
     function GetIdentityName: string; override;
   public
-    procedure Initialize;
-    procedure Deinitialize;
-    procedure Translate;
+    procedure Initialize; override;
+    procedure Deinitialize; override;
+    procedure Translate; override;
   end;
 
 var
@@ -90,6 +92,7 @@ begin
   inherited;
   CreateProgressBar;
   TPublishers.ProgressPublisher.Subscribe(Self);
+  TPublishers.TranslatePublisher.Subscribe(Self);
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -98,19 +101,19 @@ begin
   FreeAndNil(FProgressBar);
   Deinitialize;
   TPublishers.ProgressPublisher.Unsubscribe(Self);
+  TPublishers.TranslatePublisher.Unsubscribe(Self);
 end;
 
 procedure TfrmMain.Initialize;
 begin
-  LoadFormPosition;
+  inherited;
   TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
   DaMod.Initialize;
-  frameRegExpParameters.Initialize;
+  frameRegExp.Initialize;
   framePathes.Initialize;
   frameResultView.Initialize;
   frameSorter.Initialize;
-  frameCommonSettings.Initialize;
-  frameCommonSettings.btnSave.Action := aSaveCommonSettings;
+  frameSettings.Initialize;
 
   pnlTop.Color                := C_TOP_COLOR;
   catMenuItems.HotButtonColor := C_TOP_COLOR;
@@ -120,18 +123,19 @@ end;
 
 procedure TfrmMain.Deinitialize;
 begin
-  frameRegExpParameters.Deinitialize;
+  inherited;
+  frameRegExp.Deinitialize;
   framePathes.Deinitialize;
   frameSorter.Deinitialize;
   frameResultView.Deinitialize;
-  frameCommonSettings.Deinitialize;
+  frameSettings.Deinitialize;
   DaMod.Deinitialize;
-  SaveFormPosition;
   LogWriter.Active := False;
 end;
 
 procedure TfrmMain.Translate;
 begin
+  inherited;
   aEditCommonParameters.Caption := TLang.Lang.Translate('EditCommonParameters');
   aEditRegExpParameters.Caption := TLang.Lang.Translate('EditRegExpParameters');
   aPathsFindFiles.Caption       := TLang.Lang.Translate('PathsToFindSaveFiles');
@@ -214,20 +218,6 @@ begin
   LogWriter.Write(ddError, E.Message + sLineBreak + StackTrace);
   if not Application.Terminated then
     TMessageDialog.ShowError(E.Message, StackTrace);
-end;
-
-procedure TfrmMain.aSaveCommonSettingsExecute(Sender: TObject);
-begin
-  inherited;
-  frameCommonSettings.SaveToXML;
-  TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
-
-  Translate;
-  frameRegExpParameters.Translate;
-  framePathes.Translate;
-  frameSorter.Translate;
-  frameResultView.Translate;
-  frameCommonSettings.Translate;
 end;
 
 procedure TfrmMain.aSearchExecute(Sender: TObject);

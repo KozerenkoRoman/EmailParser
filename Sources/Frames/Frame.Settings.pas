@@ -1,4 +1,4 @@
-﻿unit Frame.CommonSettings;
+﻿unit Frame.Settings;
 
 interface
 
@@ -9,11 +9,11 @@ uses
   Vcl.ToolWin, VirtualTrees, Vcl.StdCtrls, Vcl.ExtCtrls, System.Generics.Defaults,Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Global.Types, Vcl.FileCtrl,
-  Global.Resources, Vcl.WinXPanels, Frame.Custom;
+  Global.Resources, Vcl.WinXPanels, Frame.Custom, Publishers;
 {$ENDREGION}
 
 type
-  TframeCommonSettings = class(TFrameCustom)
+  TframeSettings = class(TFrameCustom)
     aAttachmentsMain       : TAction;
     aAttachmentsSub        : TAction;
     aPathForAttachments    : TAction;
@@ -36,14 +36,13 @@ type
     procedure aAttachmentsSubExecute(Sender: TObject);
     procedure aPathForAttachmentsExecute(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
+    procedure aSaveExecute(Sender: TObject);
   private const
-    C_IDENTITY_NAME = 'frameCommonSettings';
+    C_IDENTITY_NAME = 'frameSettings';
   protected
     function GetIdentityName: string; override;
     procedure LoadFromXML; override;
   public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure Initialize; override;
     procedure Deinitialize; override;
     procedure Translate; override;
@@ -56,19 +55,7 @@ implementation
 
 { TframeSettings }
 
-constructor TframeCommonSettings.Create(AOwner: TComponent);
-begin
-  inherited;
-
-end;
-
-destructor TframeCommonSettings.Destroy;
-begin
-
-  inherited;
-end;
-
-procedure TframeCommonSettings.Initialize;
+procedure TframeSettings.Initialize;
 begin
   inherited Initialize;
   LoadFromXML;
@@ -76,7 +63,12 @@ begin
   dlgAttachmments.Title := Application.Title;
 end;
 
-procedure TframeCommonSettings.Translate;
+procedure TframeSettings.Deinitialize;
+begin
+  inherited Deinitialize;
+end;
+
+procedure TframeSettings.Translate;
 begin
   inherited;
   lblDeleteAttachments.Caption  := TLang.Lang.Translate('DeleteAttachments');
@@ -86,17 +78,12 @@ begin
   lblPathForAttachments.Caption := TLang.Lang.Translate('PathForAttachments');
 end;
 
-procedure TframeCommonSettings.Deinitialize;
-begin
-  inherited Deinitialize;
-end;
-
-function TframeCommonSettings.GetIdentityName: string;
+function TframeSettings.GetIdentityName: string;
 begin
   Result := C_IDENTITY_NAME;
 end;
 
-procedure TframeCommonSettings.LoadFromXML;
+procedure TframeSettings.LoadFromXML;
 begin
   inherited;
   cbLanguage.Items.Clear;
@@ -109,7 +96,7 @@ begin
   edtPathForAttachments.Text    := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
 end;
 
-procedure TframeCommonSettings.SaveToXML;
+procedure TframeSettings.SaveToXML;
 begin
   inherited;
   TGeneral.XMLParams.WriteBool(C_SECTION_MAIN, 'DeleteAttachments', cbDeleteAttachments.Checked, lblDeleteAttachments.Caption);
@@ -120,26 +107,34 @@ begin
   TGeneral.XMLParams.Save;
 end;
 
-procedure TframeCommonSettings.aAttachmentsMainExecute(Sender: TObject);
+procedure TframeSettings.aSaveExecute(Sender: TObject);
+begin
+  inherited;
+  SaveToXML;
+  TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
+  TPublishers.TranslatePublisher.LanguageChange;
+end;
+
+procedure TframeSettings.aAttachmentsMainExecute(Sender: TObject);
 begin
   inherited;
   edtPathForAttachments.Text := C_ATTACHMENTS_DIR;
 end;
 
-procedure TframeCommonSettings.aAttachmentsSubExecute(Sender: TObject);
+procedure TframeSettings.aAttachmentsSubExecute(Sender: TObject);
 begin
   inherited;
   edtPathForAttachments.Text := C_ATTACHMENTS_SUB_DIR;
 end;
 
-procedure TframeCommonSettings.aPathForAttachmentsExecute(Sender: TObject);
+procedure TframeSettings.aPathForAttachmentsExecute(Sender: TObject);
 begin
   inherited;
   if dlgAttachmments.Execute then
     edtPathForAttachments.Text := dlgAttachmments.FileName;
 end;
 
-procedure TframeCommonSettings.aRefreshExecute(Sender: TObject);
+procedure TframeSettings.aRefreshExecute(Sender: TObject);
 begin
   inherited;
   LoadFromXML;

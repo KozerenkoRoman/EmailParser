@@ -36,6 +36,7 @@ var
   RStream : TResourceStream;
   MessageItem : TSplashMessageItem;
 begin
+  Randomize;
   frmSplashScreen := TfrmSplashScreen.Create(Application);
   RStream := TResourceStream.Create(HInstance, 'IMG_LOGO', RT_RCDATA);
   try

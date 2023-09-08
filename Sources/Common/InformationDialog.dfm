@@ -35,8 +35,6 @@ object InformationDialog: TInformationDialog
       ShowHint = False
       TabOrder = 0
       OnBeforeNavigate2 = wbMessageBeforeNavigate2
-      ExplicitWidth = 468
-      ExplicitHeight = 432
       ControlData = {
         4C000000C8300000C02C00000000000000000000000000000000000000000000
         000000004C000000000000000000000001000000E0D057007335CF11AE690800

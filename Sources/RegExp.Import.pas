@@ -51,9 +51,9 @@ type
     function GetIdentityName: string; override;
   public
     class function ShowDocument: TModalResult;
-    procedure Initialize;
-    procedure Deinitialize;
-    procedure Translate;
+    procedure Initialize; override;
+    procedure Deinitialize; override;
+    procedure Translate; override;
   end;
 
 implementation
@@ -81,8 +81,8 @@ end;
 
 procedure TfrmImportFromXML.Initialize;
 begin
+  inherited;
   TVirtualTree.Initialize(vstTree);
-  LoadFormPosition;
   Translate;
   tbSettings.ButtonHeight := C_ICON_SIZE;
   tbSettings.ButtonWidth  := C_ICON_SIZE;
@@ -91,7 +91,8 @@ end;
 
 procedure TfrmImportFromXML.Deinitialize;
 begin
-   TStoreHelper.SaveToXml(vstTree, GetIdentityName);
+  inherited;
+  TStoreHelper.SaveToXml(vstTree, GetIdentityName);
 end;
 
 function TfrmImportFromXML.GetIdentityName: string;

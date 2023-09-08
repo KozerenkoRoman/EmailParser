@@ -26,8 +26,11 @@ type
     procedure FormCreate(Sender: TObject);
     procedure vstColumnsChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstColumnsCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+    procedure vstColumnsCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
+    procedure vstColumnsEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
     procedure vstColumnsFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstColumnsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstColumnsNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
   private
     FArrayColumns: PArrayColumns;
     FIdentityName: string;
@@ -51,8 +54,9 @@ type
   public
     class function ShowDocument(const aArrayColumns: PArrayColumns; const aIdentityName: string): TModalResult;
     class function ShowSettings(const aTree: TVirtualStringTree; const aIdentityName: string; const aFixedColumn: Integer): TModalResult;
-    procedure Initialize;
-    procedure Deinitialize;
+    procedure Initialize; override;
+    procedure Deinitialize; override;
+    procedure Translate; override;
   end;
 
 implementation
@@ -145,6 +149,8 @@ var
   Data: PColumnSetting;
   Node: PVirtualNode;
 begin
+  inherited;
+  Translate;
   TVirtualTree.Initialize(vstColumns);
   vstColumns.BeginUpdate;
   try
@@ -165,9 +171,6 @@ begin
   end;
   RestoreColumnSettings(FIdentityName);
   TStoreHelper.LoadFromXml(vstColumns, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
-
-  btnOk.Caption     := TLang.Lang.Translate('Ok');
-  btnCancel.Caption := TLang.Lang.Translate('Cancel');
 end;
 
 procedure TfrmColumnSettings.Deinitialize;
@@ -176,6 +179,7 @@ var
   Node: PVirtualNode;
   Index: Integer;
 begin
+  inherited;
   vstColumns.BeginUpdate;
   try
     SetLength(FArrayColumns^, vstColumns.RootNodeCount);
@@ -198,6 +202,13 @@ function TfrmColumnSettings.GetIdentityName: string;
 begin
   inherited;
   Result := C_IDENTITY_NAME;
+end;
+
+procedure TfrmColumnSettings.Translate;
+begin
+  inherited;
+  btnOk.Caption     := TLang.Lang.Translate('Ok');
+  btnCancel.Caption := TLang.Lang.Translate('Cancel');
 end;
 
 procedure TfrmColumnSettings.vstColumnsChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -224,6 +235,18 @@ begin
   end;
 end;
 
+procedure TfrmColumnSettings.vstColumnsCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
+begin
+  inherited;
+  EditLink := TStringEditLink.Create;
+end;
+
+procedure TfrmColumnSettings.vstColumnsEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
+begin
+  inherited;
+  Allowed := (Column in [COL_WIDTH]);
+end;
+
 procedure TfrmColumnSettings.vstColumnsFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
   Data: PColumnSetting;
@@ -247,6 +270,18 @@ begin
       CellText := Data^.Position.ToString;
   else
     CellText := '';
+  end;
+end;
+
+procedure TfrmColumnSettings.vstColumnsNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
+var
+  Data: PColumnSetting;
+begin
+  inherited;
+  Data := Node^.GetData;
+  case Column of
+    COL_WIDTH:
+      Data^.Width := StrToIntDef(NewText, 0);
   end;
 end;
 

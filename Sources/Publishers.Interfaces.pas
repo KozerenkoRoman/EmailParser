@@ -28,6 +28,11 @@ type
     procedure FocusChanged(const aData: PResultData);
   end;
 
+  ITranslate = interface
+    ['{7BACF2F8-0FCA-4FF2-8095-81542FDEFE70}']
+    procedure LanguageChange;
+  end;
+
 implementation
 
 end.

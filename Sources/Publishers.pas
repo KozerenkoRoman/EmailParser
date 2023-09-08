@@ -36,11 +36,17 @@ type
     procedure FocusChanged(const aData: PResultData);
   end;
 
+  TTranslatePublisher = class(TCustomPublisher)
+  public
+    procedure LanguageChange;
+  end;
+
   TPublishers = class
   class var
-    ProgressPublisher  : TProgressPublisher;
-    UpdateXMLPublisher : TUpdateXMLPublisher;
     EmailPublisher     : TEmailPublisher;
+    ProgressPublisher  : TProgressPublisher;
+    TranslatePublisher : TTranslatePublisher;
+    UpdateXMLPublisher : TUpdateXMLPublisher;
   end;
 
 implementation
@@ -198,10 +204,32 @@ begin
       end);
 end;
 
+{ TTranslatePublisher }
+
+procedure TTranslatePublisher.LanguageChange;
+var
+  Item: TObject;
+  obj: ITranslate;
+begin
+  TThread.Queue(nil,
+    procedure
+    begin
+      if not Application.Terminated then
+        for var i := 0 to Self.Count - 1 do
+        begin
+          Item := Self.Items[i];
+          if Assigned(Item) then
+            if Supports(Item, ITranslate, obj) then
+              obj.LanguageChange;
+        end;
+    end);
+end;
+
 initialization
   TPublishers.ProgressPublisher  := TProgressPublisher.Create;
   TPublishers.UpdateXMLPublisher := TUpdateXMLPublisher.Create;
   TPublishers.EmailPublisher     := TEmailPublisher.Create;
+  TPublishers.TranslatePublisher := TTranslatePublisher.Create;
 
 finalization
   if Assigned(TPublishers.UpdateXMLPublisher) then
@@ -210,5 +238,7 @@ finalization
     FreeAndNil(TPublishers.ProgressPublisher);
   if Assigned(TPublishers.EmailPublisher) then
     FreeAndNil(TPublishers.EmailPublisher);
+  if Assigned(TPublishers.TranslatePublisher) then
+    FreeAndNil(TPublishers.TranslatePublisher);
 
 end.

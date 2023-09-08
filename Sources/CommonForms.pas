@@ -32,24 +32,28 @@ type
     C_KEY_FORM_LEFT   = 'Left';
     C_KEY_FORM_TOP    = 'Top';
   private
-    FDialogMode: TDialogMode;
-    FOnAfterCreate: TNotifyEvent;
-    FOnAfterShow: TNotifyEvent;
+    FDialogMode    : TDialogMode;
+    FOnAfterCreate : TNotifyEvent;
+    FOnAfterShow   : TNotifyEvent;
     function GetClassInfo: string;
-    procedure WMSysCommand(var Msg: TWMSysCommand); message WM_SYSCOMMAND;
-    procedure WMAfterShow(var Msg: TMessage); message WM_AFTER_SHOW;
     procedure WMAfterCreate(var Msg: TMessage); message WM_AFTER_CREATE;
+    procedure WMAfterShow(var Msg: TMessage); message WM_AFTER_SHOW;
+    procedure WMSysCommand(var Msg: TWMSysCommand); message WM_SYSCOMMAND;
   protected
-    procedure ScaleForm(aForm: TForm; aScreenWidth, aScreenHeight: LongInt);
     function GetIdentityName: string; virtual;
-    procedure SaveFormPosition;
     procedure LoadFormPosition;
+    procedure SaveFormPosition;
+    procedure ScaleForm(aForm: TForm; aScreenWidth, aScreenHeight: LongInt);
 
     property OnAfterShow   : TNotifyEvent read FOnAfterShow   write FOnAfterShow;
     property OnAfterCreate : TNotifyEvent read FOnAfterCreate write FOnAfterCreate;
   public
     constructor Create(AOwner: TComponent); override;
     property DialogMode: TDialogMode read FDialogMode write FDialogMode;
+
+    procedure Initialize; virtual;
+    procedure Deinitialize; virtual;
+    procedure Translate; virtual; abstract;
   end;
 
 implementation
@@ -66,11 +70,11 @@ var
   SysMenu: HMENU;
 begin
   inherited;
-  SysMenu := GetSystemMenu(Handle, False);
+  Caption  := Format(rsFormCaption, [Application.Title, TVersionInfo.GetAppVersion]);
+  ShowHint := True;
+  SysMenu  := GetSystemMenu(Handle, False);
   AppendMenu(SysMenu, MF_SEPARATOR, 0, '');
   AppendMenu(SysMenu, MF_STRING, SC_SYS_INFO, PWideChar(C_SYS_SHOW_CLASS_INFO));
-  Caption := Format(rsCaption, [Application.Title, TVersionInfo.GetAppVersion]);
-  ShowHint := True;
   PostMessage(Self.Handle, WM_AFTER_CREATE, 0, 0);
 end;
 
@@ -105,7 +109,7 @@ end;
 
 procedure TCommonForm.WMSysCommand(var Msg: TWMSysCommand);
 begin
-  if Msg.CmdType = SC_SYS_INFO then
+  if (Msg.CmdType = SC_SYS_INFO) then
     TInformationDialog.ShowMessage(Self.GetClassInfo, 'ClassInfo')
   else
     inherited;
@@ -144,7 +148,17 @@ end;
 
 function TCommonForm.GetIdentityName: string;
 begin
-  Result := '';
+  Result := Self.Name;
+end;
+
+procedure TCommonForm.Initialize;
+begin
+  LoadFormPosition;
+end;
+
+procedure TCommonForm.Deinitialize;
+begin
+  SaveFormPosition;
 end;
 
 procedure TCommonForm.SaveFormPosition;
@@ -188,7 +202,6 @@ begin
   aForm.Scaled     := True;
   aForm.AutoScroll := False;
   aForm.Position   := poScreenCenter;
-//  aForm.Font.Name := 'Arial';
   if (Screen.Width <> aScreenWidth) then
   begin
     aForm.Height := LongInt(aForm.Height) * LongInt(Screen.Height) div aScreenHeight;

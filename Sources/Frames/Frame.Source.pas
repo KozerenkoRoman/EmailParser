@@ -68,6 +68,7 @@ end;
 
 procedure TframeSource.Initialize;
 begin
+  inherited;
   TStoreHelper.LoadFromXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
   tbMain.ButtonHeight := C_ICON_SIZE;
   tbMain.ButtonWidth  := C_ICON_SIZE;
@@ -77,6 +78,7 @@ end;
 
 procedure TframeSource.Translate;
 begin
+  inherited;
   aAdd.Hint            := TLang.Lang.Translate('Add');
   aColumnSettings.Hint := TLang.Lang.Translate('ColumnSettings');
   aDelete.Hint         := TLang.Lang.Translate('Delete');
@@ -90,11 +92,13 @@ end;
 
 procedure TframeSource.Deinitialize;
 begin
+  inherited;
   TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
 end;
 
 function TframeSource.GetIdentityName: string;
 begin
+  inherited;
   Result := C_IDENTITY_NAME;
 end;
 
@@ -112,6 +116,7 @@ end;
 
 procedure TframeSource.vstTreeColumnResize(Sender: TVTHeader; Column: TColumnIndex);
 begin
+  inherited;
   TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
 end;
 
@@ -122,11 +127,13 @@ end;
 
 procedure TframeSource.vstTreeHeaderDragged(Sender: TVTHeader; Column: TColumnIndex; OldPosition: Integer);
 begin
+  inherited;
   TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
 end;
 
 procedure TframeSource.vstTreeMeasureItem(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; var NodeHeight: Integer);
 begin
+  inherited;
   if Sender.MultiLine[Node] then
   begin
     TargetCanvas.Font := Sender.Font;
@@ -136,12 +143,14 @@ end;
 
 procedure TframeSource.aColumnSettingsExecute(Sender: TObject);
 begin
+  inherited;
   if TfrmColumnSettings.ShowSettings(vstTree, GetIdentityName, 0) = mrOk then
     TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
 end;
 
 procedure TframeSource.aExportToCSVExecute(Sender: TObject);
 begin
+  inherited;
   Screen.Cursor := crHourGlass;
   try
     TExcelExportHelper.ExportToCSV(vstTree, GetIdentityName);
@@ -152,6 +161,7 @@ end;
 
 procedure TframeSource.aExportToExcelExecute(Sender: TObject);
 begin
+  inherited;
   Screen.Cursor := crHourGlass;
   try
     TExcelExportHelper.ExportToExcel(vstTree, GetIdentityName);
@@ -162,6 +172,7 @@ end;
 
 procedure TframeSource.aExportToHTMLExecute(Sender: TObject);
 begin
+  inherited;
   Screen.Cursor := crHourGlass;
   try
     TExcelExportHelper.ExportToHTML(vstTree, GetIdentityName);
@@ -172,6 +183,7 @@ end;
 
 procedure TframeSource.aPrintExecute(Sender: TObject);
 begin
+  inherited;
   Printer.Orientation := poLandscape;
   vstTree.Print(Printer, True);
 end;

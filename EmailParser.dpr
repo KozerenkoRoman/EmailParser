@@ -22,12 +22,12 @@ uses
   FireDAC.Phys.SQLiteIniFile in 'Sources\DataModules\FireDAC.Phys.SQLiteIniFile.pas',
   Frame.AllAttachments in 'Sources\Frames\Frame.AllAttachments.pas' {frameAllAttachments: TFrame},
   Frame.Attachments in 'Sources\Frames\Frame.Attachments.pas' {frameAttachments: TFrame},
-  Frame.CommonSettings in 'Sources\Frames\Frame.CommonSettings.pas' {frameCommonSettings: TFrame},
   Frame.Custom in 'Sources\Frames\Frame.Custom.pas' {FrameCustom: TFrame},
   Frame.Emails in 'Sources\Frames\Frame.Emails.pas' {frameEmails: TFrame},
   Frame.Pathes in 'Sources\Frames\Frame.Pathes.pas' {framePathes: TFrame},
-  Frame.RegExpParameters in 'Sources\Frames\Frame.RegExpParameters.pas' {frameRegExpParameters: TFrame},
+  Frame.RegExp in 'Sources\Frames\Frame.RegExp.pas' {frameRegExp: TFrame},
   Frame.ResultView in 'Sources\Frames\Frame.ResultView.pas' {frameResultView: TFrame},
+  Frame.Settings in 'Sources\Frames\Frame.Settings.pas' {frameSettings: TFrame},
   Frame.Sorter in 'Sources\Frames\Frame.Sorter.pas' {frameSorter: TFrame},
   Frame.Source in 'Sources\Frames\Frame.Source.pas' {frameSource: TFrame},
   Global.Resources in 'Sources\Global.Resources.pas',
@@ -48,6 +48,7 @@ uses
   RegExp.Editor in 'Sources\RegExp.Editor.pas' {frmRegExpEditor},
   RegExp.Import in 'Sources\RegExp.Import.pas' {frmImportFromXML},
   RegExp.Types in 'Sources\Common\RegExp.Types.pas',
+  RegExp.Utils in 'Sources\RegExp.Utils.pas',
   SplashScreen in 'Sources\SplashScreen.pas' {frmSplashScreen},
   SplashScreen.Resources in 'Sources\SplashScreen.Resources.pas',
   Thread.Emails in 'Sources\DataModules\Thread.Emails.pas',
@@ -61,13 +62,12 @@ uses
   Utils.Zip in 'Sources\Common\Utils.Zip.pas',
   VirtualTrees.ExportHelper in 'Sources\Virtual TreeView\VirtualTrees.ExportHelper.pas',
   VirtualTrees.Helper in 'Sources\Virtual TreeView\VirtualTrees.Helper.pas',
-  XmlFiles in 'Sources\Common\XmlFiles.pas',
-  RegExp.Utils in 'Sources\RegExp.Utils.pas';
+  XmlFiles in 'Sources\Common\XmlFiles.pas';
 
 {$R *.res}
 
 begin
-  // ReportMemoryLeaksOnShutdown := {$IFDEF DEBUG} True {$ELSE} False {$ENDIF DEBUG};
+//  ReportMemoryLeaksOnShutdown := {$IFDEF DEBUG} True {$ELSE} False {$ENDIF DEBUG};
   PDFiumDllDir := ExtractFilePath(ParamStr(0)) + {$IFDEF CPUX64} '' {$ELSE} '' {$ENDIF CPUX64};
   IsMultiThread := True;
   try
@@ -78,9 +78,9 @@ begin
       TfrmSplashScreen.ShowSplashScreen;
 {$ENDIF}
       Application.CreateForm(TDMImage, DMImage);
-  Application.CreateForm(TDaMod, DaMod);
-  Application.CreateForm(TfrmMain, frmMain);
-  frmMain.Initialize;
+      Application.CreateForm(TDaMod, DaMod);
+      Application.CreateForm(TfrmMain, frmMain);
+      frmMain.Initialize;
     finally
       TfrmSplashScreen.HideSplashScreen;
     end;

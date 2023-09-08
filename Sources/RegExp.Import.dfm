@@ -2,7 +2,7 @@ object frmImportFromXML: TfrmImportFromXML
   Left = 0
   Top = 0
   Anchors = [akLeft, akTop, akRight]
-  Caption = 'Column Settings'
+  Caption = 'Import From XML'
   ClientHeight = 544
   ClientWidth = 753
   Color = clBtnFace
@@ -181,6 +181,7 @@ object frmImportFromXML: TfrmImportFromXML
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 3
+    ExplicitWidth = 749
     object lblPathToFile: TLabel
       AlignWithMargins = True
       Left = 3

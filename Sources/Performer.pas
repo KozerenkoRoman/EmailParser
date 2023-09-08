@@ -98,25 +98,24 @@ begin
   FIsBreak     := False;
   FileList     := [];
   FFromDBCount := 0;
-
-  DirList := '';
-  for var Dir in FPathList do
-  begin
-    DirList := DirList + sLineBreak + Dir.Path + IfThen(Dir.WithSubdir, ' with subdir');
-    if Dir.WithSubdir then
-      FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FFileExt, TSearchOption.soAllDirectories))
-    else
-      FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FFileExt, TSearchOption.soTopDirectoryOnly));
-  end;
-  LogWriter.Write(ddText, Self, '<b>Paths to find files:</b>' + DirList);
-
-  FCount := Length(FileList);
-  TPublishers.ProgressPublisher.ClearTree;
-  TPublishers.ProgressPublisher.StartProgress(Length(FileList));
-  FCount := 0;
-
-  LogWriter.Write(ddText, Self, 'Length FileList - ' + Length(FileList).ToString);
   try
+    DirList := '';
+    for var Dir in FPathList do
+    begin
+      DirList := DirList + sLineBreak + Dir.Path + IfThen(Dir.WithSubdir, ' with subdir');
+      if Dir.WithSubdir then
+        FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FFileExt, TSearchOption.soAllDirectories))
+      else
+        FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FFileExt, TSearchOption.soTopDirectoryOnly));
+    end;
+    LogWriter.Write(ddText, Self, '<b>Paths to find files:</b>' + DirList);
+
+    FCount := Length(FileList);
+    TPublishers.ProgressPublisher.ClearTree;
+    TPublishers.ProgressPublisher.StartProgress(Length(FileList));
+    FCount := 0;
+
+    LogWriter.Write(ddText, Self, 'Length FileList - ' + Length(FileList).ToString);
     try
       for var FileName in FileList do
       begin
@@ -230,9 +229,15 @@ function TPerformer.GetEXIFInfo(const aFileName: TFileName): string;
 var
   ImgData: TEXIFDump;
 begin
+  Result := '';
   ImgData := TEXIFDump.Create(aFileName);
   try
-    Result := ImgData.GetText;
+    try
+      Result := ImgData.GetText;
+    except
+      on E: Exception do
+        LogWriter.Write(ddError, Self, 'GetEXIFInfo', E.Message + sLineBreak + 'File name - ' + aFileName);
+    end;
   finally
     FreeAndNil(ImgData)
   end;
@@ -415,9 +420,9 @@ begin
           TTask.WaitForAll(Tasks);
           for var i := 0 to FRegExpList.Count - 1 do
             if FRegExpList[i].UseRawText then
-              Data^.Matches[i] := GetRegExpCollection(Data^.Body, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex)
+              Data^.Matches[i] := GetRegExpCollection(Data^.Subject + sLineBreak + Data^.Body, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex)
             else
-              Data^.Matches[i] := GetRegExpCollection(Data^.ParsedText, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex);
+              Data^.Matches[i] := GetRegExpCollection(Data^.Subject + sLineBreak + Data^.ParsedText, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex);
 
           DoCopyAttachmentFiles(Data);
           DoDeleteAttachmentFiles(Data);
@@ -449,13 +454,13 @@ begin
     for var i := 0 to FRegExpList.Count - 1 do
       if FRegExpList[i].UseRawText then
       begin
-        TextRaw := TDaMod.GetBodyAsRawText(aData^.Hash);
+        TextRaw := aData^.Subject + sLineBreak + TDaMod.GetBodyAsRawText(aData^.Hash);
         Break;
       end;
     for var i := 0 to FRegExpList.Count - 1 do
       if not FRegExpList[i].UseRawText then
       begin
-        TextPlan := TDaMod.GetBodyAsParsedText(aData^.Hash);
+        TextPlan := aData^.Subject + sLineBreak + TDaMod.GetBodyAsParsedText(aData^.Hash);
         Break;
       end;
 

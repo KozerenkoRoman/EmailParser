@@ -1,18 +1,18 @@
 inherited frmRegExpEditor: TfrmRegExpEditor
-  ClientHeight = 624
-  ClientWidth = 824
+  ClientHeight = 623
+  ClientWidth = 860
   Constraints.MinHeight = 449
   Constraints.MinWidth = 560
   Font.Height = -13
   Font.Name = 'Segoe UI'
   ShowHint = True
-  ExplicitWidth = 836
-  ExplicitHeight = 662
+  ExplicitWidth = 872
+  ExplicitHeight = 661
   TextHeight = 17
   object splPattern: TSplitter
-    Left = 465
+    Left = 482
     Top = 45
-    Height = 537
+    Height = 536
     Align = alRight
     ExplicitLeft = 487
     ExplicitTop = 85
@@ -22,29 +22,29 @@ inherited frmRegExpEditor: TfrmRegExpEditor
     AlignWithMargins = True
     Left = 3
     Top = 48
-    Width = 459
-    Height = 531
+    Width = 476
+    Height = 530
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 455
-    ExplicitHeight = 530
+    ExplicitWidth = 472
+    ExplicitHeight = 529
     object gbRegularExpression: TGroupBox
       AlignWithMargins = True
       Left = 3
       Top = 10
-      Width = 453
+      Width = 470
       Height = 135
       Margins.Top = 10
       Align = alTop
       Caption = 'Regular Expression'
       TabOrder = 0
-      ExplicitWidth = 449
+      ExplicitWidth = 466
       object edRegEx: TMemo
         AlignWithMargins = True
         Left = 5
         Top = 49
-        Width = 443
+        Width = 460
         Height = 81
         Align = alClient
         Ctl3D = True
@@ -52,19 +52,19 @@ inherited frmRegExpEditor: TfrmRegExpEditor
         PopupMenu = pmMemo
         ScrollBars = ssVertical
         TabOrder = 0
-        ExplicitWidth = 439
+        ExplicitWidth = 456
       end
       object pnlTemplateName: TPanel
         Left = 2
         Top = 19
-        Width = 449
+        Width = 466
         Height = 27
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitWidth = 445
+        ExplicitWidth = 462
         DesignSize = (
-          449
+          466
           27)
         object lblExamples: TLabel
           Left = 0
@@ -81,14 +81,14 @@ inherited frmRegExpEditor: TfrmRegExpEditor
           AlignWithMargins = True
           Left = 101
           Top = 0
-          Width = 341
+          Width = 354
           Height = 25
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
           ParentColor = True
           TabOrder = 0
           OnCloseUp = cbSetOfTemplatesCloseUp
-          ExplicitWidth = 337
+          ExplicitWidth = 350
         end
       end
     end
@@ -96,44 +96,44 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       AlignWithMargins = True
       Left = 3
       Top = 151
-      Width = 453
-      Height = 377
+      Width = 470
+      Height = 376
       Align = alClient
       Caption = 'Sample Text'
       TabOrder = 1
-      ExplicitWidth = 449
-      ExplicitHeight = 376
+      ExplicitWidth = 466
+      ExplicitHeight = 375
       object edSample: TMemo
         Left = 2
         Top = 19
-        Width = 449
-        Height = 356
+        Width = 466
+        Height = 355
         Align = alClient
         Ctl3D = True
         ParentCtl3D = False
         PopupMenu = pmMemo
         ScrollBars = ssVertical
         TabOrder = 0
-        ExplicitWidth = 445
-        ExplicitHeight = 355
+        ExplicitWidth = 462
+        ExplicitHeight = 354
       end
     end
   end
   object pnlBottom: TPanel
     Left = 0
-    Top = 582
-    Width = 824
+    Top = 581
+    Width = 860
     Height = 42
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 581
-    ExplicitWidth = 820
+    ExplicitTop = 580
+    ExplicitWidth = 856
     DesignSize = (
-      824
+      860
       42)
     object btnCancel: TBitBtn
-      Left = 588
+      Left = 612
       Top = 1
       Width = 110
       Height = 40
@@ -150,10 +150,10 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 2
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 584
+      ExplicitLeft = 608
     end
     object btnOk: TBitBtn
-      Left = 700
+      Left = 724
       Top = 1
       Width = 110
       Height = 40
@@ -170,21 +170,21 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 1
       ParentFont = False
       TabOrder = 1
-      ExplicitLeft = 696
+      ExplicitLeft = 720
     end
   end
   object tbPattern: TToolBar
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 818
+    Width = 854
     Height = 39
     ButtonHeight = 39
     ButtonWidth = 39
     Images = DMImage.vil32
     TabOrder = 3
     Transparent = False
-    ExplicitWidth = 814
+    ExplicitWidth = 850
     object pnlSettings: TPanel
       Left = 0
       Top = 0
@@ -243,20 +243,20 @@ inherited frmRegExpEditor: TfrmRegExpEditor
   end
   object pnlRight: TPanel
     AlignWithMargins = True
-    Left = 471
+    Left = 488
     Top = 48
-    Width = 350
-    Height = 531
+    Width = 369
+    Height = 530
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitLeft = 467
-    ExplicitHeight = 530
+    ExplicitLeft = 484
+    ExplicitHeight = 529
     object gbOptions: TGroupBox
       AlignWithMargins = True
       Left = 3
       Top = 10
-      Width = 344
+      Width = 363
       Height = 135
       Margins.Top = 10
       Align = alTop
@@ -307,17 +307,17 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       AlignWithMargins = True
       Left = 3
       Top = 151
-      Width = 344
-      Height = 377
+      Width = 363
+      Height = 376
       Align = alClient
       Caption = 'Results'
       TabOrder = 1
-      ExplicitHeight = 376
+      ExplicitHeight = 375
       object tvResults: TTreeView
         Left = 2
         Top = 19
-        Width = 340
-        Height = 328
+        Width = 359
+        Height = 327
         Align = alClient
         BevelInner = bvNone
         BevelOuter = bvNone
@@ -328,20 +328,20 @@ inherited frmRegExpEditor: TfrmRegExpEditor
         ShowHint = False
         TabOrder = 0
         ToolTips = False
-        ExplicitHeight = 327
+        ExplicitHeight = 326
       end
       object edtResult: TEdit
         AlignWithMargins = True
         Left = 2
-        Top = 350
-        Width = 340
+        Top = 349
+        Width = 359
         Height = 25
         Margins.Left = 0
         Margins.Right = 0
         Margins.Bottom = 0
         Align = alBottom
         TabOrder = 1
-        ExplicitTop = 349
+        ExplicitTop = 348
       end
     end
   end

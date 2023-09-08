@@ -3,15 +3,12 @@ unit RegExp.Utils;
 interface
 
 {$REGION 'Region uses'}
-
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls,
-  Vcl.Forms, Vcl.Buttons, Vcl.DBGrids,
-  System.Actions, Vcl.ActnList, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Menus, Vcl.Mask, Vcl.ImgList, Winapi.ActiveX,
-  System.UITypes, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} System.ImageList, System.Math, Vcl.DBCtrls,
+  Vcl.Forms, Vcl.Buttons, Vcl.DBGrids, Vcl.Mask, System.UITypes, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF}
   VirtualTrees, DebugWriter, Html.Lib, Column.Types, Global.Types, CommonForms, VirtualTrees.Helper, System.Types,
-  DaImages, XmlFiles, Common.Types, VirtualTrees.ExportHelper, System.Generics.Collections, System.Generics.Defaults,
-  Translate.Lang, Global.Resources, Vcl.ToolWin, Vcl.ComCtrls, ArrayHelper, Winapi.msxml;
+  DaImages, XmlFiles, Common.Types, System.Generics.Collections, System.Generics.Defaults, Winapi.msxml,
+  Translate.Lang, Global.Resources, Vcl.ToolWin, Vcl.ComCtrls, ArrayHelper;
 {$ENDREGION}
 
 type

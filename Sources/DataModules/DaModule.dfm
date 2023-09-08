@@ -15,22 +15,6 @@ object DaMod: TDaMod
     Left = 72
     Top = 24
   end
-  object qEmailByHash: TFDQuery
-    Connection = Connection
-    SQL.Strings = (
-      'select count(*) as cnt '
-      'from emails '
-      'where HASH = :HASH')
-    Left = 216
-    Top = 24
-    ParamData = <
-      item
-        Name = 'HASH'
-        DataType = ftString
-        ParamType = ptInput
-        Value = Null
-      end>
-  end
   object qEmail: TFDQuery
     Connection = Connection
     SQL.Strings = (
@@ -42,8 +26,8 @@ object DaMod: TDaMod
       '       TIME_STAMP'
       'from emails '
       'where  HASH = :HASH')
-    Left = 216
-    Top = 96
+    Left = 208
+    Top = 16
     ParamData = <
       item
         Name = 'HASH'
@@ -52,7 +36,7 @@ object DaMod: TDaMod
         Value = Null
       end>
   end
-  object FDPhysSQLiteDriverLink: TFDPhysSQLiteDriverLink
+  object FDSQLiteDriverLink: TFDPhysSQLiteDriverLink
     DriverID = 'SQLite'
     Left = 72
     Top = 88
@@ -63,8 +47,8 @@ object DaMod: TDaMod
       'select BODY, PARSED_TEXT'
       'from emails '
       'where HASH = :HASH')
-    Left = 216
-    Top = 160
+    Left = 208
+    Top = 80
     ParamData = <
       item
         Name = 'HASH'
@@ -86,8 +70,8 @@ object DaMod: TDaMod
       '       IMAGE_INDEX'
       'from attachments '
       'where  PARENT_HASH = :PARENT_HASH')
-    Left = 320
-    Top = 96
+    Left = 312
+    Top = 16
     ParamData = <
       item
         Name = 'PARENT_HASH'
@@ -108,7 +92,7 @@ object DaMod: TDaMod
       '       CONTENT_TYPE, '
       '       TIME_STAMP'
       'from emails')
-    Left = 216
-    Top = 232
+    Left = 208
+    Top = 152
   end
 end

@@ -34,8 +34,9 @@ type
   protected
     function GetIdentityName: string; override;
   public
-    procedure Initialize;
-    procedure Deinitialize;
+    procedure Initialize; override;
+    procedure Deinitialize; override;
+    procedure Translate; override;
 
     property MessageText: string read FMessageText write FMessageText;
     property IdentityName: string read FIdentityName write FIdentityName;
@@ -105,9 +106,7 @@ var
   html: string;
 begin
   inherited;
-  aOk.Caption   := TLang.Lang.Translate('Ok');
-  aSave.Caption := TLang.Lang.Translate('Save');
-  LoadFormPosition;
+  Translate;
   html := Concat(C_HTML_OPEN,
                  C_HTML_HEAD_OPEN,
 //                 C_STYLE,
@@ -124,17 +123,24 @@ begin
       DoVerb(OLEIVERB_UIACTIVATE, nil, wbMessage, 0, Handle, GetClientRect);
 end;
 
+procedure TInformationDialog.Deinitialize;
+begin
+  inherited;
+end;
+
+procedure TInformationDialog.Translate;
+begin
+  inherited;
+  aOk.Caption   := TLang.Lang.Translate('Ok');
+  aSave.Caption := TLang.Lang.Translate('Save');
+end;
+
 procedure TInformationDialog.aSaveExecute(Sender: TObject);
 begin
   if not IdentityName.IsEmpty then
     SaveTextFileDialog.FileName := IdentityName + '.html';
   if SaveTextFileDialog.Execute then
     TFile.WriteAllText(SaveTextFileDialog.FileName, MessageText);
-end;
-
-procedure TInformationDialog.Deinitialize;
-begin
-  SaveFormPosition;
 end;
 
 procedure TInformationDialog.FormClose(Sender: TObject; var Action: TCloseAction);
