@@ -3,7 +3,6 @@ unit Frame.AllAttachments;
 interface
 
 {$REGION 'Region uses'}
-
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls,
   Vcl.Forms, Vcl.Dialogs, VirtualTrees, Vcl.ExtCtrls, System.Generics.Collections, System.UITypes, DebugWriter,
@@ -12,25 +11,27 @@ uses
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
   Vcl.WinXPanels, Publishers.Interfaces, Publishers, VirtualTrees.ExportHelper, Global.Resources, Html.Utils,
-  Performer;
+  Performer, DaModule;
 {$ENDREGION}
 
 type
   TframeAllAttachments = class(TframeSource, IProgress, IUpdateXML)
     aOpenAttachFile      : TAction;
+    aOpenEmail           : TAction;
     aOpenParsedText      : TAction;
     btnOpenAttachFile    : TToolButton;
+    btnOpenEmail         : TToolButton;
     btnOpenParsedText    : TToolButton;
     btnSep04             : TToolButton;
     SaveDialogAttachment : TSaveDialog;
     procedure aOpenAttachFileExecute(Sender: TObject);
     procedure aOpenAttachFileUpdate(Sender: TObject);
+    procedure aOpenEmailExecute(Sender: TObject);
     procedure aOpenParsedTextExecute(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
     procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
-    procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
@@ -41,13 +42,12 @@ type
     COL_FILE_NAME    = 3;
     COL_CONTENT_TYPE = 4;
     COL_PARSED_TEXT  = 5;
-
     C_FIXED_COLUMNS  = 6;
 
     C_IDENTITY_NAME = 'frameAllAttachment';
   private
       //IUpdateXML
-    procedure UpdateXML;
+    procedure IUpdateXML.UpdateXML = UpdateColumns;
 
     //IProgress
     procedure ClearTree;
@@ -78,15 +78,15 @@ implementation
 constructor TframeAllAttachments.Create(AOwner: TComponent);
 begin
   inherited;
-  vstTree.NodeDataSize := SizeOf(TAttachment);
-  TPublishers.UpdateXMLPublisher.Subscribe(Self);
+  vstTree.NodeDataSize := SizeOf(TAttachData);
   TPublishers.ProgressPublisher.Subscribe(Self);
+  TPublishers.UpdateXMLPublisher.Subscribe(Self);
 end;
 
 destructor TframeAllAttachments.Destroy;
 begin
-  TPublishers.UpdateXMLPublisher.Unsubscribe(Self);
   TPublishers.ProgressPublisher.Unsubscribe(Self);
+  TPublishers.UpdateXMLPublisher.Unsubscribe(Self);
   inherited;
 end;
 
@@ -99,8 +99,8 @@ procedure TframeAllAttachments.Initialize;
 begin
   inherited Initialize;
   LoadFromXML;
-  UpdateColumns;
   Translate;
+  UpdateColumns;
 end;
 
 procedure TframeAllAttachments.Deinitialize;
@@ -113,6 +113,7 @@ procedure TframeAllAttachments.Translate;
 begin
   inherited;
   aOpenAttachFile.Hint := TLang.Lang.Translate('OpenFile');
+  aOpenEmail.Hint      := TLang.Lang.Translate('OpenEmail');
   vstTree.Header.Columns[COL_SHORT_NAME].Text   := TLang.Lang.Translate('FileName');
   vstTree.Header.Columns[COL_EMAIL_NAME].Text   := TLang.Lang.Translate('Email');
   vstTree.Header.Columns[COL_FILE_NAME].Text    := TLang.Lang.Translate('Path');
@@ -127,11 +128,14 @@ begin
   inherited;
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
   begin
-    Data := vstTree.FocusedNode.GetData;
-    if TFile.Exists(Data^.FileName) then
-      TFileUtils.ShellOpen(Data^.FileName)
-    else
-      TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+    Data := TGeneral.AttachmentList.GetItem(PAttachData(vstTree.FocusedNode^.GetData).Hash);
+    if Assigned(Data) then
+    begin
+      if TFile.Exists(Data^.FileName) then
+        TFileUtils.ShellOpen(Data^.FileName)
+      else
+        TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+    end;
   end;
 end;
 
@@ -141,6 +145,29 @@ begin
   TAction(Sender).Enabled := not vstTree.IsEmpty and Assigned(vstTree.FocusedNode);
 end;
 
+procedure TframeAllAttachments.aOpenEmailExecute(Sender: TObject);
+var
+  ResultData: PResultData;
+  AttData: PAttachment;
+begin
+  inherited;
+  if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
+  begin
+    AttData := TGeneral.AttachmentList.GetItem(PAttachData(vstTree.FocusedNode^.GetData).Hash);
+    if Assigned(AttData) then
+    begin
+      ResultData := TGeneral.EmailList.GetItem(AttData.ParentHash);
+      if Assigned(ResultData) then
+      begin
+        if TFile.Exists(ResultData^.FileName) then
+          TFileUtils.ShellOpen(ResultData^.FileName)
+        else
+          TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [ResultData^.FileName]));
+      end;
+    end;
+  end;
+end;
+
 procedure TframeAllAttachments.aOpenParsedTextExecute(Sender: TObject);
 var
   Data: PAttachment;
@@ -148,8 +175,13 @@ begin
   inherited;
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
   begin
-    Data := vstTree.FocusedNode.GetData;
-    TInformationDialog.ShowMessage(THtmlUtils.GetHighlightText(Data^.ParsedText, Data^.Matches), GetIdentityName);
+    Data := TGeneral.AttachmentList.GetItem(PAttachData(vstTree.FocusedNode^.GetData).Hash);
+    if Assigned(Data) then
+    begin
+      if Data^.ParsedText.IsEmpty then
+        Data^.ParsedText := TDaMod.GetAttachmentAsRawText(Data^.Hash);
+      TInformationDialog.ShowMessage(THtmlUtils.GetHighlightText(Data^.ParsedText, Data^.Matches), GetIdentityName);
+    end;
   end;
 end;
 
@@ -171,13 +203,13 @@ end;
 
 procedure TframeAllAttachments.aSaveExecute(Sender: TObject);
 var
-  Data: PAttachment;
+  Data : PAttachment;
 begin
   inherited;
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
   begin
-    Data := vstTree.FocusedNode.GetData;
-    if TFile.Exists(Data^.FileName) then
+    Data := TGeneral.AttachmentList.GetItem(PAttachData(vstTree.FocusedNode^.GetData).Hash);
+    if Assigned(Data) and TFile.Exists(Data^.FileName) then
     begin
       SaveDialogAttachment.InitialDir := TPath.GetDirectoryName(Data^.FileName);
       SaveDialogAttachment.Filter     := 'Attachment|*' + TPath.GetExtension(Data^.FileName) + '|All files|*.*';
@@ -193,21 +225,36 @@ end;
 procedure TframeAllAttachments.vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
 var
   Data: PAttachment;
+  AttachData: PAttachData;
 begin
   inherited;
-  Data := Node^.GetData;
-  if (Column < C_FIXED_COLUMNS) then
+  if (Sender.GetNodeLevel(Node) >= 1) then
   begin
-    if Data.FromZip then
-    begin
-      TargetCanvas.Brush.Color := clWebWhiteSmoke;
-      TargetCanvas.FillRect(CellRect);
-    end;
+    AttachData := Node^.GetData;
+    if Assigned(AttachData) and (Column >= C_FIXED_COLUMNS) then
+      if not AttachData^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
+      begin
+        TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+        TargetCanvas.FillRect(CellRect);
+      end;
   end
-  else if (Data^.Matches[Column - C_FIXED_COLUMNS].Count > 0) then
+  else
   begin
-    TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
-    TargetCanvas.FillRect(CellRect);
+    Data := TGeneral.AttachmentList.GetItem(PAttachData(Node^.GetData).Hash);
+    if Assigned(Data) then
+      if (Column < C_FIXED_COLUMNS) then
+      begin
+        if Data^.FromZip then
+        begin
+          TargetCanvas.Brush.Color := clWebWhiteSmoke;
+          TargetCanvas.FillRect(CellRect);
+        end
+      end
+      else if (Data^.Matches[Column - C_FIXED_COLUMNS].Count > 0) then
+      begin
+        TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+        TargetCanvas.FillRect(CellRect);
+      end;
   end;
 end;
 
@@ -216,7 +263,7 @@ var
   Data: PAttachment;
 begin
   inherited;
-  Data := Node^.GetData;
+  Data := TGeneral.AttachmentList.GetItem(PAttachData(Node^.GetData).Hash);
   if (Column in [COL_FILE_NAME, COL_SHORT_NAME]) and Data^.FromDB then
     TargetCanvas.Font.Color := clNavy;
 end;
@@ -226,8 +273,11 @@ var
   Data1, Data2: PAttachment;
 begin
   inherited;
-  Data1 := Node1^.GetData;
-  Data2 := Node2^.GetData;
+  Data1 := TGeneral.AttachmentList.GetItem(PAttachData(Node1^.GetData).Hash);
+  Data2 := TGeneral.AttachmentList.GetItem(PAttachData(Node2^.GetData).Hash);
+  if (not Assigned(Data1)) or (not Assigned(Data2)) then
+    Result := 0
+  else
   case Column of
     COL_POSITION:
       Result := CompareValue(vstTree.AbsoluteIndex(Node1), vstTree.AbsoluteIndex(Node2));
@@ -241,24 +291,7 @@ begin
       Result := CompareText(Data1^.ContentType, Data2^.ContentType);
     COL_PARSED_TEXT:
       Result := CompareText(Data1^.ParsedText, Data2^.ParsedText);
-  else
-//    if (Column >= 0) and
-//       (Data1^.Matches.Count > 0) and
-//       (Data2^.Matches.Count > 0) and
-//       (Data1^.Matches.Count >= Column - C_FIXED_COLUMNS) and
-//       (Data2^.Matches.Count >= Column - C_FIXED_COLUMNS) then
-//      Result := CompareText(Data1^.Matches.Items[Column - C_FIXED_COLUMNS], Data2^.Matches.Items[Column - C_FIXED_COLUMNS]); !!!!
   end;
-end;
-
-procedure TframeAllAttachments.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
-var
-  Data: PAttachment;
-begin
-  inherited;
-  Data := Node^.GetData;
-  if Assigned(Data) then
-    Data^.Clear;
 end;
 
 procedure TframeAllAttachments.vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
@@ -268,34 +301,46 @@ begin
   inherited;
   if (Column = COL_SHORT_NAME) and (Kind in [ikNormal, ikSelected]) then
   begin
-    Data := Node^.GetData;
-    ImageIndex := Data^.ImageIndex;
+    Data := TGeneral.AttachmentList.GetItem(PAttachData(Node^.GetData).Hash);
+    if Assigned(Data) then
+      ImageIndex := Data^.ImageIndex;
   end;
 end;
 
 procedure TframeAllAttachments.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
   Data: PAttachment;
+  AttachData: PAttachData;
 begin
   inherited;
   CellText := '';
-  Data := Node^.GetData;
-  case Column of
-    COL_POSITION:
-      CellText := (vstTree.AbsoluteIndex(Node) + 1).ToString;
-    COL_SHORT_NAME:
-      CellText := Data^.ShortName;
-    COL_EMAIL_NAME:
-      CellText := Data^.ParentName;
-    COL_FILE_NAME:
-      CellText := Data^.FileName;
-    COL_CONTENT_TYPE:
-      CellText := Data^.ContentType;
-    COL_PARSED_TEXT:
-      CellText := Data^.ParsedText;
+  if (Column >= C_FIXED_COLUMNS) then
+  begin
+    if (Sender.GetNodeLevel(Node) >= 1) then
+    begin
+      AttachData := Node^.GetData;
+      if Assigned(AttachData) then
+        CellText := AttachData^.Matches.Items[Column - C_FIXED_COLUMNS];
+    end
+  end
   else
-//    if (Column >= 0) and (Data^.Matches.Count >= Column - C_FIXED_COLUMNS) then
-//      CellText := Data^.Matches.Items[Column - C_FIXED_COLUMNS]; !!!!
+  begin
+    Data := TGeneral.AttachmentList.GetItem(PAttachData(Node^.GetData).Hash);
+    if Assigned(Data) then
+      case Column of
+        COL_POSITION:
+          CellText := (vstTree.AbsoluteIndex(Node) + 1).ToString;
+        COL_SHORT_NAME:
+          CellText := Data^.ShortName;
+        COL_EMAIL_NAME:
+          CellText := Data^.ParentName;
+        COL_FILE_NAME:
+          CellText := Data^.FileName;
+        COL_CONTENT_TYPE:
+          CellText := Data^.ContentType;
+        COL_PARSED_TEXT:
+          CellText := Data^.ParsedText;
+      end;
   end;
 end;
 
@@ -343,43 +388,84 @@ end;
 
 procedure TframeAllAttachments.CompletedItem(const aResultData: PResultData);
 var
-  Data: PAttachment;
-  Node: PVirtualNode;
+  arr        : array of array of string;
+  ChildNode  : PVirtualNode;
+  Attachment : PAttachment;
+  Data       : PAttachData;
+  IsEmpty    : Boolean;
+  MaxCol     : Integer;
+  Node       : PVirtualNode;
 begin
-  for var i := 0 to aResultData.Attachments.Count - 1 do
-  begin
-    Node := vstTree.AddChild(nil);
-    Data := Node^.GetData;
-    //!!!!
-  end;
+  if not Assigned(aResultData) then
+    Exit;
+
+  for var attHash in aResultData.Attachments do
+    if TGeneral.AttachmentList.TryGetValue(attHash, Attachment) then
+    begin
+      Node := vstTree.AddChild(nil);
+      Data := Node^.GetData;
+      Data^.Hash := Attachment.Hash;
+
+      MaxCol := 0;
+      for var i := 0 to Attachment.Matches.Count - 1 do
+        MaxCol := Max(MaxCol, Attachment.Matches[i].Count);
+
+      IsEmpty := False;
+      SetLength(arr, MaxCol, Attachment.Matches.Count);
+      for var i := 0 to Attachment.Matches.Count - 1 do
+        for var j := 0 to Attachment.Matches[i].Count - 1 do
+        begin
+          arr[j, i] := Attachment.Matches[i].Items[j].Trim;
+          IsEmpty := IsEmpty or arr[j, i].IsEmpty;
+        end;
+
+      if not IsEmpty then
+        for var i := Low(arr) to High(arr) do
+        begin
+          ChildNode := vstTree.AddChild(Node);
+          Data := ChildNode^.GetData;
+          Data^.Hash := Attachment.Hash;
+          Data^.Matches.AddRange(arr[i]);
+          vstTree.ValidateNode(ChildNode, False);
+        end;
+      Attachment^.IsMatch := not IsEmpty;
+      vstTree.ValidateNode(Node, False);
+    end;
 end;
 
 procedure TframeAllAttachments.UpdateColumns;
 var
-  Column: TVirtualTreeColumn;
-  FRegExpList: TArrayRecord<TRegExpData>;
-  Node: PVirtualNode;
-  Data: PAttachment;
+  Column     : TVirtualTreeColumn;
+  Node       : PVirtualNode;
+  CurrNode   : PVirtualNode;
+  Data       : PAttachData;
+  RegExpList : TArrayRecord<TRegExpData>;
 begin
   vstTree.BeginUpdate;
-  FRegExpList := TGeneral.GetRegExpParametersList;
   while (C_FIXED_COLUMNS < vstTree.Header.Columns.Count) do
     vstTree.Header.Columns.Delete(C_FIXED_COLUMNS);
 
-  if (FRegExpList.Count + C_FIXED_COLUMNS <> vstTree.Header.Columns.Count) then
-    if (vstTree.RootNode.ChildCount > 0) then
+  RegExpList := TGeneral.GetRegExpParametersList;
+  Node := vstTree.RootNode.FirstChild;
+  while Assigned(Node) do
+  begin
+    Data := Node^.GetData;
+    Data^.Matches.Count := RegExpList.Count;
+    if (Node.ChildCount > 0) then
     begin
-      Node := vstTree.RootNode.FirstChild;
-      while Assigned(Node) do
+      CurrNode := Node.FirstChild;
+      while Assigned(CurrNode) do
       begin
-        Data := Node^.GetData;
-        Data^.Matches.Count := FRegExpList.Count;
-        Node := Node^.NextSibling;
+        Data := CurrNode^.GetData;
+        Data^.Matches.Count := RegExpList.Count;
+        CurrNode := CurrNode.NextSibling;
       end;
     end;
+    Node := Node.NextSibling;
+  end;
 
   try
-    for var item in FRegExpList do
+    for var item in RegExpList do
     begin
       Column := vstTree.Header.Columns.Add;
       Column.Text             := item.ParameterName;
@@ -403,11 +489,6 @@ end;
 procedure TframeAllAttachments.Progress;
 begin
 
-end;
-
-procedure TframeAllAttachments.UpdateXML;
-begin
-  UpdateColumns;
 end;
 
 end.

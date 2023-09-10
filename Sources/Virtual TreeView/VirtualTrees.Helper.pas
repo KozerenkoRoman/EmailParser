@@ -30,20 +30,21 @@ class procedure TVirtualTree.Initialize(Sender: TVirtualStringTree);
 const
   C_HEIGHT = 22;
 begin
-  Sender.CheckImageKind := ckCustom;
+  Sender.CheckImageKind    := ckCustom;
   Sender.CustomCheckImages := DMImage.ilCustomCheckImages;
+  Sender.DefaultText       := string.Empty;
+  Sender.TextMargin        := 3;
   Sender.Colors.FocusedSelectionColor   := clWebLightSteelBlue;
   Sender.Colors.GridLineColor           := clSilver;
   Sender.Colors.SelectionTextColor      := clBlack;
   Sender.Colors.UnfocusedSelectionColor := clWebLightSteelBlue;
-  Sender.TextMargin := 2;
   Sender.DefaultNodeHeight  := C_HEIGHT;
   Sender.Header.Height      := C_HEIGHT;
   Sender.Header.MinHeight   := C_HEIGHT;
   Sender.Header.Font.Height := -13;
   Sender.Header.Options     := [hoColumnResize, hoDblClickResize, hoDrag, hoShowHint, hoShowImages, hoShowSortGlyphs, hoVisible, hoHeaderClickAutoSort];
-  Sender.TreeOptions.AutoOptions      := Sender.TreeOptions.AutoOptions + [toDisableAutoscrollOnFocus, toAutoDropExpand, toAutoExpand, toAutoTristateTracking, toAutoChangeScale];
-  Sender.TreeOptions.MiscOptions      := Sender.TreeOptions.MiscOptions + [toAcceptOLEDrop, toCheckSupport, {toFullRepaintOnResize,} toGridExtensions, toInitOnSave, toToggleOnDblClick, toWheelPanning, toEditOnClick];
+  Sender.TreeOptions.AutoOptions      := Sender.TreeOptions.AutoOptions + [toDisableAutoscrollOnFocus, toAutoDropExpand, toAutoTristateTracking, toAutoChangeScale];
+  Sender.TreeOptions.MiscOptions      := Sender.TreeOptions.MiscOptions + [toAcceptOLEDrop, toCheckSupport, toGridExtensions, toInitOnSave, toToggleOnDblClick, toWheelPanning, toEditOnClick];
   Sender.TreeOptions.PaintOptions     := Sender.TreeOptions.PaintOptions + [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowTreeLines, toShowVertGridLines, toThemeAware, toShowBackground];
   Sender.TreeOptions.SelectionOptions := Sender.TreeOptions.SelectionOptions + [toExtendedFocus, toAlwaysSelectNode] - [toFullRowSelect];
 end;

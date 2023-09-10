@@ -62,6 +62,7 @@ inherited frameEmails: TframeEmails
     Header.MainColumn = 0
     Images = DMImage.vil16
     Indent = 12
+    TreeOptions.AutoOptions = [toAutoSort, toAutoTristateTracking, toAutoChangeScale]
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toVariableNodeHeight, toFullRowDrag]
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowRoot, toShowVertGridLines, toThemeAware, toShowFilteredNodes]
     OnBeforeCellPaint = vstTreeBeforeCellPaint
@@ -170,63 +171,53 @@ inherited frameEmails: TframeEmails
     inherited aRefresh: TAction
       OnExecute = aRefreshExecute
     end
-    object aOpenLogFile: TAction
+    object aOpenLogFile: TAction [9]
       Hint = 'Open Log File'
       ImageIndex = 70
       ImageName = 'file_extension_log'
       OnExecute = aOpenLogFileExecute
     end
-    object aSearch: TAction
+    object aSearch: TAction [10]
       Hint = 'Start Search'
       ImageIndex = 12
       ImageName = 'lightning'
       OnExecute = aSearchExecute
       OnUpdate = aSearchUpdate
     end
-    object aBreak: TAction
+    object aBreak: TAction [11]
       Hint = 'Break'
       ImageIndex = 13
       ImageName = 'lightning_delete'
       OnExecute = aBreakExecute
     end
-    object aOpenEmail: TAction
+    object aOpenEmail: TAction [12]
       Hint = 'Open Email'
-      ImageIndex = 75
-      ImageName = 'email_open'
+      ImageIndex = 71
+      ImageName = 'email'
       OnExecute = aOpenEmailExecute
       OnUpdate = aOpenEmailUpdate
     end
-    object aFilter: TAction
+    object aFilter: TAction [13]
       AutoCheck = True
       ImageIndex = 3
       ImageName = 'MasterFilter_32x32'
       OnExecute = aFilterExecute
       OnUpdate = aSearchUpdate
     end
-    object aExpandAll: TAction
-      Caption = 'Expand all'
-      ImageIndex = 68
-      ImageName = 'ShowDetail_32x32'
-      OnExecute = aExpandAllExecute
+    inherited aExpandAll: TAction
       OnUpdate = aExpandAllUpdate
     end
-    object aCollapseAll: TAction
-      Caption = 'Collapse All'
-      ImageIndex = 67
-      ImageName = 'HideDetail_32x32'
-      OnExecute = aCollapseAllExecute
+    inherited aCollapseAll: TAction
       OnUpdate = aExpandAllUpdate
     end
   end
   inherited pmFrame: TPopupMenu
     Left = 588
     Top = 116
-    object miExpandAll: TMenuItem
-      Action = aExpandAll
+    inherited miExpandAll: TMenuItem
       ImageName = 'ShowDetail_16x16'
     end
-    object miCollapseAll: TMenuItem
-      Action = aCollapseAll
+    inherited miCollapseAll: TMenuItem
       ImageName = 'HideDetail_16x16'
     end
   end

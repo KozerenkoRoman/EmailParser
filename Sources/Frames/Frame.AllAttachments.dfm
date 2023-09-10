@@ -1,10 +1,10 @@
 inherited frameAllAttachments: TframeAllAttachments
-  Width = 663
+  Width = 797
   Height = 374
-  ExplicitWidth = 663
+  ExplicitWidth = 797
   ExplicitHeight = 374
   inherited tbMain: TToolBar
-    Width = 663
+    Width = 797
     ExplicitWidth = 663
     inherited btnAdd: TToolButton
       Action = aOpenAttachFile
@@ -16,21 +16,29 @@ inherited frameAllAttachments: TframeAllAttachments
       Width = 8
       Style = tbsSeparator
     end
-    object btnOpenAttachFile: TToolButton
+    object btnOpenEmail: TToolButton
       Left = 383
+      Top = 0
+      Action = aOpenEmail
+    end
+    object btnOpenAttachFile: TToolButton
+      Left = 422
       Top = 0
       Action = aOpenAttachFile
     end
     object btnOpenParsedText: TToolButton
-      Left = 422
+      Left = 461
       Top = 0
       Action = aOpenParsedText
     end
   end
   inherited vstTree: TVirtualStringTree
-    Width = 663
+    Width = 797
     Height = 335
     Header.MainColumn = 0
+    Indent = 15
+    TreeOptions.AutoOptions = [toAutoSort, toAutoTristateTracking, toAutoChangeScale]
+    TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowRoot, toShowTreeLines, toShowVertGridLines, toThemeAware, toUseBlendedSelection, toShowFilteredNodes]
     OnBeforeCellPaint = vstTreeBeforeCellPaint
     OnCompareNodes = vstTreeCompareNodes
     OnDblClick = aOpenParsedTextExecute
@@ -54,6 +62,7 @@ inherited frameAllAttachments: TframeAllAttachments
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 1
         Text = 'Email Name'
+        Width = 119
       end
       item
         CaptionAlignment = taCenter
@@ -102,18 +111,31 @@ inherited frameAllAttachments: TframeAllAttachments
     inherited aRefresh: TAction
       OnExecute = aRefreshExecute
     end
-    object aOpenAttachFile: TAction
+    object aOpenAttachFile: TAction [9]
       ImageIndex = 72
       ImageName = 'email_attach'
       OnExecute = aOpenAttachFileExecute
       OnUpdate = aOpenAttachFileUpdate
     end
-    object aOpenParsedText: TAction
+    object aOpenParsedText: TAction [10]
       Hint = 'Open Parsed Text'
       ImageIndex = 75
       ImageName = 'email_open'
       OnExecute = aOpenParsedTextExecute
       OnUpdate = aOpenAttachFileUpdate
+    end
+    object aOpenEmail: TAction [11]
+      ImageIndex = 71
+      ImageName = 'email'
+      OnExecute = aOpenEmailExecute
+    end
+  end
+  inherited pmFrame: TPopupMenu
+    inherited miExpandAll: TMenuItem
+      ImageName = 'ShowDetail_16x16'
+    end
+    inherited miCollapseAll: TMenuItem
+      ImageName = 'HideDetail_16x16'
     end
   end
   object SaveDialogAttachment: TSaveDialog

@@ -287,7 +287,7 @@ begin
           TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
           aData^.Attachments.AddUnique(Attachment^.Hash);
 
-          Result := Concat(Result, FileName, ';');
+          Result := Concat(Result, (i + 1).ToString, '. ', FileName, '<br>');
         end;
       ZipFile.Close;
     except

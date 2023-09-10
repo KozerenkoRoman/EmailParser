@@ -93,6 +93,7 @@ inherited frameSource: TframeSource
     Touch.InteractiveGestures = [igPan, igPressAndTap]
     Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
     Columns = <>
+    DefaultText = ''
   end
   inherited alFrame: TActionList
     Left = 104
@@ -120,6 +121,26 @@ inherited frameSource: TframeSource
       ImageIndex = 63
       ImageName = 'PageSetup_32x32'
       OnExecute = aColumnSettingsExecute
+    end
+    object aExpandAll: TAction
+      Caption = 'Expand all'
+      ImageIndex = 68
+      ImageName = 'ShowDetail_32x32'
+      OnExecute = aExpandAllExecute
+    end
+    object aCollapseAll: TAction
+      Caption = 'Collapse All'
+      ImageIndex = 67
+      ImageName = 'HideDetail_32x32'
+      OnExecute = aCollapseAllExecute
+    end
+  end
+  inherited pmFrame: TPopupMenu
+    object miExpandAll: TMenuItem
+      Action = aExpandAll
+    end
+    object miCollapseAll: TMenuItem
+      Action = aCollapseAll
     end
   end
 end

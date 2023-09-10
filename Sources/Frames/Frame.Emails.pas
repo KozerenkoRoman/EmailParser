@@ -17,8 +17,6 @@ uses
 type
   TframeEmails = class(TframeSource, IProgress, IUpdateXML)
     aBreak          : TAction;
-    aCollapseAll    : TAction;
-    aExpandAll      : TAction;
     aFilter         : TAction;
     aOpenEmail      : TAction;
     aOpenLogFile    : TAction;
@@ -30,12 +28,8 @@ type
     btnSearch       : TToolButton;
     btnSep04        : TToolButton;
     btnSep05        : TToolButton;
-    miCollapseAll   : TMenuItem;
-    miExpandAll     : TMenuItem;
     SaveDialogEmail : TSaveDialog;
     procedure aBreakExecute(Sender: TObject);
-    procedure aCollapseAllExecute(Sender: TObject);
-    procedure aExpandAllExecute(Sender: TObject);
     procedure aExpandAllUpdate(Sender: TObject);
     procedure aFilterExecute(Sender: TObject);
     procedure aOpenEmailExecute(Sender: TObject);
@@ -149,8 +143,6 @@ begin
   vstTree.Header.Columns[COL_FROM].Text         := TLang.Lang.Translate('From');
   vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
 
-  aCollapseAll.Caption := TLang.Lang.Translate('CollapseAll');
-  aExpandAll.Caption   := TLang.Lang.Translate('ExpandAll');
   aOpenEmail.Hint      := TLang.Lang.Translate('OpenEmail');
   aOpenLogFile.Hint    := TLang.Lang.Translate('OpenLogFile');
   aSearch.Hint         := TLang.Lang.Translate('StartSearch');
@@ -495,28 +487,6 @@ begin
       end
       else
         TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
-  end;
-end;
-
-procedure TframeEmails.aCollapseAllExecute(Sender: TObject);
-begin
-  inherited;
-  vstTree.BeginUpdate;
-  try
-    vstTree.FullCollapse;
-  finally
-    vstTree.EndUpdate;
-  end;
-end;
-
-procedure TframeEmails.aExpandAllExecute(Sender: TObject);
-begin
-  inherited;
-  vstTree.BeginUpdate;
-  try
-    vstTree.FullExpand;
-  finally
-    vstTree.EndUpdate;
   end;
 end;
 

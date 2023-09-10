@@ -201,6 +201,12 @@ inherited frameRegExp: TframeRegExp
       ImageName = 'SaveAll_32x32'
       OnExecute = aSaveAsExecute
     end
+    inherited aExpandAll: TAction
+      Visible = False
+    end
+    inherited aCollapseAll: TAction
+      Visible = False
+    end
     object aDeleteSet: TAction
       ImageIndex = 65
       ImageName = 'DeleteList2_32x32'
@@ -224,6 +230,14 @@ inherited frameRegExp: TframeRegExp
       ImageName = 'Fill_32x32'
       OnExecute = aDownExecute
       OnUpdate = aDownUpdate
+    end
+  end
+  inherited pmFrame: TPopupMenu
+    inherited miExpandAll: TMenuItem
+      ImageName = 'ShowDetail_16x16'
+    end
+    inherited miCollapseAll: TMenuItem
+      ImageName = 'HideDetail_16x16'
     end
   end
 end

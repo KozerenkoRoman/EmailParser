@@ -88,9 +88,8 @@ end;
 procedure TframeAttachments.Initialize;
 begin
   inherited Initialize;
-  vstTree.FullExpand;
-  Translate;
   LoadFromXML;
+  Translate;
   UpdateColumns;
 end;
 
@@ -194,7 +193,7 @@ begin
     begin
       if Data^.ParsedText.IsEmpty then
         Data^.ParsedText := TDaMod.GetAttachmentAsRawText(Data^.Hash);
-      TInformationDialog.ShowMessage(Data^.ParsedText, GetIdentityName);
+      TInformationDialog.ShowMessage(THtmlUtils.GetHighlightText(Data^.ParsedText, Data^.Matches), GetIdentityName);
     end;
   end;
 end;
@@ -381,7 +380,7 @@ begin
   vstTree.BeginUpdate;
   try
     vstTree.Clear;
-    if Assigned(aData) and (not aData.MessageId.IsEmpty) then  //?
+    if (not aData.MessageId.IsEmpty) then  //?
       for var attHash in aData.Attachments do
         if TGeneral.AttachmentList.TryGetValue(attHash, Attachment) then
         begin

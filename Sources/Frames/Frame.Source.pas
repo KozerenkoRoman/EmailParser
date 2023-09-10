@@ -14,7 +14,9 @@ uses
 
 type
   TframeSource = class(TFrameCustom)
+    aCollapseAll      : TAction;
     aColumnSettings   : TAction;
+    aExpandAll        : TAction;
     aExportToCSV      : TAction;
     aExportToExcel    : TAction;
     aPrint            : TAction;
@@ -23,6 +25,8 @@ type
     btnExportToExcel  : TToolButton;
     btnPrint          : TToolButton;
     btnSep03          : TToolButton;
+    miCollapseAll     : TMenuItem;
+    miExpandAll       : TMenuItem;
     vstTree           : TVirtualStringTree;
     procedure aColumnSettingsExecute(Sender: TObject);
     procedure aExportToCSVExecute(Sender: TObject);
@@ -33,6 +37,8 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeHeaderDragged(Sender: TVTHeader; Column: TColumnIndex; OldPosition: Integer);
     procedure vstTreeMeasureItem(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; var NodeHeight: Integer);
+    procedure aExpandAllExecute(Sender: TObject);
+    procedure aCollapseAllExecute(Sender: TObject);
   private const
     C_IDENTITY_NAME = 'frameSource';
   protected
@@ -80,9 +86,11 @@ procedure TframeSource.Translate;
 begin
   inherited;
   aAdd.Hint            := TLang.Lang.Translate('Add');
+  aCollapseAll.Caption := TLang.Lang.Translate('CollapseAll');
   aColumnSettings.Hint := TLang.Lang.Translate('ColumnSettings');
   aDelete.Hint         := TLang.Lang.Translate('Delete');
   aEdit.Hint           := TLang.Lang.Translate('Edit');
+  aExpandAll.Caption   := TLang.Lang.Translate('ExpandAll');
   aExportToCSV.Hint    := TLang.Lang.Translate('ExportToCSV');
   aExportToExcel.Hint  := TLang.Lang.Translate('ExportToExcel');
   aPrint.Hint          := TLang.Lang.Translate('Print');
@@ -141,11 +149,33 @@ begin
   end;
 end;
 
+procedure TframeSource.aCollapseAllExecute(Sender: TObject);
+begin
+  inherited;
+  vstTree.BeginUpdate;
+  try
+    vstTree.FullCollapse;
+  finally
+    vstTree.EndUpdate;
+  end;
+end;
+
 procedure TframeSource.aColumnSettingsExecute(Sender: TObject);
 begin
   inherited;
   if TfrmColumnSettings.ShowSettings(vstTree, GetIdentityName, 0) = mrOk then
     TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
+end;
+
+procedure TframeSource.aExpandAllExecute(Sender: TObject);
+begin
+  inherited;
+  vstTree.BeginUpdate;
+  try
+    vstTree.FullExpand;
+  finally
+    vstTree.EndUpdate;
+  end;
 end;
 
 procedure TframeSource.aExportToCSVExecute(Sender: TObject);
