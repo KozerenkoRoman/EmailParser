@@ -23,7 +23,7 @@ type
     function GetSQLiteDatabase: TSQLiteDatabase;
     procedure CreateConnection;
     procedure ExecSQL(const aSQL: string);
-    procedure InsertAttachment(const aAttachment: TAttachment; const aParentHash: string);
+    procedure InsertAttachment(const aAttachment: PAttachment; const aParentHash: string);
     procedure InsertData(const aResultData: PResultData);
   protected
     procedure Commit;
@@ -168,6 +168,7 @@ end;
 procedure TThreadEmails.InsertData(const aResultData: PResultData);
 var
   IsStartTransaction: Boolean;
+  Attachment: PAttachment;
 begin
   if Terminated or not FConnection.Connected then
     Exit;
@@ -194,12 +195,12 @@ begin
     aResultData^.ParsedText := '';
     aResultData^.Body       := '';
 
-    for var i := Low(aResultData^.Attachments) to High (aResultData^.Attachments) do
-    begin
-      InsertAttachment(aResultData^.Attachments[i], aResultData^.Hash);
-      aResultData^.Attachments[i].ParsedText := '';
-    end;
-
+    for var attHash in aResultData^.Attachments do
+      if TGeneral.AttachmentList.TryGetValue(attHash, Attachment) then
+      begin
+        InsertAttachment(Attachment, aResultData^.Hash);
+        Attachment^.ParsedText := '';
+      end;
   except
     on E: Exception do
     begin
@@ -210,7 +211,7 @@ begin
   end;
 end;
 
-procedure TThreadEmails.InsertAttachment(const aAttachment: TAttachment; const aParentHash: string);
+procedure TThreadEmails.InsertAttachment(const aAttachment: PAttachment; const aParentHash: string);
 var
   IsStartTransaction: Boolean;
 begin
@@ -219,16 +220,16 @@ begin
     IsStartTransaction := StartTransaction;
     try
       FQueryAttachment.ParamByName('PARSED_TEXT').DataType := ftBlob;
-      FQueryAttachment.ParamByName('PARSED_TEXT').AsStream := TZipPack.GetCompressStr(aAttachment.ParsedText);
+      FQueryAttachment.ParamByName('PARSED_TEXT').AsStream := TZipPack.GetCompressStr(aAttachment^.ParsedText);
 
-      FQueryAttachment.ParamByName('HASH').AsString         := aAttachment.Hash;
+      FQueryAttachment.ParamByName('HASH').AsString         := aAttachment^.Hash;
       FQueryAttachment.ParamByName('PARENT_HASH').AsString  := aParentHash;
-      FQueryAttachment.ParamByName('CONTENT_ID').AsString   := aAttachment.ContentID;
-      FQueryAttachment.ParamByName('FILE_NAME').AsString    := aAttachment.FileName;
-      FQueryAttachment.ParamByName('SHORT_NAME').AsString   := aAttachment.ShortName;
-      FQueryAttachment.ParamByName('CONTENT_TYPE').AsString := aAttachment.ContentType;
-      FQueryAttachment.ParamByName('FROM_ZIP').AsInteger    := aAttachment.FromZip.ToInteger;
-      FQueryAttachment.ParamByName('IMAGE_INDEX').AsInteger := aAttachment.ImageIndex;
+      FQueryAttachment.ParamByName('CONTENT_ID').AsString   := aAttachment^.ContentID;
+      FQueryAttachment.ParamByName('FILE_NAME').AsString    := aAttachment^.FileName;
+      FQueryAttachment.ParamByName('SHORT_NAME').AsString   := aAttachment^.ShortName;
+      FQueryAttachment.ParamByName('CONTENT_TYPE').AsString := aAttachment^.ContentType;
+      FQueryAttachment.ParamByName('FROM_ZIP').AsInteger    := aAttachment^.FromZip.ToInteger;
+      FQueryAttachment.ParamByName('IMAGE_INDEX').AsInteger := aAttachment^.ImageIndex;
       FQueryAttachment.ExecSQL;
       if IsStartTransaction then
         Commit;

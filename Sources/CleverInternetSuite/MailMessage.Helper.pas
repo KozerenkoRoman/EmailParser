@@ -21,15 +21,6 @@ type
     property ResultData: PResultData read GetResultData write SetResultData;
   end;
 
-  TclHtmlParserHelper = class helper for TclHtmlParser
-  private
-    class var FData: PResultData;
-    function GetResultData: PResultData;
-    procedure SetResultData(const Value: PResultData);
-  public
-    property ResultData: PResultData read GetResultData write SetResultData;
-  end;
-
 implementation
 
 { TclMailMessageHelper }
@@ -41,19 +32,6 @@ begin
 end;
 
 procedure TclMailMessageHelper.SetResultData(const Value: PResultData);
-begin
-  FData := Value;
-end;
-
-{ TclHtmlParserHelper }
-
-function TclHtmlParserHelper.GetResultData: PResultData;
-begin
-  Assert(FData <> nil, 'ResultData cannot be nil');
-  Result := FData;
-end;
-
-procedure TclHtmlParserHelper.SetResultData(const Value: PResultData);
 begin
   FData := Value;
 end;

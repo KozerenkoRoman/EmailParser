@@ -35,13 +35,13 @@ type
     procedure CompletedItem(const aResultData: PResultData);
 
     class function GetDecompressStr(const aSQLText, aHash: string): string;
-    procedure FillEmailRecord(const aResultData: PResultData);
     procedure FillAllEmailsRecord(const aWithAttachments: Boolean = False);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetBodyAndText(const aHash: string): TArray<string>;
     class function GetBodyAsRawText(const aHash: string): string;
+    class function GetAttachmentAsRawText(const aHash: string): string;
     class function GetBodyAsParsedText(const aHash: string): string;
 
     procedure Initialize;
@@ -108,6 +108,14 @@ begin
   end;
 end;
 
+procedure TDaMod.Deinitialize;
+begin
+  FThreadEmails.Terminate;
+  qEmail.Unprepare;
+  qEmailBodyAndText.Unprepare;
+  Connection.Connected := False;
+end;
+
 class function TDaMod.GetDecompressStr(const aSQLText, aHash: string): string;
 var
   Connection: TFDConnection;
@@ -167,20 +175,17 @@ end;
 
 class function TDaMod.GetBodyAsRawText(const aHash: string): string;
 begin
-  Result := TDaMod.GetDecompressStr(rsSQLSelectBodyAsHtml, aHash);
+  Result := GetDecompressStr(rsSQLSelectBodyAsRawText, aHash);
 end;
 
 class function TDaMod.GetBodyAsParsedText(const aHash: string): string;
 begin
-  Result := TDaMod.GetDecompressStr(rsSQLSelectBodyAsParsedText, aHash);
+  Result := GetDecompressStr(rsSQLSelectBodyAsParsedText, aHash);
 end;
 
-procedure TDaMod.Deinitialize;
+class function TDaMod.GetAttachmentAsRawText(const aHash: string): string;
 begin
-  FThreadEmails.Terminate;
-  qEmail.Unprepare;
-  qEmailBodyAndText.Unprepare;
-  Connection.Connected := False;
+  Result := GetDecompressStr(rsSQLSelectAttachmentsAsParsedText, aHash);
 end;
 
 procedure TDaMod.CompletedItem(const aResultData: PResultData);
@@ -209,58 +214,11 @@ begin
   // nothing
 end;
 
-procedure TDaMod.FillEmailRecord(const aResultData: PResultData);
-var
-  i : Integer;
-begin
-  qEmail.ParamByName('HASH').AsString := aResultData.Hash;
-  try
-    qEmail.Open;
-    aResultData.FileName    := qEmail.FieldByName('FILE_NAME').AsString;
-    aResultData.ShortName   := qEmail.FieldByName('SHORT_NAME').AsString;
-    aResultData.MessageId   := qEmail.FieldByName('MESSAGE_ID').AsString;
-    aResultData.Subject     := qEmail.FieldByName('SUBJECT').AsString;
-    aResultData.From        := qEmail.FieldByName('ADDRESS_FROM').AsString;
-    aResultData.ContentType := qEmail.FieldByName('CONTENT_TYPE').AsString;
-    aResultData.TimeStamp   := qEmail.FieldByName('TIME_STAMP').AsDateTime;
-  finally
-    qEmail.Close;
-  end;
-
-  qAttachments.ParamByName('PARENT_HASH').AsString := aResultData.Hash;
-  try
-    qAttachments.Open;
-    qAttachments.FetchAll;
-    SetLength(aResultData.Attachments, qAttachments.RecordCount);
-    qAttachments.First;
-    i := 0;
-    while not qAttachments.Eof do
-    begin
-      aResultData.Attachments[i].Hash          := qAttachments.FieldByName('HASH').AsString;
-      aResultData.Attachments[i].ParentHash    := aResultData.Hash;
-      aResultData.Attachments[i].ParentName    := aResultData.ShortName;
-      aResultData.Attachments[i].Position      := i;
-      aResultData.Attachments[i].ShortName     := qAttachments.FieldByName('SHORT_NAME').AsString;
-      aResultData.Attachments[i].FileName      := qAttachments.FieldByName('FILE_NAME').AsString;
-      aResultData.Attachments[i].ContentID     := qAttachments.FieldByName('CONTENT_ID').AsString;
-      aResultData.Attachments[i].ContentType   := qAttachments.FieldByName('CONTENT_TYPE').AsString;
-      aResultData.Attachments[i].ParsedText    := TZipPack.DecompressStr(qAttachments.FieldByName('PARSED_TEXT').AsBytes);
-      aResultData.Attachments[i].ImageIndex    := qAttachments.FieldByName('IMAGE_INDEX').AsInteger;
-      aResultData.Attachments[i].Matches.Count := aResultData.Matches.Count;
-      aResultData.Attachments[i].FromDB        := True;
-      aResultData.Attachments[i].FromZip       := qAttachments.FieldByName('FROM_ZIP').AsInteger.ToBoolean;
-      qAttachments.Next;
-      Inc(i);
-    end;
-  finally
-    qAttachments.Close;
-  end;
-end;
-
 procedure TDaMod.FillAllEmailsRecord(const aWithAttachments: Boolean = False);
 var
   i: Integer;
   ResultData: PResultData;
+  Attachment: PAttachment;
 begin
   LogWriter.Write(ddEnterMethod, Self, 'FillAllEmailsRecord');
   try
@@ -271,6 +229,7 @@ begin
       New(ResultData);
       ResultData.Clear;
       ResultData.Hash        := qAllEmails.FieldByName('HASH').AsString;
+      ResultData.FileName    := qAllEmails.FieldByName('FILE_NAME').AsString;
       ResultData.ShortName   := qAllEmails.FieldByName('SHORT_NAME').AsString;
       ResultData.MessageId   := qAllEmails.FieldByName('MESSAGE_ID').AsString;
       ResultData.Subject     := qAllEmails.FieldByName('SUBJECT').AsString;
@@ -284,24 +243,26 @@ begin
         try
           qAttachments.Open;
           qAttachments.FetchAll;
-          SetLength(ResultData.Attachments, qAttachments.RecordCount);
+          ResultData.Attachments.Count := qAttachments.RecordCount;
           qAttachments.First;
           i := 0;
           while not qAttachments.Eof do
           begin
-            ResultData.Attachments[i].Hash          := qAttachments.FieldByName('HASH').AsString;
-            ResultData.Attachments[i].ParentHash    := ResultData.Hash;
-            ResultData.Attachments[i].ParentName    := ResultData.ShortName;
-            ResultData.Attachments[i].Position      := i;
-            ResultData.Attachments[i].ShortName     := qAttachments.FieldByName('SHORT_NAME').AsString;
-            ResultData.Attachments[i].FileName      := qAttachments.FieldByName('FILE_NAME').AsString;
-            ResultData.Attachments[i].ContentID     := qAttachments.FieldByName('CONTENT_ID').AsString;
-            ResultData.Attachments[i].ContentType   := qAttachments.FieldByName('CONTENT_TYPE').AsString;
-            ResultData.Attachments[i].ParsedText    := TZipPack.DecompressStr(qAttachments.FieldByName('PARSED_TEXT').AsBytes);
-            ResultData.Attachments[i].ImageIndex    := qAttachments.FieldByName('IMAGE_INDEX').AsInteger;
-            ResultData.Attachments[i].Matches.Count := ResultData.Matches.Count;
-            ResultData.Attachments[i].FromDB        := True;
-            ResultData.Attachments[i].FromZip       := qAttachments.FieldByName('FROM_ZIP').AsInteger.ToBoolean;
+            New(Attachment);
+//            Attachment.ParsedText    := TZipPack.DecompressStr(qAttachments.FieldByName('PARSED_TEXT').AsBytes);
+            Attachment.ContentID     := qAttachments.FieldByName('CONTENT_ID').AsString;
+            Attachment.ContentType   := qAttachments.FieldByName('CONTENT_TYPE').AsString;
+            Attachment.FileName      := qAttachments.FieldByName('FILE_NAME').AsString;
+            Attachment.ShortName     := qAttachments.FieldByName('SHORT_NAME').AsString;
+            Attachment.FromZip       := qAttachments.FieldByName('FROM_ZIP').AsInteger.ToBoolean;
+            Attachment.Hash          := qAttachments.FieldByName('HASH').AsString;
+            Attachment.ImageIndex    := qAttachments.FieldByName('IMAGE_INDEX').AsInteger;
+            Attachment.Matches.Count := ResultData.Matches.Count;
+            Attachment.ParentHash    := ResultData.Hash;
+            Attachment.ParentName    := ResultData.ShortName;
+            Attachment.FromDB        := True;
+            TGeneral.AttachmentList.Add(Attachment.Hash, Attachment);
+            ResultData.Attachments[i] := Attachment.Hash;
             qAttachments.Next;
             Inc(i);
           end;

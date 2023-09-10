@@ -41,21 +41,10 @@ resourcestring
   rsSQLInsertAttachment = 'insert or ignore into ATTACHMENTS(HASH, PARENT_HASH, CONTENT_ID, FILE_NAME, SHORT_NAME, CONTENT_TYPE, PARSED_TEXT, FROM_ZIP, IMAGE_INDEX) ' + sLineBreak +
                           '                           values(:HASH, :PARENT_HASH, :CONTENT_ID, :FILE_NAME, :SHORT_NAME, :CONTENT_TYPE, :PARSED_TEXT, :FROM_ZIP, :IMAGE_INDEX)';
 
-  rsSQLSelectBodyAsParsedText = 'select PARSED_TEXT from emails where HASH = :HASH';
-  rsSQLSelectBodyAsHtml       = 'select BODY from emails where HASH = :HASH';
-
-//  SQL_DeleteKey       = 'delete from KEYS where SECTION_ID = (select SECTION_ID from SECTIONS where SECTION_NAME = ?) and KEY_NAME = ?';
-//  SQL_DeleteSection   = 'delete from SECTIONS where SECTION_NAME = ?';
-//  SQL_InsertSection   = 'insert into SECTIONS(SECTION_NAME) values(?)';
-//  SQL_SelectKeyID     = 'select KEY_ID from KEYS where SECTION_ID = ? and KEY_NAME = ?';
-//  SQL_SelectKeyValue  = 'select KEY_VALUE from KEYS where SECTION_ID = (select SECTION_ID from SECTIONS where SECTION_NAME = ?) and KEY_NAME = ?';
-//  SQL_SelectKeyValues = 'select KEY_NAME, KEY_VALUE from KEYS where SECTION_ID = (select SECTION_ID from SECTIONS where SECTION_NAME = ?) and KEY_NAME like ?';
-//  SQL_SelectSectionID = 'select SECTION_ID from SECTIONS where SECTION_NAME = ?';
-//  SQL_SelectSection   = 'select KEY_NAME from KEYS where SECTION_ID = (select SECTION_ID from SECTIONS where SECTION_NAME = ?)';
-//  SQL_SelectSections  = 'select SECTION_NAME from SECTIONS where SECTION_NAME like ?';
-//  SQL_UpdateKey       = 'update KEYS set KEY_VALUE = ? where KEY_ID = ?';
+  rsSQLSelectBodyAsParsedText        = 'select PARSED_TEXT from EMAILS where HASH = :HASH';
+  rsSQLSelectBodyAsRawText           = 'select BODY from EMAILS where HASH = :HASH';
+  rsSQLSelectAttachmentsAsParsedText = 'select PARSED_TEXT from ATTACHMENTS where HASH = :HASH';
 
 implementation
-
 
 end.

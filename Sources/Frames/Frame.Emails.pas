@@ -62,7 +62,6 @@ type
     COL_ATTACH        = 6;
     COL_FROM          = 7;
     COL_CONTENT_TYPE  = 8;
-
     C_FIXED_COLUMNS   = 9;
 
     C_IDENTITY_NAME = 'frameResultView';
@@ -161,6 +160,7 @@ procedure TframeEmails.UpdateColumns;
 var
   Column     : TVirtualTreeColumn;
   CurrNode   : PVirtualNode;
+  Node   : PVirtualNode;
   DataEmail  : PEmail;
   RegExpList : TArrayRecord<TRegExpData>;
 begin
@@ -169,6 +169,25 @@ begin
     vstTree.Header.Columns.Delete(C_FIXED_COLUMNS);
 
   RegExpList := TGeneral.GetRegExpParametersList;
+
+  Node := vstTree.RootNode.FirstChild;
+  while Assigned(Node) do
+  begin
+    DataEmail := Node^.GetData;
+    DataEmail^.Matches.Count := RegExpList.Count;
+    if (Node.ChildCount > 0) then
+    begin
+      CurrNode := Node.FirstChild;
+      while Assigned(CurrNode) do
+      begin
+        DataEmail := CurrNode^.GetData;
+        DataEmail^.Matches.Count := RegExpList.Count;
+        CurrNode := CurrNode.NextSibling;
+      end;
+    end;
+    Node := Node.NextSibling;
+  end;
+
   for var ResultData in TGeneral.EmailList.Values do
   begin
     ResultData.Matches.Count := RegExpList.Count;
@@ -227,7 +246,7 @@ begin
   else
     case Column of
       COL_POSITION:
-        Result := CompareValue(Data1^.Position, Data2^.Position);
+        Result := CompareValue(vstTree.AbsoluteIndex(Node1), vstTree.AbsoluteIndex(Node2));
       COL_FILE_NAME:
         Result := CompareText(Data1^.FileName, Data2^.FileName);
       COL_SHORT_NAME:
@@ -239,7 +258,7 @@ begin
       COL_SUBJECT:
         Result := CompareText(Data1^.Subject, Data2^.Subject);
       COL_ATTACH:
-        Result := CompareValue(Length(Data1^.Attachments), Length(Data2^.Attachments));
+        Result := CompareValue(Data1^.Attachments.Count, Data2^.Attachments.Count);
       COL_FROM:
         Result := CompareText(Data1^.From, Data2^.From);
       COL_CONTENT_TYPE:
@@ -307,7 +326,7 @@ begin
     begin
       Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
       if Assigned(Data) then
-        if Data^.IsMatch then
+        if (Data^.Matches[Column - C_FIXED_COLUMNS].Count > 0) then
         begin
           TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
           TargetCanvas.FillRect(CellRect);
@@ -322,6 +341,7 @@ var
   DataEmail: PEmail;
 begin
   inherited;
+  CellText := '';
   if (Column >= C_FIXED_COLUMNS) then
   begin
     if (Sender.GetNodeLevel(Node) >= 1) then
@@ -337,7 +357,7 @@ begin
     if Assigned(Data) then
       case Column of
         COL_POSITION:
-          CellText := Data^.Position.ToString;
+          CellText := (vstTree.AbsoluteIndex(Node) + 1).ToString;
         COL_FILE_NAME:
           CellText := Data^.FileName;
         COL_SHORT_NAME:
@@ -349,18 +369,14 @@ begin
         COL_SUBJECT:
           CellText := Data^.Subject;
         COL_ATTACH:
-          if (Length(Data^.Attachments) = 0) then
-            CellText := ''
-          else
-            CellText := Length(Data^.Attachments).ToString;
+          if (Data^.Attachments.Count > 0) then
+            CellText := Data^.Attachments.Count.ToString;
         COL_FROM:
           CellText := Data^.From;
         COL_CONTENT_TYPE:
           CellText := Data^.ContentType;
-      else
-        CellText :='';
       end;
-    end;
+  end;
 end;
 
 procedure TframeEmails.vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
@@ -567,12 +583,12 @@ end;
 
 procedure TframeEmails.CompletedItem(const aResultData: PResultData);
 var
-  arr:  array of array of string;
-  ChildNode: PVirtualNode;
-  Data: PEmail;
-  MaxCol: Integer;
-  Node: PVirtualNode;
-  IsEmpty: Boolean;
+  arr       : array of array of string;
+  ChildNode : PVirtualNode;
+  Data      : PEmail;
+  IsEmpty   : Boolean;
+  MaxCol    : Integer;
+  Node      : PVirtualNode;
 begin
   if not Assigned(aResultData) then
     Exit;
@@ -587,8 +603,6 @@ begin
 
   Data := Node^.GetData;
   Data^.Hash := aResultData.Hash;
-  if (aResultData^.Position <= 0) then
-    aResultData^.Position := vstTree.RootNode.ChildCount;
 
   MaxCol := 0;
   for var i := 0 to aResultData.Matches.Count - 1 do
@@ -610,9 +624,9 @@ begin
       Data := ChildNode^.GetData;
       Data^.Hash := aResultData.Hash;
       Data^.Matches.AddRange(arr[i]);
-      aResultData^.IsMatch := True;
       vstTree.ValidateNode(ChildNode, False);
     end;
+  aResultData^.IsMatch := not IsEmpty;
 
   vstTree.IsVisible[Node] := not FIsFiltered or aResultData^.IsMatch;
   vstTree.ValidateNode(Node, False);

@@ -34,6 +34,8 @@ inherited frameAttachments: TframeAttachments
     Width = 663
     Height = 335
     Header.MainColumn = 0
+    Indent = 12
+    TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowRoot, toShowTreeLines, toShowVertGridLines, toThemeAware, toUseBlendedSelection, toShowFilteredNodes]
     OnBeforeCellPaint = vstTreeBeforeCellPaint
     OnCompareNodes = vstTreeCompareNodes
     OnDblClick = aOpenParsedTextExecute

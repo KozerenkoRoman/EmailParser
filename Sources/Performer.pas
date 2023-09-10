@@ -35,6 +35,7 @@ type
     function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
     procedure DoCopyAttachmentFiles(const aData: PResultData);
     procedure DoDeleteAttachmentFiles(const aData: PResultData);
+    procedure DoFillAttachments(const aData: PResultData; const aMailMessage: TclMailMessage);
     procedure DoParseAttachmentFiles(const aData: PResultData);
     procedure DoParseResultData(const aData: PResultData);
     procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
@@ -245,9 +246,10 @@ end;
 
 function TPerformer.GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
 var
-  FileName : string;
-  Path     : string;
-  ZipFile  : TZipFile;
+  Attachment : PAttachment;
+  FileName   : string;
+  Path       : string;
+  ZipFile    : TZipFile;
 begin
   ZipFile := TZipFile.Create;
   try
@@ -269,17 +271,22 @@ begin
         if not TFileUtils.IsForbidden(ZipFile.FileNames[i]) then
         begin
           ZipFile.Extract(ZipFile.FileNames[i], Path, True);
-          SetLength(aData^.Attachments, Length(aData^.Attachments) + 1);
-
           FileName := Concat('[', aData^.ShortName, '] ', TFileUtils.GetCorrectFileName(ZipFile.FileNames[i]));
           SetLength(FileName, Min(Length(FileName), 255));
-          aData^.Attachments[High(aData^.Attachments)].ShortName     := FileName;
-          aData^.Attachments[High(aData^.Attachments)].FileName      := TPath.Combine(Path, FileName);
-          aData^.Attachments[High(aData^.Attachments)].ParentHash    := aData^.Hash;
-          aData^.Attachments[High(aData^.Attachments)].ParentName    := aData^.ShortName;
-          aData^.Attachments[High(aData^.Attachments)].Matches.Count := FRegExpList.Count;
-          aData^.Attachments[High(aData^.Attachments)].FromZip       := True;
-          RenameFile(TPath.Combine(Path, ZipFile.FileNames[i]), TPath.Combine(Path, FileName));
+          if not RenameFile(TPath.Combine(Path, ZipFile.FileNames[i]), TPath.Combine(Path, FileName)) then
+            DeleteFile(TPath.Combine(Path, ZipFile.FileNames[i]));
+
+          New(Attachment);
+          Attachment^.FileName      := TPath.Combine(Path, FileName);
+          Attachment^.Hash          := TFileUtils.GetHash(Attachment^.FileName);
+          Attachment^.ShortName     := FileName;
+          Attachment^.ParentHash    := aData^.Hash;
+          Attachment^.ParentName    := aData^.ShortName;
+          Attachment^.Matches.Count := FRegExpList.Count;
+          Attachment^.FromZip       := True;
+          TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+          aData^.Attachments.AddUnique(Attachment^.Hash);
+
           Result := Concat(Result, FileName, ';');
         end;
       ZipFile.Close;
@@ -294,50 +301,51 @@ end;
 
 procedure TPerformer.DoCopyAttachmentFiles(const aData: PResultData);
 var
-  NewFileName: TFileName;
+  Attachment  : PAttachment;
+  NewFileName : TFileName;
 begin
   for var item in FSorterPathList do
-  begin
-    for var i := Low(aData.Attachments) to High(aData.Attachments) do
-      if TFile.Exists(aData.Attachments[i].FileName) and MatchesMask(aData.Attachments[i].FileName, item.Mask) then
-        try
-          NewFileName := TPath.Combine(item.Path, TPath.GetFileName(aData.Attachments[i].FileName));
-          if not TFile.Exists(NewFileName) then
-          begin
-            TFile.Copy(aData.Attachments[i].FileName, NewFileName);
-            LogWriter.Write(ddText, Self, 'DoCopyAttachmentFiles',
-                                          'File - ' + aData.Attachments[i].FileName + sLineBreak +
-                                          'has been copied to - ' + NewFileName);
+    for var attHash in aData^.Attachments do
+      if TGeneral.AttachmentList.TryGetValue(attHash, Attachment) and
+         TFile.Exists(Attachment.FileName) and
+         MatchesMask(Attachment.FileName, item.Mask) then
+          try
+            NewFileName := TPath.Combine(item.Path, TPath.GetFileName(Attachment.FileName));
+            if not TFile.Exists(NewFileName) then
+            begin
+              TFile.Copy(Attachment.FileName, NewFileName);
+              LogWriter.Write(ddText, Self, 'DoCopyAttachmentFiles',
+                                            'File - ' + Attachment.FileName + sLineBreak +
+                                            'has been copied to - ' + NewFileName);
+            end;
+          except
+            on E: Exception do
+            LogWriter.Write(ddError, Self,
+                                     'DoCopyAttachmentFiles',
+                                     E.Message + sLineBreak +
+                                     'Email name - ' + aData^.FileName + sLineBreak +
+                                     'File name - ' + Attachment.FileName);
           end;
-        except
-          on E: Exception do
-          LogWriter.Write(ddError, Self,
-                                   'DoCopyAttachmentFiles',
-                                   E.Message + sLineBreak +
-                                   'Email name - ' + aData.FileName + sLineBreak +
-                                   'File name - ' + aData.Attachments[i].FileName);
-      end;
-
-  end;
 end;
 
 procedure TPerformer.DoDeleteAttachmentFiles(const aData: PResultData);
+var
+  Attachment: PAttachment;
 begin
   if FDeleteAttachment then
-  begin
-    for var i := Low(aData.Attachments) to High(aData.Attachments) do
-      if TFile.Exists(aData.Attachments[i].FileName) then
-      try
-        TFile.Delete(aData.Attachments[i].FileName);
-      except
-        on E: Exception do
-          LogWriter.Write(ddError, Self,
-                                   'DoDeleteAttachmentFiles',
-                                   E.Message + sLineBreak +
-                                   'Email name - ' + aData.FileName + sLineBreak +
-                                   'File name - ' + aData.Attachments[i].FileName);
-      end;
-  end;
+    for var attHash in aData.Attachments do
+      if TGeneral.AttachmentList.TryGetValue(attHash, Attachment) and
+         TFile.Exists(Attachment.FileName) then
+        try
+          TFile.Delete(Attachment.FileName);
+        except
+          on E: Exception do
+            LogWriter.Write(ddError, Self,
+                                     'DoDeleteAttachmentFiles',
+                                     E.Message + sLineBreak +
+                                     'Email name - ' + aData.FileName + sLineBreak +
+                                     'File name - ' + Attachment.FileName);
+        end;
 end;
 
 procedure TPerformer.ParseFile(const aFileName: TFileName);
@@ -356,7 +364,7 @@ begin
     Data^.ShortName     := TPath.GetFileNameWithoutExtension(aFileName);
     Data^.FileName      := aFileName;
     Data^.Matches.Count := FRegExpList.Count;
-    TGeneral.EmailList.AddItem(Data);
+    TGeneral.EmailList.AddOrSetValue(Hash, Data);
 
     MailMessage := TclMailMessage.Create(nil);
     MailMessage.OnSaveAttachment := DoSaveAttachment;
@@ -364,12 +372,12 @@ begin
       try
         MailMessage.ResultData := Data;
         MailMessage.LoadMessage(aFileName);
-
         Data^.MessageId   := MailMessage.MessageId;
         Data^.Subject     := MailMessage.Subject;
         Data^.TimeStamp   := MailMessage.Date;
         Data^.From        := MailMessage.From.FullAddress;
         Data^.ContentType := MailMessage.ContentType;
+        DoFillAttachments(Data, MailMessage);
 
         if (MailMessage.ContentType = 'text/calendar') then
         begin
@@ -443,8 +451,10 @@ end;
 
 procedure TPerformer.DoParseResultData(const aData: PResultData);
 var
-  TextRaw: string;
-  TextPlan: string;
+  Attachment : PAttachment;
+  TextPlan   : string;
+  TextRaw    : string;
+  Tasks: array of ITask;
 begin
   if Assigned(aData) then
   begin
@@ -464,155 +474,206 @@ begin
         Break;
       end;
 
-    for var i := 0 to FRegExpList.Count - 1 do
-      if FRegExpList[i].UseRawText then
-        aData^.Matches[i] := GetRegExpCollection(TextRaw, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex)
-      else
-        aData^.Matches[i] := GetRegExpCollection(TextPlan, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex);
+    SetLength(Tasks, 2);
+    Tasks[0] := TTask.Create(
+      procedure()
+      begin
+        TThread.NameThreadForDebugging('TPerformer.DoParseResultData');
+        for var i := 0 to FRegExpList.Count - 1 do
+          if FRegExpList[i].UseRawText then
+            aData^.Matches[i] := GetRegExpCollection(TextRaw, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex)
+          else
+            aData^.Matches[i] := GetRegExpCollection(TextPlan, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex);
+      end).Start;
+
+    Tasks[1] := TTask.Create(
+      procedure()
+      begin
+        TThread.NameThreadForDebugging('TPerformer.DoParseResultData');
+        for var i := 0 to aData^.Attachments.Count - 1 do
+          if TGeneral.AttachmentList.TryGetValue(aData^.Attachments[i], Attachment) then
+          begin
+            Attachment.Matches.Count := FRegExpList.Count;
+            if Attachment^.ParsedText.IsEmpty then
+              Attachment^.ParsedText := TDaMod.GetAttachmentAsRawText(Attachment^.Hash);
+            for var j := 0 to FRegExpList.Count - 1 do
+              Attachment.Matches[j] := GetRegExpCollection(Attachment^.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
+            Attachment.LengthAlignment;
+          end;
+      end).Start;
+    TTask.WaitForAll(Tasks);
     TPublishers.ProgressPublisher.CompletedItem(aData);
   end;
 end;
 
 procedure TPerformer.DoParseAttachmentFiles(const aData: PResultData);
 var
-  Ext: string;
-  i: Integer;
+  Attachment : PAttachment;
+  Ext        : string;
+  i          : Integer;
 begin
   i := 0;
-  while (i <= High(aData.Attachments)) do
+  while (i <= High(aData.Attachments.Items)) do
   begin
-    if TFile.Exists(aData.Attachments[i].FileName) then
+    if TGeneral.AttachmentList.TryGetValue(aData.Attachments[i], Attachment) and
+       TFile.Exists(Attachment.FileName) then
       try
-        aData.Attachments[i].Hash          := TFileUtils.GetHash(aData.Attachments[i].FileName);
-        aData.Attachments[i].Matches.Count := FRegExpList.Count;
-        Ext := TPath.GetExtension(aData.Attachments[i].FileName).ToLower;
-        case TFileUtils.GetSignature(aData.Attachments[i].FileName) of
+        Attachment.Matches.Count := FRegExpList.Count;
+        Ext := TPath.GetExtension(Attachment.FileName).ToLower;
+        case TFileUtils.GetSignature(Attachment.FileName) of
           fsPDF:
             begin
-              aData.Attachments[i].ParsedText  := GetTextFromPDFFile(aData^.Attachments[i].FileName);
-              aData.Attachments[i].ContentType := 'application/pdf';
-              aData.Attachments[i].ImageIndex  := TExtIcon.eiPdf.ToByte;
+              Attachment.ContentType := 'application/pdf';
+              Attachment.ImageIndex  := TExtIcon.eiPdf.ToByte;
+              Attachment.ParsedText  := GetTextFromPDFFile(Attachment.FileName);
             end;
           fsPng:
             begin
-              aData.Attachments[i].ParsedText  := GetEXIFInfo(aData^.Attachments[i].FileName);
-              aData.Attachments[i].ContentType := 'image/png';
-              aData.Attachments[i].ImageIndex  := TExtIcon.eiPng.ToByte;
+              Attachment.ContentType := 'image/png';
+              Attachment.ImageIndex  := TExtIcon.eiPng.ToByte;
+              Attachment.ParsedText  := GetEXIFInfo(Attachment.FileName);
             end;
           fsGif:
             begin
-              aData.Attachments[i].ParsedText  := GetEXIFInfo(aData^.Attachments[i].FileName);
-              aData.Attachments[i].ContentType := 'image/gif';
-              aData.Attachments[i].ImageIndex  := TExtIcon.eiGif.ToByte;
+              Attachment.ContentType := 'image/gif';
+              Attachment.ImageIndex  := TExtIcon.eiGif.ToByte;
+              Attachment.ParsedText  := GetEXIFInfo(Attachment.FileName);
             end;
           fsIco:
             begin
-              aData.Attachments[i].ParsedText  := GetEXIFInfo(aData^.Attachments[i].FileName);
-              aData.Attachments[i].ContentType := 'image/icon';
-              aData.Attachments[i].ImageIndex  := TExtIcon.eiIco.ToByte;
+              Attachment.ContentType := 'image/icon';
+              Attachment.ImageIndex  := TExtIcon.eiIco.ToByte;
+              Attachment.ParsedText  := GetEXIFInfo(Attachment.FileName);
             end;
           fsJpg, fsJp2:
             begin
-              aData.Attachments[i].ParsedText  := GetEXIFInfo(aData^.Attachments[i].FileName);
-              aData.Attachments[i].ContentType := 'image/jpeg';
-              aData.Attachments[i].ImageIndex  := TExtIcon.eiJpg.ToByte;
+              Attachment.ContentType := 'image/jpeg';
+              Attachment.ImageIndex  := TExtIcon.eiJpg.ToByte;
+              Attachment.ParsedText  := GetEXIFInfo(Attachment.FileName);
             end;
           fsZip:
             begin
               if Ext.Contains('.xlsx') then
               begin
-                aData.Attachments[i].ParsedText  := 'xlsx';
-                aData.Attachments[i].ContentType := 'application/excel';
-                aData.Attachments[i].ImageIndex  := TExtIcon.eiXls.ToByte;
+                Attachment.ContentType := 'application/excel';
+                Attachment.ImageIndex  := TExtIcon.eiXls.ToByte;
+                Attachment.ParsedText  := '';
               end
               else if Ext.Contains('.docx') then
               begin
-                aData.Attachments[i].ParsedText  := 'docx';
-                aData.Attachments[i].ContentType := 'application/word';
-                aData.Attachments[i].ImageIndex  := TExtIcon.eiDoc.ToByte;
+                Attachment.ContentType := 'application/word';
+                Attachment.ImageIndex  := TExtIcon.eiDoc.ToByte;
+                Attachment.ParsedText  := '';
               end
               else if Ext.Contains('.zip') or Ext.Contains('.7z') then
               begin
-                aData.Attachments[i].ParsedText  := GetZipFileList(aData^.Attachments[i].FileName, aData);
-                aData.Attachments[i].ContentType := 'application/zip';
-                aData.Attachments[i].ImageIndex  := TExtIcon.eiZip.ToByte;
+                Attachment.ContentType := 'application/zip';
+                Attachment.ImageIndex  := TExtIcon.eiZip.ToByte;
+                Attachment.ParsedText  := GetZipFileList(Attachment.FileName, aData);
               end
             end;
           fsRar:
             begin
-              aData.Attachments[i].ParsedText  := 'rar';
-              aData.Attachments[i].ContentType := 'application/rar';
-              aData.Attachments[i].ImageIndex  := TExtIcon.eiRar.ToByte;
+              Attachment.ContentType := 'application/rar';
+              Attachment.ImageIndex  := TExtIcon.eiRar.ToByte;
+              Attachment.ParsedText  := '';
             end;
           fsOffice:
             begin
               if Ext.Contains('.xls') then
               begin
-                aData.Attachments[i].ParsedText  := 'xls';
-                aData.Attachments[i].ContentType := 'application/excel';
-                aData.Attachments[i].ImageIndex  := TExtIcon.eiXls.ToByte;
+                Attachment.ContentType := 'application/excel';
+                Attachment.ImageIndex  := TExtIcon.eiXls.ToByte;
+                Attachment.ParsedText  := '';
               end
               else if Ext.Contains('.doc') then
               begin
-                aData.Attachments[i].ParsedText  := 'doc';
-                aData.Attachments[i].ContentType := 'application/word';
-                aData.Attachments[i].ImageIndex  := TExtIcon.eiDoc.ToByte;
+                Attachment.ContentType := 'application/word';
+                Attachment.ImageIndex  := TExtIcon.eiDoc.ToByte;
+                Attachment.ParsedText  := '';
               end
               else
               begin
-                aData.Attachments[i].ParsedText  := 'office';
-                aData.Attachments[i].ContentType := 'application/office';
+                Attachment.ContentType := 'application/office';
+                Attachment.ParsedText  := '';
               end;
             end;
           fsCrt:
             begin
-              aData.Attachments[i].ParsedText  := TFile.ReadAllText(aData^.Attachments[i].FileName);
-              aData.Attachments[i].ContentType := 'application/crt';
-              aData.Attachments[i].ImageIndex  := TExtIcon.eiTxt.ToByte;
+              Attachment.ContentType := 'application/crt';
+              Attachment.ImageIndex  := TExtIcon.eiTxt.ToByte;
+              Attachment.ParsedText  := TFile.ReadAllText(Attachment.FileName);
             end;
           fsKey:
             begin
-              aData.Attachments[i].ParsedText  := TFile.ReadAllText(aData^.Attachments[i].FileName);
-              aData.Attachments[i].ContentType := 'application/key';
-              aData.Attachments[i].ImageIndex  := TExtIcon.eiTxt.ToByte;
+              Attachment.ParsedText  := TFile.ReadAllText(Attachment.FileName);
+              Attachment.ContentType := 'application/key';
+              Attachment.ImageIndex  := TExtIcon.eiTxt.ToByte;
             end;
           fsUnknown:
             begin
               if Ext.Contains('.txt') then
               begin
-                aData.Attachments[i].ParsedText  := TFile.ReadAllText(aData^.Attachments[i].FileName);
-                aData.Attachments[i].ContentType := 'text/plain';
-                aData.Attachments[i].ImageIndex  := TExtIcon.eiTxt.ToByte;
+                Attachment.ParsedText  := TFile.ReadAllText(Attachment.FileName);
+                Attachment.ContentType := 'text/plain';
+                Attachment.ImageIndex  := TExtIcon.eiTxt.ToByte;
               end
               else if Ext.Contains('.xml') then
               begin
-                aData.Attachments[i].ParsedText  := TFile.ReadAllText(aData^.Attachments[i].FileName);
-                aData.Attachments[i].ContentType := 'text/xml';
-                aData.Attachments[i].ImageIndex  := TExtIcon.eiTxt.ToByte;
+                Attachment.ParsedText  := TFile.ReadAllText(Attachment.FileName);
+                Attachment.ContentType := 'text/xml';
+                Attachment.ImageIndex  := TExtIcon.eiTxt.ToByte;
               end
               else if Ext.Contains('.htm') then
               begin
-                aData.Attachments[i].ParsedText  := TFile.ReadAllText(aData^.Attachments[i].FileName);
-                aData.Attachments[i].ContentType := 'text/html';
-                aData.Attachments[i].ImageIndex  := TExtIcon.eiHtml.ToByte;
+                Attachment.ParsedText  := TFile.ReadAllText(Attachment.FileName);
+                Attachment.ContentType := 'text/html';
+                Attachment.ImageIndex  := TExtIcon.eiHtml.ToByte;
               end
               else
-                aData.Attachments[i].ParsedText := '';
+                Attachment.ParsedText := '';
             end;
         end;
-        if not aData.Attachments[i].ParsedText.IsEmpty then
+        if not Attachment.ParsedText.IsEmpty then
           for var j := 0 to FRegExpList.Count - 1 do
-            aData.Attachments[i].Matches[j] := GetRegExpCollection(aData.Attachments[i].ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
-        aData.Attachments[i].LengthAlignment;
+            Attachment.Matches[j] := GetRegExpCollection(Attachment.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
+        Attachment.LengthAlignment;
       except
         on E: Exception do
           LogWriter.Write(ddError, Self,
                                    'DoParseAttachmentFiles',
                                    E.Message + sLineBreak +
                                    'Email name - ' + aData.FileName + sLineBreak +
-                                   'File name - '  + aData.Attachments[i].FileName);
+                                   'File name - '  + Attachment.FileName);
       end;
     Inc(i);
+  end;
+end;
+
+procedure TPerformer.DoFillAttachments(const aData: PResultData; const aMailMessage: TclMailMessage);
+var
+  Attachment : PAttachment;
+  Body       : TclAttachmentBody;
+begin
+  for var i := 0 to aMailMessage.Attachments.Count - 1 do
+  begin
+    if not(aMailMessage.Attachments[i] is TclAttachmentBody) then
+      Break;
+    Body := TclAttachmentBody(aMailMessage.Attachments[i]);
+    if TFile.Exists(Body.FileName) then
+    begin
+      New(Attachment);
+      Attachment^.Hash        := TFileUtils.GetHash(Body.FileName);
+      Attachment^.ShortName   := TPath.GetFileName(Body.FileName);
+      Attachment^.FileName    := Body.FileName;
+      Attachment^.ParentHash  := aData^.Hash;
+      Attachment^.ParentName  := aData^.ShortName;
+      Attachment^.ContentID   := Body.ContentID;
+      Attachment^.ContentType := Body.ContentType;
+      Attachment^.Matches.Count := FRegExpList.Count;
+      TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+      aData^.Attachments.AddUnique(Attachment^.Hash);
+    end;
   end;
 end;
 
@@ -624,8 +685,7 @@ begin
   if not(aBody is TclAttachmentBody) then
     Exit;
 
-  Data := TclMailMessage(Sender).ResultData;
-  SetLength(Data^.Attachments, Length(Data^.Attachments) + 1);
+  Data      := TclMailMessage(Sender).ResultData;
   Path      := GetAttchmentPath(Data^.FileName);
   aFileName := Concat('[', Data^.ShortName, '] ', TFileUtils.GetCorrectFileName(aFileName));
   SetLength(aFileName, Min(Length(aFileName), 255));
@@ -650,29 +710,19 @@ begin
                                'New file name - ' + NewName);
     aFileName := NewName;
   end;
-  aBody.FileName := aFileName;
-
-  Data^.Attachments[High(Data^.Attachments)].ShortName     := aFileName;
-  Data^.Attachments[High(Data^.Attachments)].FileName      := TPath.Combine(Path, aFileName);
-  Data^.Attachments[High(Data^.Attachments)].ParentHash    := Data^.Hash;
-  Data^.Attachments[High(Data^.Attachments)].ParentName    := Data^.ShortName;
-  Data^.Attachments[High(Data^.Attachments)].ContentID     := aBody.ContentID;
-  Data^.Attachments[High(Data^.Attachments)].ContentType   := aBody.ContentType;
-  Data^.Attachments[High(Data^.Attachments)].Matches.Count := FRegExpList.Count;
-
+  aFileName := TPath.Combine(Path, aFileName);
   Handled := not TFileUtils.IsForbidden(aFileName);
   if Handled then
   try
   {$WARN SYMBOL_PLATFORM OFF}
-    aStreamData := TFileStream.Create(Data^.Attachments[High(Data^.Attachments)].FileName, fmCreate or fmOpenReadWrite {$IFDEF MSWINDOWS}or fmShareDenyRead{$ENDIF});
+    aStreamData := TFileStream.Create(aFileName, fmCreate or fmOpenReadWrite{$IFDEF MSWINDOWS} or fmShareDenyRead{$ENDIF});
   {$WARN SYMBOL_PLATFORM ON}
   except
     on E:Exception do
       LogWriter.Write(ddError, Self,
                                'DoSaveAttachment',
                                E.Message + sLineBreak +
-                               'Bad file name - ' + aFileName  + sLineBreak +
-                               'New file name - ' + Data^.Attachments[High(Data^.Attachments)].FileName);
+                               'File name - ' + aFileName);
   end;
 end;
 

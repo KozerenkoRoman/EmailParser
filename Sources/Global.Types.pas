@@ -3,7 +3,6 @@
 interface
 
 {$REGION 'Region uses'}
-
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
@@ -46,7 +45,6 @@ type
     Hash        : string;
     ParentHash  : string;
     ParentName  : string;
-    Position    : Integer;
     ShortName   : string;
     FileName    : string;
     ContentID   : string;
@@ -56,16 +54,15 @@ type
     Matches     : TArrayRecord<TStringArray>;
     FromZip     : Boolean;
     FromDB      : Boolean;
-    procedure Assign(const aData: TAttachment);
+    IsMatch     : Boolean;
     procedure Clear;
     procedure LengthAlignment;
+    class operator Initialize(out aDest: TAttachment);
   end;
-  TAttachmentArray = TArray<TAttachment>;
-  PAttachmentArray = ^TAttachmentArray;
 
   PResultData = ^TResultData;
   TResultData = record
-    Attachments : TAttachmentArray;
+    Attachments : TArrayRecord<string>;
     Body        : string;
     FileName    : TFileName;
     Hash        : string;
@@ -78,10 +75,10 @@ type
     ParsedText  : string;
     Matches     : TArrayRecord<TStringArray>;
     ParentNode  : PVirtualNode;
-    Position    : Integer;
     IsMatch     : Boolean;
     procedure Clear;
     procedure LengthAlignment;
+    class operator Initialize(out aDest: TResultData);
   end;
   TResultDataArray = TArrayRecord<PResultData>;
   PResultDataArray = ^TResultDataArray;
@@ -92,14 +89,27 @@ type
     Matches : TStringArray;
   end;
 
+  PAttachData = ^TAttachData;
+  TAttachData = record
+    Hash    : string;
+    Matches : TStringArray;
+  end;
+
   TEmailList = class(TObjectDictionary<string, PResultData>)
   public
     constructor Create;
     destructor Destroy; override;
     function GetItem(const aKey: string): PResultData;
-    procedure AddItem(const aResultData: PResultData);
     procedure ClearData;
     procedure ClearParentNodePointer;
+  end;
+
+  TAttachmentList = class(TObjectDictionary<string, PAttachment>)
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function GetItem(const aKey: string): PAttachment;
+    procedure ClearData;
   end;
 
   TGeneral = record
@@ -113,6 +123,7 @@ type
     class procedure NoHibernate; static;
     class var
       EmailList: TEmailList;
+      AttachmentList: TAttachmentList;
   end;
 
   TAttachmentDir = (adAttachment, adSubAttachment, adUserDefined);
@@ -272,11 +283,16 @@ end;
 procedure TResultData.Clear;
 begin
   Matches.Clear;
-  for var att := Low(Self.Attachments) to High(Self.Attachments) do
-    Self.Attachments[att].Clear;
+  Self.Attachments.Clear;
   Self := Default(TResultData);
   Self.ParentNode := nil;
   Self.IsMatch    := False;
+end;
+
+class operator TResultData.Initialize(out aDest: TResultData);
+begin
+  aDest.ParentNode := nil;
+  aDest.IsMatch    := False;
 end;
 
 procedure TResultData.LengthAlignment;
@@ -293,28 +309,17 @@ end;
 
 { TAttachment }
 
-procedure TAttachment.Assign(const aData: TAttachment);
-begin
-  Self.Hash        := aData.Hash;
-  Self.ParentHash  := aData.ParentHash;
-  Self.ShortName   := aData.ShortName;
-  Self.FileName    := aData.FileName;
-  Self.ContentID   := aData.ContentID;
-  Self.ContentType := aData.ContentType;
-  Self.ParsedText  := aData.ParsedText;
-  Self.ImageIndex  := aData.ImageIndex;
-  Self.ParentName  := aData.ParentName;
-  Self.FromZip     := aData.FromZip;
-  Self.FromDB      := aData.FromDB;
-  Self.Matches.Count := aData.Matches.Count;
-  for var i := 0 to Self.Matches.Count - 1 do
-    Self.Matches[i] := aData.Matches[i];
-end;
-
 procedure TAttachment.Clear;
 begin
   Self := Default(TAttachment);
   Matches.Clear;
+end;
+
+class operator TAttachment.Initialize(out aDest: TAttachment);
+begin
+  aDest.FromZip := False;
+  aDest.FromDB  := False;
+  aDest.IsMatch := False;
 end;
 
 procedure TAttachment.LengthAlignment;
@@ -354,7 +359,7 @@ end;
 
 constructor TEmailList.Create;
 begin
-  inherited Create([], 500000);
+  inherited Create([], 100000);
 
 end;
 
@@ -371,11 +376,6 @@ begin
     Result := Self.Items[aKey];
 end;
 
-procedure TEmailList.AddItem(const aResultData: PResultData);
-begin
-  Self.AddOrSetValue(aResultData.Hash, aResultData);
-end;
-
 procedure TEmailList.ClearData;
 begin
   for var item in Self do
@@ -389,6 +389,34 @@ begin
     item.ParentNode := nil;
 end;
 
+{ TAttachmentList }
+
+constructor TAttachmentList.Create;
+begin
+  inherited Create([], 100000);
+
+end;
+
+destructor TAttachmentList.Destroy;
+begin
+  ClearData;
+  inherited;
+end;
+
+function TAttachmentList.GetItem(const aKey: string): PAttachment;
+begin
+  Result := nil;
+  if Self.ContainsKey(aKey) then
+    Result := Self.Items[aKey];
+end;
+
+procedure TAttachmentList.ClearData;
+begin
+  for var item in Self do
+    Dispose(item.Value);
+  Self.Clear;
+end;
+
 { TSorterPath }
 
 procedure TSorterPath.Clear;
@@ -398,6 +426,7 @@ end;
 
 initialization
   TGeneral.EmailList := TEmailList.Create;
+  TGeneral.AttachmentList := TAttachmentList.Create;
 
 finalization
   if Assigned(FXMLFile) then
@@ -407,5 +436,7 @@ finalization
   end;
   if Assigned(TGeneral.EmailList) then
     FreeAndNil(TGeneral.EmailList);
+  if Assigned(TGeneral.AttachmentList) then
+    FreeAndNil(TGeneral.AttachmentList);
 
 end.

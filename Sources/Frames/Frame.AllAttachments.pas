@@ -200,7 +200,7 @@ begin
   begin
     if Data.FromZip then
     begin
-      TargetCanvas.Brush.Color := clWebLightgrey;
+      TargetCanvas.Brush.Color := clWebWhiteSmoke;
       TargetCanvas.FillRect(CellRect);
     end;
   end
@@ -230,7 +230,7 @@ begin
   Data2 := Node2^.GetData;
   case Column of
     COL_POSITION:
-      Result := CompareValue(Data1^.Position, Data2^.Position);
+      Result := CompareValue(vstTree.AbsoluteIndex(Node1), vstTree.AbsoluteIndex(Node2));
     COL_SHORT_NAME:
       Result := CompareText(Data1^.ShortName, Data2^.ShortName);
     COL_EMAIL_NAME:
@@ -282,7 +282,7 @@ begin
   Data := Node^.GetData;
   case Column of
     COL_POSITION:
-      CellText := Data^.Position.ToString;
+      CellText := (vstTree.AbsoluteIndex(Node) + 1).ToString;
     COL_SHORT_NAME:
       CellText := Data^.ShortName;
     COL_EMAIL_NAME:
@@ -346,12 +346,11 @@ var
   Data: PAttachment;
   Node: PVirtualNode;
 begin
-  for var i := Low(aResultData.Attachments) to High(aResultData.Attachments) do
+  for var i := 0 to aResultData.Attachments.Count - 1 do
   begin
     Node := vstTree.AddChild(nil);
     Data := Node^.GetData;
-    Data^.Assign(aResultData.Attachments[i]);
-    Data^.Position := vstTree.AbsoluteIndex(Node) + 1;
+    //!!!!
   end;
 end;
 

@@ -65,7 +65,6 @@ object DaMod: TDaMod
       '       FILE_NAME, '
       '       SHORT_NAME, '
       '       CONTENT_TYPE, '
-      '       PARSED_TEXT, '
       '       FROM_ZIP,'
       '       IMAGE_INDEX'
       'from attachments '
