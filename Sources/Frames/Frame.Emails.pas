@@ -73,6 +73,7 @@ type
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
     procedure CompletedItem(const aResultData: PResultData);
+    procedure CompletedAttach(const aAttachment: PAttachment);
 
     procedure UpdateColumns;
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
@@ -382,33 +383,6 @@ begin
       TargetCanvas.Font.Color := clNavy;
 end;
 
-procedure TframeEmails.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
-var
-  CellText: string;
-begin
-  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
-  Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
-end;
-
-procedure TframeEmails.SearchText(const aText: string);
-var
-  Node: PVirtualNode;
-begin
-  inherited;
-  vstTree.BeginUpdate;
-  vstTree.FullExpand(nil);
-  try
-    Node := vstTree.IterateSubtree(nil, SearchForText, Pointer(aText));
-    if Assigned(Node) then
-    begin
-      vstTree.FocusedNode := Node;
-      vstTree.Selected[Node] := True;
-    end;
-  finally
-    vstTree.EndUpdate;
-  end;
-end;
-
 procedure TframeEmails.aBreakExecute(Sender: TObject);
 begin
   inherited;
@@ -518,7 +492,7 @@ begin
         Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
         if Assigned(Data) then
         begin
-          vstTree.IsVisible[Node] := not FIsFiltered or Data^.IsMatch;
+          vstTree.IsVisible[Node] := not FIsFiltered or (Node.ChildCount > 0);
           vstTree.InvalidateNode(Node);
         end;
         Node := Node.NextSibling;
@@ -549,6 +523,11 @@ begin
   finally
     vstTree.EndUpdate;
   end;
+end;
+
+procedure TframeEmails.CompletedAttach(const aAttachment: PAttachment);
+begin
+  //nothing
 end;
 
 procedure TframeEmails.CompletedItem(const aResultData: PResultData);
@@ -596,9 +575,7 @@ begin
       Data^.Matches.AddRange(arr[i]);
       vstTree.ValidateNode(ChildNode, False);
     end;
-  aResultData^.IsMatch := not IsEmpty;
-
-  vstTree.IsVisible[Node] := not FIsFiltered or aResultData^.IsMatch;
+  vstTree.IsVisible[Node] := not FIsFiltered or (Node.ChildCount > 0);
   vstTree.ValidateNode(Node, False);
 end;
 
@@ -641,5 +618,33 @@ procedure TframeEmails.Progress;
 begin
 
 end;
+
+procedure TframeEmails.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
+var
+  CellText: string;
+begin
+  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
+  Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
+end;
+
+procedure TframeEmails.SearchText(const aText: string);
+var
+  Node: PVirtualNode;
+begin
+  inherited;
+  vstTree.BeginUpdate;
+  vstTree.FullExpand(nil);
+  try
+    Node := vstTree.IterateSubtree(nil, SearchForText, Pointer(aText));
+    if Assigned(Node) then
+    begin
+      vstTree.FocusedNode := Node;
+      vstTree.Selected[Node] := True;
+    end;
+  finally
+    vstTree.EndUpdate;
+  end;
+end;
+
 
 end.

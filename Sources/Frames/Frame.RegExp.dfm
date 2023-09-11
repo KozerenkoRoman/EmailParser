@@ -41,7 +41,6 @@ inherited frameRegExp: TframeRegExp
     Width = 950
     Height = 362
     Alignment = taRightJustify
-    DefaultNodeHeight = 18
     Header.MainColumn = 3
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowHint, hoShowImages, hoShowSortGlyphs, hoVisible]
     OnChecked = vstTreeChecked
@@ -88,6 +87,7 @@ inherited frameRegExp: TframeRegExp
         Text = 'Use Raw Text'
         Width = 103
       end>
+    DefaultText = ''
   end
   object tbSettings: TToolBar [2]
     Left = 0

@@ -401,6 +401,7 @@ begin
               IsEmpty := IsEmpty or arr[j, i].IsEmpty;
             end;
 
+          Data^.Matches.Count := MaxCol;
           if not IsEmpty then
             for var i := Low(arr) to High(arr) do
             begin
@@ -410,7 +411,6 @@ begin
               Data^.Matches.AddRange(arr[i]);
               vstTree.ValidateNode(ChildNode, False);
             end;
-          Attachment^.IsMatch := not IsEmpty;
           vstTree.ValidateNode(Node, False);
         end;
   finally

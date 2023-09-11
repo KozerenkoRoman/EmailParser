@@ -33,6 +33,7 @@ type
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
     procedure CompletedItem(const aResultData: PResultData);
+    procedure CompletedAttach(const aAttachData: PAttachment);
 
     class function GetDecompressStr(const aSQLText, aHash: string): string;
     procedure FillAllEmailsRecord(const aWithAttachments: Boolean = False);
@@ -192,6 +193,11 @@ procedure TDaMod.CompletedItem(const aResultData: PResultData);
 begin
   if FThreadEmails.Started then
     FThreadEmails.ResultDataQueue.PushItem(aResultData);
+end;
+
+procedure TDaMod.CompletedAttach(const aAttachData: PAttachment);
+begin
+  // nothing
 end;
 
 procedure TDaMod.StartProgress(const aMaxPosition: Integer);

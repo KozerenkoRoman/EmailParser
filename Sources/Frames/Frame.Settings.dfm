@@ -3,6 +3,7 @@ inherited frameSettings: TframeSettings
   Height = 356
   ExplicitWidth = 791
   ExplicitHeight = 356
+  PixelsPerInch = 144
   inherited tbMain: TToolBar
     Width = 791
     ExplicitWidth = 791

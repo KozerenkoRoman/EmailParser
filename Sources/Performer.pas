@@ -3,7 +3,6 @@
 interface
 
 {$REGION 'Region uses'}
-
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
@@ -146,11 +145,6 @@ begin
   FIsBreak := True;
 end;
 
-procedure TPerformer.RefreshAttachment;
-begin
-  {TODO: RefreshAttachment}
-end;
-
 procedure TPerformer.RefreshEmails;
 var
   arrKeys : TArray<string>;
@@ -194,6 +188,64 @@ begin
     begin
       TPublishers.ProgressPublisher.EndProgress;
       LogWriter.Write(ddError, Self, 'Refresh', E.Message);
+    end;
+  end;
+end;
+
+procedure TPerformer.RefreshAttachment;
+var
+  arrKeys    : TArray<string>;
+  Attachment : PAttachment;
+begin
+  if (TGeneral.EmailList.Count = 0) then
+    Exit;
+  TPublishers.ProgressPublisher.StartProgress(FCount);
+  try
+    LogWriter.Write(ddEnterMethod, Self, 'RefreshAttachment');
+    FIsBreak := False;
+    FillStartParameters;
+    try
+//      TTask.Create(
+//        procedure()
+        begin
+//          TThread.NameThreadForDebugging('TPerformer.RefreshAttachment');
+          arrKeys := TGeneral.AttachmentList.Keys.ToArray;
+          FCount := 0;
+          for var i := Low(arrKeys) to High(arrKeys) do
+          begin
+            System.TMonitor.Enter(Self);
+            try
+              if FIsBreak then
+                Exit;
+            finally
+              System.TMonitor.Exit(Self);
+            end;
+
+            Attachment := TGeneral.AttachmentList.Items[arrKeys[i]];
+            if Assigned(Attachment) and Assigned(Attachment^.ParentNode) then
+            begin
+              LogWriter.Write(ddText, Self, 'RefreshAttachment', 'Attachment name - ' + Attachment^.ShortName);
+              Inc(FCount);
+              Attachment^.Matches.Count := FRegExpList.Count;
+              if Attachment^.ParsedText.IsEmpty then
+                Attachment^.ParsedText := TDaMod.GetAttachmentAsRawText(Attachment^.Hash);
+              for var j := 0 to Attachment^.Matches.Count - 1 do
+                Attachment^.Matches[j] := GetRegExpCollection(Attachment^.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
+              Attachment^.LengthAlignment;
+              TPublishers.ProgressPublisher.CompletedAttach(Attachment);
+              TPublishers.ProgressPublisher.Progress;
+            end;
+          end;
+        end;//).Start;
+    finally
+      TPublishers.ProgressPublisher.EndProgress;
+      LogWriter.Write(ddExitMethod, Self, 'RefreshAttachment');
+    end;
+  except
+    on E: Exception do
+    begin
+      TPublishers.ProgressPublisher.EndProgress;
+      LogWriter.Write(ddError, Self, 'RefreshAttachment', E.Message);
     end;
   end;
 end;
@@ -459,7 +511,6 @@ begin
   if Assigned(aData) then
   begin
     LogWriter.Write(ddText, Self, 'DoParseResultData', aData^.ShortName);
-    aData^.IsMatch := False;
     aData^.Matches.Count := FRegExpList.Count;
     for var i := 0 to FRegExpList.Count - 1 do
       if FRegExpList[i].UseRawText then
@@ -493,12 +544,13 @@ begin
         for var i := 0 to aData^.Attachments.Count - 1 do
           if TGeneral.AttachmentList.TryGetValue(aData^.Attachments[i], Attachment) then
           begin
-            Attachment.Matches.Count := FRegExpList.Count;
+            Attachment^.Matches.Count := FRegExpList.Count;
             if Attachment^.ParsedText.IsEmpty then
               Attachment^.ParsedText := TDaMod.GetAttachmentAsRawText(Attachment^.Hash);
-            for var j := 0 to FRegExpList.Count - 1 do
-              Attachment.Matches[j] := GetRegExpCollection(Attachment^.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
-            Attachment.LengthAlignment;
+            for var j := 0 to Attachment^.Matches.Count - 1 do
+              Attachment^.Matches[j] := GetRegExpCollection(Attachment^.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
+            Attachment^.LengthAlignment;
+            TPublishers.ProgressPublisher.CompletedAttach(Attachment);
           end;
       end).Start;
     TTask.WaitForAll(Tasks);
@@ -637,6 +689,7 @@ begin
         if not Attachment.ParsedText.IsEmpty then
           for var j := 0 to FRegExpList.Count - 1 do
             Attachment.Matches[j] := GetRegExpCollection(Attachment.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
+        TPublishers.ProgressPublisher.CompletedAttach(Attachment);
         Attachment.LengthAlignment;
       except
         on E: Exception do

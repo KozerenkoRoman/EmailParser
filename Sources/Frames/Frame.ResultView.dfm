@@ -157,6 +157,18 @@ inherited frameResultView: TframeResultView
         inherited tbMain: TToolBar
           Width = 932
           ExplicitWidth = 932
+          inherited btnSep02: TToolButton [7]
+            Left = 242
+          end
+          inherited btnPrint: TToolButton [8]
+            Left = 250
+          end
+          inherited btnRefresh: TToolButton [9]
+            Left = 289
+          end
+          inherited btnColumnSettings: TToolButton [11]
+            Left = 336
+          end
         end
         inherited vstTree: TVirtualStringTree
           Width = 932

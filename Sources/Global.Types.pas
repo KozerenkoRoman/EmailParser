@@ -52,9 +52,9 @@ type
     ParsedText  : string;
     ImageIndex  : Byte;
     Matches     : TArrayRecord<TStringArray>;
+    ParentNode  : PVirtualNode;
     FromZip     : Boolean;
     FromDB      : Boolean;
-    IsMatch     : Boolean;
     procedure Clear;
     procedure LengthAlignment;
     class operator Initialize(out aDest: TAttachment);
@@ -75,7 +75,6 @@ type
     ParsedText  : string;
     Matches     : TArrayRecord<TStringArray>;
     ParentNode  : PVirtualNode;
-    IsMatch     : Boolean;
     procedure Clear;
     procedure LengthAlignment;
     class operator Initialize(out aDest: TResultData);
@@ -110,6 +109,7 @@ type
     destructor Destroy; override;
     function GetItem(const aKey: string): PAttachment;
     procedure ClearData;
+    procedure ClearParentNodePointer;
   end;
 
   TGeneral = record
@@ -286,13 +286,11 @@ begin
   Self.Attachments.Clear;
   Self := Default(TResultData);
   Self.ParentNode := nil;
-  Self.IsMatch    := False;
 end;
 
 class operator TResultData.Initialize(out aDest: TResultData);
 begin
   aDest.ParentNode := nil;
-  aDest.IsMatch    := False;
 end;
 
 procedure TResultData.LengthAlignment;
@@ -317,9 +315,9 @@ end;
 
 class operator TAttachment.Initialize(out aDest: TAttachment);
 begin
-  aDest.FromZip := False;
-  aDest.FromDB  := False;
-  aDest.IsMatch := False;
+  aDest.ParentNode := nil;
+  aDest.FromZip    := False;
+  aDest.FromDB     := False;
 end;
 
 procedure TAttachment.LengthAlignment;
@@ -415,6 +413,12 @@ begin
   for var item in Self do
     Dispose(item.Value);
   Self.Clear;
+end;
+
+procedure TAttachmentList.ClearParentNodePointer;
+begin
+  for var item in Self.Values do
+    item.ParentNode := nil;
 end;
 
 { TSorterPath }

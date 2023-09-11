@@ -85,6 +85,7 @@ inherited frameAttachments: TframeAttachments
         Text = 'Text'
         Width = 172
       end>
+    DefaultText = ''
   end
   inherited alFrame: TActionList
     inherited aAdd: TAction
@@ -112,14 +113,6 @@ inherited frameAttachments: TframeAttachments
       ImageName = 'email_open'
       OnExecute = aOpenParsedTextExecute
       OnUpdate = aOpenAttachFileUpdate
-    end
-  end
-  inherited pmFrame: TPopupMenu
-    inherited miExpandAll: TMenuItem
-      ImageName = 'ShowDetail_16x16'
-    end
-    inherited miCollapseAll: TMenuItem
-      ImageName = 'HideDetail_16x16'
     end
   end
   object SaveDialogAttachment: TSaveDialog

@@ -5,7 +5,7 @@ inherited frameAllAttachments: TframeAllAttachments
   ExplicitHeight = 374
   inherited tbMain: TToolBar
     Width = 797
-    ExplicitWidth = 663
+    ExplicitWidth = 797
     inherited btnAdd: TToolButton
       Action = aOpenAttachFile
       Visible = False
@@ -16,18 +16,23 @@ inherited frameAllAttachments: TframeAllAttachments
       Width = 8
       Style = tbsSeparator
     end
-    object btnOpenEmail: TToolButton
+    object btnFilter: TToolButton
       Left = 383
+      Top = 0
+      Action = aFilter
+    end
+    object btnOpenEmail: TToolButton
+      Left = 422
       Top = 0
       Action = aOpenEmail
     end
     object btnOpenAttachFile: TToolButton
-      Left = 422
+      Left = 461
       Top = 0
       Action = aOpenAttachFile
     end
     object btnOpenParsedText: TToolButton
-      Left = 461
+      Left = 500
       Top = 0
       Action = aOpenParsedText
     end
@@ -45,11 +50,10 @@ inherited frameAllAttachments: TframeAllAttachments
     OnGetText = vstTreeGetText
     OnPaintText = vstTreePaintText
     OnGetImageIndex = vstTreeGetImageIndex
-    ExplicitWidth = 663
+    ExplicitWidth = 797
     ExplicitHeight = 335
     Columns = <
       item
-        Alignment = taRightJustify
         CaptionAlignment = taCenter
         MaxWidth = 500
         MinWidth = 50
@@ -95,6 +99,7 @@ inherited frameAllAttachments: TframeAllAttachments
         Text = 'Text'
         Width = 172
       end>
+    DefaultText = ''
   end
   inherited alFrame: TActionList
     Left = 100
@@ -129,13 +134,11 @@ inherited frameAllAttachments: TframeAllAttachments
       ImageName = 'email'
       OnExecute = aOpenEmailExecute
     end
-  end
-  inherited pmFrame: TPopupMenu
-    inherited miExpandAll: TMenuItem
-      ImageName = 'ShowDetail_16x16'
-    end
-    inherited miCollapseAll: TMenuItem
-      ImageName = 'HideDetail_16x16'
+    object aFilter: TAction
+      AutoCheck = True
+      ImageIndex = 3
+      ImageName = 'MasterFilter_32x32'
+      OnExecute = aFilterExecute
     end
   end
   object SaveDialogAttachment: TSaveDialog

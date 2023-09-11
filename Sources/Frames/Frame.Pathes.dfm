@@ -1,15 +1,32 @@
 inherited framePathes: TframePathes
-  Width = 711
-  Height = 436
-  ExplicitWidth = 711
-  ExplicitHeight = 436
+  Width = 1067
+  Height = 654
+  ExplicitWidth = 1067
+  ExplicitHeight = 654
+  PixelsPerInch = 144
   inherited tbMain: TToolBar
-    Width = 711
-    ExplicitWidth = 711
+    Width = 1067
+    ExplicitWidth = 1067
+    inherited btnSep02: TToolButton [7]
+      Left = 366
+      ExplicitLeft = 366
+    end
+    inherited btnPrint: TToolButton [8]
+      Left = 378
+      ExplicitLeft = 378
+    end
+    inherited btnSep03: TToolButton [9]
+      Left = 437
+      ExplicitLeft = 437
+    end
+    inherited btnColumnSettings: TToolButton [10]
+      Left = 449
+      ExplicitLeft = 449
+    end
   end
   inherited vstTree: TVirtualStringTree
-    Width = 711
-    Height = 397
+    Width = 1067
+    Height = 595
     Header.MainColumn = 3
     Images = DMImage.vil16
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toEditable, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toFullRowDrag, toEditOnClick, toEditOnDblClick]
@@ -22,37 +39,45 @@ inherited framePathes: TframePathes
     OnGetText = vstTreeGetText
     OnGetImageIndex = vstTreeGetImageIndex
     OnNewText = vstTreeNewText
-    ExplicitWidth = 711
-    ExplicitHeight = 397
+    ExplicitWidth = 1067
+    ExplicitHeight = 595
     Columns = <
       item
         BiDiMode = bdLeftToRight
         CaptionAlignment = taCenter
+        MaxWidth = 1000
+        MinWidth = 15
         Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 0
         Text = 'Path'
-        Width = 450
+        Width = 600
       end
       item
+        MaxWidth = 1000
+        MinWidth = 15
         Position = 1
-        Width = 71
+        Width = 100
       end
       item
         BiDiMode = bdLeftToRight
         CaptionAlignment = taCenter
+        MaxWidth = 1000
+        MinWidth = 15
         Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 2
         Text = 'Info'
-        Width = 120
+        Width = 180
       end
       item
         Alignment = taCenter
         CaptionAlignment = taCenter
         Layout = blGlyphBottom
+        MaxWidth = 500
+        MinWidth = 15
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coStyleColor]
         Position = 3
         Text = 'With subdir'
-        Width = 84
+        Width = 100
       end>
   end
   inherited alFrame: TActionList

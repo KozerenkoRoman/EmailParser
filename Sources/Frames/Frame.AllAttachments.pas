@@ -16,14 +16,17 @@ uses
 
 type
   TframeAllAttachments = class(TframeSource, IProgress, IUpdateXML)
+    aFilter              : TAction;
     aOpenAttachFile      : TAction;
     aOpenEmail           : TAction;
     aOpenParsedText      : TAction;
+    btnFilter            : TToolButton;
     btnOpenAttachFile    : TToolButton;
     btnOpenEmail         : TToolButton;
     btnOpenParsedText    : TToolButton;
     btnSep04             : TToolButton;
     SaveDialogAttachment : TSaveDialog;
+    procedure aFilterExecute(Sender: TObject);
     procedure aOpenAttachFileExecute(Sender: TObject);
     procedure aOpenAttachFileUpdate(Sender: TObject);
     procedure aOpenEmailExecute(Sender: TObject);
@@ -46,6 +49,8 @@ type
 
     C_IDENTITY_NAME = 'frameAllAttachment';
   private
+    FIsFiltered: Boolean;
+
       //IUpdateXML
     procedure IUpdateXML.UpdateXML = UpdateColumns;
 
@@ -55,6 +60,7 @@ type
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
     procedure CompletedItem(const aResultData: PResultData);
+    procedure CompletedAttach(const aAttachment: PAttachment);
 
     procedure UpdateColumns;
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
@@ -81,6 +87,7 @@ begin
   vstTree.NodeDataSize := SizeOf(TAttachData);
   TPublishers.ProgressPublisher.Subscribe(Self);
   TPublishers.UpdateXMLPublisher.Subscribe(Self);
+  FIsFiltered := False;
 end;
 
 destructor TframeAllAttachments.Destroy;
@@ -119,6 +126,39 @@ begin
   vstTree.Header.Columns[COL_FILE_NAME].Text    := TLang.Lang.Translate('Path');
   vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
   vstTree.Header.Columns[COL_PARSED_TEXT].Text  := TLang.Lang.Translate('Text');
+end;
+
+procedure TframeAllAttachments.aFilterExecute(Sender: TObject);
+var
+  Node: PVirtualNode;
+  Data: PAttachment;
+begin
+  inherited;
+  FIsFiltered := TAction(Sender).Checked;
+  if TAction(Sender).Checked then
+    TAction(Sender).ImageIndex := 56
+  else
+    TAction(Sender).ImageIndex := 3;
+
+  if (vstTree.RootNode.ChildCount > 0) then
+  begin
+    Node := vstTree.RootNode.FirstChild;
+    vstTree.BeginUpdate;
+    try
+      while Assigned(Node) do
+      begin
+        Data := TGeneral.AttachmentList.GetItem(PAttachData(vstTree.FocusedNode^.GetData).Hash);
+        if Assigned(Data) then
+        begin
+          vstTree.IsVisible[Node] := not FIsFiltered or (Node.ChildCount > 0);
+          vstTree.InvalidateNode(Node);
+        end;
+        Node := Node.NextSibling;
+      end;
+    finally
+      vstTree.EndUpdate;
+    end;
+  end;
 end;
 
 procedure TframeAllAttachments.aOpenAttachFileExecute(Sender: TObject);
@@ -194,6 +234,11 @@ begin
   begin
     Performer := TPerformer.Create;
     try
+      FIsFiltered := True;
+      aFilter.Checked    := True;
+      aFilter.ImageIndex := 56;
+
+      Performer.Count := vstTree.RootNodeCount;
       Performer.RefreshAttachment;
     finally
       FreeAndNil(Performer);
@@ -372,65 +417,82 @@ begin
 end;
 
 procedure TframeAllAttachments.StartProgress(const aMaxPosition: Integer);
+var
+  CurrNode : PVirtualNode;
 begin
   vstTree.BeginUpdate;
+  CurrNode := vstTree.RootNode.FirstChild;
+  while Assigned(CurrNode) do
+  begin
+    if (CurrNode.ChildCount > 0) then
+      vstTree.DeleteChildren(CurrNode);
+    CurrNode := CurrNode.NextSibling;
+  end;
 end;
 
 procedure TframeAllAttachments.ClearTree;
 begin
+  TGeneral.AttachmentList.ClearParentNodePointer;
   vstTree.BeginUpdate;
   try
     vstTree.Clear;
+    vstTree.Invalidate;
   finally
     vstTree.EndUpdate;
   end;
 end;
 
-procedure TframeAllAttachments.CompletedItem(const aResultData: PResultData);
+procedure TframeAllAttachments.CompletedAttach(const aAttachment: PAttachment);
 var
-  arr        : array of array of string;
-  ChildNode  : PVirtualNode;
-  Attachment : PAttachment;
-  Data       : PAttachData;
-  IsEmpty    : Boolean;
-  MaxCol     : Integer;
-  Node       : PVirtualNode;
+  arr       : array of array of string;
+  ChildNode : PVirtualNode;
+  Data      : PAttachData;
+  IsEmpty   : Boolean;
+  MaxCol    : Integer;
+  Node      : PVirtualNode;
 begin
-  if not Assigned(aResultData) then
+  if not Assigned(aAttachment) then
     Exit;
+  if not Assigned(aAttachment^.ParentNode) then
+  begin
+    Node := vstTree.AddChild(nil);
+    aAttachment^.ParentNode := Node;
+  end
+  else
+    Node := aAttachment^.ParentNode;
 
-  for var attHash in aResultData.Attachments do
-    if TGeneral.AttachmentList.TryGetValue(attHash, Attachment) then
+  Data := Node^.GetData;
+  Data^.Hash := aAttachment^.Hash;
+  MaxCol := 0;
+  for var i := 0 to aAttachment.Matches.Count - 1 do
+    MaxCol := Max(MaxCol, aAttachment.Matches[i].Count);
+
+  IsEmpty := False;
+  SetLength(arr, MaxCol, aAttachment^.Matches.Count);
+  for var i := 0 to aAttachment^.Matches.Count - 1 do
+    for var j := 0 to aAttachment^.Matches[i].Count - 1 do
     begin
-      Node := vstTree.AddChild(nil);
-      Data := Node^.GetData;
-      Data^.Hash := Attachment.Hash;
-
-      MaxCol := 0;
-      for var i := 0 to Attachment.Matches.Count - 1 do
-        MaxCol := Max(MaxCol, Attachment.Matches[i].Count);
-
-      IsEmpty := False;
-      SetLength(arr, MaxCol, Attachment.Matches.Count);
-      for var i := 0 to Attachment.Matches.Count - 1 do
-        for var j := 0 to Attachment.Matches[i].Count - 1 do
-        begin
-          arr[j, i] := Attachment.Matches[i].Items[j].Trim;
-          IsEmpty := IsEmpty or arr[j, i].IsEmpty;
-        end;
-
-      if not IsEmpty then
-        for var i := Low(arr) to High(arr) do
-        begin
-          ChildNode := vstTree.AddChild(Node);
-          Data := ChildNode^.GetData;
-          Data^.Hash := Attachment.Hash;
-          Data^.Matches.AddRange(arr[i]);
-          vstTree.ValidateNode(ChildNode, False);
-        end;
-      Attachment^.IsMatch := not IsEmpty;
-      vstTree.ValidateNode(Node, False);
+      arr[j, i] := aAttachment^.Matches[i].Items[j].Trim;
+      IsEmpty := IsEmpty or arr[j, i].IsEmpty;
     end;
+
+  Data^.Matches.Count := MaxCol;
+  if not IsEmpty then
+    for var i := Low(arr) to High(arr) do
+    begin
+      ChildNode := vstTree.AddChild(Node);
+      Data := ChildNode^.GetData;
+      Data^.Hash := aAttachment^.Hash;
+      Data^.Matches.AddRange(arr[i]);
+      vstTree.ValidateNode(ChildNode, False);
+    end;
+  vstTree.IsVisible[Node] := not FIsFiltered or (Node.ChildCount > 0);
+  vstTree.ValidateNode(Node, False);
+end;
+
+procedure TframeAllAttachments.CompletedItem(const aResultData: PResultData);
+begin
+  //nothing
 end;
 
 procedure TframeAllAttachments.UpdateColumns;

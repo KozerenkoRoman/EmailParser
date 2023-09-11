@@ -67,7 +67,6 @@ inherited frameSource: TframeSource
     Margins.Bottom = 5
     Align = alClient
     CustomCheckImages = DMImage.ilCustomCheckImages
-    DefaultNodeHeight = 17
     Header.AutoSizeIndex = 0
     Header.Height = 17
     Header.MainColumn = -1
@@ -138,9 +137,11 @@ inherited frameSource: TframeSource
   inherited pmFrame: TPopupMenu
     object miExpandAll: TMenuItem
       Action = aExpandAll
+      ImageName = 'ShowDetail_16x16'
     end
     object miCollapseAll: TMenuItem
       Action = aCollapseAll
+      ImageName = 'HideDetail_16x16'
     end
   end
 end

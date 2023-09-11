@@ -19,7 +19,8 @@ type
     procedure EndProgress;
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
-    procedure CompletedItem(const aResultData: PResultData);
+    procedure CompletedItem(const aData: PResultData);
+    procedure CompletedAttach(const aAttachment: PAttachment);
     procedure ClearTree;
   end;
 

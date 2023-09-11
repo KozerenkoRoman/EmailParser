@@ -7,51 +7,50 @@ inherited frameEmails: TframeEmails
   Margins.Bottom = 0
   ExplicitWidth = 752
   ExplicitHeight = 346
-  PixelsPerInch = 144
   inherited tbMain: TToolBar
     Width = 752
     ExplicitWidth = 752
     object btnSep04: TToolButton
       Left = 375
       Top = 0
-      Width = 10
+      Width = 8
       Caption = 'btnSep04'
       ImageIndex = 71
       ImageName = 'email'
       Style = tbsSeparator
     end
     object btnSearch: TToolButton
-      Left = 385
+      Left = 383
       Top = 0
       Action = aSearch
     end
     object btnBreak: TToolButton
-      Left = 424
+      Left = 422
       Top = 0
       Action = aBreak
     end
     object btnFilter: TToolButton
-      Left = 463
+      Left = 461
       Top = 0
       Action = aFilter
       Marked = True
       Style = tbsCheck
     end
     object btnSep05: TToolButton
-      Left = 502
+      Left = 500
       Top = 0
-      Width = 10
+      Width = 8
       ImageIndex = 71
       ImageName = 'email'
       Style = tbsSeparator
     end
     object btnOpenEmail: TToolButton
-      Left = 512
+      Left = 508
       Top = 0
       Action = aOpenEmail
     end
     object btnOpenLogFile: TToolButton
-      Left = 551
+      Left = 547
       Top = 0
       Action = aOpenLogFile
     end
@@ -61,7 +60,7 @@ inherited frameEmails: TframeEmails
     Height = 307
     Header.MainColumn = 0
     Images = DMImage.vil16
-    Indent = 12
+    Indent = 15
     TreeOptions.AutoOptions = [toAutoSort, toAutoTristateTracking, toAutoChangeScale]
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toVariableNodeHeight, toFullRowDrag]
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowRoot, toShowVertGridLines, toThemeAware, toShowFilteredNodes]
@@ -214,12 +213,6 @@ inherited frameEmails: TframeEmails
   inherited pmFrame: TPopupMenu
     Left = 588
     Top = 116
-    inherited miExpandAll: TMenuItem
-      ImageName = 'ShowDetail_16x16'
-    end
-    inherited miCollapseAll: TMenuItem
-      ImageName = 'HideDetail_16x16'
-    end
   end
   object SaveDialogEmail: TSaveDialog
     DefaultExt = '*.eml'

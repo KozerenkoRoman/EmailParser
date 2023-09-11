@@ -70,6 +70,7 @@ type
     procedure StartProgress(const aMaxPosition: Integer);
     procedure Progress;
     procedure CompletedItem(const aResultData: PResultData);
+    procedure CompletedAttach(const aAttachment: PAttachment);
   protected
     function GetIdentityName: string; override;
   public
@@ -237,6 +238,11 @@ begin
 end;
 
 procedure TfrmMain.ClearTree;
+begin
+  //nothing
+end;
+
+procedure TfrmMain.CompletedAttach(const aAttachment: PAttachment);
 begin
   //nothing
 end;
