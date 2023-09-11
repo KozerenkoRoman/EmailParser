@@ -219,7 +219,7 @@ begin
     if Assigned(Data) then
     begin
       if Data^.ParsedText.IsEmpty then
-        Data^.ParsedText := TDaMod.GetAttachmentAsRawText(Data^.Hash);
+        Data^.ParsedText := TDaMod.GetAttachmentAsRawText(Data^.Hash).Replace(#10, '<br>');
       TInformationDialog.ShowMessage(THtmlUtils.GetHighlightText(Data^.ParsedText, Data^.Matches), GetIdentityName);
     end;
   end;

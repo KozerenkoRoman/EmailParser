@@ -31,6 +31,7 @@ type
     function GetEXIFInfo(const aFileName: TFileName): string;
     function GetRegExpCollection(const aText, aPattern: string; const aGroupIndex: Integer = 0): TStringArray;
     function GetTextFromPDFFile(const aFileName: TFileName): string;
+    function GetWordText(const aFileName: TFileName): string;
     function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
     procedure DoCopyAttachmentFiles(const aData: PResultData);
     procedure DoDeleteAttachmentFiles(const aData: PResultData);
@@ -276,79 +277,6 @@ begin
       on E: Exception do
         LogWriter.Write(ddError, Self, 'GetAttchmentPath', E.Message + sLineBreak + 'Directory - ' + Result);
     end;
-end;
-
-function TPerformer.GetEXIFInfo(const aFileName: TFileName): string;
-var
-  ImgData: TEXIFDump;
-begin
-  Result := '';
-  ImgData := TEXIFDump.Create(aFileName);
-  try
-    try
-      Result := ImgData.GetText;
-    except
-      on E: Exception do
-        LogWriter.Write(ddError, Self, 'GetEXIFInfo', E.Message + sLineBreak + 'File name - ' + aFileName);
-    end;
-  finally
-    FreeAndNil(ImgData)
-  end;
-end;
-
-function TPerformer.GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
-var
-  Attachment : PAttachment;
-  FileName   : string;
-  Path       : string;
-  ZipFile    : TZipFile;
-begin
-  ZipFile := TZipFile.Create;
-  try
-    Path := TPath.Combine(GetAttchmentPath(aData.FileName), TPath.GetFileNameWithoutExtension(aData.FileName));
-    if not TDirectory.Exists(Path) then
-      try
-        TDirectory.CreateDirectory(Path);
-      except
-        on E: Exception do
-        begin
-          LogWriter.Write(ddError, Self, 'GetZipFileList', E.Message + sLineBreak + 'Directory - ' + Path);
-          Exit;
-        end;
-      end;
-
-    try
-      ZipFile.Open(aFileName, zmRead);
-      for var i := Low(ZipFile.FileNames) to High(ZipFile.FileNames) do
-        if not TFileUtils.IsForbidden(ZipFile.FileNames[i]) then
-        begin
-          ZipFile.Extract(ZipFile.FileNames[i], Path, True);
-          FileName := Concat('[', aData^.ShortName, '] ', TFileUtils.GetCorrectFileName(ZipFile.FileNames[i]));
-          SetLength(FileName, Min(Length(FileName), 255));
-          if not RenameFile(TPath.Combine(Path, ZipFile.FileNames[i]), TPath.Combine(Path, FileName)) then
-            DeleteFile(TPath.Combine(Path, ZipFile.FileNames[i]));
-
-          New(Attachment);
-          Attachment^.FileName      := TPath.Combine(Path, FileName);
-          Attachment^.Hash          := TFileUtils.GetHash(Attachment^.FileName);
-          Attachment^.ShortName     := FileName;
-          Attachment^.ParentHash    := aData^.Hash;
-          Attachment^.ParentName    := aData^.ShortName;
-          Attachment^.Matches.Count := FRegExpList.Count;
-          Attachment^.FromZip       := True;
-          TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
-          aData^.Attachments.AddUnique(Attachment^.Hash);
-
-          Result := Concat(Result, (i + 1).ToString, '. ', FileName, '<br>');
-        end;
-      ZipFile.Close;
-    except
-      on E: Exception do
-        LogWriter.Write(ddError, Self, 'GetZipFileList', E.Message + sLineBreak + aFileName);
-    end;
-  finally
-    FreeAndNil(ZipFile);
-  end;
 end;
 
 procedure TPerformer.DoCopyAttachmentFiles(const aData: PResultData);
@@ -615,7 +543,7 @@ begin
               begin
                 Attachment.ContentType := 'application/word';
                 Attachment.ImageIndex  := TExtIcon.eiDoc.ToByte;
-                Attachment.ParsedText  := '';
+                Attachment.ParsedText  := GetWordText(Attachment.FileName);
               end
               else if Ext.Contains('.zip') or Ext.Contains('.7z') then
               begin
@@ -802,6 +730,127 @@ begin
   finally
     FreeAndNil(PDFCtrl);
     FCriticalSection.Leave;
+  end;
+end;
+
+function TPerformer.GetEXIFInfo(const aFileName: TFileName): string;
+var
+  ImgData: TEXIFDump;
+begin
+  Result := '';
+  ImgData := TEXIFDump.Create(aFileName);
+  try
+    try
+      Result := ImgData.GetText;
+    except
+      on E: Exception do
+        LogWriter.Write(ddError, Self, 'GetEXIFInfo', E.Message + sLineBreak + 'File name - ' + aFileName);
+    end;
+  finally
+    FreeAndNil(ImgData)
+  end;
+end;
+
+function TPerformer.GetWordText(const aFileName: TFileName): string;
+const
+  C_PATTERN = '(?im)w:p(?=\s+.*?>)|(?<=<w:t).*?>(.*?)</w:t>';
+var
+  Path     : string;
+  resArray : TStringArray;
+  XmlText  : string;
+  ZipFile  : TZipFile;
+begin
+  Result := '';
+  Path := TPath.Combine(TPath.GetDirectoryName(aFileName), TPath.GetFileNameWithoutExtension(aFileName));
+  if not TDirectory.Exists(Path) then
+    try
+      TDirectory.CreateDirectory(Path);
+    except
+      on E: Exception do
+      begin
+        LogWriter.Write(ddError, Self, 'GetWordText', E.Message + sLineBreak + 'Directory - ' + Path);
+        Exit;
+      end;
+    end;
+
+  ZipFile := TZipFile.Create;
+  try
+    try
+      ZipFile.Open(aFileName, zmRead);
+      ZipFile.Extract('word/document.xml', Path, False);
+      ZipFile.Close;
+    except
+      on E: Exception do
+        LogWriter.Write(ddError, Self, 'GetWordText', E.Message + sLineBreak + aFileName);
+    end;
+  finally
+    FreeAndNil(ZipFile);
+  end;
+
+  if TFile.Exists(TPath.Combine(Path, 'document.xml')) then
+  begin
+    XmlText := TFile.ReadAllText(TPath.Combine(Path, 'document.xml'), TEncoding.UTF8);
+    resArray := GetRegExpCollection(XmlText, C_PATTERN, 1);
+    for var item in resArray do
+      if item.Trim.Equals('w:p') then
+        Result := Concat(Result, sLineBreak)
+      else
+        Result := Concat(Result, item);
+  end;
+end;
+
+function TPerformer.GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
+var
+  Attachment : PAttachment;
+  FileName   : string;
+  Path       : string;
+  ZipFile    : TZipFile;
+begin
+  ZipFile := TZipFile.Create;
+  try
+    Path := TPath.Combine(GetAttchmentPath(aData.FileName), TPath.GetFileNameWithoutExtension(aData.FileName));
+    if not TDirectory.Exists(Path) then
+      try
+        TDirectory.CreateDirectory(Path);
+      except
+        on E: Exception do
+        begin
+          LogWriter.Write(ddError, Self, 'GetZipFileList', E.Message + sLineBreak + 'Directory - ' + Path);
+          Exit;
+        end;
+      end;
+
+    try
+      ZipFile.Open(aFileName, zmRead);
+      for var i := Low(ZipFile.FileNames) to High(ZipFile.FileNames) do
+        if not TFileUtils.IsForbidden(ZipFile.FileNames[i]) then
+        begin
+          ZipFile.Extract(ZipFile.FileNames[i], Path, True);
+          FileName := Concat('[', aData^.ShortName, '] ', TFileUtils.GetCorrectFileName(ZipFile.FileNames[i]));
+          SetLength(FileName, Min(Length(FileName), 255));
+          if not RenameFile(TPath.Combine(Path, ZipFile.FileNames[i]), TPath.Combine(Path, FileName)) then
+            DeleteFile(TPath.Combine(Path, ZipFile.FileNames[i]));
+
+          New(Attachment);
+          Attachment^.FileName      := TPath.Combine(Path, FileName);
+          Attachment^.Hash          := TFileUtils.GetHash(Attachment^.FileName);
+          Attachment^.ShortName     := FileName;
+          Attachment^.ParentHash    := aData^.Hash;
+          Attachment^.ParentName    := aData^.ShortName;
+          Attachment^.Matches.Count := FRegExpList.Count;
+          Attachment^.FromZip       := True;
+          TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+          aData^.Attachments.AddUnique(Attachment^.Hash);
+
+          Result := Concat(Result, (i + 1).ToString, '. ', FileName, '<br>');
+        end;
+      ZipFile.Close;
+    except
+      on E: Exception do
+        LogWriter.Write(ddError, Self, 'GetZipFileList', E.Message + sLineBreak + aFileName);
+    end;
+  finally
+    FreeAndNil(ZipFile);
   end;
 end;
 
