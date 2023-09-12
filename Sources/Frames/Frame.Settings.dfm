@@ -1,17 +1,17 @@
 inherited frameSettings: TframeSettings
-  Width = 791
+  Width = 784
   Height = 356
-  ExplicitWidth = 791
+  ExplicitWidth = 784
   ExplicitHeight = 356
   PixelsPerInch = 144
   inherited tbMain: TToolBar
-    Width = 791
-    ExplicitWidth = 791
+    Width = 784
+    ExplicitWidth = 600
   end
   object grdCommonParams: TGridPanel [1]
     Left = 0
     Top = 39
-    Width = 791
+    Width = 784
     Height = 317
     Align = alClient
     BevelOuter = bvNone
@@ -115,6 +115,8 @@ inherited frameSettings: TframeSettings
         Value = 100.000000000000000000
       end>
     TabOrder = 1
+    ExplicitTop = 45
+    ExplicitWidth = 763
     object lblLanguage: TLabel
       AlignWithMargins = True
       Left = 3
@@ -175,7 +177,7 @@ inherited frameSettings: TframeSettings
       AlignWithMargins = True
       Left = 330
       Top = 3
-      Width = 134
+      Width = 140
       Height = 25
       Margins.Left = 10
       Align = alLeft
@@ -198,10 +200,11 @@ inherited frameSettings: TframeSettings
       AlignWithMargins = True
       Left = 330
       Top = 73
-      Width = 436
+      Width = 140
       Height = 29
       Margins.Left = 10
       Align = alLeft
+      Anchors = [akLeft, akTop, akRight, akBottom]
       Images = DMImage.vil16
       RightButton.DropDownMenu = pmFrame
       RightButton.ImageIndex = 5
@@ -210,7 +213,6 @@ inherited frameSettings: TframeSettings
       TabOrder = 2
       Text = '#Attachments'
       OnRightButtonClick = aPathForAttachmentsExecute
-      ExplicitHeight = 25
     end
     object cbDeleteAttachments: TCheckBox
       AlignWithMargins = True

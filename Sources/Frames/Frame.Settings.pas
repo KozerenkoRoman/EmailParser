@@ -61,6 +61,7 @@ begin
   LoadFromXML;
   Translate;
   dlgAttachmments.Title := Application.Title;
+  edtPathForAttachments.Width := Self.Width - Trunc(grdCommonParams.ColumnCollection.Items[0].Value) - 30;
 end;
 
 procedure TframeSettings.Deinitialize;

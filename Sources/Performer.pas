@@ -797,6 +797,16 @@ begin
       else
         Result := Concat(Result, item);
   end;
+
+  try
+    TDirectory.Delete(Path, True);
+  except
+    on E: Exception do
+    begin
+      LogWriter.Write(ddError, Self, 'GetWordText', E.Message + sLineBreak + 'Directory - ' + Path);
+      Exit;
+    end;
+  end;
 end;
 
 function TPerformer.GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
