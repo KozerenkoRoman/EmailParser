@@ -30,13 +30,13 @@ type
     tbSettings        : TToolBar;
     vstTree           : TVirtualStringTree;
     procedure aImportExecute(Sender: TObject);
+    procedure aImportUpdate(Sender: TObject);
     procedure cbSetOfTemplatesChange(Sender: TObject);
     procedure edtPathRightButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
-    procedure aImportUpdate(Sender: TObject);
-    procedure vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
   private const
     COL_PARAM_NAME      = 0;
     COL_REGEXP_TEMPLATE = 1;

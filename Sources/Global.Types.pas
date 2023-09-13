@@ -116,14 +116,15 @@ type
   public
     class function GetCounterValue: Integer; static;
     class function GetPathList: TParamPathArray; static;
-    class function GetSorterPathList: TSorterPathArray;  static;
+    class function GetRegExpCount: Integer; static;
     class function GetRegExpParametersList: TRegExpArray; static;
+    class function GetSorterPathList: TSorterPathArray;  static;
     class function XMLFile: TXMLFile; static;
     class function XMLParams: TXMLFile; static;
     class procedure NoHibernate; static;
     class var
-      EmailList: TEmailList;
-      AttachmentList: TAttachmentList;
+      AttachmentList : TAttachmentList;
+      EmailList      : TEmailList;
   end;
 
   TAttachmentDir = (adAttachment, adSubAttachment, adUserDefined);
@@ -131,8 +132,8 @@ type
     function FromString(aDir: string): TAttachmentDir;
   end;
 
-  TExtIcon = (eiPdf = 20, eiPng = 21, eiGif = 8, eiIco = 2, eiJpg = 12, eiZip = 30, eiRar = 23, eiHtml = 9, eiTxt = 27,
-              eiXls = 29, eiDoc = 04);
+  TExtIcon = (eiPdf = 20, eiPng = 21, eiGif = 8, eiIco = 2, eiJpg = 12, eiZip = 30, eiRar = 23, eiHtml = 9,
+              eiTxt = 0,  eiXls = 29, eiDoc = 4);
   TExtIconHelper = record helper for TExtIcon
     function ToByte: Byte;
   end;
@@ -198,6 +199,17 @@ begin
       end;
       XMLParams.NextKey;
     end;
+  finally
+    XMLParams.CurrentSection := '';
+  end;
+end;
+
+class function TGeneral.GetRegExpCount: Integer;
+begin
+  XMLParams.Open;
+  XMLParams.CurrentSection := C_SECTION_REGEXP;
+  try
+    Result := XMLParams.ChildCount;
   finally
     XMLParams.CurrentSection := '';
   end;

@@ -137,6 +137,7 @@ inherited frameResultView: TframeResultView
               Height = 211
               ExplicitWidth = 924
               ExplicitHeight = 211
+              DefaultText = ''
             end
           end
         end
@@ -156,25 +157,10 @@ inherited frameResultView: TframeResultView
         ExplicitHeight = 358
         inherited tbMain: TToolBar
           Width = 932
-          ExplicitWidth = 932
-          inherited btnSep02: TToolButton [7]
-            Left = 242
-          end
-          inherited btnPrint: TToolButton [8]
-            Left = 250
-          end
-          inherited btnRefresh: TToolButton [9]
-            Left = 289
-          end
-          inherited btnColumnSettings: TToolButton [11]
-            Left = 336
-          end
         end
         inherited vstTree: TVirtualStringTree
           Width = 932
           Height = 319
-          ExplicitWidth = 932
-          ExplicitHeight = 319
           DefaultText = ''
         end
       end
@@ -197,9 +183,14 @@ inherited frameResultView: TframeResultView
         end
         inherited vstTree: TVirtualStringTree
           Width = 932
-          Height = 604
+          Height = 565
           ExplicitWidth = 932
-          ExplicitHeight = 604
+          ExplicitHeight = 565
+          DefaultText = ''
+        end
+        inherited tbFileSearch: TToolBar
+          Width = 932
+          ExplicitWidth = 932
         end
       end
     end

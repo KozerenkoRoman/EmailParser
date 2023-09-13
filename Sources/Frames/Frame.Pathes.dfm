@@ -1,32 +1,16 @@
 inherited framePathes: TframePathes
-  Width = 1067
-  Height = 654
-  ExplicitWidth = 1067
-  ExplicitHeight = 654
+  Width = 710
+  Height = 461
+  ExplicitWidth = 710
+  ExplicitHeight = 461
   PixelsPerInch = 144
   inherited tbMain: TToolBar
-    Width = 1067
+    Width = 710
     ExplicitWidth = 1067
-    inherited btnSep02: TToolButton [7]
-      Left = 366
-      ExplicitLeft = 366
-    end
-    inherited btnPrint: TToolButton [8]
-      Left = 378
-      ExplicitLeft = 378
-    end
-    inherited btnSep03: TToolButton [9]
-      Left = 437
-      ExplicitLeft = 437
-    end
-    inherited btnColumnSettings: TToolButton [10]
-      Left = 449
-      ExplicitLeft = 449
-    end
   end
   inherited vstTree: TVirtualStringTree
-    Width = 1067
-    Height = 595
+    Width = 710
+    Height = 422
     Header.MainColumn = 3
     Images = DMImage.vil16
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toEditable, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toFullRowDrag, toEditOnClick, toEditOnDblClick]
@@ -40,7 +24,7 @@ inherited framePathes: TframePathes
     OnGetImageIndex = vstTreeGetImageIndex
     OnNewText = vstTreeNewText
     ExplicitWidth = 1067
-    ExplicitHeight = 595
+    ExplicitHeight = 615
     Columns = <
       item
         BiDiMode = bdLeftToRight
@@ -50,7 +34,7 @@ inherited framePathes: TframePathes
         Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 0
         Text = 'Path'
-        Width = 600
+        Width = 456
       end
       item
         MaxWidth = 1000
@@ -79,6 +63,7 @@ inherited framePathes: TframePathes
         Text = 'With subdir'
         Width = 100
       end>
+    DefaultText = ''
   end
   inherited alFrame: TActionList
     inherited aAdd: TAction
@@ -99,14 +84,6 @@ inherited framePathes: TframePathes
     end
     inherited aCollapseAll: TAction
       Visible = False
-    end
-  end
-  inherited pmFrame: TPopupMenu
-    inherited miExpandAll: TMenuItem
-      ImageName = 'ShowDetail_16x16'
-    end
-    inherited miCollapseAll: TMenuItem
-      ImageName = 'HideDetail_16x16'
     end
   end
   object OpenDialog: TFileOpenDialog

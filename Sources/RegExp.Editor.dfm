@@ -133,7 +133,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       860
       42)
     object btnCancel: TBitBtn
-      Left = 612
+      Left = 608
       Top = 1
       Width = 110
       Height = 40
@@ -150,10 +150,10 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 2
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 608
+      ExplicitLeft = 604
     end
     object btnOk: TBitBtn
-      Left = 724
+      Left = 720
       Top = 1
       Width = 110
       Height = 40
@@ -170,7 +170,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 1
       ParentFont = False
       TabOrder = 1
-      ExplicitLeft = 720
+      ExplicitLeft = 716
     end
   end
   object tbPattern: TToolBar

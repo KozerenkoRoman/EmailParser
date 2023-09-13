@@ -100,17 +100,18 @@ constructor TframeEmails.Create(AOwner: TComponent);
 begin
   inherited;
   vstTree.NodeDataSize := SizeOf(TEmail);
-  FPerformer := TPerformer.Create;
-  TPublishers.UpdateXMLPublisher.Subscribe(Self);
+  FPerformer := TPerformer.GetInstance;
   TPublishers.ProgressPublisher.Subscribe(Self);
+  TPublishers.UpdateXMLPublisher.Subscribe(Self);
+  TPublishers.UpdateXMLPublisher.Subscribe(TPerformer.GetInstance);
   FIsFiltered := False;
 end;
 
 destructor TframeEmails.Destroy;
 begin
-  TPublishers.UpdateXMLPublisher.Unsubscribe(Self);
   TPublishers.ProgressPublisher.Unsubscribe(Self);
-  FreeAndNil(FPerformer);
+  TPublishers.UpdateXMLPublisher.Unsubscribe(Self);
+  TPublishers.UpdateXMLPublisher.Unsubscribe(TPerformer.GetInstance);
   inherited;
 end;
 
@@ -144,9 +145,10 @@ begin
   vstTree.Header.Columns[COL_FROM].Text         := TLang.Lang.Translate('From');
   vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
 
-  aOpenEmail.Hint      := TLang.Lang.Translate('OpenEmail');
-  aOpenLogFile.Hint    := TLang.Lang.Translate('OpenLogFile');
-  aSearch.Hint         := TLang.Lang.Translate('StartSearch');
+  aBreak.Hint       := TLang.Lang.Translate('Break');
+  aOpenEmail.Hint   := TLang.Lang.Translate('OpenEmail');
+  aOpenLogFile.Hint := TLang.Lang.Translate('OpenLogFile');
+  aSearch.Hint      := TLang.Lang.Translate('StartSearch');
 end;
 
 procedure TframeEmails.UpdateColumns;
@@ -585,7 +587,7 @@ var
 begin
   vstTree.BeginUpdate;
   TPublishers.EmailPublisher.FocusChanged(nil);
-  if (aMaxPosition > 0) then
+  if (aMaxPosition >= 0) then
     TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('FoundFiles'), [aMaxPosition]))
   else
     TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('FoundFiles'), [vstTree.RootNode.ChildCount]));

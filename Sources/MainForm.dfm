@@ -156,7 +156,7 @@ inherited frmMain: TfrmMain
     Width = 920
     Height = 582
     Align = alClient
-    ActiveCard = crdResultView
+    ActiveCard = crdPathsToFindScripts
     TabOrder = 2
     object crdRegExpParameters: TCard
       Left = 1
@@ -182,8 +182,11 @@ inherited frmMain: TfrmMain
         inherited vstTree: TVirtualStringTree
           Width = 918
           Height = 498
+          Font.Height = -11
+          Font.Name = 'Tahoma'
           ExplicitWidth = 918
           ExplicitHeight = 498
+          DefaultText = ''
         end
         inherited tbSettings: TToolBar
           Width = 918
@@ -230,82 +233,56 @@ inherited frmMain: TfrmMain
           Width = 908
           Height = 293
           Align = alClient
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
           TabOrder = 0
-          ExplicitLeft = 2
-          ExplicitTop = 15
-          ExplicitWidth = 908
-          ExplicitHeight = 293
           inherited tbMain: TToolBar
             Width = 908
-            ExplicitWidth = 904
+            ExplicitWidth = 710
           end
           inherited vstTree: TVirtualStringTree
             Width = 908
             Height = 254
+            ExplicitLeft = 2
             ExplicitWidth = 908
             ExplicitHeight = 254
-            Columns = <
-              item
-                BiDiMode = bdLeftToRight
-                CaptionAlignment = taCenter
-                Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-                Position = 0
-                Text = 'Path'
-                Width = 377
-              end
-              item
-                Position = 1
-                Width = 71
-              end
-              item
-                BiDiMode = bdLeftToRight
-                CaptionAlignment = taCenter
-                Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-                Position = 2
-                Text = 'Info'
-                Width = 120
-              end
-              item
-                Alignment = taCenter
-                CaptionAlignment = taCenter
-                Layout = blGlyphBottom
-                Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coStyleColor]
-                Position = 3
-                Text = 'With subdir'
-                Width = 84
-              end>
+            DefaultText = ''
           end
         end
       end
       object gbSorter: TGroupBox
-        AlignWithMargins = True
-        Left = 3
-        Top = 322
-        Width = 912
-        Height = 255
+        Left = 0
+        Top = 319
+        Width = 918
+        Height = 261
         Align = alClient
         Caption = 'gbSorter'
         TabOrder = 1
         inline frameSorter: TframeSorter
           Left = 2
           Top = 15
-          Width = 908
-          Height = 238
+          Width = 914
+          Height = 244
           Align = alClient
           TabOrder = 0
           ExplicitLeft = 2
           ExplicitTop = 15
-          ExplicitWidth = 908
-          ExplicitHeight = 238
+          ExplicitWidth = 914
+          ExplicitHeight = 244
           inherited tbMain: TToolBar
-            Width = 908
-            ExplicitWidth = 904
+            Width = 914
+            ExplicitWidth = 910
           end
           inherited vstTree: TVirtualStringTree
-            Width = 908
-            Height = 199
-            ExplicitWidth = 908
-            ExplicitHeight = 199
+            Width = 914
+            Height = 205
+            ExplicitWidth = 914
+            ExplicitHeight = 205
+            DefaultText = ''
           end
         end
       end
@@ -324,6 +301,12 @@ inherited frmMain: TfrmMain
         Width = 918
         Height = 580
         Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 0
         ExplicitWidth = 918
         ExplicitHeight = 580
@@ -387,6 +370,11 @@ inherited frmMain: TfrmMain
             end>
           ExplicitWidth = 918
           ExplicitHeight = 541
+          inherited edtPathForAttachments: TButtonedEdit
+            Width = 108
+            ExplicitWidth = 108
+            ExplicitHeight = 25
+          end
         end
       end
     end
@@ -419,7 +407,7 @@ inherited frmMain: TfrmMain
         ExplicitHeight = 580
         inherited tbMain: TToolBar
           Width = 918
-          ExplicitWidth = 914
+          ExplicitWidth = 918
         end
         inherited pcMain: TPageControl
           Width = 918
@@ -434,7 +422,7 @@ inherited frmMain: TfrmMain
               Top = 266
               Width = 910
               ExplicitTop = 358
-              ExplicitWidth = 910
+              ExplicitWidth = 914
             end
             inherited pcInfo: TPageControl
               Top = 271
@@ -462,7 +450,7 @@ inherited frmMain: TfrmMain
                 inherited wbBody: TWebBrowser
                   Width = 902
                   Height = 251
-                  ExplicitWidth = 898
+                  ExplicitWidth = 902
                   ExplicitHeight = 251
                   ControlData = {
                     4C000000395D0000F11900000000000000000000000000000000000000000000
@@ -479,7 +467,9 @@ inherited frmMain: TfrmMain
                   ExplicitHeight = 252
                   inherited vstTree: TVirtualStringTree
                     Height = 213
+                    Font.Name = 'Tahoma'
                     ExplicitHeight = 213
+                    DefaultText = ''
                   end
                 end
               end
@@ -491,11 +481,12 @@ inherited frmMain: TfrmMain
               ExplicitHeight = 266
               inherited tbMain: TToolBar
                 Width = 910
-                ExplicitWidth = 906
+                ExplicitWidth = 910
               end
               inherited vstTree: TVirtualStringTree
                 Width = 910
                 Height = 227
+                Font.Name = 'Tahoma'
                 ExplicitWidth = 910
                 ExplicitHeight = 227
                 DefaultText = ''
@@ -508,8 +499,22 @@ inherited frmMain: TfrmMain
               Height = 645
               ExplicitHeight = 645
               inherited vstTree: TVirtualStringTree
-                Height = 606
-                ExplicitHeight = 606
+                Height = 567
+                Font.Name = 'Tahoma'
+                ExplicitHeight = 567
+                DefaultText = ''
+              end
+              inherited tbFileSearch: TToolBar
+                inherited pnlFileSearch: TPanel
+                  inherited edtPath: TButtonedEdit
+                    Height = 22
+                    ExplicitHeight = 22
+                  end
+                  inherited cbExt: TComboBox
+                    Height = 22
+                    ExplicitHeight = 22
+                  end
+                end
               end
             end
           end

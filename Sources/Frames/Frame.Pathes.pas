@@ -244,6 +244,7 @@ begin
       OpenDialog.DefaultFolder := TDirectory.GetCurrentDirectory;
     if OpenDialog.Execute then
       Data^.Path := OpenDialog.FileName;
+    vstTree.FocusedColumn := COL_PATH;
   end;
 end;
 

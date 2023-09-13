@@ -36,22 +36,27 @@ type
     procedure DoCopyAttachmentFiles(const aData: PResultData);
     procedure DoDeleteAttachmentFiles(const aData: PResultData);
     procedure DoFillAttachments(const aData: PResultData; const aMailMessage: TclMailMessage);
-    procedure DoParseAttachmentFiles(const aData: PResultData);
+    procedure DoParseAttachmentFiles(const aData: PResultData; const aProgressProc: TProc = nil);
     procedure DoParseResultData(const aData: PResultData);
     procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
     procedure FillStartParameters;
     procedure ParseFile(const aFileName: TFileName);
+
+    class var FPerformer: TPerformer;
   public
     procedure Start;
     procedure Stop;
     procedure Clear;
     procedure RefreshEmails;
     procedure RefreshAttachment;
+    procedure FileSearch(const aPath, aFileMask: string);
 
     constructor Create;
     destructor Destroy; override;
-    property FromDBCount: Integer read FFromDBCount;
-    property Count      : Integer read FCount write FCount;
+    property FromDBCount: Integer read FFromDBCount write FCount;
+    property Count      : Integer read FCount       write FCount;
+
+    class function GetInstance: TPerformer;
   end;
 
 function GetStringFromMatches(const aText, aPattern: string; const aGroupIndex: Integer): string; inline;
@@ -59,13 +64,6 @@ function GetStringFromMatches(const aText, aPattern: string; const aGroupIndex: 
 implementation
 
 { TPerformer }
-
-procedure TPerformer.Clear;
-begin
-  FCount       := 0;
-  FFromDBCount := 0;
-  FIsBreak     := False;
-end;
 
 constructor TPerformer.Create;
 begin
@@ -76,6 +74,20 @@ destructor TPerformer.Destroy;
 begin
   FreeAndNil(FCriticalSection);
   inherited;
+end;
+
+class function TPerformer.GetInstance: TPerformer;
+begin
+  if not Assigned(FPerformer) then
+    FPerformer := TPerformer.Create;
+  Result := FPerformer;
+end;
+
+procedure TPerformer.Clear;
+begin
+  FCount       := 0;
+  FFromDBCount := 0;
+  FIsBreak     := False;
 end;
 
 procedure TPerformer.FillStartParameters;
@@ -143,7 +155,12 @@ end;
 
 procedure TPerformer.Stop;
 begin
-  FIsBreak := True;
+  System.TMonitor.Enter(Self);
+  try
+    FIsBreak := True;
+  finally
+    System.TMonitor.Exit(Self);
+  end;
 end;
 
 procedure TPerformer.RefreshEmails;
@@ -168,7 +185,7 @@ begin
         System.TMonitor.Enter(Self);
         try
           if FIsBreak then
-            Break;
+            Exit;
         finally
           System.TMonitor.Exit(Self);
         end;
@@ -193,6 +210,81 @@ begin
   end;
 end;
 
+procedure TPerformer.FileSearch(const aPath, aFileMask: string);
+var
+  Attachment : PAttachment;
+  FileList   : TStringDynArray;
+  Hash       : string;
+  ResultData : TResultData;
+begin
+  LogWriter.Write(ddEnterMethod, Self, 'FileSearch');
+  LogWriter.Write(ddText, Self, '<b>Paths to find files:</b>' + aPath + '\' + aFileMask);
+  FileList := Concat(FileList, TDirectory.GetFiles(aPath, aFileMask, TSearchOption.soAllDirectories));
+  FCount   := Length(FileList);
+
+  TPublishers.ProgressPublisher.StartProgress(FCount);
+  try
+    if (FCount > 0) then
+      try
+        FillStartParameters;
+        FIsBreak := False;
+
+        TThread.NameThreadForDebugging('TPerformer.RefreshAttachment');
+        FCount       := 0;
+        FFromDBCount := 0;
+        for var i := Low(FileList) to High(FileList) do
+        begin
+          System.TMonitor.Enter(Self);
+          try
+            if FIsBreak then
+              Exit;
+          finally
+            System.TMonitor.Exit(Self);
+          end;
+
+          Hash := TFileUtils.GetHash(FileList[i]);
+          Attachment := TGeneral.AttachmentList.GetItem(Hash);
+          if not Assigned(Attachment) then
+          begin
+            New(Attachment);
+            Attachment^.FileName      := FileList[i];
+            Attachment^.ShortName     := TPath.GetFileName(FileList[i]);
+            Attachment^.FromZip       := False;
+            Attachment^.Hash          := Hash;
+            Attachment^.Matches.Count := FRegExpList.Count;
+            Attachment^.ParentHash    := '';
+            Attachment^.ParentName    := '';
+            Attachment^.FromDB        := False;
+            Attachment^.ParentNode    := nil;
+            TGeneral.AttachmentList.AddOrSetValue(Hash, Attachment);
+            ResultData.Attachments.Add(Hash);
+            LogWriter.Write(ddText, Self, 'FileSearch', 'Found file - ' + Attachment^.ShortName);
+          end
+          else
+          begin
+            LogWriter.Write(ddWarning, Self, 'FileSearch', 'Skip file - ' + Attachment^.ShortName + '. Duplicate found');
+            Inc(FFromDBCount);
+          end;
+          Inc(FCount);
+        end;
+        DoParseAttachmentFiles(@ResultData,
+          procedure()
+          begin
+            TPublishers.ProgressPublisher.Progress;
+          end);
+      finally
+        TPublishers.ProgressPublisher.EndProgress;
+        LogWriter.Write(ddExitMethod, Self, 'FileSearch');
+      end;
+  except
+    on E: Exception do
+    begin
+      TPublishers.ProgressPublisher.EndProgress;
+      LogWriter.Write(ddError, Self, 'FileSearch', E.Message);
+    end;
+  end;
+end;
+
 procedure TPerformer.RefreshAttachment;
 var
   arrKeys    : TArray<string>;
@@ -206,38 +298,36 @@ begin
     FIsBreak := False;
     FillStartParameters;
     try
-//      TTask.Create(
-//        procedure()
-        begin
-//          TThread.NameThreadForDebugging('TPerformer.RefreshAttachment');
-          arrKeys := TGeneral.AttachmentList.Keys.ToArray;
-          FCount := 0;
-          for var i := Low(arrKeys) to High(arrKeys) do
-          begin
-            System.TMonitor.Enter(Self);
-            try
-              if FIsBreak then
-                Exit;
-            finally
-              System.TMonitor.Exit(Self);
-            end;
+      arrKeys := TGeneral.AttachmentList.Keys.ToArray;
+      FCount := 0;
+      for var i := Low(arrKeys) to High(arrKeys) do
+      begin
+        System.TMonitor.Enter(Self);
+        try
+          if FIsBreak then
+            Exit;
+        finally
+          System.TMonitor.Exit(Self);
+        end;
 
-            Attachment := TGeneral.AttachmentList.Items[arrKeys[i]];
-            if Assigned(Attachment) and Assigned(Attachment^.ParentNode) then
-            begin
-              LogWriter.Write(ddText, Self, 'RefreshAttachment', 'Attachment name - ' + Attachment^.ShortName);
-              Inc(FCount);
-              Attachment^.Matches.Count := FRegExpList.Count;
-              if Attachment^.ParsedText.IsEmpty then
-                Attachment^.ParsedText := TDaMod.GetAttachmentAsRawText(Attachment^.Hash);
-              for var j := 0 to Attachment^.Matches.Count - 1 do
-                Attachment^.Matches[j] := GetRegExpCollection(Attachment^.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
-              Attachment^.LengthAlignment;
-              TPublishers.ProgressPublisher.CompletedAttach(Attachment);
-              TPublishers.ProgressPublisher.Progress;
-            end;
-          end;
-        end;//).Start;
+        Attachment := TGeneral.AttachmentList.Items[arrKeys[i]];
+        if Assigned(Attachment) and Assigned(Attachment^.ParentNode) then
+        begin
+          LogWriter.Write(ddText, Self, 'RefreshAttachment', 'Attachment name - ' + Attachment^.ShortName);
+          Inc(FCount);
+          Attachment^.Matches.Count := FRegExpList.Count;
+          if Attachment^.ParsedText.IsEmpty then
+            Attachment^.ParsedText := TDaMod.GetAttachmentAsRawText(Attachment^.Hash);
+{$IFDEF DETAILED_LOG}
+          LogWriter.Write(ddText, Self, 'RefreshAttachment', 'Attachment file name - ' + Attachment^.FileName);
+{$ENDIF DETAILED_LOG}
+          for var j := 0 to Attachment^.Matches.Count - 1 do
+            Attachment^.Matches[j] := GetRegExpCollection(Attachment^.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
+          Attachment^.LengthAlignment;
+          TPublishers.ProgressPublisher.CompletedAttach(Attachment);
+          TPublishers.ProgressPublisher.Progress;
+        end;
+      end;
     finally
       TPublishers.ProgressPublisher.EndProgress;
       LogWriter.Write(ddExitMethod, Self, 'RefreshAttachment');
@@ -406,6 +496,9 @@ begin
             end).Start;
 
           TTask.WaitForAll(Tasks);
+{$IFDEF DETAILED_LOG}
+          LogWriter.Write(ddText, Self, 'ParseFile', 'Email file name - ' + Data^.FileName);
+{$ENDIF DETAILED_LOG}
           for var i := 0 to FRegExpList.Count - 1 do
             if FRegExpList[i].UseRawText then
               Data^.Matches[i] := GetRegExpCollection(Data^.Subject + sLineBreak + Data^.Body, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex)
@@ -458,6 +551,9 @@ begin
       procedure()
       begin
         TThread.NameThreadForDebugging('TPerformer.DoParseResultData');
+{$IFDEF DETAILED_LOG}
+        LogWriter.Write(ddText, Self, 'DoParseResultData', 'Email file name - ' + aData^.ShortName);
+{$ENDIF DETAILED_LOG}
         for var i := 0 to FRegExpList.Count - 1 do
           if FRegExpList[i].UseRawText then
             aData^.Matches[i] := GetRegExpCollection(TextRaw, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex)
@@ -475,6 +571,9 @@ begin
             Attachment^.Matches.Count := FRegExpList.Count;
             if Attachment^.ParsedText.IsEmpty then
               Attachment^.ParsedText := TDaMod.GetAttachmentAsRawText(Attachment^.Hash);
+{$IFDEF DETAILED_LOG}
+            LogWriter.Write(ddText, Self, 'DoParseResultData', ' Attachment file name - ' + Attachment^.ShortName);
+{$ENDIF DETAILED_LOG}
             for var j := 0 to Attachment^.Matches.Count - 1 do
               Attachment^.Matches[j] := GetRegExpCollection(Attachment^.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
             Attachment^.LengthAlignment;
@@ -486,7 +585,7 @@ begin
   end;
 end;
 
-procedure TPerformer.DoParseAttachmentFiles(const aData: PResultData);
+procedure TPerformer.DoParseAttachmentFiles(const aData: PResultData; const aProgressProc: TProc = nil);
 var
   Attachment : PAttachment;
   Ext        : string;
@@ -590,9 +689,18 @@ begin
               Attachment.ContentType := 'application/key';
               Attachment.ImageIndex  := TExtIcon.eiTxt.ToByte;
             end;
+          fsUTF8, fsUTF7, fsUTF1, fsUTF16be, fsUTF16le, fsUTF32be, fsUTF32le:
+            begin
+              Attachment.ParsedText  := TFile.ReadAllText(Attachment.FileName);
+              Attachment.ContentType := 'text/plain';
+              Attachment.ImageIndex  := TExtIcon.eiTxt.ToByte;
+            end;
           fsUnknown:
             begin
-              if Ext.Contains('.txt') then
+              if Ext.Contains('.txt') or
+                 Ext.Contains('.opt') or
+                 Ext.Contains('.ini') or
+                 Ext.Contains('.cfg') then
               begin
                 Attachment.ParsedText  := TFile.ReadAllText(Attachment.FileName);
                 Attachment.ContentType := 'text/plain';
@@ -614,11 +722,16 @@ begin
                 Attachment.ParsedText := '';
             end;
         end;
+{$IFDEF DETAILED_LOG}
+        LogWriter.Write(ddText, Self, 'DoParseAttachmentFiles', 'Attachment file name - ' + Attachment^.FileName);
+{$ENDIF DETAILED_LOG}
         if not Attachment.ParsedText.IsEmpty then
           for var j := 0 to FRegExpList.Count - 1 do
             Attachment.Matches[j] := GetRegExpCollection(Attachment.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
-        TPublishers.ProgressPublisher.CompletedAttach(Attachment);
         Attachment.LengthAlignment;
+        TPublishers.ProgressPublisher.CompletedAttach(Attachment);
+        if Assigned(aProgressProc) then
+          aProgressProc();
       except
         on E: Exception do
           LogWriter.Write(ddError, Self,
@@ -876,6 +989,10 @@ begin
   if aPattern.IsEmpty then
     Exit;
 
+{$IFDEF DETAILED_LOG}
+  LogWriter.Write(ddText, Self, 'GetRegExpCollection', aPattern);
+{$ENDIF DETAILED_LOG}
+
   RegExpr := TRegEx.Create(aPattern);
   if RegExpr.IsMatch(aText) then
   begin
@@ -917,5 +1034,11 @@ begin
     end;
   end;
 end;
+
+initialization
+
+finalization
+  if Assigned(TPerformer.FPerformer) then
+    FreeAndNil(TPerformer.FPerformer)
 
 end.

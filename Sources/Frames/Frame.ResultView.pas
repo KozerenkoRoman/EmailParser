@@ -41,10 +41,10 @@ type
     tsHtmlText          : TTabSheet;
     tsPlainText         : TTabSheet;
     wbBody              : TWebBrowser;
-    procedure wbBodyBeforeNavigate2(ASender: TObject; const pDisp: IDispatch; const URL, Flags, TargetFrameName, PostData, Headers: OleVariant; var Cancel: WordBool);
     procedure aCopyExecute(Sender: TObject);
     procedure aPasteExecute(Sender: TObject);
     procedure aSelectAllExecute(Sender: TObject);
+    procedure wbBodyBeforeNavigate2(ASender: TObject; const pDisp: IDispatch; const URL, Flags, TargetFrameName, PostData, Headers: OleVariant; var Cancel: WordBool);
   private const
     C_IDENTITY_NAME = 'frameResultView';
   private

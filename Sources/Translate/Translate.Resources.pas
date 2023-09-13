@@ -42,7 +42,7 @@ resourcestring
   en_DeletePrompt         = 'Delete item "%s"?';
   en_DirectoryNotFound    = 'Directory "%s" not found';
   en_Disabled             = 'Disabled';
-  en_DuplicateCount       = 'Found %d records in DB';
+  en_DuplicateCount       = 'Found %d records in DB / Duplicates';
   en_Edit                 = 'Edit';
   en_EditCommonParameters = 'Common parameters';
   en_EditRegExpParameters = 'RegExp parameters';
@@ -144,7 +144,7 @@ resourcestring
   uk_DeletePrompt         = 'Видалити запис "%s"?';
   uk_DirectoryNotFound    = 'Каталог "%s" не знайдено';
   uk_Disabled             = 'Вимкнено';
-  uk_DuplicateCount       = 'Знайдено %d записів в БД';
+  uk_DuplicateCount       = 'Знайдено %d записів в БД / дублікатів файлів';
   uk_Edit                 = 'Редагувати';
   uk_EditCommonParameters = 'Загальні параметри';
   uk_EditRegExpParameters = 'RegExp параметри';

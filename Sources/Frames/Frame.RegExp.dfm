@@ -232,12 +232,4 @@ inherited frameRegExp: TframeRegExp
       OnUpdate = aDownUpdate
     end
   end
-  inherited pmFrame: TPopupMenu
-    inherited miExpandAll: TMenuItem
-      ImageName = 'ShowDetail_16x16'
-    end
-    inherited miCollapseAll: TMenuItem
-      ImageName = 'HideDetail_16x16'
-    end
-  end
 end

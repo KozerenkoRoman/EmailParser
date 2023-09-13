@@ -28,7 +28,9 @@ type
     miCollapseAll     : TMenuItem;
     miExpandAll       : TMenuItem;
     vstTree           : TVirtualStringTree;
+    procedure aCollapseAllExecute(Sender: TObject);
     procedure aColumnSettingsExecute(Sender: TObject);
+    procedure aExpandAllExecute(Sender: TObject);
     procedure aExportToCSVExecute(Sender: TObject);
     procedure aExportToExcelExecute(Sender: TObject);
     procedure aExportToHTMLExecute(Sender: TObject);
@@ -37,8 +39,6 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeHeaderDragged(Sender: TVTHeader; Column: TColumnIndex; OldPosition: Integer);
     procedure vstTreeMeasureItem(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; var NodeHeight: Integer);
-    procedure aExpandAllExecute(Sender: TObject);
-    procedure aCollapseAllExecute(Sender: TObject);
   private const
     C_IDENTITY_NAME = 'frameSource';
   protected
@@ -75,7 +75,7 @@ end;
 procedure TframeSource.Initialize;
 begin
   inherited;
-  TStoreHelper.LoadFromXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
+  LoadFromXML;
   tbMain.ButtonHeight := C_ICON_SIZE;
   tbMain.ButtonWidth  := C_ICON_SIZE;
   tbMain.Height       := C_ICON_SIZE + 2;
@@ -100,8 +100,8 @@ end;
 
 procedure TframeSource.Deinitialize;
 begin
+  SaveToXML;
   inherited;
-  TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
 end;
 
 function TframeSource.GetIdentityName: string;
@@ -113,13 +113,13 @@ end;
 procedure TframeSource.LoadFromXML;
 begin
   inherited;
-
+  TStoreHelper.LoadFromXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
 end;
 
 procedure TframeSource.SaveToXML;
 begin
+  TStoreHelper.SaveToXml(vstTree, GetIdentityName + C_IDENTITY_COLUMNS_NAME);
   inherited;
-
 end;
 
 procedure TframeSource.vstTreeColumnResize(Sender: TVTHeader; Column: TColumnIndex);

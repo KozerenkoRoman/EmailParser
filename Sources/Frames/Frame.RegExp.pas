@@ -485,13 +485,29 @@ begin
 end;
 
 procedure TframeRegExp.cbSetOfTemplatesChange(Sender: TObject);
+
+  procedure UpdateXML;
+  var
+    RegExpCount: Integer;
+  begin
+    RegExpCount := TGeneral.GetRegExpCount;
+    for var item in TGeneral.EmailList.Values do
+      if Assigned(item) then
+        item^.Matches.Count := RegExpCount;
+
+    for var att in TGeneral.AttachmentList.Values do
+      if Assigned(att) then
+        att^.Matches.Count := RegExpCount;
+  end;
+
 begin
   inherited;
-  if (cbSetOfTemplates.ItemIndex > -1) then
+  if Showing and (cbSetOfTemplates.ItemIndex > -1) then
   begin
     TRegExpUtils.RestoreSetOfTemplate(TGeneral.XMLParams, vstTree, TStringObject(cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex]).StringValue);
     SaveToXML;
     TPublishers.UpdateXMLPublisher.UpdateXML;
+    UpdateXML;
   end;
 end;
 

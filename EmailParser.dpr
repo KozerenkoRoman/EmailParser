@@ -2,6 +2,7 @@
 
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}
+//{$DEFINE DETAILED_LOG}
 {$R 'Logo.res' 'Resources\Logo.rc'}
 
 uses

@@ -67,6 +67,11 @@ inherited frameSource: TframeSource
     Margins.Bottom = 5
     Align = alClient
     CustomCheckImages = DMImage.ilCustomCheckImages
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
     Header.AutoSizeIndex = 0
     Header.Height = 17
     Header.MainColumn = -1
@@ -78,6 +83,7 @@ inherited frameSource: TframeSource
     Indent = 0
     LineStyle = lsSolid
     Margin = 2
+    ParentFont = False
     PopupMenu = pmFrame
     TabOrder = 1
     TextMargin = 3
@@ -117,8 +123,8 @@ inherited frameSource: TframeSource
     end
     object aColumnSettings: TAction
       Hint = 'Column Settings'
-      ImageIndex = 63
-      ImageName = 'PageSetup_32x32'
+      ImageIndex = 78
+      ImageName = 'check_box_list'
       OnExecute = aColumnSettingsExecute
     end
     object aExpandAll: TAction

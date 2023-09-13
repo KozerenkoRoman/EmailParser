@@ -11,7 +11,8 @@ uses
 {$ENDREGION}
 
 type
-  TFileSignature = (fsPDF, fsGif, fsPng, fsJpg, fsZip, fsRar, fsOffice, fsCrt, fsKey, fsJp2, fsIco, fsUnknown);
+  TFileSignature = (fsPDF, fsGif, fsPng, fsJpg, fsZip, fsRar, fsOffice, fsCrt, fsKey, fsJp2, fsIco,
+                    fsUTF8, fsUTF7, fsUTF1, fsUTF16be, fsUTF16le, fsUTF32be, fsUTF32le, fsUnknown);
   TSignatureItem = record
     TypeSignature: TFileSignature;
     Signature: TBytes;
@@ -31,7 +32,8 @@ type
 
 const
   //See https://en.wikipedia.org/wiki/List_of_file_signatures
-  ArraySignatures: array [1 .. 12] of TSignatureItem = (
+  //    https://en.wikipedia.org/wiki/Byte_order_mark
+  ArraySignatures: array [1 .. 19] of TSignatureItem = (
     (TypeSignature: fsPDF;     Signature: [$25, $50, $44, $46, $2D]),
     (TypeSignature: fsGif;     Signature: [$47, $49, $46, $38]),
     (TypeSignature: fsPng;     Signature: [$89, $50, $4E, $47, $0D, $0A, $1A, $0A]),
@@ -43,6 +45,13 @@ const
     (TypeSignature: fsOffice;  Signature: [$D0, $CF, $11, $E0, $A1, $B1, $1A, $E1]),
     (TypeSignature: fsCrt;     Signature: [$2D, $2D, $2D, $2D, $2D, $42, $45, $47, $49, $4E, $20, $43]),
     (TypeSignature: fsKey;     Signature: [$2D, $2D, $2D, $2D, $2D, $42, $45, $47, $49, $4E, $20, $50]),
+    (TypeSignature: fsUTF8;    Signature: [$EF, $BB, $BF]),
+    (TypeSignature: fsUTF7;    Signature: [$2B, $2F, $76]),
+    (TypeSignature: fsUTF1;    Signature: [$F7, $64, $4C]),
+    (TypeSignature: fsUTF16be; Signature: [$FE, $FF]),
+    (TypeSignature: fsUTF16le; Signature: [$FF, $FE]),
+    (TypeSignature: fsUTF32be; Signature: [$00, $00, $FE, $FF]),
+    (TypeSignature: fsUTF32le; Signature: [$FF, $FE, $00, $00]),
     (TypeSignature: fsUnknown; Signature: [])
     );
   LENGTH_SIGNATURE = 12;

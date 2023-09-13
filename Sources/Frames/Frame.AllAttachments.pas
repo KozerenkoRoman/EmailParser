@@ -11,21 +11,36 @@ uses
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
   Vcl.WinXPanels, Publishers.Interfaces, Publishers, VirtualTrees.ExportHelper, Global.Resources, Html.Utils,
-  Performer, DaModule;
+  Performer, DaModule, Vcl.WinXCtrls;
 {$ENDREGION}
 
 type
   TframeAllAttachments = class(TframeSource, IProgress, IUpdateXML)
+    aFileBreak           : TAction;
+    aFileSearch          : TAction;
+    aFileSearchShow      : TAction;
     aFilter              : TAction;
     aOpenAttachFile      : TAction;
     aOpenEmail           : TAction;
     aOpenParsedText      : TAction;
+    btnFileBreak         : TToolButton;
+    btnFileSearch        : TToolButton;
     btnFilter            : TToolButton;
     btnOpenAttachFile    : TToolButton;
     btnOpenEmail         : TToolButton;
     btnOpenParsedText    : TToolButton;
     btnSep04             : TToolButton;
+    btnSep05             : TToolButton;
+    cbExt                : TComboBox;
+    dlgFileSearch        : TFileOpenDialog;
+    edtPath              : TButtonedEdit;
+    lblPath              : TLabel;
+    pnlFileSearch        : TPanel;
     SaveDialogAttachment : TSaveDialog;
+    tbFileSearch         : TToolBar;
+    procedure aFileBreakExecute(Sender: TObject);
+    procedure aFileSearchExecute(Sender: TObject);
+    procedure aFileSearchShowExecute(Sender: TObject);
     procedure aFilterExecute(Sender: TObject);
     procedure aOpenAttachFileExecute(Sender: TObject);
     procedure aOpenAttachFileUpdate(Sender: TObject);
@@ -33,11 +48,14 @@ type
     procedure aOpenParsedTextExecute(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
+    procedure edtPathRightButtonClick(Sender: TObject);
     procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
+    procedure aFileSearchUpdate(Sender: TObject);
+    procedure aExpandAllUpdate(Sender: TObject);
   private const
     COL_POSITION     = 0;
     COL_EMAIL_NAME   = 1;
@@ -49,7 +67,9 @@ type
 
     C_IDENTITY_NAME = 'frameAllAttachment';
   private
-    FIsFiltered: Boolean;
+    FIsFiltered : Boolean;
+    FIsLoaded   : Boolean;
+    FPerformer  : TPerformer;
 
       //IUpdateXML
     procedure IUpdateXML.UpdateXML = UpdateColumns;
@@ -67,6 +87,8 @@ type
   protected
     function GetIdentityName: string; override;
     procedure SearchText(const aText: string); override;
+    procedure SaveToXML; override;
+    procedure LoadFromXML; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -97,6 +119,13 @@ begin
   inherited;
 end;
 
+procedure TframeAllAttachments.edtPathRightButtonClick(Sender: TObject);
+begin
+  inherited;
+  if dlgFileSearch.Execute then
+    TButtonedEdit(Sender).Text := dlgFileSearch.FileName;
+end;
+
 function TframeAllAttachments.GetIdentityName: string;
 begin
   Result := C_IDENTITY_NAME;
@@ -105,9 +134,10 @@ end;
 procedure TframeAllAttachments.Initialize;
 begin
   inherited Initialize;
-  LoadFromXML;
   Translate;
   UpdateColumns;
+  tbFileSearch.Color := clBtnFace;
+  FPerformer := TPerformer.GetInstance;
 end;
 
 procedure TframeAllAttachments.Deinitialize;
@@ -121,11 +151,47 @@ begin
   inherited;
   aOpenAttachFile.Hint := TLang.Lang.Translate('OpenFile');
   aOpenEmail.Hint      := TLang.Lang.Translate('OpenEmail');
+  aOpenEmail.Hint      := TLang.Lang.Translate('OpenEmail');
+  aFileSearch.Hint     := TLang.Lang.Translate('StartSearch');
+  aFileBreak.Hint      := TLang.Lang.Translate('Break');
+  lblPath.Caption      := TLang.Lang.Translate('Path');
   vstTree.Header.Columns[COL_SHORT_NAME].Text   := TLang.Lang.Translate('FileName');
   vstTree.Header.Columns[COL_EMAIL_NAME].Text   := TLang.Lang.Translate('Email');
   vstTree.Header.Columns[COL_FILE_NAME].Text    := TLang.Lang.Translate('Path');
   vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
   vstTree.Header.Columns[COL_PARSED_TEXT].Text  := TLang.Lang.Translate('Text');
+end;
+
+procedure TframeAllAttachments.SaveToXML;
+begin
+  TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'AttachmentsPath', edtPath.Text, lblPath.Caption);
+  TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'AttachmentsExt', cbExt.Text);
+  TGeneral.XMLParams.Save;
+  inherited;
+end;
+
+procedure TframeAllAttachments.LoadFromXML;
+begin
+  inherited;
+  edtPath.Text := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'AttachmentsPath', TDirectory.GetCurrentDirectory);
+  cbExt.Text   := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'AttachmentsExt', '*.*');
+end;
+
+procedure TframeAllAttachments.aFileSearchShowExecute(Sender: TObject);
+begin
+  inherited;
+  tbFileSearch.Visible := not tbFileSearch.Visible;
+  if tbFileSearch.Visible then
+    aFileSearchShow.ImageIndex := 80
+  else
+    aFileSearchShow.ImageIndex := 79;
+  Self.Realign;
+end;
+
+procedure TframeAllAttachments.aFileSearchUpdate(Sender: TObject);
+begin
+  inherited;
+  TAction(Sender).Enabled := not FIsLoaded;
 end;
 
 procedure TframeAllAttachments.aFilterExecute(Sender: TObject);
@@ -147,7 +213,7 @@ begin
     try
       while Assigned(Node) do
       begin
-        Data := TGeneral.AttachmentList.GetItem(PAttachData(vstTree.FocusedNode^.GetData).Hash);
+        Data := TGeneral.AttachmentList.GetItem(PAttachData(Node^.GetData).Hash);
         if Assigned(Data) then
         begin
           vstTree.IsVisible[Node] := not FIsFiltered or (Node.ChildCount > 0);
@@ -219,30 +285,23 @@ begin
     if Assigned(Data) then
     begin
       if Data^.ParsedText.IsEmpty then
-        Data^.ParsedText := TDaMod.GetAttachmentAsRawText(Data^.Hash).Replace(#10, '<br>');
-      TInformationDialog.ShowMessage(THtmlUtils.GetHighlightText(Data^.ParsedText, Data^.Matches), GetIdentityName);
+        Data^.ParsedText := TDaMod.GetAttachmentAsRawText(Data^.Hash);
+      TInformationDialog.ShowMessage(THtmlUtils.GetHighlightText(Data^.ParsedText.Replace(#10, '<br>'), Data^.Matches), GetIdentityName);
     end;
   end;
 end;
 
 procedure TframeAllAttachments.aRefreshExecute(Sender: TObject);
-var
-  Performer: TPerformer;
 begin
   inherited;
   if not vstTree.IsEmpty then
   begin
-    Performer := TPerformer.Create;
-    try
-      FIsFiltered := True;
-      aFilter.Checked    := True;
-      aFilter.ImageIndex := 56;
+    FIsFiltered := True;
+    aFilter.Checked := True;
+    aFilter.ImageIndex := 56;
 
-      Performer.Count := vstTree.RootNodeCount;
-      Performer.RefreshAttachment;
-    finally
-      FreeAndNil(Performer);
-    end;
+    FPerformer.Count := vstTree.RootNodeCount;
+    FPerformer.RefreshAttachment;
   end;
 end;
 
@@ -416,6 +475,31 @@ begin
   end;
 end;
 
+procedure TframeAllAttachments.aExpandAllUpdate(Sender: TObject);
+begin
+  inherited;
+  TAction(Sender).Enabled := not FIsLoaded
+end;
+
+procedure TframeAllAttachments.aFileBreakExecute(Sender: TObject);
+begin
+  inherited;
+  FIsLoaded := False;
+  FPerformer.Stop;
+  vstTree.EndUpdate;
+end;
+
+procedure TframeAllAttachments.aFileSearchExecute(Sender: TObject);
+begin
+  inherited;
+  ClearTree;
+  FIsLoaded   := True;
+  FIsFiltered := True;
+  aFilter.Checked    := True;
+  aFilter.ImageIndex := 56;
+  FPerformer.FileSearch(edtPath.Text, cbExt.Text);
+end;
+
 procedure TframeAllAttachments.StartProgress(const aMaxPosition: Integer);
 var
   CurrNode : PVirtualNode;
@@ -431,8 +515,16 @@ begin
 end;
 
 procedure TframeAllAttachments.ClearTree;
+var
+  item : TPair<string, PAttachment>;
 begin
   TGeneral.AttachmentList.ClearParentNodePointer;
+  for item in TGeneral.AttachmentList do
+  begin
+    TGeneral.AttachmentList.ExtractPair(item.Key);
+    Dispose(item.Value);
+  end;
+
   vstTree.BeginUpdate;
   try
     vstTree.Clear;
@@ -545,7 +637,9 @@ end;
 
 procedure TframeAllAttachments.EndProgress;
 begin
+  FIsLoaded := False;
   vstTree.EndUpdate;
+  FPerformer.Clear;
 end;
 
 procedure TframeAllAttachments.Progress;
