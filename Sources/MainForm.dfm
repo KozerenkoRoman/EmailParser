@@ -37,7 +37,8 @@ inherited frmMain: TfrmMain
       ButtonOptions = [boFullSize, boShowCaptions, boCaptionOnlyBorder]
       Categories = <
         item
-          Color = clNone
+          Caption = 'Main'
+          Color = clSilver
           Collapsed = False
           Items = <
             item
@@ -52,6 +53,20 @@ inherited frmMain: TfrmMain
             item
               Action = aSearch
             end>
+          TextColor = clWindowFrame
+        end
+        item
+          Caption = 'Utils'
+          Color = clSilver
+          Collapsed = False
+          Items = <
+            item
+              Action = aSearchDuplicateFiles
+            end
+            item
+              Action = aOpenLogFile
+            end>
+          TextColor = clWindowFrame
         end>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -240,14 +255,17 @@ inherited frmMain: TfrmMain
           Font.Style = []
           ParentFont = False
           TabOrder = 0
+          ExplicitLeft = 2
+          ExplicitTop = 15
+          ExplicitWidth = 908
+          ExplicitHeight = 293
           inherited tbMain: TToolBar
             Width = 908
-            ExplicitWidth = 710
+            ExplicitWidth = 904
           end
           inherited vstTree: TVirtualStringTree
             Width = 908
             Height = 254
-            ExplicitLeft = 2
             ExplicitWidth = 908
             ExplicitHeight = 254
             DefaultText = ''
@@ -371,8 +389,8 @@ inherited frmMain: TfrmMain
           ExplicitWidth = 918
           ExplicitHeight = 541
           inherited edtPathForAttachments: TButtonedEdit
-            Width = 108
-            ExplicitWidth = 108
+            Width = 96
+            ExplicitWidth = 96
             ExplicitHeight = 25
           end
         end
@@ -521,6 +539,51 @@ inherited frmMain: TfrmMain
         end
       end
     end
+    object crdSearchDuplicateFiles: TCard
+      Left = 1
+      Top = 1
+      Width = 918
+      Height = 580
+      Caption = 'crdSearchDuplicateFiles'
+      CardIndex = 4
+      TabOrder = 4
+      inline frameDuplicateFiles: TframeDuplicateFiles
+        Left = 0
+        Top = 0
+        Width = 918
+        Height = 580
+        Align = alClient
+        TabOrder = 0
+        ExplicitWidth = 918
+        ExplicitHeight = 580
+        inherited tbMain: TToolBar
+          Width = 918
+          ExplicitWidth = 918
+        end
+        inherited vstTree: TVirtualStringTree
+          Width = 918
+          Height = 502
+          ExplicitWidth = 918
+          ExplicitHeight = 502
+          DefaultText = ''
+        end
+        inherited tbFileSearch: TToolBar
+          Width = 918
+          ExplicitWidth = 918
+          inherited pnlFileSearch: TPanel
+            ParentColor = True
+            inherited edtPath: TButtonedEdit
+              Height = 21
+              ExplicitHeight = 21
+            end
+            inherited cbExt: TComboBox
+              Height = 21
+              ExplicitHeight = 21
+            end
+          end
+        end
+      end
+    end
   end
   object sbMain: TStatusBar
     Left = 0
@@ -534,7 +597,7 @@ inherited frmMain: TfrmMain
   object alSettings: TActionList
     Images = DMImage.vil32
     Left = 104
-    Top = 216
+    Top = 368
     object aToggleSplitPanel: TAction
       OnExecute = aToggleSplitPanelExecute
     end
@@ -556,20 +619,28 @@ inherited frmMain: TfrmMain
       ImageName = 'Zoom_32x32'
       OnExecute = aSearchExecute
     end
+    object aSearchDuplicateFiles: TAction
+      Caption = 'Search duplicate files'
+      ImageIndex = 81
+      ImageName = 'Zoom100_32x32'
+      OnExecute = aSearchDuplicateFilesExecute
+    end
     object aEditCommonParameters: TAction
       Caption = 'Edit Common Parameters'
       ImageIndex = 63
       ImageName = 'PageSetup_32x32'
       OnExecute = aEditCommonParametersExecute
     end
-    object aSaveCommonSettings: TAction
-      ImageIndex = 10
-      ImageName = 'Save_32x32'
+    object aOpenLogFile: TAction
+      Caption = 'Open Log File'
+      ImageIndex = 70
+      ImageName = 'file_extension_log'
+      OnExecute = aOpenLogFileExecute
     end
   end
   object ApplicationEvents: TApplicationEvents
     OnException = ApplicationEventsException
     Left = 105
-    Top = 282
+    Top = 434
   end
 end

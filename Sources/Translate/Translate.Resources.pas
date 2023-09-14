@@ -40,6 +40,8 @@ resourcestring
   en_Delete               = 'Delete';
   en_DeleteAttachments    = 'Delete attachments after analysis';
   en_DeletePrompt         = 'Delete item "%s"?';
+  en_DeleteSelected       = 'DeleteSelected';
+  en_DeleteSelectedPrompt = '%d items will be removed. Continue?';
   en_DirectoryNotFound    = 'Directory "%s" not found';
   en_Disabled             = 'Disabled';
   en_DuplicateCount       = 'Found %d records in DB / Duplicates';
@@ -67,9 +69,12 @@ resourcestring
   en_GettingStarted       = 'Getting started';
   en_Go                   = 'Go';
   en_GroupIndex           = 'Group index';
+  en_Hash                 = 'Hash';
+  en_Import               = 'Import';
   en_Info                 = 'Info ';
   en_Language             = 'Language';
   en_LoadRecordsFromDB    = 'Load records from DB at startup';
+  en_Main                 = 'Main';
   en_Mask                 = 'Mask';
   en_Matches              = 'Matches';
   en_MessageId            = 'Message Id';
@@ -107,9 +112,11 @@ resourcestring
   en_Script               = 'Script';
   en_Search               = 'Search';
   en_SearchComplete       = 'Search %d files complete';
+  en_SearchDuplicateFiles = 'Search duplicate files';
   en_SelectAll            = 'SelectAll';
   en_Server               = 'Server';
   en_SetOfTemplates       = 'Set of templates';
+  en_Size                 = 'Size';
   en_StartSearch          = 'Start Search';
   en_Subject              = 'Subject';
   en_Successful           = 'Operation is successful';
@@ -118,9 +125,10 @@ resourcestring
   en_Text                 = 'Text';
   en_Time                 = 'Time';
   en_UseRawText           = 'Use raw text';
+  en_Utilities            = 'Utilities';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
-  en_Import               = 'Import';
+  en_RemoveChecks         = 'Remove all checks';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -142,6 +150,8 @@ resourcestring
   uk_Delete               = 'Видалити';
   uk_DeleteAttachments    = 'Видалити вкладення після аналізу';
   uk_DeletePrompt         = 'Видалити запис "%s"?';
+  uk_DeleteSelected       = 'Видалити вибрані';
+  uk_DeleteSelectedPrompt = 'Буде видалено %d записів. Продовжити?';
   uk_DirectoryNotFound    = 'Каталог "%s" не знайдено';
   uk_Disabled             = 'Вимкнено';
   uk_DuplicateCount       = 'Знайдено %d записів в БД / дублікатів файлів';
@@ -169,9 +179,12 @@ resourcestring
   uk_GettingStarted       = 'Початок роботи';
   uk_Go                   = 'Почати';
   uk_GroupIndex           = 'Індекс групи';
+  uk_Hash                 = 'Хеш';
+  uk_Import               = 'Імпорт';
   uk_Info                 = 'Опис ';
   uk_Language             = 'Мова';
   uk_LoadRecordsFromDB    = 'Завантажувати записи з БД при старті';
+  uk_Main                 = 'Основне';
   uk_Mask                 = 'Маска';
   uk_Matches              = 'Співпадіння';
   uk_MessageId            = 'Id листа';
@@ -183,7 +196,7 @@ resourcestring
   uk_Ok                   = 'Ок';
   uk_OpenEmail            = 'Відкрити email';
   uk_OpenFile             = 'Відкрити файл';
-  uk_OpenLogFile          = 'Відкрити файл журналу';
+  uk_OpenLogFile          = 'Відкрити журнал логування';
   uk_Operation            = 'Операція';
   uk_Options              = 'Опції';
   uk_Parameter            = 'Параметр';
@@ -207,11 +220,13 @@ resourcestring
   uk_Save                 = 'Зберегти';
   uk_SaveAs               = 'Зберегти як...';
   uk_Script               = 'Сценарій';
-  uk_Search               = 'Пошук';
-  uk_SearchComplete       = 'Парсинг %d файлів завершено.';
+  uk_Search               = 'Пошук та парсинг';
+  uk_SearchComplete       = 'Пошук %d файлів завершено.';
+  uk_SearchDuplicateFiles = 'Пошук дублікатів файлів';
   uk_SelectAll            = 'Виділити все';
   uk_Server               = 'Сервер';
   uk_SetOfTemplates       = 'Набір шаблонів';
+  uk_Size                 = 'Розмір';
   uk_StartSearch          = 'Почати пошук';
   uk_Subject              = 'Тема';
   uk_Successful           = 'Операція успішна';
@@ -220,12 +235,13 @@ resourcestring
   uk_Text                 = 'Текст';
   uk_Time                 = 'Час';
   uk_UseRawText           = 'Парсити сирий текст';
+  uk_Utilities            = 'Утиліти';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
-  uk_Import               = 'Імпорт';
+  uk_RemoveChecks         = 'Зняти всі позначки';
 
 const
-   ArrayMessages: array[1 .. 98] of TMessageItem = (
+   ArrayMessages: array[1 .. 106] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
@@ -245,15 +261,16 @@ const
     (Key: 'Delete'               ; En: en_Delete;               Uk: uk_Delete),
     (Key: 'DeleteAttachments'    ; En: en_DeleteAttachments;    Uk: uk_DeleteAttachments),
     (Key: 'DeletePrompt'         ; En: en_DeletePrompt;         Uk: uk_DeletePrompt),
+    (Key: 'DeleteSelected'       ; En: en_DeleteSelected;       Uk: uk_DeleteSelected),
+    (Key: 'DeleteSelectedPrompt' ; En: en_DeleteSelectedPrompt; Uk: uk_DeleteSelectedPrompt),
     (Key: 'DirectoryNotFound'    ; En: en_DirectoryNotFound;    Uk: uk_DirectoryNotFound),
     (Key: 'Disabled'             ; En: en_Disabled;             Uk: uk_Disabled),
+    (Key: 'DuplicateCount'       ; En: en_DuplicateCount;       Uk: uk_DuplicateCount),
     (Key: 'Edit'                 ; En: en_Edit;                 Uk: uk_Edit),
     (Key: 'EditCommonParameters' ; En: en_EditCommonParameters; Uk: uk_EditCommonParameters),
     (Key: 'EditRegExpParameters' ; En: en_EditRegExpParameters; Uk: uk_EditRegExpParameters),
-    (Key: 'LoadRecordsFromDB'    ; En: en_LoadRecordsFromDB;    Uk: uk_LoadRecordsFromDB),
-    (Key: 'Emails'               ; En: en_Emails;               Uk: uk_Emails),
     (Key: 'Email'                ; En: en_Email;                Uk: uk_Email),
-    (Key: 'Import'               ; En: en_Import;               Uk: uk_Import),
+    (Key: 'Emails'               ; En: en_Emails;               Uk: uk_Emails),
     (Key: 'Enabled'              ; En: en_Enabled;              Uk: uk_Enabled),
     (Key: 'End'                  ; En: en_End;                  Uk: uk_End),
     (Key: 'Error'                ; En: en_Error;                Uk: uk_Error),
@@ -268,16 +285,19 @@ const
     (Key: 'FileIsDisabled'       ; En: en_FileIsDisabled;       Uk: uk_FileIsDisabled),
     (Key: 'FileName'             ; En: en_FileName;             Uk: uk_FileName),
     (Key: 'FileNotFound'         ; En: en_FileNotFound;         Uk: uk_FileNotFound),
-    (Key: 'DuplicateCount'       ; En: en_DuplicateCount;       Uk: uk_DuplicateCount),
     (Key: 'FoundFiles'           ; En: en_FoundFiles;           Uk: uk_FoundFiles),
     (Key: 'From'                 ; En: en_From;                 Uk: uk_From),
     (Key: 'GettingStarted'       ; En: en_GettingStarted;       Uk: uk_GettingStarted),
     (Key: 'Go'                   ; En: en_Go;                   Uk: uk_Go),
     (Key: 'GroupIndex'           ; En: en_GroupIndex;           Uk: uk_GroupIndex),
+    (Key: 'Hash'                 ; En: en_Hash;                 Uk: uk_Hash),
+    (Key: 'Import'               ; En: en_Import;               Uk: uk_Import),
     (Key: 'Info'                 ; En: en_Info;                 Uk: uk_Info),
     (Key: 'Language'             ; En: en_Language;             Uk: uk_Language),
-    (Key: 'Matches'              ; En: en_Matches;              Uk: uk_Matches),
+    (Key: 'LoadRecordsFromDB'    ; En: en_LoadRecordsFromDB;    Uk: uk_LoadRecordsFromDB),
+    (Key: 'Main'                 ; En: en_Main;                 Uk: uk_Main),
     (Key: 'Mask'                 ; En: en_Mask;                 Uk: uk_Mask),
+    (Key: 'Matches'              ; En: en_Matches;              Uk: uk_Matches),
     (Key: 'MessageId'            ; En: en_MessageId;            Uk: uk_MessageId),
     (Key: 'ModuleName'           ; En: en_ModuleName;           Uk: uk_ModuleName),
     (Key: 'NewNamePrompt'        ; En: en_NewNamePrompt;        Uk: uk_NewNamePrompt),
@@ -306,14 +326,17 @@ const
     (Key: 'ProgramVersion'       ; En: en_ProgramVersion;       Uk: uk_ProgramVersion),
     (Key: 'Refresh'              ; En: en_Refresh;              Uk: uk_Refresh),
     (Key: 'RegExpTemplate'       ; En: en_RegExpTemplate;       Uk: uk_RegExpTemplate),
+    (Key: 'RemoveChecks'         ; En: en_RemoveChecks;         Uk: uk_RemoveChecks),
     (Key: 'Results'              ; En: en_Results;              Uk: uk_Results),
     (Key: 'SampleText'           ; En: en_SampleText;           Uk: uk_SampleText),
     (Key: 'Save'                 ; En: en_Save;                 Uk: uk_Save),
     (Key: 'SaveAs'               ; En: en_SaveAs;               Uk: uk_SaveAs),
     (Key: 'Search'               ; En: en_Search;               Uk: uk_Search),
     (Key: 'SearchComplete'       ; En: en_SearchComplete;       Uk: uk_SearchComplete),
+    (Key: 'SearchDuplicateFiles' ; En: en_SearchDuplicateFiles; Uk: uk_SearchDuplicateFiles),
     (Key: 'SelectAll'            ; En: en_SelectAll;            Uk: uk_SelectAll),
     (Key: 'SetOfTemplates'       ; En: en_SetOfTemplates;       Uk: uk_SetOfTemplates),
+    (Key: 'Size'                 ; En: en_Size;                 Uk: uk_Size),
     (Key: 'StartSearch'          ; En: en_StartSearch;          Uk: uk_StartSearch),
     (Key: 'Subject'              ; En: en_Subject;              Uk: uk_Subject),
     (Key: 'Successful'           ; En: en_Successful;           Uk: uk_Successful),
@@ -322,6 +345,7 @@ const
     (Key: 'Text'                 ; En: en_Text;                 Uk: uk_Text),
     (Key: 'Time'                 ; En: en_Time;                 Uk: uk_Time),
     (Key: 'UseRawText'           ; En: en_UseRawText;           Uk: uk_UseRawText),
+    (Key: 'Utilities'            ; En: en_Utilities;            Uk: uk_Utilities),
     (Key: 'Value'                ; En: en_Value;                Uk: uk_Value),
     (Key: 'WithSubdir'           ; En: en_WithSubdir;           Uk: uk_WithSubdir)
      );

@@ -49,11 +49,6 @@ inherited frameEmails: TframeEmails
       Top = 0
       Action = aOpenEmail
     end
-    object btnOpenLogFile: TToolButton
-      Left = 547
-      Top = 0
-      Action = aOpenLogFile
-    end
   end
   inherited vstTree: TVirtualStringTree
     Width = 752
@@ -170,33 +165,27 @@ inherited frameEmails: TframeEmails
     inherited aRefresh: TAction
       OnExecute = aRefreshExecute
     end
-    object aOpenLogFile: TAction [9]
-      Hint = 'Open Log File'
-      ImageIndex = 70
-      ImageName = 'file_extension_log'
-      OnExecute = aOpenLogFileExecute
-    end
-    object aSearch: TAction [10]
+    object aSearch: TAction [9]
       Hint = 'Start Search'
       ImageIndex = 12
       ImageName = 'lightning'
       OnExecute = aSearchExecute
       OnUpdate = aSearchUpdate
     end
-    object aBreak: TAction [11]
+    object aBreak: TAction [10]
       Hint = 'Break'
       ImageIndex = 13
       ImageName = 'lightning_delete'
       OnExecute = aBreakExecute
     end
-    object aOpenEmail: TAction [12]
+    object aOpenEmail: TAction [11]
       Hint = 'Open Email'
       ImageIndex = 71
       ImageName = 'email'
       OnExecute = aOpenEmailExecute
       OnUpdate = aOpenEmailUpdate
     end
-    object aFilter: TAction [13]
+    object aFilter: TAction [12]
       AutoCheck = True
       ImageIndex = 3
       ImageName = 'MasterFilter_32x32'

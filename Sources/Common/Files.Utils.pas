@@ -101,16 +101,21 @@ var
   HashSHA1   : THashSHA1;
   ReadSize   : Integer;
 begin
-  HashSHA1 := THashSHA1.Create;
-  FileStream := TFile.OpenRead(aFileName);
   try
-    repeat
-      ReadSize := FileStream.Read(Buffer, SizeOf(Buffer));
-      HashSHA1.Update(Buffer, ReadSize);
-    until ReadSize <> SizeOf(Buffer);
-    Result := HashSHA1.HashAsString;
-  finally
-    FreeAndNil(FileStream)
+    FileStream := TFileStream.Create(aFileName, fmOpenRead or fmShareDenyWrite);
+    try
+      HashSHA1 := THashSHA1.Create;
+      repeat
+        ReadSize := FileStream.Read(Buffer, SizeOf(Buffer));
+        HashSHA1.Update(Buffer, ReadSize);
+      until ReadSize <> SizeOf(Buffer);
+      Result := HashSHA1.HashAsString;
+    finally
+      FreeAndNil(FileStream)
+    end;
+  except
+    on E: Exception do
+      Result := '';
   end;
 end;
 

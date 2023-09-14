@@ -1,15 +1,15 @@
 inherited framePathes: TframePathes
-  Width = 710
+  Width = 843
   Height = 461
-  ExplicitWidth = 710
+  ExplicitWidth = 843
   ExplicitHeight = 461
   PixelsPerInch = 144
   inherited tbMain: TToolBar
-    Width = 710
-    ExplicitWidth = 1067
+    Width = 843
+    ExplicitWidth = 710
   end
   inherited vstTree: TVirtualStringTree
-    Width = 710
+    Width = 843
     Height = 422
     Header.MainColumn = 3
     Images = DMImage.vil16
@@ -23,8 +23,8 @@ inherited framePathes: TframePathes
     OnGetText = vstTreeGetText
     OnGetImageIndex = vstTreeGetImageIndex
     OnNewText = vstTreeNewText
-    ExplicitWidth = 1067
-    ExplicitHeight = 615
+    ExplicitWidth = 710
+    ExplicitHeight = 422
     Columns = <
       item
         BiDiMode = bdLeftToRight

@@ -94,6 +94,16 @@ type
     Matches : TStringArray;
   end;
 
+  PFileData = ^TFileData;
+  TFileData = record
+    Hash      : string;
+    FileName  : string;
+    ShortName : string;
+    Date      : TDateTime;
+    Size      : Integer;
+    IsDeleted : Boolean;
+  end;
+
   TEmailList = class(TObjectDictionary<string, PResultData>)
   public
     constructor Create;

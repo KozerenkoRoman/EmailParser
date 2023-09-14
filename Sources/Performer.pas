@@ -17,12 +17,13 @@ type
   TPerformer = class
   private
     FAttachmentDir    : TAttachmentDir;
+    FCount            : Integer;
     FCriticalSection  : TCriticalSection;
     FDeleteAttachment : Boolean;
-    FFromDBCount      : Integer;
-    FCount            : Integer;
     FFileExt          : string;
+    FFromDBCount      : Integer;
     FIsBreak          : Boolean;
+    FIsQuiet          : Boolean;
     FPathList         : TParamPathArray;
     FRegExpList       : TRegExpArray;
     FSorterPathList   : TSorterPathArray;
@@ -53,8 +54,10 @@ type
 
     constructor Create;
     destructor Destroy; override;
-    property FromDBCount: Integer read FFromDBCount write FCount;
-    property Count      : Integer read FCount       write FCount;
+
+    property Count       : Integer read FCount       write FCount;
+    property FromDBCount : Integer read FFromDBCount write FFromDBCount;
+    property IsQuiet     : Boolean read FIsQuiet     write FIsQuiet;
 
     class function GetInstance: TPerformer;
   end;
@@ -95,7 +98,7 @@ begin
   FRegExpList       := TGeneral.GetRegExpParametersList;
   FPathList         := TGeneral.GetPathList;
   FSorterPathList   := TGeneral.GetSorterPathList;
-  FUserDefinedDir   := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachment', C_ATTACHMENTS_SUB_DIR);
+  FUserDefinedDir   := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
   FAttachmentDir    := FAttachmentDir.FromString(FUserDefinedDir);
   FDeleteAttachment := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
   FFileExt          := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');

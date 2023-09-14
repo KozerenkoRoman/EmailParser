@@ -38,9 +38,11 @@ type
     pnlFileSearch        : TPanel;
     SaveDialogAttachment : TSaveDialog;
     tbFileSearch         : TToolBar;
+    procedure aExpandAllUpdate(Sender: TObject);
     procedure aFileBreakExecute(Sender: TObject);
     procedure aFileSearchExecute(Sender: TObject);
     procedure aFileSearchShowExecute(Sender: TObject);
+    procedure aFileSearchUpdate(Sender: TObject);
     procedure aFilterExecute(Sender: TObject);
     procedure aOpenAttachFileExecute(Sender: TObject);
     procedure aOpenAttachFileUpdate(Sender: TObject);
@@ -54,8 +56,6 @@ type
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
-    procedure aFileSearchUpdate(Sender: TObject);
-    procedure aExpandAllUpdate(Sender: TObject);
   private const
     COL_POSITION     = 0;
     COL_EMAIL_NAME   = 1;
@@ -300,6 +300,7 @@ begin
     aFilter.Checked := True;
     aFilter.ImageIndex := 56;
 
+    FPerformer.IsQuiet := True;
     FPerformer.Count := vstTree.RootNodeCount;
     FPerformer.RefreshAttachment;
   end;
@@ -497,6 +498,7 @@ begin
   FIsFiltered := True;
   aFilter.Checked    := True;
   aFilter.ImageIndex := 56;
+  FPerformer.IsQuiet := True;
   FPerformer.FileSearch(edtPath.Text, cbExt.Text);
 end;
 
@@ -639,6 +641,7 @@ procedure TframeAllAttachments.EndProgress;
 begin
   FIsLoaded := False;
   vstTree.EndUpdate;
+  FPerformer.IsQuiet := False;
   FPerformer.Clear;
 end;
 

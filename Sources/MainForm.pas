@@ -10,51 +10,57 @@ uses
   Html.Lib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExp, Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.Settings, Global.Types, Vcl.Samples.Gauges,
-  Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule, Frame.Sorter;
+  Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule, Frame.Sorter, Frame.DuplicateFiles,
+  Files.Utils;
 {$ENDREGION}
 
 type
   TfrmMain = class(TCommonForm, IProgress, ITranslate)
-    aEditCommonParameters : TAction;
-    aEditRegExpParameters : TAction;
-    alSettings            : TActionList;
-    aPathsFindFiles       : TAction;
-    ApplicationEvents     : TApplicationEvents;
-    aSaveCommonSettings   : TAction;
-    aSearch               : TAction;
-    aToggleSplitPanel     : TAction;
-    catMenuItems          : TCategoryButtons;
-    crdCommonParams       : TCard;
-    crdPathsToFindScripts : TCard;
-    crdRegExpParameters   : TCard;
-    crdResultView         : TCard;
-    framePathes           : TframePathes;
-    frameRegExp           : TframeRegExp;
-    frameResultView       : TframeResultView;
-    frameSettings         : TframeSettings;
-    frameSorter           : TframeSorter;
-    gbPathes              : TGroupBox;
-    gbSorter              : TGroupBox;
-    imgMenu               : TImage;
-    lblTitle              : TLabel;
-    pnlCard               : TCardPanel;
-    pnlLeft               : TPanel;
-    pnlSrchBox            : TPanel;
-    pnlTop                : TPanel;
-    sbMain                : TStatusBar;
-    splPath               : TSplitter;
-    splView               : TSplitView;
-    srchBox               : TSearchBox;
+    aEditCommonParameters   : TAction;
+    aEditRegExpParameters   : TAction;
+    alSettings              : TActionList;
+    aPathsFindFiles         : TAction;
+    ApplicationEvents       : TApplicationEvents;
+    aSearch                 : TAction;
+    aSearchDuplicateFiles   : TAction;
+    aToggleSplitPanel       : TAction;
+    catMenuItems            : TCategoryButtons;
+    crdCommonParams         : TCard;
+    crdPathsToFindScripts   : TCard;
+    crdRegExpParameters     : TCard;
+    crdResultView           : TCard;
+    crdSearchDuplicateFiles : TCard;
+    frameDuplicateFiles     : TframeDuplicateFiles;
+    framePathes             : TframePathes;
+    frameRegExp             : TframeRegExp;
+    frameResultView         : TframeResultView;
+    frameSettings           : TframeSettings;
+    frameSorter             : TframeSorter;
+    gbPathes                : TGroupBox;
+    gbSorter                : TGroupBox;
+    imgMenu                 : TImage;
+    lblTitle                : TLabel;
+    pnlCard                 : TCardPanel;
+    pnlLeft                 : TPanel;
+    pnlSrchBox              : TPanel;
+    pnlTop                  : TPanel;
+    sbMain                  : TStatusBar;
+    splPath                 : TSplitter;
+    splView                 : TSplitView;
+    srchBox                 : TSearchBox;
+    aOpenLogFile: TAction;
     procedure aEditCommonParametersExecute(Sender: TObject);
     procedure aEditRegExpParametersExecute(Sender: TObject);
     procedure aPathsFindFilesExecute(Sender: TObject);
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
+    procedure aSearchDuplicateFilesExecute(Sender: TObject);
     procedure aSearchExecute(Sender: TObject);
     procedure aToggleSplitPanelExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure srchBoxInvokeSearch(Sender: TObject);
+    procedure aOpenLogFileExecute(Sender: TObject);
   private const
     C_IDENTITY_NAME = 'MainForm';
   private
@@ -115,6 +121,7 @@ begin
   frameResultView.Initialize;
   frameSorter.Initialize;
   frameSettings.Initialize;
+  frameDuplicateFiles.Initialize;
 
   pnlTop.Color                := C_TOP_COLOR;
   catMenuItems.HotButtonColor := C_TOP_COLOR;
@@ -130,6 +137,7 @@ begin
   frameSorter.Deinitialize;
   frameResultView.Deinitialize;
   frameSettings.Deinitialize;
+  frameDuplicateFiles.Deinitialize;
   DaMod.Deinitialize;
   LogWriter.Active := False;
 end;
@@ -139,15 +147,21 @@ begin
   inherited;
   aEditCommonParameters.Caption := TLang.Lang.Translate('EditCommonParameters');
   aEditRegExpParameters.Caption := TLang.Lang.Translate('EditRegExpParameters');
+  aOpenLogFile.Caption          := TLang.Lang.Translate('OpenLogFile');
   aPathsFindFiles.Caption       := TLang.Lang.Translate('PathsToFindSaveFiles');
-
   aSearch.Caption               := TLang.Lang.Translate('Search');
-  crdCommonParams.Caption       := TLang.Lang.Translate('EditCommonParameters');
-  crdPathsToFindScripts.Caption := TLang.Lang.Translate('PathsToFindFiles');
-  crdRegExpParameters.Caption   := TLang.Lang.Translate('EditRegExpParameters');
-  crdResultView.Caption         := TLang.Lang.Translate('Search');
-  gbPathes.Caption              := TLang.Lang.Translate('PathsToFindFiles');
-  gbSorter.Caption              := TLang.Lang.Translate('PathsToSaveFiles');
+  aSearchDuplicateFiles.Caption := TLang.Lang.Translate('SearchDuplicateFiles');
+
+  crdCommonParams.Caption         := TLang.Lang.Translate('EditCommonParameters');
+  crdPathsToFindScripts.Caption   := TLang.Lang.Translate('PathsToFindFiles');
+  crdRegExpParameters.Caption     := TLang.Lang.Translate('EditRegExpParameters');
+  crdResultView.Caption           := TLang.Lang.Translate('Search');
+  crdSearchDuplicateFiles.Caption := TLang.Lang.Translate('SearchDuplicateFiles');
+  gbPathes.Caption                := TLang.Lang.Translate('PathsToFindFiles');
+  gbSorter.Caption                := TLang.Lang.Translate('PathsToSaveFiles');
+
+  catMenuItems.Categories[0].Caption := TLang.Lang.Translate('Main');
+  catMenuItems.Categories[1].Caption := TLang.Lang.Translate('Utilities');
 
   lblTitle.Caption := pnlCard.ActiveCard.Caption;
 end;
@@ -203,11 +217,25 @@ begin
   pnlCard.ActiveCard := crdRegExpParameters;
 end;
 
+procedure TfrmMain.aOpenLogFileExecute(Sender: TObject);
+begin
+  inherited;
+  if FileExists(LogWriter.LogFileName) then
+    TFileUtils.ShellOpen(LogWriter.LogFileName);
+end;
+
 procedure TfrmMain.aPathsFindFilesExecute(Sender: TObject);
 begin
   inherited;
   lblTitle.Caption := TAction(Sender).Caption;
   pnlCard.ActiveCard := crdPathsToFindScripts;
+end;
+
+procedure TfrmMain.aSearchDuplicateFilesExecute(Sender: TObject);
+begin
+  inherited;
+  lblTitle.Caption := TAction(Sender).Caption;
+  pnlCard.ActiveCard := crdSearchDuplicateFiles;
 end;
 
 procedure TfrmMain.ApplicationEventsException(Sender: TObject; E: Exception);

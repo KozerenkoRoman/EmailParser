@@ -19,12 +19,10 @@ type
     aBreak          : TAction;
     aFilter         : TAction;
     aOpenEmail      : TAction;
-    aOpenLogFile    : TAction;
     aSearch         : TAction;
     btnBreak        : TToolButton;
     btnFilter       : TToolButton;
     btnOpenEmail    : TToolButton;
-    btnOpenLogFile  : TToolButton;
     btnSearch       : TToolButton;
     btnSep04        : TToolButton;
     btnSep05        : TToolButton;
@@ -34,7 +32,6 @@ type
     procedure aFilterExecute(Sender: TObject);
     procedure aOpenEmailExecute(Sender: TObject);
     procedure aOpenEmailUpdate(Sender: TObject);
-    procedure aOpenLogFileExecute(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
     procedure aSearchExecute(Sender: TObject);
@@ -147,7 +144,6 @@ begin
 
   aBreak.Hint       := TLang.Lang.Translate('Break');
   aOpenEmail.Hint   := TLang.Lang.Translate('OpenEmail');
-  aOpenLogFile.Hint := TLang.Lang.Translate('OpenLogFile');
   aSearch.Hint      := TLang.Lang.Translate('StartSearch');
 end;
 
@@ -423,13 +419,6 @@ begin
   TAction(Sender).Enabled := not vstTree.IsEmpty and Assigned(vstTree.FocusedNode);
 end;
 
-procedure TframeEmails.aOpenLogFileExecute(Sender: TObject);
-begin
-  inherited;
-  if FileExists(LogWriter.LogFileName) then
-    TFileUtils.ShellOpen(LogWriter.LogFileName);
-end;
-
 procedure TframeEmails.aRefreshExecute(Sender: TObject);
 begin
   inherited;
@@ -587,17 +576,20 @@ var
 begin
   vstTree.BeginUpdate;
   TPublishers.EmailPublisher.FocusChanged(nil);
-  if (aMaxPosition >= 0) then
-    TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('FoundFiles'), [aMaxPosition]))
-  else
-    TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('FoundFiles'), [vstTree.RootNode.ChildCount]));
-
   CurrNode := vstTree.RootNode.FirstChild;
   while Assigned(CurrNode) do
   begin
     if (CurrNode.ChildCount > 0) then
       vstTree.DeleteChildren(CurrNode);
     CurrNode := CurrNode.NextSibling;
+  end;
+
+  if not FPerformer.IsQuiet then
+  begin
+    if (aMaxPosition > 0) then
+      TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('FoundFiles'), [aMaxPosition]))
+    else
+      TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('FoundFiles'), [vstTree.RootNode.ChildCount]));
   end;
 end;
 
@@ -606,13 +598,16 @@ begin
   FIsLoaded := False;
   vstTree.EndUpdate;
 
-  if (FPerformer.FromDBCount > 0) then
-    TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('SearchComplete') + sLineBreak +
-                                   TLang.Lang.Translate('DuplicateCount'),
-                                   [FPerformer.Count, FPerformer.FromDBCount]))
-  else
-    TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('SearchComplete'),
-                                   [FPerformer.Count]));
+   if not FPerformer.IsQuiet then
+  begin
+    if (FPerformer.FromDBCount > 0) then
+      TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('SearchComplete') + sLineBreak +
+                                     TLang.Lang.Translate('DuplicateCount'),
+                                     [FPerformer.Count, FPerformer.FromDBCount]))
+    else
+      TMessageDialog.ShowInfo(Format(TLang.Lang.Translate('SearchComplete'),
+                                     [FPerformer.Count]));
+  end;
   FPerformer.Clear;
 end;
 
