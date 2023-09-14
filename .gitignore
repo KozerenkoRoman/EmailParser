@@ -55,3 +55,16 @@
 /Translate/__recovery/
 /Translate/__history/
 /dcu/
+<<<<<<< HEAD
+=======
+/CleverInternetSuite/__history/
+/Sources/Frames/__history/
+/Sources/Frames/__recovery/
+/Sources/Translate/__history/
+/Sources/CleverInternetSuite/__history/
+/Sources/Common/__history/
+/Sources/dEXIF/__history/
+/Sources/Common/__recovery/
+/Sources/HTMLParse/__history/
+/binn/
+>>>>>>> Development

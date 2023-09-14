@@ -22,12 +22,12 @@ object frmSplashScreen: TfrmSplashScreen
   end
   object lblVersion: TLabel
     Left = 8
-    Top = 395
+    Top = 355
     Width = 48
     Height = 16
     Caption = 'Version:'
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
+    Font.Color = clWindowText
     Font.Height = -13
     Font.Name = 'Tahoma'
     Font.Style = []
@@ -35,15 +35,31 @@ object frmSplashScreen: TfrmSplashScreen
   end
   object lblInfo: TLabel
     Left = 8
-    Top = 416
+    Top = 374
     Width = 27
     Height = 16
     Caption = 'Info:'
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
+    Font.Color = clWindowText
     Font.Height = -13
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
+  end
+  object lblCitation: TLabel
+    AlignWithMargins = True
+    Left = 8
+    Top = 393
+    Width = 638
+    Height = 52
+    AutoSize = False
+    Caption = 'Citation'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    WordWrap = True
   end
 end

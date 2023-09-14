@@ -6,14 +6,15 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Imaging.pngimage,
-  XmlFiles, System.IOUtils, System.Threading, Utils.VerInfo;
+  XmlFiles, System.IOUtils, System.Threading, Utils.VerInfo, SplashScreen.Resources;
 {$ENDREGION}
 
 type
   TfrmSplashScreen = class(TForm)
-    imgLogo: TImage;
-    lblVersion: TLabel;
-    lblInfo: TLabel;
+    imgLogo    : TImage;
+    lblInfo    : TLabel;
+    lblVersion : TLabel;
+    lblCitation: TLabel;
   public
     class procedure ShowSplashScreen;
     class procedure HideSplashScreen;
@@ -33,7 +34,9 @@ class procedure TfrmSplashScreen.ShowSplashScreen;
 var
   pngLogo : TPngImage;
   RStream : TResourceStream;
+  MessageItem : TSplashMessageItem;
 begin
+  Randomize;
   frmSplashScreen := TfrmSplashScreen.Create(Application);
   RStream := TResourceStream.Create(HInstance, 'IMG_LOGO', RT_RCDATA);
   try
@@ -48,9 +51,10 @@ begin
     RStream.Free;
   end;
 
-  frmSplashScreen.lblInfo.Font.Color    := clWebDarkSlateBlue;
-  frmSplashScreen.lblVersion.Font.Color := clWebDarkSlateBlue;
-  frmSplashScreen.lblVersion.Caption    := 'Ver: ' + TVersionInfo.GetAppVersion;
+  MessageItem := ArraySplashMessages[Random(48) + 1];
+  frmSplashScreen.lblVersion.Caption  := 'Ver: ' + TVersionInfo.GetAppVersion;
+  frmSplashScreen.lblInfo.Caption     := 'Йде завантаження записів з бази даних. Ось що про це казав ' + MessageItem.Autor + ':';
+  frmSplashScreen.lblCitation.Caption := MessageItem.Text;
   frmSplashScreen.Show;
   frmSplashScreen.BringToFront;
   frmSplashScreen.Refresh;
