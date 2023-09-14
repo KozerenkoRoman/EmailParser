@@ -382,7 +382,7 @@ end;
 
 class function TFileWriter.GetLogFolder: string;
 begin
-  Result := TPath.Combine(TPath.GetDirectoryName(Application.ExeName), C_FOLDER_LOG);
+  Result := TPath.Combine(TDirectory.GetCurrentDirectory, C_FOLDER_LOG);
   if (ExtractFileDrive(Result) <> '') and (not TDirectory.Exists(Result)) then
     try
       ForceDirectories(Result);

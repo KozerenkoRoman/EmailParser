@@ -74,17 +74,17 @@ var
   obj: IUpdateXML;
 begin
   if not Application.Terminated then
-    for var i := 0 to Self.Count - 1 do
-    begin
-      Item := Self.Items[i];
-      if Assigned(Item) then
-        if Supports(Item, IUpdateXML, obj) then
-          TThread.Queue(nil,
-            procedure
-            begin
+    TThread.Queue(nil,
+      procedure
+      begin
+        for var i := 0 to Self.Count - 1 do
+        begin
+          Item := Self.Items[i];
+          if Assigned(Item) then
+            if Supports(Item, IUpdateXML, obj) then
               obj.UpdateXML;
-            end);
-    end;
+        end;
+      end);
 end;
 
 { TProgressPublisher }

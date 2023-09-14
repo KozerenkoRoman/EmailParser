@@ -5,7 +5,7 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
   ExplicitHeight = 424
   inherited tbMain: TToolBar
     Width = 798
-    ExplicitWidth = 894
+    ExplicitWidth = 798
     inherited btnAdd: TToolButton
       Action = nil
       Visible = False
@@ -27,8 +27,8 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
     OnGetText = vstTreeGetText
     OnPaintText = vstTreePaintText
     ExplicitTop = 78
-    ExplicitWidth = 894
-    ExplicitHeight = 491
+    ExplicitWidth = 798
+    ExplicitHeight = 346
     Columns = <
       item
         CaptionAlignment = taCenter
@@ -83,7 +83,6 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
     Caption = 'tbFileSearch'
     Images = DMImage.vil32
     TabOrder = 2
-    ExplicitWidth = 894
     object pnlFileSearch: TPanel
       Left = 0
       Top = 0

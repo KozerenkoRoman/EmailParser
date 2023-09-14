@@ -117,12 +117,6 @@ inherited frameRegExp: TframeRegExp
         Alignment = taRightJustify
         AutoSize = False
         Caption = 'Set of templates'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
         Transparent = False
         Layout = tlCenter
       end

@@ -381,7 +381,7 @@ begin
     for var attHash in aData^.Attachments do
       if TGeneral.AttachmentList.TryGetValue(attHash, Attachment) and
          TFile.Exists(Attachment.FileName) and
-         MatchesMask(Attachment.FileName, item.Mask) then
+         TPath.MatchesPattern(Attachment.FileName, item.Mask, False) then
           try
             NewFileName := TPath.Combine(item.Path, TPath.GetFileName(Attachment.FileName));
             if not TFile.Exists(NewFileName) then
@@ -426,6 +426,7 @@ var
   Data        : PResultData;
   Hash        : string;
   MailMessage : TclMailMessage;
+  Tasks       : array of ITask;
 begin
   Hash := TFileUtils.GetHash(aFileName);
   if not TGeneral.EmailList.ContainsKey(Hash) then
@@ -469,39 +470,37 @@ begin
           LogWriter.Write(ddError, Self, 'ParseFile', E.Message + sLineBreak + Data^.FileName);
       end;
 
+      SetLength(Tasks, 2);
+      Tasks[0] := TTask.Create(
+        procedure()
+        begin
+          TThread.NameThreadForDebugging('TPerformer.ParserHTML');
+          if not Data^.Body.IsEmpty then
+            try
+              Data^.ParsedText := THtmlDom.GetText(Data^.Body);
+            except
+              on E: Exception do
+                LogWriter.Write(ddError, Self,
+                                         'TPerformer.ParserHTML',
+                                         E.Message + sLineBreak +
+                                         'Email name - ' + Data^.FileName);
+            end;
+        end).Start;
+
+      Tasks[1] := TTask.Create(
+        procedure()
+        begin
+          TThread.NameThreadForDebugging('TPerformer.DoParseAttachmentFiles');
+          DoParseAttachmentFiles(Data);
+        end).Start;
+
+      TTask.WaitForAll(Tasks);
+{$IFDEF DETAILED_LOG}
+      LogWriter.Write(ddText, Self, 'ParseFile', 'Email file name - ' + Data^.FileName);
+{$ENDIF DETAILED_LOG}
       TTask.Create(
         procedure()
-        var
-          Tasks: array of ITask;
         begin
-          SetLength(Tasks, 2);
-          Tasks[0] := TTask.Create(
-            procedure()
-            begin
-              TThread.NameThreadForDebugging('TPerformer.ParserHTML');
-              if not Data^.Body.IsEmpty then
-                try
-                  Data^.ParsedText := THtmlDom.GetText(Data^.Body);
-                except
-                  on E: Exception do
-                    LogWriter.Write(ddError, Self,
-                                             'TPerformer.ParserHTML',
-                                             E.Message + sLineBreak +
-                                             'Email name - ' + Data^.FileName);
-                end;
-            end).Start;
-
-          Tasks[1] := TTask.Create(
-            procedure()
-            begin
-              TThread.NameThreadForDebugging('TPerformer.DoParseAttachmentFiles');
-              DoParseAttachmentFiles(Data);
-            end).Start;
-
-          TTask.WaitForAll(Tasks);
-{$IFDEF DETAILED_LOG}
-          LogWriter.Write(ddText, Self, 'ParseFile', 'Email file name - ' + Data^.FileName);
-{$ENDIF DETAILED_LOG}
           for var i := 0 to FRegExpList.Count - 1 do
             if FRegExpList[i].UseRawText then
               Data^.Matches[i] := GetRegExpCollection(Data^.Subject + sLineBreak + Data^.Body, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex)
@@ -934,7 +933,7 @@ var
 begin
   ZipFile := TZipFile.Create;
   try
-    Path := TPath.Combine(GetAttchmentPath(aData.FileName), TPath.GetFileNameWithoutExtension(aData.FileName));
+    Path := TPath.Combine(GetAttchmentPath(aData.FileName), TPath.GetFileNameWithoutExtension(aFileName));
     if not TDirectory.Exists(Path) then
       try
         TDirectory.CreateDirectory(Path);

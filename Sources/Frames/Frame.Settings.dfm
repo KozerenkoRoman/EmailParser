@@ -6,7 +6,7 @@ inherited frameSettings: TframeSettings
   PixelsPerInch = 144
   inherited tbMain: TToolBar
     Width = 784
-    ExplicitWidth = 600
+    ExplicitWidth = 784
   end
   object grdCommonParams: TGridPanel [1]
     Left = 0
@@ -15,7 +15,6 @@ inherited frameSettings: TframeSettings
     Height = 317
     Align = alClient
     BevelOuter = bvNone
-    Color = clWindow
     ColumnCollection = <
       item
         SizeStyle = ssAbsolute
@@ -75,13 +74,7 @@ inherited frameSettings: TframeSettings
         Control = cbLoadRecordsFromDB
         Row = 4
       end>
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentBackground = False
-    ParentFont = False
+    ParentColor = True
     RowCollection = <
       item
         SizeStyle = ssAbsolute
@@ -115,8 +108,6 @@ inherited frameSettings: TframeSettings
         Value = 100.000000000000000000
       end>
     TabOrder = 1
-    ExplicitTop = 45
-    ExplicitWidth = 763
     object lblLanguage: TLabel
       AlignWithMargins = True
       Left = 3
@@ -127,9 +118,9 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'Language'
       Layout = tlCenter
-      ExplicitLeft = 260
-      ExplicitWidth = 57
-      ExplicitHeight = 17
+      ExplicitLeft = 265
+      ExplicitWidth = 52
+      ExplicitHeight = 15
     end
     object lblExtensions: TLabel
       AlignWithMargins = True
@@ -141,9 +132,9 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'File extensions to search'
       Layout = tlCenter
-      ExplicitLeft = 175
-      ExplicitWidth = 142
-      ExplicitHeight = 17
+      ExplicitLeft = 189
+      ExplicitWidth = 128
+      ExplicitHeight = 15
     end
     object lblPathForAttachments: TLabel
       AlignWithMargins = True
@@ -155,9 +146,9 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'Paths for saving attachments'
       Layout = tlCenter
-      ExplicitLeft = 150
-      ExplicitWidth = 167
-      ExplicitHeight = 17
+      ExplicitLeft = 164
+      ExplicitWidth = 153
+      ExplicitHeight = 15
     end
     object lblDeleteAttachments: TLabel
       AlignWithMargins = True
@@ -169,16 +160,16 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'Delete attachments after analysis'
       Layout = tlCenter
-      ExplicitLeft = 126
-      ExplicitWidth = 191
-      ExplicitHeight = 17
+      ExplicitLeft = 144
+      ExplicitWidth = 173
+      ExplicitHeight = 15
     end
     object cbLanguage: TComboBox
       AlignWithMargins = True
       Left = 330
       Top = 3
       Width = 140
-      Height = 25
+      Height = 23
       Margins.Left = 10
       Align = alLeft
       Style = csDropDownList
@@ -194,7 +185,7 @@ inherited frameSettings: TframeSettings
       Align = alLeft
       TabOrder = 1
       Text = '*.eml'
-      ExplicitHeight = 25
+      ExplicitHeight = 23
     end
     object edtPathForAttachments: TButtonedEdit
       AlignWithMargins = True
@@ -213,6 +204,7 @@ inherited frameSettings: TframeSettings
       TabOrder = 2
       Text = '#Attachments'
       OnRightButtonClick = aPathForAttachmentsExecute
+      ExplicitHeight = 23
     end
     object cbDeleteAttachments: TCheckBox
       AlignWithMargins = True
@@ -234,9 +226,9 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'Load records from the database at startup'
       Layout = tlCenter
-      ExplicitLeft = 67
-      ExplicitWidth = 250
-      ExplicitHeight = 17
+      ExplicitLeft = 97
+      ExplicitWidth = 220
+      ExplicitHeight = 15
     end
     object cbLoadRecordsFromDB: TCheckBox
       AlignWithMargins = True

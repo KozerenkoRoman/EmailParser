@@ -49,6 +49,7 @@ type
 
     C_IDENTITY_NAME = 'frameDuplicateFiles';
     procedure FileListClear;
+    procedure AddNode(aData: TFileData);
   private
     FBreak : Boolean;
     FFileList: TObjectDictionary<string, TList<PVirtualNode>>;
@@ -240,15 +241,59 @@ begin
   FBreak := True;
 end;
 
+procedure TframeDuplicateFiles.AddNode(aData: TFileData);
+var
+  Data: PFileData;
+  Node: PVirtualNode;
+  NodeList: TList<PVirtualNode>;
+  ParentNode: PVirtualNode;
+begin
+  if aData.Hash.IsEmpty or not TFile.Exists(aData.FileName) then
+    Exit;
+
+  System.TMonitor.Enter(Self);
+  try
+    if FBreak then
+      TTask.CurrentTask.Cancel;
+  finally
+    System.TMonitor.Exit(Self);
+  end;
+
+  if not FFileList.ContainsKey(aData.Hash) then
+  begin
+    NodeList := TList<PVirtualNode>.Create;
+    FFileList.Add(aData.Hash, NodeList);
+    ParentNode := vstTree.RootNode;
+  end
+  else
+  begin
+    NodeList := FFileList.Items[aData.Hash];
+    ParentNode := NodeList.Items[0];
+  end;
+  Node := vstTree.AddChild(ParentNode);
+  Data := Node^.GetData;
+  Data^.Hash      := aData.Hash;
+  Data^.Date      := aData.Date;
+  Data^.Size      := aData.Size;
+  Data^.FileName  := aData.FileName;
+  Data^.ShortName := aData.ShortName;
+  Data^.IsDeleted := False;
+
+  vstTree.CheckType[Node] := ctCheckBox;
+  vstTree.IsVisible[Node] := ParentNode <> vstTree.RootNode;
+  if (ParentNode <> vstTree.RootNode) then
+  begin
+    vstTree.IsVisible[ParentNode] := (ParentNode.ChildCount > 0);
+    Node.CheckState := TCheckState.csCheckedNormal;
+  end;
+  NodeList.Add(Node);
+  TPublishers.ProgressPublisher.Progress;
+end;
+
 procedure TframeDuplicateFiles.aFileSearchExecute(Sender: TObject);
 var
-  Data       : PFileData;
-  FileList   : TStringDynArray;
-  Node       : PVirtualNode;
-  NodeList   : TList<PVirtualNode>;
-  ParentNode : PVirtualNode;
-  HashList   : TArrayRecord<TFileData>;
-  Performer  : TPerformer;
+  FileList  : TStringDynArray;
+  Performer : TPerformer;
 begin
   inherited;
   Performer := TPerformer.GetInstance;
@@ -262,72 +307,41 @@ begin
 
     FileList := TDirectory.GetFiles(edtPath.Text, cbExt.Text, TSearchOption.soAllDirectories);
     TPublishers.ProgressPublisher.StartProgress(Length(FileList));
-    HashList.Count := Length(FileList);
-    LogWriter.Write(ddText, Self, 'Length file list - ' + HashList.Count.ToString);
+    LogWriter.Write(ddText, Self, 'Length file list - ' + Length(FileList).ToString);
 
     TParallel.For(Low(FileList), High(FileList),
       procedure(i: Int64; LoopState: TParallel.TLoopState)
       var
         Data: TFileData;
       begin
-        if TFile.Exists(FileList[i]) then
+        TTask.CurrentTask.CheckCanceled;
+        System.TMonitor.Enter(Self);
         try
-          Data.Hash      := TFileUtils.GetHash(FileList[i]);
-          Data.Date      := TFile.GetCreationTime(FileList[i]);
-          Data.Size      := TFile.GetSize(FileList[i]);
-          Data.FileName  := FileList[i];
-          Data.ShortName := TPath.GetFileName(FileList[i]);
-          HashList[i] := Data;
-        except
-          on E: Exception do
-            LogWriter.Write(ddError, Self, E.Message);
+          if FBreak then
+            LoopState.Break;
+        finally
+          System.TMonitor.Exit(Self);
         end;
+        if TFile.Exists(FileList[i]) then
+          try
+            Data.Hash      := TFileUtils.GetHash(FileList[i]);
+            Data.Date      := TFile.GetCreationTime(FileList[i]);
+            Data.Size      := TFile.GetSize(FileList[i]);
+            Data.FileName  := FileList[i];
+            Data.ShortName := TPath.GetFileName(FileList[i]);
+            TThread.Queue(nil,
+              procedure
+              begin
+                AddNode(Data);
+              end);
+          except
+            on E: Exception do
+              LogWriter.Write(ddError, Self, E.Message);
+          end;
       end);
 
-    for var i := 0 to HashList.Count - 1 do
-    begin
-      if HashList[i].Hash.IsEmpty or not TFile.Exists(HashList[i].FileName) then
-        Break;
-
-      System.TMonitor.Enter(Self);
-      try
-        if FBreak then
-          Exit;
-      finally
-        System.TMonitor.Exit(Self);
-      end;
-
-      if not FFileList.ContainsKey(HashList[i].Hash) then
-      begin
-        NodeList := TList<PVirtualNode>.Create;
-        FFileList.Add(HashList[i].Hash, NodeList);
-        ParentNode := vstTree.RootNode;
-      end
-      else
-      begin
-        NodeList := FFileList.Items[HashList[i].Hash];
-        ParentNode := NodeList.Items[0];
-      end;
-      Node := vstTree.AddChild(ParentNode);
-      Data := Node^.GetData;
-      Data^.Hash      := HashList[i].Hash;
-      Data^.Date      := HashList[i].Date;
-      Data^.Size      := HashList[i].Size;
-      Data^.FileName  := HashList[i].FileName;
-      Data^.ShortName := HashList[i].ShortName;
-      Data^.IsDeleted := False;
-
-      vstTree.CheckType[Node] := ctCheckBox;
-      vstTree.IsVisible[Node] := ParentNode <> vstTree.RootNode;
-      if (ParentNode <> vstTree.RootNode) then
-      begin
-        vstTree.IsVisible[ParentNode] := (ParentNode.ChildCount > 0);
-        Node.CheckState := TCheckState.csCheckedNormal;
-      end;
-      NodeList.Add(Node);
-      TPublishers.ProgressPublisher.Progress;
-    end;
-
+    TMessageDialog.ShowInfo(TLang.Lang.Translate('Successful'));
+    Performer.IsQuiet := True;
   finally
     LogWriter.Write(ddExitMethod, Self, 'FileSearch');
     Performer.Count       := vstTree.TotalCount;
@@ -335,6 +349,7 @@ begin
     TPublishers.ProgressPublisher.EndProgress;
     vstTree.FullExpand;
     vstTree.EndUpdate;
+    Performer.IsQuiet := False;
   end;
 end;
 
