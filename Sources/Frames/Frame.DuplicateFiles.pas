@@ -387,6 +387,7 @@ begin
     TParallel.For(Low(FileList), High((FileList)),
         procedure(i: Integer)
         begin
+          if TFile.Exists(FileList[i]) then
           try
             TFile.Delete(FileList[i]);
             LogWriter.Write(ddText, Self, 'Delete files', FileList[i]);

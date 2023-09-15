@@ -9,7 +9,7 @@ inherited frameRegExp: TframeRegExp
     Height = 41
     TabOrder = 2
     ExplicitTop = 41
-    ExplicitWidth = 950
+    ExplicitWidth = 749
     ExplicitHeight = 41
     inherited btnSave: TToolButton
       Action = nil
@@ -52,7 +52,7 @@ inherited frameRegExp: TframeRegExp
     OnGetText = vstTreeGetText
     OnNewText = vstTreeNewText
     ExplicitTop = 82
-    ExplicitWidth = 950
+    ExplicitWidth = 749
     ExplicitHeight = 362
     Columns = <
       item
@@ -101,7 +101,6 @@ inherited frameRegExp: TframeRegExp
     EdgeOuter = esNone
     Images = DMImage.vil32
     TabOrder = 0
-    ExplicitWidth = 950
     object pnlSettings: TPanel
       Left = 0
       Top = 0

@@ -22,6 +22,11 @@ type
   end;
   TRegExpArray = TArrayRecord<TRegExpData>;
 
+  TRegExp = record
+    Color: TColor;
+    IsSelected: Boolean;
+  end;
+
   PParamPath = ^TParamPath;
   TParamPath = record
     Path       : string;
@@ -136,7 +141,7 @@ type
     class var
       AttachmentList : TAttachmentList;
       EmailList      : TEmailList;
-      ColumnColors   : TArray<TColor>;
+      RegExpColumns  : TArray<TRegExp>;
   end;
 
   TAttachmentDir = (adAttachment, adSubAttachment, adUserDefined);

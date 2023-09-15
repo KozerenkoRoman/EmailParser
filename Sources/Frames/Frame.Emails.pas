@@ -309,7 +309,7 @@ begin
       if Assigned(DataEmail) then
         if not DataEmail^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
         begin
-          TargetCanvas.Brush.Color := TGeneral.ColumnColors[Column - C_FIXED_COLUMNS];
+          TargetCanvas.Brush.Color := TGeneral.RegExpColumns[Column - C_FIXED_COLUMNS].Color;
           TargetCanvas.FillRect(CellRect);
         end;
     end
@@ -319,7 +319,7 @@ begin
       if Assigned(Data) then
         if (Data^.Matches[Column - C_FIXED_COLUMNS].Count > 0) then
         begin
-          TargetCanvas.Brush.Color := TGeneral.ColumnColors[Column - C_FIXED_COLUMNS];
+          TargetCanvas.Brush.Color := TGeneral.RegExpColumns[Column - C_FIXED_COLUMNS].Color;
           TargetCanvas.FillRect(CellRect);
         end;
     end

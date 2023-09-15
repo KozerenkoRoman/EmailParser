@@ -29,7 +29,7 @@ begin
   for var i := Low(aMatches.Items) to High(aMatches.Items) do
   begin
     subArray := aMatches[i];
-    refRGB   := ColorToRGB(TGeneral.ColumnColors[i]);
+    refRGB   := ColorToRGB(TGeneral.RegExpColumns[i].Color);
     WebColor := Format('#%.2x%.2x%.2x', [GetRValue(refRGB), GetGValue(refRGB), GetBValue(refRGB)]);
     for var str in subArray do
       if not str.Trim.IsEmpty then

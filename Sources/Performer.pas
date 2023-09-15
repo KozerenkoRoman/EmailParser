@@ -34,6 +34,7 @@ type
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     function GetWordText(const aFileName: TFileName): string;
     function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
+    function IsSuccessfulCheck: Boolean;
     procedure DoCopyAttachmentFiles(const aData: PResultData);
     procedure DoDeleteAttachmentFiles(const aData: PResultData);
     procedure DoFillAttachments(const aData: PResultData; const aMailMessage: TclMailMessage);
@@ -104,27 +105,66 @@ begin
   FFileExt          := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
 end;
 
+function TPerformer.IsSuccessfulCheck: Boolean;
+var
+  sb: TStringBuilder;
+  FailedText: string;
+begin
+  Result := True;
+  FailedText := '';
+  sb := TStringBuilder.Create;
+  try
+    sb.AppendLine('<b>RegExpParametersList</b>');
+    for var item in FRegExpList.Items do
+      sb.AppendFormat('<b>Name: </b> %s, <b>Index: </b> %d, <b>Pattern: </b> %s',
+        [item.ParameterName, item.GroupIndex, item.RegExpTemplate]).AppendLine;
+    if (FRegExpList.Count = 0) then
+    begin
+      Result := False;
+      FailedText := TLang.Lang.Translate('RegExpIsEmpty') + sLineBreak;
+    end;
+
+    for var item in FPathList.Items do
+    begin
+      sb.AppendFormat('<b>Path: </b> %s', [item.Path]).AppendLine;
+      if not TDirectory.Exists(item.Path) then
+      begin
+        Result := False;
+        FailedText := Concat(FailedText, Format(TLang.Lang.Translate('PathNotExists'), [item.Path]), sLineBreak);
+      end;
+    end;
+    if (FPathList.Count = 0) then
+    begin
+      Result := False;
+      FailedText := TLang.Lang.Translate('PathsToFindNotExists') + sLineBreak;
+    end;
+    LogWriter.Write(ddText, Self, sb.ToString);
+  finally
+    FreeAndNil(sb);
+  end;
+
+  if not Result then
+    TMessageDialog.ShowWarning(FailedText);
+end;
+
 procedure TPerformer.Start;
 var
   FileList : TStringDynArray;
-  DirList  : string;
 begin
   LogWriter.Write(ddEnterMethod, Self, 'Start');
   FillStartParameters;
+  if not IsSuccessfulCheck then
+    Exit;
+
   FIsBreak     := False;
   FileList     := [];
   FFromDBCount := 0;
   try
-    DirList := '';
     for var Dir in FPathList do
-    begin
-      DirList := DirList + sLineBreak + Dir.Path + IfThen(Dir.WithSubdir, ' with subdir');
       if Dir.WithSubdir then
         FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FFileExt, TSearchOption.soAllDirectories))
       else
         FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FFileExt, TSearchOption.soTopDirectoryOnly));
-    end;
-    LogWriter.Write(ddText, Self, '<b>Paths to find files:</b>' + DirList);
 
     FCount := Length(FileList);
     TPublishers.ProgressPublisher.ClearTree;
@@ -173,12 +213,15 @@ var
 begin
   if (TGeneral.EmailList.Count = 0) then
     Exit;
+  FillStartParameters;
+  if not IsSuccessfulCheck then
+    Exit;
+
   LogWriter.Write(ddText, Self, 'Emails List Count - ' + TGeneral.EmailList.Count.ToString);
   TPublishers.ProgressPublisher.StartProgress(FCount);
   try
     LogWriter.Write(ddEnterMethod, Self, 'Refresh');
     FIsBreak := False;
-    FillStartParameters;
 
     try
       arrKeys := TGeneral.EmailList.Keys.ToArray;
@@ -295,11 +338,13 @@ var
 begin
   if (TGeneral.EmailList.Count = 0) then
     Exit;
+  FillStartParameters;
+  if not IsSuccessfulCheck then
+    Exit;
   TPublishers.ProgressPublisher.StartProgress(FCount);
   try
     LogWriter.Write(ddEnterMethod, Self, 'RefreshAttachment');
     FIsBreak := False;
-    FillStartParameters;
     try
       arrKeys := TGeneral.AttachmentList.Keys.ToArray;
       FCount := 0;
@@ -379,9 +424,9 @@ var
 begin
   for var item in FSorterPathList do
     for var attHash in aData^.Attachments do
-      if TGeneral.AttachmentList.TryGetValue(attHash, Attachment) and
-         TFile.Exists(Attachment.FileName) and
-         TPath.MatchesPattern(Attachment.FileName, item.Mask, False) then
+      if TGeneral.AttachmentList.TryGetValue(attHash, Attachment) then
+        if TFile.Exists(Attachment.FileName) and
+           MatchesMask(Attachment.FileName, item.Mask) then
           try
             NewFileName := TPath.Combine(item.Path, TPath.GetFileName(Attachment.FileName));
             if not TFile.Exists(NewFileName) then
@@ -876,7 +921,7 @@ var
   ZipFile  : TZipFile;
 begin
   Result := '';
-  Path := TPath.Combine(TPath.GetDirectoryName(aFileName), TPath.GetFileNameWithoutExtension(aFileName));
+  Path := TPath.Combine(TPath.GetDirectoryName(aFileName), TPath.GetFileNameWithoutExtension(aFileName)).Trim;
   if not TDirectory.Exists(Path) then
     try
       TDirectory.CreateDirectory(Path);

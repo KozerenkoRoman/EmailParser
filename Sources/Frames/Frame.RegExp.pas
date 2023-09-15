@@ -57,8 +57,7 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
-    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
-      Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
   private const
     COL_PARAM_NAME      = 0;
     COL_REGEXP_TEMPLATE = 1;
@@ -67,6 +66,7 @@ type
 
     C_IDENTITY_NAME = 'frameRegExp';
   private
+    procedure UpdateRegExpColumns;
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
     function GetIdentityName: string; override;
@@ -112,11 +112,12 @@ begin
   tbSettings.ButtonHeight := C_ICON_SIZE;
   tbSettings.ButtonWidth  := C_ICON_SIZE;
   tbSettings.Height       := C_ICON_SIZE + 2;
+  btnSave.Left            := btnSaveSetAs.Left;
 
   LoadFromXML;
+  UpdateRegExpColumns;
   Translate;
-  vstTree.FullExpand;
-  btnSave.Left := btnSaveSetAs.Left;
+  TPublishers.UpdateXMLPublisher.UpdateXML;
 end;
 
 procedure TframeRegExp.Deinitialize;
@@ -416,7 +417,35 @@ begin
   end;
 end;
 
+procedure TframeRegExp.UpdateRegExpColumns;
+var
+  arrParams: TArrayRecord<TRegExpData>;
+begin
+  arrParams := TGeneral.GetRegExpParametersList;
+  SetLength(TGeneral.RegExpColumns, arrParams.Count);
+  for var i := 0 to arrParams.Count - 1 do
+  begin
+    TGeneral.RegExpColumns[i].Color := arrParams[i].Color;
+    TGeneral.RegExpColumns[i].IsSelected := True;
+  end;
+end;
+
 procedure TframeRegExp.aSaveExecute(Sender: TObject);
+
+  procedure UpdateMatches;
+  var
+    arrParams: TArrayRecord<TRegExpData>;
+  begin
+    arrParams := TGeneral.GetRegExpParametersList;
+    for var item in TGeneral.EmailList.Values do
+      if Assigned(item) then
+        item^.Matches.Count := arrParams.Count;
+
+    for var att in TGeneral.AttachmentList.Values do
+      if Assigned(att) then
+        att^.Matches.Count := arrParams.Count;
+  end;
+
 var
   str: TStringObject;
 begin
@@ -427,6 +456,8 @@ begin
     TRegExpUtils.SaveSetOfTemplate(vstTree, str.StringValue, cbSetOfTemplates.Text);
   end;
   SaveToXML;
+  UpdateMatches;
+  UpdateRegExpColumns;
   TPublishers.UpdateXMLPublisher.UpdateXML;
 end;
 
@@ -502,35 +533,10 @@ begin
 end;
 
 procedure TframeRegExp.cbSetOfTemplatesChange(Sender: TObject);
-
-  procedure UpdateMatchesAndColors;
-  var
-    arrParams: TArrayRecord<TRegExpData>;
-  begin
-    arrParams := TGeneral.GetRegExpParametersList;
-
-    for var item in TGeneral.EmailList.Values do
-      if Assigned(item) then
-        item^.Matches.Count := arrParams.Count;
-
-    for var att in TGeneral.AttachmentList.Values do
-      if Assigned(att) then
-        att^.Matches.Count := arrParams.Count;
-
-    SetLength(TGeneral.ColumnColors, arrParams.Count);
-    for var i := 0 to arrParams.Count - 1 do
-      TGeneral.ColumnColors[i] := arrParams[i].Color;
-  end;
-
 begin
   inherited;
   if (cbSetOfTemplates.ItemIndex > -1) then
-  begin
     TRegExpUtils.RestoreSetOfTemplate(TGeneral.XMLParams, vstTree, TStringObject(cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex]).StringValue);
-    SaveToXML;
-    TPublishers.UpdateXMLPublisher.UpdateXML;
-    UpdateMatchesAndColors;
-  end;
 end;
 
 procedure TframeRegExp.aDeleteSetExecute(Sender: TObject);

@@ -94,10 +94,13 @@ resourcestring
   en_Parameters           = 'Parameters';
   en_Paste                = 'Paste';
   en_Path                 = 'Path';
+  en_RegExpIsEmpty        = 'There are no regular expression patterns';
   en_PathForAttachments   = 'Paths for saving attachments';
   en_PathsToFindFiles     = 'Paths to find files';
   en_PathsToFindSaveFiles = 'Paths for search and saving attachments';
   en_PathsToSaveFiles     = 'Paths for saving files';
+  en_PathNotExists        = 'Paths "%s" not exists';
+  en_PathsToFindNotExists = 'Paths to find files not exists';
   en_PlainText            = 'Plain Text';
   en_Position             = 'Position';
   en_Print                = 'Print';
@@ -160,6 +163,7 @@ resourcestring
   uk_Edit                 = 'Редагувати';
   uk_EditCommonParameters = 'Загальні параметри';
   uk_EditRegExpParameters = 'RegExp параметри';
+  uk_RegExpIsEmpty        = 'Шаблони регулярних виразів відсутні';
   uk_Email                = 'Лист';
   uk_Emails               = 'Листи';
   uk_Enabled              = 'Увімкнено';
@@ -207,8 +211,10 @@ resourcestring
   uk_Path                 = 'Шлях';
   uk_PathForAttachments   = 'Шляхи для збереження вкладень';
   uk_PathsToFindFiles     = 'Шляхи для пошуку файлів';
+  uk_PathsToFindNotExists = 'Шляхи для пошуку файлів відсутні';
   uk_PathsToFindSaveFiles = 'Шляхи для пошуку та збереження файлів';
   uk_PathsToSaveFiles     = 'Шляхи для збереження файлів';
+  uk_PathNotExists        = 'Шлях "%s" не існує';
   uk_PlainText            = 'Простий текст';
   uk_Position             = 'Позиція';
   uk_Print                = 'Друк';
@@ -243,7 +249,7 @@ resourcestring
   uk_RemoveChecks         = 'Зняти всі позначки';
 
 const
-   ArrayMessages: array[1 .. 107] of TMessageItem = (
+   ArrayMessages: array[1 .. 110] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
@@ -319,8 +325,11 @@ const
     (Key: 'Path'                 ; En: en_Path;                 Uk: uk_Path),
     (Key: 'PathForAttachments'   ; En: en_PathForAttachments;   Uk: uk_PathForAttachments),
     (Key: 'PathsToFindFiles'     ; En: en_PathsToFindFiles;     Uk: uk_PathsToFindFiles),
+    (Key: 'RegExpIsEmpty'        ; En: en_RegExpIsEmpty;        Uk: uk_RegExpIsEmpty),
     (Key: 'PathsToFindSaveFiles' ; En: en_PathsToFindSaveFiles; Uk: uk_PathsToFindSaveFiles),
     (Key: 'PathsToSaveFiles'     ; En: en_PathsToSaveFiles;     Uk: uk_PathsToSaveFiles),
+    (Key: 'PathNotExists'        ; En: en_PathNotExists;        Uk: uk_PathNotExists),
+    (Key: 'PathsToFindNotExists' ; En: en_PathsToFindNotExists; Uk: uk_PathsToFindNotExists),
     (Key: 'PlainText'            ; En: en_PlainText;            Uk: uk_PlainText),
     (Key: 'Position'             ; En: en_Position;             Uk: uk_Position),
     (Key: 'Print'                ; En: en_Print;                Uk: uk_Print),

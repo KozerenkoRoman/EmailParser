@@ -167,35 +167,33 @@ inherited frameSettings: TframeSettings
     object cbLanguage: TComboBox
       AlignWithMargins = True
       Left = 330
-      Top = 3
+      Top = 6
       Width = 140
       Height = 23
       Margins.Left = 10
-      Align = alLeft
+      Margins.Top = 6
       Style = csDropDownList
       TabOrder = 0
     end
     object edtExtensions: TEdit
       AlignWithMargins = True
       Left = 330
-      Top = 38
+      Top = 41
       Width = 50
-      Height = 29
+      Height = 23
       Margins.Left = 10
-      Align = alLeft
+      Margins.Top = 6
       TabOrder = 1
       Text = '*.eml'
-      ExplicitHeight = 23
     end
     object edtPathForAttachments: TButtonedEdit
       AlignWithMargins = True
       Left = 330
-      Top = 73
-      Width = 140
-      Height = 29
+      Top = 76
+      Width = 319
+      Height = 23
       Margins.Left = 10
-      Align = alLeft
-      Anchors = [akLeft, akTop, akRight, akBottom]
+      Margins.Top = 6
       Images = DMImage.vil16
       RightButton.DropDownMenu = pmFrame
       RightButton.ImageIndex = 5
@@ -204,7 +202,6 @@ inherited frameSettings: TframeSettings
       TabOrder = 2
       Text = '#Attachments'
       OnRightButtonClick = aPathForAttachmentsExecute
-      ExplicitHeight = 23
     end
     object cbDeleteAttachments: TCheckBox
       AlignWithMargins = True
