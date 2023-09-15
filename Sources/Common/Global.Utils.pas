@@ -1,23 +1,23 @@
-﻿unit Html.Utils;
+﻿unit Global.Utils;
 
 interface
 
 {$REGION 'Region uses'}
 uses
   Winapi.Windows, Winapi.ActiveX, System.Classes, Vcl.Graphics, System.SysUtils, System.Variants,
-  System.StrUtils, Html.Consts, Html.Lib, ArrayHelper;
+  System.StrUtils, Global.Types, Html.Lib, ArrayHelper;
 {$ENDREGION}
 
 type
-  THtmlUtils = class(TObject)
+  TGlobalUtils = class(TObject)
     class function GetHighlightText(const aText: string; const aMatches: TArrayRecord<TStringArray>): string;
   end;
 
 implementation
 
-{ THtmlUtils }
+{ TGlobalUtils }
 
-class function THtmlUtils.GetHighlightText(const aText: string; const aMatches: TArrayRecord<TStringArray>): string;
+class function TGlobalUtils.GetHighlightText(const aText: string; const aMatches: TArrayRecord<TStringArray>): string;
 var
   refRGB   : TColorRef;
   subArray : TStringArray;
@@ -29,7 +29,7 @@ begin
   for var i := Low(aMatches.Items) to High(aMatches.Items) do
   begin
     subArray := aMatches[i];
-    refRGB   := ColorToRGB(arrWebColors[i]);
+    refRGB   := ColorToRGB(TGeneral.ColumnColors[i]);
     WebColor := Format('#%.2x%.2x%.2x', [GetRValue(refRGB), GetGValue(refRGB), GetBValue(refRGB)]);
     for var str in subArray do
       if not str.Trim.IsEmpty then

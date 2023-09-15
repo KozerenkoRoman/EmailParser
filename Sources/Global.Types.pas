@@ -7,7 +7,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
   System.IOUtils, Vcl.Forms, ArrayHelper, Data.DB, System.Win.Registry, Common.Types, Translate.Lang,
-  System.IniFiles, VirtualTrees, System.RegularExpressions, System.Math;
+  System.IniFiles, VirtualTrees, System.RegularExpressions, System.Math, Vcl.Graphics, Html.Consts;
 {$ENDREGION}
 
 type
@@ -17,6 +17,7 @@ type
     RegExpTemplate : string;
     GroupIndex     : Integer;
     UseRawText     : Boolean;
+    Color          : TColor;
     procedure Clear;
   end;
   TRegExpArray = TArrayRecord<TRegExpData>;
@@ -135,6 +136,7 @@ type
     class var
       AttachmentList : TAttachmentList;
       EmailList      : TEmailList;
+      ColumnColors   : TArray<TColor>;
   end;
 
   TAttachmentDir = (adAttachment, adSubAttachment, adUserDefined);
@@ -204,6 +206,7 @@ begin
         Data.RegExpTemplate := XMLParams.Attributes.GetAttributeValue('RegExpTemplate', '');
         Data.GroupIndex     := XMLParams.Attributes.GetAttributeValue('GroupIndex', 0);
         Data.UseRawText     := XMLParams.Attributes.GetAttributeValue('UseRawText', False);
+        Data.Color          := XMLParams.Attributes.GetAttributeValue('Color', arrWebColors[Random(High(arrWebColors))].Color);
         Result[i] := Data;
         Inc(i);
       end;

@@ -13,8 +13,14 @@ interface
 
 {$REGION 'Region uses'}
 uses
-  Vcl.Graphics;
+  Vcl.Graphics, System.UITypes;
 {$ENDREGION}
+
+type
+  TWebColor = record
+    Name  : string;
+    Color : TColor;
+  end;
 
 resourcestring
   C_HTML_BREAK       = '<br>';         // line break
@@ -37,11 +43,6 @@ resourcestring
   C_HTML_TBODY_CLOSE = '</tbody>';
   C_HTML_BLANK       = 'about:blank';
 
-const
-  arrWebColors : TArray<TColor> = [clWebBisque, clWebLightYellow, clWebAliceBlue, clWebMintcream, clWebLavenderBlush, clWebPowderBlue,
-                                   clWebAliceBlue, clWebFloralWhite, clWebOldLace, clWebIvory, clWebSnow, clWebLightGreen,
-                                   clWebPaleTurquoise, clWebCornSilk, clWebGhostWhite, clWebMintcream, clWebBeige,
-                                   clWebAntiqueWhite, clWebLavender];
 const
   C_BG_COL_ERR   = '#FFFACD';
   C_BG_COL_HTML  = '#EAEAEA';
@@ -215,6 +216,147 @@ const
             C_STYLE_SQL_CODE +
             C_STYLE_XML_CODE +
             C_HTML_STYLE_CLOSE;
+
+  arrWebColors: array [1 .. 138] of TWebColor = (
+    (Name: 'Snow'                 ; Color: TColors.Snow),
+    (Name: 'FloralWhite'          ; Color: TColors.FloralWhite),
+    (Name: 'LavenderBlush'        ; Color: TColors.LavenderBlush),
+    (Name: 'OldLace'              ; Color: TColors.OldLace),
+    (Name: 'Ivory'                ; Color: TColors.Ivory),
+    (Name: 'CornSilk'             ; Color: TColors.CornSilk),
+    (Name: 'Beige'                ; Color: TColors.Beige),
+    (Name: 'AntiqueWhite'         ; Color: TColors.AntiqueWhite),
+    (Name: 'Wheat'                ; Color: TColors.Wheat),
+    (Name: 'AliceBlue'            ; Color: TColors.AliceBlue),
+    (Name: 'GhostWhite'           ; Color: TColors.GhostWhite),
+    (Name: 'Lavender'             ; Color: TColors.Lavender),
+    (Name: 'Seashell'             ; Color: TColors.Seashell),
+    (Name: 'LightYellow'          ; Color: TColors.LightYellow),
+    (Name: 'PapayaWhip'           ; Color: TColors.PapayaWhip),
+    (Name: 'NavajoWhite'          ; Color: TColors.NavajoWhite),
+    (Name: 'Moccasin'             ; Color: TColors.Moccasin),
+    (Name: 'Burlywood'            ; Color: TColors.Burlywood),
+    (Name: 'Azure'                ; Color: TColors.Azure),
+    (Name: 'Mintcream'            ; Color: TColors.Mintcream),
+    (Name: 'Honeydew'             ; Color: TColors.Honeydew),
+    (Name: 'Linen'                ; Color: TColors.Linen),
+    (Name: 'LemonChiffon'         ; Color: TColors.LemonChiffon),
+    (Name: 'BlanchedAlmond'       ; Color: TColors.BlanchedAlmond),
+    (Name: 'Bisque'               ; Color: TColors.Bisque),
+    (Name: 'PeachPuff'            ; Color: TColors.PeachPuff),
+    (Name: 'Tan'                  ; Color: TColors.Tan),
+    (Name: 'Yellow'               ; Color: TColors.Yellow),
+    (Name: 'DarkOrange'           ; Color: TColors.DarkOrange),
+    (Name: 'Red'                  ; Color: TColors.Red),
+    (Name: 'DarkRed'              ; Color: TColors.DarkRed),
+    (Name: 'Maroon'               ; Color: TColors.Maroon),
+    (Name: 'IndianRed'            ; Color: TColors.IndianRed),
+    (Name: 'Salmon'               ; Color: TColors.Salmon),
+    (Name: 'Coral'                ; Color: TColors.Coral),
+    (Name: 'Gold'                 ; Color: TColors.Gold),
+    (Name: 'Tomato'               ; Color: TColors.Tomato),
+    (Name: 'Crimson'              ; Color: TColors.Crimson),
+    (Name: 'Brown'                ; Color: TColors.Brown),
+    (Name: 'Chocolate'            ; Color: TColors.Chocolate),
+    (Name: 'SandyBrown'           ; Color: TColors.SandyBrown),
+    (Name: 'LightSalmon'          ; Color: TColors.LightSalmon),
+    (Name: 'LightCoral'           ; Color: TColors.LightCoral),
+    (Name: 'Orange'               ; Color: TColors.Orange),
+    (Name: 'OrangeRed'            ; Color: TColors.OrangeRed),
+    (Name: 'Firebrick'            ; Color: TColors.Firebrick),
+    (Name: 'SaddleBrown'          ; Color: TColors.SaddleBrown),
+    (Name: 'Sienna'               ; Color: TColors.Sienna),
+    (Name: 'Peru'                 ; Color: TColors.Peru),
+    (Name: 'DarkSalmon'           ; Color: TColors.DarkSalmon),
+    (Name: 'RosyBrown'            ; Color: TColors.RosyBrown),
+    (Name: 'PaleGoldenrod'        ; Color: TColors.PaleGoldenrod),
+    (Name: 'LightGoldenrodYellow' ; Color: TColors.LightGoldenrodYellow),
+    (Name: 'Olive'                ; Color: TColors.Olive),
+    (Name: 'ForestGreen'          ; Color: TColors.ForestGreen),
+    (Name: 'GreenYellow'          ; Color: TColors.GreenYellow),
+    (Name: 'Chartreuse'           ; Color: TColors.Chartreuse),
+    (Name: 'LightGreen'           ; Color: TColors.LightGreen),
+    (Name: 'Aquamarine'           ; Color: TColors.Aquamarine),
+    (Name: 'SeaGreen'             ; Color: TColors.SeaGreen),
+    (Name: 'GoldenRod'            ; Color: TColors.GoldenRod),
+    (Name: 'Khaki'                ; Color: TColors.Khaki),
+    (Name: 'OliveDrab'            ; Color: TColors.OliveDrab),
+    (Name: 'Green'                ; Color: TColors.Green),
+    (Name: 'YellowGreen'          ; Color: TColors.YellowGreen),
+    (Name: 'LawnGreen'            ; Color: TColors.LawnGreen),
+    (Name: 'PaleGreen'            ; Color: TColors.PaleGreen),
+    (Name: 'MediumAquamarine'     ; Color: TColors.MediumAquamarine),
+    (Name: 'MediumSeaGreen'       ; Color: TColors.MediumSeaGreen),
+    (Name: 'DarkGoldenRod'        ; Color: TColors.DarkGoldenRod),
+    (Name: 'DarkKhaki'            ; Color: TColors.DarkKhaki),
+    (Name: 'DarkOliveGreen'       ; Color: TColors.DarkOliveGreen),
+    (Name: 'Darkgreen'            ; Color: TColors.Darkgreen),
+    (Name: 'LimeGreen'            ; Color: TColors.LimeGreen),
+    (Name: 'Lime'                 ; Color: TColors.Lime),
+    (Name: 'SpringGreen'          ; Color: TColors.SpringGreen),
+    (Name: 'MediumSpringGreen'    ; Color: TColors.MediumSpringGreen),
+    (Name: 'DarkSeaGreen'         ; Color: TColors.DarkSeaGreen),
+    (Name: 'LightSeaGreen'        ; Color: TColors.LightSeaGreen),
+    (Name: 'PaleTurquoise'        ; Color: TColors.PaleTurquoise),
+    (Name: 'LightCyan'            ; Color: TColors.LightCyan),
+    (Name: 'LightBlue'            ; Color: TColors.LightBlue),
+    (Name: 'LightSkyBlue'         ; Color: TColors.LightSkyBlue),
+    (Name: 'CornFlowerBlue'       ; Color: TColors.CornFlowerBlue),
+    (Name: 'DarkBlue'             ; Color: TColors.DarkBlue),
+    (Name: 'Indigo'               ; Color: TColors.Indigo),
+    (Name: 'MediumTurquoise'      ; Color: TColors.MediumTurquoise),
+    (Name: 'Turquoise'            ; Color: TColors.Turquoise),
+    (Name: 'Cyan'                 ; Color: TColors.Cyan),
+    (Name: 'PowderBlue'           ; Color: TColors.PowderBlue),
+    (Name: 'SkyBlue'              ; Color: TColors.SkyBlue),
+    (Name: 'RoyalBlue'            ; Color: TColors.RoyalBlue),
+    (Name: 'MediumBlue'           ; Color: TColors.MediumBlue),
+    (Name: 'MidnightBlue'         ; Color: TColors.MidnightBlue),
+    (Name: 'DarkTurquoise'        ; Color: TColors.DarkTurquoise),
+    (Name: 'CadetBlue'            ; Color: TColors.CadetBlue),
+    (Name: 'DarkCyan'             ; Color: TColors.DarkCyan),
+    (Name: 'Teal'                 ; Color: TColors.Teal),
+    (Name: 'DeepskyBlue'          ; Color: TColors.DeepskyBlue),
+    (Name: 'DodgerBlue'           ; Color: TColors.DodgerBlue),
+    (Name: 'Blue'                 ; Color: TColors.Blue),
+    (Name: 'Navy'                 ; Color: TColors.Navy),
+    (Name: 'DarkViolet'           ; Color: TColors.DarkViolet),
+    (Name: 'DarkOrchid'           ; Color: TColors.DarkOrchid),
+    (Name: 'Magenta'              ; Color: TColors.Magenta),
+    (Name: 'Fuchsia'              ; Color: TColors.Fuchsia),
+    (Name: 'DarkMagenta'          ; Color: TColors.DarkMagenta),
+    (Name: 'MediumVioletRed'      ; Color: TColors.MediumVioletRed),
+    (Name: 'PaleVioletRed'        ; Color: TColors.PaleVioletRed),
+    (Name: 'BlueViolet'           ; Color: TColors.BlueViolet),
+    (Name: 'MediumOrchid'         ; Color: TColors.MediumOrchid),
+    (Name: 'MediumPurple'         ; Color: TColors.MediumPurple),
+    (Name: 'Purple'               ; Color: TColors.Purple),
+    (Name: 'DeepPink'             ; Color: TColors.DeepPink),
+    (Name: 'LightPink'            ; Color: TColors.LightPink),
+    (Name: 'Violet'               ; Color: TColors.Violet),
+    (Name: 'Orchid'               ; Color: TColors.Orchid),
+    (Name: 'Plum'                 ; Color: TColors.Plum),
+    (Name: 'Thistle'              ; Color: TColors.Thistle),
+    (Name: 'HotPink'              ; Color: TColors.HotPink),
+    (Name: 'Pink'                 ; Color: TColors.Pink),
+    (Name: 'LightSteelBlue'       ; Color: TColors.LightSteelBlue),
+    (Name: 'MediumSlateBlue'      ; Color: TColors.MediumSlateBlue),
+    (Name: 'LightSlateGray'       ; Color: TColors.LightSlateGray),
+    (Name: 'White'                ; Color: TColors.White),
+    (Name: 'Lightgrey'            ; Color: TColors.Lightgrey),
+    (Name: 'Gray'                 ; Color: TColors.Gray),
+    (Name: 'SteelBlue'            ; Color: TColors.SteelBlue),
+    (Name: 'SlateBlue'            ; Color: TColors.SlateBlue),
+    (Name: 'SlateGray'            ; Color: TColors.SlateGray),
+    (Name: 'WhiteSmoke'           ; Color: TColors.WhiteSmoke),
+    (Name: 'Silver'               ; Color: TColors.Silver),
+    (Name: 'DimGray'              ; Color: TColors.DimGray),
+    (Name: 'MistyRose'            ; Color: TColors.MistyRose),
+    (Name: 'DarkSlateBlue'        ; Color: TColors.DarkSlateBlue),
+    (Name: 'DarkSlategray'        ; Color: TColors.DarkSlategray),
+    (Name: 'Gainsboro'            ; Color: TColors.Gainsboro),
+    (Name: 'DarkGray'             ; Color: TColors.DarkGray)
+  );
 
 implementation
 

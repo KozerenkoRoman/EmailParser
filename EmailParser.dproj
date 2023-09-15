@@ -116,10 +116,10 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.200.0.2;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=1.200.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.200.0.3;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=1.200.0.0;Comments=</VerInfo_Keys>
         <Icon_MainIcon>EmailParser_Icon.ico</Icon_MainIcon>
         <VerInfo_Debug>true</VerInfo_Debug>
-        <VerInfo_Build>2</VerInfo_Build>
+        <VerInfo_Build>3</VerInfo_Build>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -225,9 +225,9 @@
         </DCCReference>
         <DCCReference Include="Sources\Global.Resources.pas"/>
         <DCCReference Include="Sources\Global.Types.pas"/>
+        <DCCReference Include="Sources\Common\Global.Utils.pas"/>
         <DCCReference Include="Sources\Common\Html.Consts.pas"/>
         <DCCReference Include="Sources\Common\Html.Lib.pas"/>
-        <DCCReference Include="Sources\Common\Html.Utils.pas"/>
         <DCCReference Include="Sources\Common\InformationDialog.pas">
             <Form>TInformationDialog</Form>
         </DCCReference>

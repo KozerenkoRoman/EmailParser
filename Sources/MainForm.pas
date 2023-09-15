@@ -114,6 +114,7 @@ end;
 procedure TfrmMain.Initialize;
 begin
   inherited;
+  Randomize;
   TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
   DaMod.Initialize;
   frameRegExp.Initialize;

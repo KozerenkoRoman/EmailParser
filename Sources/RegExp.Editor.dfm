@@ -133,7 +133,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       860
       42)
     object btnCancel: TBitBtn
-      Left = 608
+      Left = 604
       Top = 1
       Width = 110
       Height = 40
@@ -150,10 +150,10 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 2
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 604
+      ExplicitLeft = 600
     end
     object btnOk: TBitBtn
-      Left = 720
+      Left = 716
       Top = 1
       Width = 110
       Height = 40
@@ -170,7 +170,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 1
       ParentFont = False
       TabOrder = 1
-      ExplicitLeft = 716
+      ExplicitLeft = 712
     end
   end
   object tbPattern: TToolBar
@@ -188,7 +188,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
     object pnlSettings: TPanel
       Left = 0
       Top = 0
-      Width = 577
+      Width = 460
       Height = 39
       Align = alRight
       BevelOuter = bvNone
@@ -208,13 +208,6 @@ inherited frmRegExpEditor: TfrmRegExpEditor
         Caption = 'Template name'
         Layout = tlCenter
       end
-      object lblGroupIndex: TLabel
-        Left = 461
-        Top = 9
-        Width = 72
-        Height = 17
-        Caption = 'Group index'
-      end
       object edtTemplateName: TEdit
         Left = 106
         Top = 6
@@ -222,21 +215,9 @@ inherited frmRegExpEditor: TfrmRegExpEditor
         Height = 25
         TabOrder = 0
       end
-      object edtGroupIndex: TNumberBox
-        Left = 539
-        Top = 6
-        Width = 38
-        Height = 25
-        Decimal = 0
-        Mode = nbmCurrency
-        MaxValue = 100.000000000000000000
-        TabOrder = 1
-        SpinButtonOptions.Placement = nbspCompact
-        UseMouseWheel = True
-      end
     end
     object btnTest: TToolButton
-      Left = 577
+      Left = 460
       Top = 0
       Action = aTest
     end
@@ -250,8 +231,6 @@ inherited frmRegExpEditor: TfrmRegExpEditor
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitLeft = 484
-    ExplicitHeight = 529
     object gbOptions: TGroupBox
       AlignWithMargins = True
       Left = 3
@@ -262,45 +241,55 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       Align = alTop
       Caption = 'Options'
       TabOrder = 0
-      object chkSingleLine: TCheckBox
-        Left = 5
-        Top = 41
-        Width = 300
+      object lblGroupIndex: TLabel
+        Left = 14
+        Top = 22
+        Width = 72
         Height = 17
-        Caption = 'Single Line'
-        TabOrder = 0
+        Caption = 'Group index'
       end
-      object chkIgnorePatternSpace: TCheckBox
-        Left = 5
-        Top = 110
-        Width = 300
+      object lblColor: TLabel
+        Left = 14
+        Top = 50
+        Width = 32
         Height = 17
-        Caption = 'Ignore Pattern Space'
+        Caption = 'Color'
+      end
+      object lblUseRawText: TLabel
+        Left = 14
+        Top = 78
+        Width = 69
+        Height = 17
+        Caption = 'UseRawText'
+      end
+      object edtGroupIndex: TNumberBox
+        Left = 170
+        Top = 19
+        Width = 56
+        Height = 25
+        Decimal = 0
+        Mode = nbmCurrency
+        MaxValue = 100.000000000000000000
+        TabOrder = 0
+        SpinButtonOptions.Placement = nbspCompact
+        UseMouseWheel = True
+      end
+      object cbWebColor: TColorBox
+        Left = 170
+        Top = 50
+        Width = 145
+        Height = 22
+        DefaultColorColor = clInfoBk
+        Selected = clInfoBk
+        Style = [cbExtendedColors, cbSystemColors, cbCustomColor, cbPrettyNames, cbCustomColors]
         TabOrder = 1
       end
-      object chkExplicitCapture: TCheckBox
-        Left = 5
-        Top = 87
-        Width = 300
+      object cbUseRawText: TCheckBox
+        Left = 170
+        Top = 79
+        Width = 97
         Height = 17
-        Caption = 'Explicit Capture'
         TabOrder = 2
-      end
-      object chkMultiLine: TCheckBox
-        Left = 5
-        Top = 64
-        Width = 300
-        Height = 17
-        Caption = 'Multi Line'
-        TabOrder = 3
-      end
-      object chkIgnoreCase: TCheckBox
-        Left = 5
-        Top = 18
-        Width = 300
-        Height = 17
-        Caption = 'Ignore Case'
-        TabOrder = 4
       end
     end
     object gbResults: TGroupBox

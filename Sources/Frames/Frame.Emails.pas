@@ -9,7 +9,7 @@ uses
   Global.Types, System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin,
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
-  Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Vcl.Samples.Gauges,
+  Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, XmlFiles, Vcl.Samples.Gauges,
   Performer, Winapi.ShellAPI, Vcl.OleCtrls, SHDocVw, Winapi.ActiveX, Frame.Attachments, Files.Utils, DaModule,
   VirtualTrees.ExportHelper, Global.Resources, Publishers, Publishers.Interfaces, Vcl.WinXPanels, Frame.Custom;
 {$ENDREGION}
@@ -309,7 +309,7 @@ begin
       if Assigned(DataEmail) then
         if not DataEmail^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
         begin
-          TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+          TargetCanvas.Brush.Color := TGeneral.ColumnColors[Column - C_FIXED_COLUMNS];
           TargetCanvas.FillRect(CellRect);
         end;
     end
@@ -319,7 +319,7 @@ begin
       if Assigned(Data) then
         if (Data^.Matches[Column - C_FIXED_COLUMNS].Count > 0) then
         begin
-          TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+          TargetCanvas.Brush.Color := TGeneral.ColumnColors[Column - C_FIXED_COLUMNS];
           TargetCanvas.FillRect(CellRect);
         end;
     end

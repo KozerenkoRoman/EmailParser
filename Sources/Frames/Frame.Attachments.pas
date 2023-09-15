@@ -10,7 +10,7 @@ uses
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
-  Vcl.WinXPanels, Publishers.Interfaces, Publishers, Html.Utils, VirtualTrees.ExportHelper, Global.Resources,
+  Vcl.WinXPanels, Publishers.Interfaces, Publishers, Global.Utils, VirtualTrees.ExportHelper, Global.Resources,
   DaModule, System.Threading;
 {$ENDREGION}
 
@@ -193,7 +193,7 @@ begin
     begin
       if Data^.ParsedText.IsEmpty then
         Data^.ParsedText := TDaMod.GetAttachmentAsRawText(Data^.Hash);
-      TInformationDialog.ShowMessage(THtmlUtils.GetHighlightText(Data^.ParsedText, Data^.Matches), GetIdentityName);
+      TInformationDialog.ShowMessage(TGlobalUtils.GetHighlightText(Data^.ParsedText, Data^.Matches), GetIdentityName);
     end;
   end;
 end;
@@ -231,7 +231,7 @@ begin
     if Assigned(AttachData) and (Column >= C_FIXED_COLUMNS) then
       if not AttachData^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
       begin
-        TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+        TargetCanvas.Brush.Color := TGeneral.ColumnColors[Column - C_FIXED_COLUMNS];
         TargetCanvas.FillRect(CellRect);
       end;
   end
@@ -249,7 +249,7 @@ begin
       end
       else if (Data^.Matches[Column - C_FIXED_COLUMNS].Count > 0) then
       begin
-        TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+        TargetCanvas.Brush.Color := TGeneral.ColumnColors[Column - C_FIXED_COLUMNS];
         TargetCanvas.FillRect(CellRect);
       end;
   end;

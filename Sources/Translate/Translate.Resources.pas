@@ -30,6 +30,7 @@ resourcestring
   en_Cancel               = 'Cancel';
   en_ClassName            = 'Class name';
   en_CollapseAll          = 'Collapse All';
+  en_Color                = 'Color';
   en_ColumnSettings       = 'Column settings';
   en_Compatibility        = 'Compatibility';
   en_CompHierarchy        = 'Components hierarchy';
@@ -140,6 +141,7 @@ resourcestring
   uk_Cancel               = 'Скасувати';
   uk_ClassName            = 'Назва класу';
   uk_CollapseAll          = 'Згорнути все';
+  uk_Color                = 'Колір';
   uk_ColumnSettings       = 'Налаштування стовпців';
   uk_Compatibility        = 'Сумісність';
   uk_CompHierarchy        = 'Ієрархія компонентів';
@@ -241,7 +243,7 @@ resourcestring
   uk_RemoveChecks         = 'Зняти всі позначки';
 
 const
-   ArrayMessages: array[1 .. 106] of TMessageItem = (
+   ArrayMessages: array[1 .. 107] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
@@ -251,6 +253,7 @@ const
     (Key: 'Cancel'               ; En: en_Cancel;               Uk: uk_Cancel),
     (Key: 'ClassName'            ; En: en_ClassName;            Uk: uk_ClassName),
     (Key: 'CollapseAll'          ; En: en_CollapseAll;          Uk: uk_CollapseAll),
+    (Key: 'Color'                ; En: en_Color;                Uk: uk_Color),
     (Key: 'ColumnSettings'       ; En: en_ColumnSettings;       Uk: uk_ColumnSettings),
     (Key: 'Compatibility'        ; En: en_Compatibility;        Uk: uk_Compatibility),
     (Key: 'CompHierarchy'        ; En: en_CompHierarchy;        Uk: uk_CompHierarchy),

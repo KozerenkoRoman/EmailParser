@@ -1,11 +1,11 @@
 inherited frameRegExp: TframeRegExp
-  Width = 950
+  Width = 749
   Height = 444
-  ExplicitWidth = 950
+  ExplicitWidth = 749
   ExplicitHeight = 444
   inherited tbMain: TToolBar
     Top = 41
-    Width = 950
+    Width = 749
     Height = 41
     TabOrder = 2
     ExplicitTop = 41
@@ -38,11 +38,12 @@ inherited frameRegExp: TframeRegExp
   end
   inherited vstTree: TVirtualStringTree
     Top = 82
-    Width = 950
+    Width = 749
     Height = 362
     Alignment = taRightJustify
     Header.MainColumn = 3
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowHint, hoShowImages, hoShowSortGlyphs, hoVisible]
+    OnBeforeCellPaint = vstTreeBeforeCellPaint
     OnChecked = vstTreeChecked
     OnCompareNodes = vstTreeCompareNodes
     OnCreateEditor = vstTreeCreateEditor
@@ -92,7 +93,7 @@ inherited frameRegExp: TframeRegExp
   object tbSettings: TToolBar [2]
     Left = 0
     Top = 0
-    Width = 950
+    Width = 749
     Height = 41
     ButtonHeight = 39
     ButtonWidth = 39
@@ -100,6 +101,7 @@ inherited frameRegExp: TframeRegExp
     EdgeOuter = esNone
     Images = DMImage.vil32
     TabOrder = 0
+    ExplicitWidth = 950
     object pnlSettings: TPanel
       Left = 0
       Top = 0

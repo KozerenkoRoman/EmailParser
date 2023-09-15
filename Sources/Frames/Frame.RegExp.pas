@@ -57,6 +57,8 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
+    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
+      Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
   private const
     COL_PARAM_NAME      = 0;
     COL_REGEXP_TEMPLATE = 1;
@@ -205,6 +207,7 @@ procedure TframeRegExp.SaveToXML;
     TGeneral.XMLParams.Attributes.SetAttributeValue('RegExpTemplate', Data.RegExpTemplate);
     TGeneral.XMLParams.Attributes.SetAttributeValue('GroupIndex', Data.GroupIndex);
     TGeneral.XMLParams.Attributes.SetAttributeValue('UseRawText', Data.UseRawText);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('Color', Data.Color);
     TGeneral.XMLParams.WriteAttributes;
   end;
 
@@ -231,12 +234,15 @@ end;
 procedure TframeRegExp.aAddExecute(Sender: TObject);
 var
   NewNode: PVirtualNode;
+  Data: PRegExpData;
 begin
   inherited;
   vstTree.ClearSelection;
   NewNode := vstTree.AddChild(nil);
   vstTree.CheckType[NewNode] := ctCheckBox;
-  vstTree.Selected[NewNode] := True;
+  vstTree.Selected[NewNode]  := True;
+  Data := NewNode^.GetData;
+  Data^.Color := arrWebColors[Random(High(arrWebColors))].Color;
 end;
 
 procedure TframeRegExp.aAddUpdate(Sender: TObject);
@@ -261,18 +267,17 @@ end;
 procedure TframeRegExp.aEditExecute(Sender: TObject);
 var
   Data: PRegExpData;
-  PatternResult: TArray<string>;
 begin
   inherited;
   if Assigned(vstTree.FocusedNode) then
   begin
     Data := vstTree.FocusedNode.GetData;
-    PatternResult := TfrmRegExpEditor.GetPattern(Data^.RegExpTemplate, Data^.ParameterName, Data^.GroupIndex);
-    if (Length(PatternResult) >= 3) then
+    if (TfrmRegExpEditor.GetPattern(Data^) = mrOk) then
     begin
-      Data^.RegExpTemplate := PatternResult[0];
-      Data^.ParameterName  := PatternResult[1];
-      Data^.GroupIndex     := String.ToInteger(PatternResult[2]);
+      if Data^.UseRawText then
+        vstTree.FocusedNode.CheckState := csCheckedNormal
+      else
+        vstTree.FocusedNode.CheckState := csUnCheckedNormal;
     end;
   end;
 end;
@@ -288,6 +293,18 @@ procedure TframeRegExp.aRefreshExecute(Sender: TObject);
 begin
   inherited;
   LoadFromXML;
+end;
+
+procedure TframeRegExp.vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+var
+  Data: PRegExpData;
+begin
+  Data := Node^.GetData;
+  if (Column = COL_REGEXP_TEMPLATE) then
+  begin
+    TargetCanvas.Brush.Color := Data.Color;
+    TargetCanvas.FillRect(CellRect);
+  end;
 end;
 
 procedure TframeRegExp.vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -486,28 +503,33 @@ end;
 
 procedure TframeRegExp.cbSetOfTemplatesChange(Sender: TObject);
 
-  procedure UpdateXML;
+  procedure UpdateMatchesAndColors;
   var
-    RegExpCount: Integer;
+    arrParams: TArrayRecord<TRegExpData>;
   begin
-    RegExpCount := TGeneral.GetRegExpCount;
+    arrParams := TGeneral.GetRegExpParametersList;
+
     for var item in TGeneral.EmailList.Values do
       if Assigned(item) then
-        item^.Matches.Count := RegExpCount;
+        item^.Matches.Count := arrParams.Count;
 
     for var att in TGeneral.AttachmentList.Values do
       if Assigned(att) then
-        att^.Matches.Count := RegExpCount;
+        att^.Matches.Count := arrParams.Count;
+
+    SetLength(TGeneral.ColumnColors, arrParams.Count);
+    for var i := 0 to arrParams.Count - 1 do
+      TGeneral.ColumnColors[i] := arrParams[i].Color;
   end;
 
 begin
   inherited;
-  if Showing and (cbSetOfTemplates.ItemIndex > -1) then
+  if (cbSetOfTemplates.ItemIndex > -1) then
   begin
     TRegExpUtils.RestoreSetOfTemplate(TGeneral.XMLParams, vstTree, TStringObject(cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex]).StringValue);
     SaveToXML;
     TPublishers.UpdateXMLPublisher.UpdateXML;
-    UpdateXML;
+    UpdateMatchesAndColors;
   end;
 end;
 
