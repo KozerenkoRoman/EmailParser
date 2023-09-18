@@ -16,14 +16,15 @@ uses
 
 type
   TframeDuplicateFiles = class(TframeSource)
+    aAllCheck         : TAction;
+    aAllUnCheck       : TAction;
     aDeleteSelected   : TAction;
     aFileBreak        : TAction;
     aFileSearch       : TAction;
-    aRemoveChecks     : TAction;
+    btnAllCheck       : TToolButton;
     btnDeleteSelected : TToolButton;
     btnFileBreak      : TToolButton;
     btnFileSearch     : TToolButton;
-    btnRemoveChecks   : TToolButton;
     btnSep04          : TToolButton;
     cbExt             : TComboBox;
     dlgFileSearch     : TFileOpenDialog;
@@ -31,15 +32,18 @@ type
     lblPath           : TLabel;
     pnlFileSearch     : TPanel;
     tbFileSearch      : TToolBar;
+    btnAllUnCheck: TToolButton;
+    procedure aAllCheckExecute(Sender: TObject);
+    procedure aAllUnCheckExecute(Sender: TObject);
     procedure aDeleteSelectedExecute(Sender: TObject);
     procedure aDeleteSelectedUpdate(Sender: TObject);
     procedure aFileBreakExecute(Sender: TObject);
     procedure aFileSearchExecute(Sender: TObject);
-    procedure aRemoveChecksExecute(Sender: TObject);
     procedure edtPathRightButtonClick(Sender: TObject);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
+    procedure aAllCheckUpdate(Sender: TObject);
   private const
     COL_SHORT_NAME = 0;
     COL_FILE_NAME  = 1;
@@ -111,7 +115,8 @@ begin
   aDeleteSelected.Hint := TLang.Lang.Translate('DeleteSelected');
   aFileBreak.Hint      := TLang.Lang.Translate('Break');
   aFileSearch.Hint     := TLang.Lang.Translate('StartSearch');
-  aRemoveChecks.Hint   := TLang.Lang.Translate('RemoveChecks');
+  aAllUnCheck.Hint     := TLang.Lang.Translate('AllUnCheck');
+  aAllCheck.Hint       := TLang.Lang.Translate('AllCheck');
   lblPath.Caption      := TLang.Lang.Translate('Path');
 
   vstTree.Header.Columns[COL_DATE].Text       := TLang.Lang.Translate('Date');
@@ -406,7 +411,32 @@ begin
   end;
 end;
 
-procedure TframeDuplicateFiles.aRemoveChecksExecute(Sender: TObject);
+procedure TframeDuplicateFiles.aAllCheckExecute(Sender: TObject);
+var
+  ParentNode: PVirtualNode;
+  Node: PVirtualNode;
+begin
+  inherited;
+  vstTree.BeginUpdate;
+  try
+    ParentNode := vstTree.RootNode.FirstChild;
+    while Assigned(ParentNode) do
+    begin
+      ParentNode.CheckState := TCheckState.csUncheckedNormal;
+      Node := ParentNode.FirstChild;
+      while Assigned(Node) do
+      begin
+        Node.CheckState := TCheckState.csCheckedNormal;
+        Node := vstTree.GetNextSibling(Node);
+      end;
+      ParentNode := vstTree.GetNextSibling(ParentNode);
+    end;
+  finally
+    vstTree.EndUpdate;
+  end;
+end;
+
+procedure TframeDuplicateFiles.aAllUnCheckExecute(Sender: TObject);
 var
   Node: PVirtualNode;
 begin
@@ -428,6 +458,12 @@ procedure TframeDuplicateFiles.aDeleteSelectedUpdate(Sender: TObject);
 begin
   inherited;
   TAction(Sender).Enabled := vstTree.CheckedCount > 0;
+end;
+
+procedure TframeDuplicateFiles.aAllCheckUpdate(Sender: TObject);
+begin
+  inherited;
+    TAction(Sender).Enabled := not vstTree.IsEmpty;
 end;
 
 end.

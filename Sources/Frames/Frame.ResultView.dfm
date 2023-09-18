@@ -111,7 +111,7 @@ inherited frameResultView: TframeResultView
             ControlData = {
               4C000000805F0000D71900000000000000000000000000000000000000000000
               000000004C000000000000000000000001000000E0D057007335CF11AE690800
-              2B2E126208000000000000004C0000000114020000000000C000000000000046
+              2B2E12620A000000000000004C0000000114020000000000C000000000000046
               8000000000000000000000000000000000000000000000000000000000000000
               00000000000000000100000000000000000000000000000000000000}
           end
@@ -157,10 +157,13 @@ inherited frameResultView: TframeResultView
         ExplicitHeight = 358
         inherited tbMain: TToolBar
           Width = 932
+          ExplicitWidth = 932
         end
         inherited vstTree: TVirtualStringTree
           Width = 932
           Height = 319
+          ExplicitWidth = 932
+          ExplicitHeight = 319
           DefaultText = ''
         end
       end

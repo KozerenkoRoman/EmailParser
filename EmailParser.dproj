@@ -116,10 +116,10 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.200.0.3;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=1.200.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.200.0.8;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=1.200.0.0;Comments=</VerInfo_Keys>
         <Icon_MainIcon>EmailParser_Icon.ico</Icon_MainIcon>
         <VerInfo_Debug>true</VerInfo_Debug>
-        <VerInfo_Build>3</VerInfo_Build>
+        <VerInfo_Build>8</VerInfo_Build>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -160,7 +160,6 @@
         </DCCReference>
         <DCCReference Include="Sources\DataModules\DaModule.pas">
             <Form>DaMod</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="Sources\DataModules\DaModule.Resources.pas"/>
@@ -194,6 +193,11 @@
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="Sources\Frames\Frame.MatchesFilter.pas">
+            <Form>frameMatchesFilter</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <DCCReference Include="Sources\Frames\Frame.Pathes.pas">
             <Form>framePathes</Form>
             <FormType>dfm</FormType>
@@ -206,6 +210,7 @@
         </DCCReference>
         <DCCReference Include="Sources\Frames\Frame.ResultView.pas">
             <Form>frameResultView</Form>
+            <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="Sources\Frames\Frame.Settings.pas">
@@ -244,15 +249,11 @@
         <DCCReference Include="Sources\Publishers.Interfaces.pas"/>
         <DCCReference Include="Sources\RegExp.Editor.pas">
             <Form>frmRegExpEditor</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Sources\RegExp.Import.pas">
             <Form>frmImportFromXML</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="Sources\Common\RegExp.Types.pas">
-            <Form>$R *.res</Form>
-        </DCCReference>
+        <DCCReference Include="Sources\Common\RegExp.Types.pas"/>
         <DCCReference Include="Sources\RegExp.Utils.pas"/>
         <DCCReference Include="Sources\SplashScreen.pas">
             <Form>frmSplashScreen</Form>
@@ -261,21 +262,15 @@
         <DCCReference Include="Sources\DataModules\Thread.Emails.pas"/>
         <DCCReference Include="Sources\Translate\Translate.Lang.pas"/>
         <DCCReference Include="Sources\Translate\Translate.Resources.pas"/>
-        <DCCReference Include="Sources\HTMLParse\UHtmlParse.pas">
-            <Form>$R *.res</Form>
-        </DCCReference>
+        <DCCReference Include="Sources\HTMLParse\UHtmlParse.pas"/>
         <DCCReference Include="Sources\Common\Utils.pas"/>
         <DCCReference Include="Sources\Common\Utils.Exceptions.pas"/>
         <DCCReference Include="Sources\Common\Utils.LocalInformation.pas"/>
         <DCCReference Include="Sources\Common\Utils.VerInfo.pas"/>
         <DCCReference Include="Sources\Common\Utils.Zip.pas"/>
         <DCCReference Include="Sources\Virtual TreeView\VirtualTrees.ExportHelper.pas"/>
-        <DCCReference Include="Sources\Virtual TreeView\VirtualTrees.Helper.pas">
-            <Form>$R *.res</Form>
-        </DCCReference>
-        <DCCReference Include="Sources\Common\XmlFiles.pas">
-            <Form>$R *.res</Form>
-        </DCCReference>
+        <DCCReference Include="Sources\Virtual TreeView\VirtualTrees.Helper.pas"/>
+        <DCCReference Include="Sources\Common\XmlFiles.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

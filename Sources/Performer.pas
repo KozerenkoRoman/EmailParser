@@ -10,7 +10,8 @@ uses
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
   Files.Utils, System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
-  System.Math, System.ZLib, System.Zip, System.Masks, System.StrUtils;
+  System.Math, System.ZLib, System.Zip, System.Masks, System.StrUtils, InformationDialog, Html.Lib,
+  Vcl.Graphics;
 {$ENDREGION}
 
 type
@@ -114,19 +115,20 @@ begin
   FailedText := '';
   sb := TStringBuilder.Create;
   try
-    sb.AppendLine('<b>RegExpParametersList</b>');
+    sb.AppendLine('<b>RegExp list</b>');
     for var item in FRegExpList.Items do
-      sb.AppendFormat('<b>Name: </b> %s, <b>Index: </b> %d, <b>Pattern: </b> %s',
-        [item.ParameterName, item.GroupIndex, item.RegExpTemplate]).AppendLine;
+      sb.AppendFormat('%s [%d]: %s', [item.ParameterName, item.GroupIndex, item.RegExpTemplate]).AppendLine;
     if (FRegExpList.Count = 0) then
     begin
       Result := False;
       FailedText := TLang.Lang.Translate('RegExpIsEmpty') + sLineBreak;
     end;
 
+    sb.AppendLine;
+    sb.AppendLine('<b>Path list</b>');
     for var item in FPathList.Items do
     begin
-      sb.AppendFormat('<b>Path: </b> %s', [item.Path]).AppendLine;
+      sb.Append(item.Path).AppendLine;
       if not TDirectory.Exists(item.Path) then
       begin
         Result := False;
@@ -138,13 +140,28 @@ begin
       Result := False;
       FailedText := TLang.Lang.Translate('PathsToFindNotExists') + sLineBreak;
     end;
+
+    sb.AppendLine;
+    sb.AppendLine('<b>Sorter list</b>');
+    for var item in FSorterPathList.Items do
+    begin
+      sb.Append(item.Path).AppendLine;
+      if not TDirectory.Exists(item.Path) then
+      begin
+        Result := False;
+        FailedText := Concat(FailedText, Format(TLang.Lang.Translate('PathNotExists'), [item.Path]), sLineBreak);
+      end;
+    end;
     LogWriter.Write(ddText, Self, sb.ToString);
   finally
     FreeAndNil(sb);
   end;
 
   if not Result then
-    TMessageDialog.ShowWarning(FailedText);
+  begin
+    LogWriter.Write(ddError, Self, 'Start', FailedText);
+    TMessageDialog.ShowError(FailedText);
+  end;
 end;
 
 procedure TPerformer.Start;
@@ -293,24 +310,25 @@ begin
           if not Assigned(Attachment) then
           begin
             New(Attachment);
-            Attachment^.FileName      := FileList[i];
-            Attachment^.ShortName     := TPath.GetFileName(FileList[i]);
-            Attachment^.FromZip       := False;
-            Attachment^.Hash          := Hash;
-            Attachment^.Matches.Count := FRegExpList.Count;
-            Attachment^.ParentHash    := '';
-            Attachment^.ParentName    := '';
-            Attachment^.FromDB        := False;
-            Attachment^.ParentNode    := nil;
-            TGeneral.AttachmentList.AddOrSetValue(Hash, Attachment);
-            ResultData.Attachments.Add(Hash);
+            Attachment^.FileName  := FileList[i];
+            Attachment^.ShortName := TPath.GetFileName(FileList[i]);
+            Attachment^.FromZip   := False;
+            Attachment^.FromDB    := False;
             LogWriter.Write(ddText, Self, 'FileSearch', 'Found file - ' + Attachment^.ShortName);
           end
           else
           begin
-            LogWriter.Write(ddWarning, Self, 'FileSearch', 'Skip file - ' + Attachment^.ShortName + '. Duplicate found');
+            Attachment^.FromDB := True;
+            LogWriter.Write(ddWarning, Self, 'FileSearch', 'Duplicate file - ' + Attachment^.ShortName);
             Inc(FFromDBCount);
           end;
+          Attachment^.Matches.Count := FRegExpList.Count;
+          Attachment^.Hash       := Hash;
+          Attachment^.ParentHash := '';
+          Attachment^.ParentName := '';
+          Attachment^.ParentNode := nil;
+          TGeneral.AttachmentList.AddOrSetValue(Hash, Attachment);
+          ResultData.Attachments.Add(Hash);
           Inc(FCount);
         end;
         DoParseAttachmentFiles(@ResultData,

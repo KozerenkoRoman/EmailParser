@@ -1,11 +1,11 @@
 inherited frameDuplicateFiles: TframeDuplicateFiles
-  Width = 798
+  Width = 869
   Height = 424
-  ExplicitWidth = 798
+  ExplicitWidth = 869
   ExplicitHeight = 424
   inherited tbMain: TToolBar
-    Width = 798
-    ExplicitWidth = 798
+    Width = 869
+    ExplicitWidth = 869
     inherited btnAdd: TToolButton
       Action = nil
       Visible = False
@@ -16,7 +16,7 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
   end
   inherited vstTree: TVirtualStringTree
     Top = 78
-    Width = 798
+    Width = 869
     Height = 346
     Alignment = taRightJustify
     Header.MainColumn = 0
@@ -27,7 +27,7 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
     OnGetText = vstTreeGetText
     OnPaintText = vstTreePaintText
     ExplicitTop = 78
-    ExplicitWidth = 798
+    ExplicitWidth = 869
     ExplicitHeight = 346
     Columns = <
       item
@@ -76,7 +76,7 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
   object tbFileSearch: TToolBar [2]
     Left = 0
     Top = 39
-    Width = 798
+    Width = 869
     Height = 39
     ButtonHeight = 38
     ButtonWidth = 39
@@ -156,6 +156,7 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
       Top = 0
       Width = 8
       ImageIndex = 83
+      ImageName = 'all_check_boxes'
       Style = tbsSeparator
     end
     object btnDeleteSelected: TToolButton
@@ -163,10 +164,15 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
       Top = 0
       Action = aDeleteSelected
     end
-    object btnRemoveChecks: TToolButton
+    object btnAllUnCheck: TToolButton
       Left = 664
       Top = 0
-      Action = aRemoveChecks
+      Action = aAllUnCheck
+    end
+    object btnAllCheck: TToolButton
+      Left = 703
+      Top = 0
+      Action = aAllCheck
     end
   end
   inherited alFrame: TActionList
@@ -196,11 +202,17 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
       OnExecute = aDeleteSelectedExecute
       OnUpdate = aDeleteSelectedUpdate
     end
-    object aRemoveChecks: TAction
-      ImageIndex = 82
-      ImageName = 'check_boxes'
-      OnExecute = aRemoveChecksExecute
+    object aAllUnCheck: TAction
+      ImageIndex = 84
+      ImageName = 'all_uncheck_boxes'
+      OnExecute = aAllUnCheckExecute
       OnUpdate = aDeleteSelectedUpdate
+    end
+    object aAllCheck: TAction
+      ImageIndex = 83
+      ImageName = 'all_check_boxes'
+      OnExecute = aAllCheckExecute
+      OnUpdate = aAllCheckUpdate
     end
   end
   object dlgFileSearch: TFileOpenDialog

@@ -498,7 +498,7 @@ begin
   FIsFiltered := True;
   aFilter.Checked    := True;
   aFilter.ImageIndex := 56;
-  FPerformer.IsQuiet := True;
+  FPerformer.IsQuiet := False;
   FPerformer.FileSearch(edtPath.Text, cbExt.Text);
 end;
 
@@ -517,16 +517,8 @@ begin
 end;
 
 procedure TframeAllAttachments.ClearTree;
-var
-  item : TPair<string, PAttachment>;
 begin
   TGeneral.AttachmentList.ClearParentNodePointer;
-  for item in TGeneral.AttachmentList do
-  begin
-    TGeneral.AttachmentList.ExtractPair(item.Key);
-    Dispose(item.Value);
-  end;
-
   vstTree.BeginUpdate;
   try
     vstTree.Clear;

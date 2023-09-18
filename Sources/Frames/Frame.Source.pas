@@ -63,7 +63,7 @@ implementation
 constructor TframeSource.Create(AOwner: TComponent);
 begin
   inherited;
-  TVirtualTree.Initialize(vstTree);
+
 end;
 
 destructor TframeSource.Destroy;
@@ -75,6 +75,7 @@ end;
 procedure TframeSource.Initialize;
 begin
   inherited;
+  TVirtualTree.Initialize(vstTree);
   LoadFromXML;
   tbMain.ButtonHeight := C_ICON_SIZE;
   tbMain.ButtonWidth  := C_ICON_SIZE;

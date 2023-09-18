@@ -142,9 +142,10 @@ begin
   vstTree.Header.Columns[COL_FROM].Text         := TLang.Lang.Translate('From');
   vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
 
-  aBreak.Hint       := TLang.Lang.Translate('Break');
-  aOpenEmail.Hint   := TLang.Lang.Translate('OpenEmail');
-  aSearch.Hint      := TLang.Lang.Translate('StartSearch');
+  aBreak.Hint     := TLang.Lang.Translate('Break');
+  aFilter.Hint    := TLang.Lang.Translate('Filter');
+  aOpenEmail.Hint := TLang.Lang.Translate('OpenEmail');
+  aSearch.Hint    := TLang.Lang.Translate('StartSearch');
 end;
 
 procedure TframeEmails.UpdateColumns;

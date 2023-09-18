@@ -11,22 +11,22 @@ uses
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExp, Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.Settings, Global.Types, Vcl.Samples.Gauges,
   Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule, Frame.Sorter, Frame.DuplicateFiles,
-  Files.Utils, Vcl.CheckLst, ArrayHelper;
+  Files.Utils, Vcl.CheckLst, ArrayHelper, System.Types, Frame.MatchesFilter;
 {$ENDREGION}
 
 type
-  TfrmMain = class(TCommonForm, IProgress, ITranslate, IUpdateXML)
+  TfrmMain = class(TCommonForm, IProgress, ITranslate)
     alSettings              : TActionList;
     ApplicationEvents       : TApplicationEvents;
     aToggleSplitPanel       : TAction;
     catMenuItems            : TCategoryButtons;
-    cbRegExp                : TCheckListBox;
     crdCommonParams         : TCard;
     crdPathsToFindScripts   : TCard;
     crdRegExpParameters     : TCard;
     crdResultView           : TCard;
     crdSearchDuplicateFiles : TCard;
     frameDuplicateFiles     : TframeDuplicateFiles;
+    frameMatchesFilter      : TframeMatchesFilter;
     framePathes             : TframePathes;
     frameRegExp             : TframeRegExp;
     frameResultView         : TframeResultView;
@@ -38,12 +38,15 @@ type
     lblTitle                : TLabel;
     pnlCard                 : TCardPanel;
     pnlLeft                 : TPanel;
+    pnlMatchesFilter        : TPanel;
     pnlSrchBox              : TPanel;
     pnlTop                  : TPanel;
     sbMain                  : TStatusBar;
+    splMatchesFilter        : TSplitter;
     splPath                 : TSplitter;
     splView                 : TSplitView;
     srchBox                 : TSearchBox;
+
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
     procedure aToggleSplitPanelExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -53,6 +56,7 @@ type
     procedure catMenuItemsSelectedItemChange(Sender: TObject; const Button: TButtonItem);
     procedure splViewClosed(Sender: TObject);
     procedure splViewOpened(Sender: TObject);
+    procedure cbRegExpDrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
   private const
     C_IDENTITY_NAME = 'MainForm';
   private
@@ -61,9 +65,6 @@ type
 
     //ITranslate
     procedure ITranslate.LanguageChange = Translate;
-
-    //IUpdateXML
-    procedure UpdateXML;
 
     //IProgress
     procedure ClearTree;
@@ -120,6 +121,7 @@ begin
   frameSorter.Initialize;
   frameSettings.Initialize;
   frameDuplicateFiles.Initialize;
+  frameMatchesFilter.Initialize;
 
   pnlTop.Color                := C_TOP_COLOR;
   catMenuItems.HotButtonColor := C_TOP_COLOR;
@@ -136,6 +138,7 @@ begin
   frameResultView.Deinitialize;
   frameSettings.Deinitialize;
   frameDuplicateFiles.Deinitialize;
+  frameMatchesFilter.Deinitialize;
   DaMod.Deinitialize;
   LogWriter.Active := False;
 end;
@@ -150,7 +153,7 @@ begin
   catMenuItems.Categories[0].Items[2].Caption := TLang.Lang.Translate('EditCommonParameters');
   catMenuItems.Categories[0].Items[3].Caption := TLang.Lang.Translate('Search');
   catMenuItems.Categories[1].Items[0].Caption := TLang.Lang.Translate('SearchDuplicateFiles');
-  catMenuItems.Categories[1].Items[1].Caption := TLang.Lang.Translate('SearchDuplicateFiles');
+  catMenuItems.Categories[1].Items[1].Caption := TLang.Lang.Translate('OpenLogFile');
 
   crdCommonParams.Caption         := TLang.Lang.Translate('EditCommonParameters');
   crdPathsToFindScripts.Caption   := TLang.Lang.Translate('PathsToFindFiles');
@@ -190,17 +193,6 @@ begin
   FProgressBar.Visible     := False;
 end;
 
-procedure TfrmMain.UpdateXML;
-var
-  arrParams: TArrayRecord<TRegExpData>;
-begin
-  cbRegExp.Clear;
-  arrParams := TGeneral.GetRegExpParametersList;
-  for var i := 0 to arrParams.Count - 1 do
-    cbRegExp.Items.Add(arrParams[i].ParameterName);
-  cbRegExp.CheckAll(TCheckBoxState.cbChecked);
-end;
-
 procedure TfrmMain.catMenuItemsSelectedItemChange(Sender: TObject; const Button: TButtonItem);
 begin
   inherited;
@@ -218,7 +210,28 @@ begin
           TFileUtils.ShellOpen(LogWriter.LogFileName);
     end;
   lblTitle.Caption := Button.Caption;
-//  cbRegExp.Visible := pnlCard.ActiveCard = crdResultView;
+
+  pnlMatchesFilter.Visible := pnlCard.ActiveCard = crdResultView;
+  splMatchesFilter.Visible := pnlCard.ActiveCard = crdResultView;
+end;
+
+procedure TfrmMain.cbRegExpDrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
+var
+  Flags: Longint;
+begin
+  inherited;
+  with (Control as TCheckListBox) do
+  begin
+    Canvas.Brush.Color := TGeneral.RegExpColumns[Index].Color;
+    Canvas.FillRect(Rect);
+
+    Flags := DrawTextBiDiModeFlags(DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+    if not UseRightToLeftAlignment then
+      Inc(Rect.Left, 5)
+    else
+      Dec(Rect.Right, 5);
+    DrawText(Canvas.Handle, Items[Index], Length(Items[Index]), Rect, Flags);
+  end;
 end;
 
 procedure TfrmMain.aToggleSplitPanelExecute(Sender: TObject);

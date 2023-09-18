@@ -8,6 +8,8 @@
 uses
   Vcl.Forms,
   System.SysUtils,
+  System.IOUtils,
+  Winapi.Windows,
   ArrayHelper in 'Sources\Common\ArrayHelper.pas',
   Column.Settings in 'Sources\Column.Settings.pas' {frmColumnSettings},
   Column.Types in 'Sources\Common\Column.Types.pas',
@@ -26,6 +28,7 @@ uses
   Frame.Custom in 'Sources\Frames\Frame.Custom.pas' {FrameCustom: TFrame},
   Frame.DuplicateFiles in 'Sources\Frames\Frame.DuplicateFiles.pas' {frameDuplicateFiles: TFrame},
   Frame.Emails in 'Sources\Frames\Frame.Emails.pas' {frameEmails: TFrame},
+  Frame.MatchesFilter in 'Sources\Frames\Frame.MatchesFilter.pas' {frameMatchesFilter: TFrame},
   Frame.Pathes in 'Sources\Frames\Frame.Pathes.pas' {framePathes: TFrame},
   Frame.RegExp in 'Sources\Frames\Frame.RegExp.pas' {frameRegExp: TFrame},
   Frame.ResultView in 'Sources\Frames\Frame.ResultView.pas' {frameResultView: TFrame},
@@ -70,7 +73,7 @@ uses
 
 begin
   ReportMemoryLeaksOnShutdown := {$IFDEF DETAILED_LOG} True {$ELSE} False {$ENDIF DETAILED_LOG};
-  PDFiumDllDir := ExtractFilePath(ParamStr(0)) + {$IFDEF CPUX64} '' {$ELSE} '' {$ENDIF CPUX64};
+  PDFiumDllDir := TPath.Combine(TDirectory.GetCurrentDirectory, {$IFDEF CPUX64} '' {$ELSE} 'x86' {$ENDIF CPUX64});
   IsMultiThread := True;
   try
     Application.Initialize;

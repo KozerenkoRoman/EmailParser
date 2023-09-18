@@ -23,6 +23,8 @@ resourcestring
   //English
   en_Add                  = 'Add';
   en_AllAttachments       = 'All attachments';
+  en_AllCheck             = 'Set all checks';
+  en_AllUnCheck           = 'Remove all checks';
   en_Attachment           = 'Attachment';
   en_Begin                = 'begin';
   en_Body                 = 'Body';
@@ -67,6 +69,7 @@ resourcestring
   en_FileNotFound         = 'File "%s" not found';
   en_FoundFiles           = 'Found %d files';
   en_From                 = 'From';
+  en_Filter               = 'Filter';
   en_GettingStarted       = 'Getting started';
   en_Go                   = 'Go';
   en_GroupIndex           = 'Group index';
@@ -94,13 +97,12 @@ resourcestring
   en_Parameters           = 'Parameters';
   en_Paste                = 'Paste';
   en_Path                 = 'Path';
-  en_RegExpIsEmpty        = 'There are no regular expression patterns';
   en_PathForAttachments   = 'Paths for saving attachments';
+  en_PathNotExists        = 'Paths "%s" not exists';
   en_PathsToFindFiles     = 'Paths to find files';
+  en_PathsToFindNotExists = 'Paths to find files not exists';
   en_PathsToFindSaveFiles = 'Paths for search and saving attachments';
   en_PathsToSaveFiles     = 'Paths for saving files';
-  en_PathNotExists        = 'Paths "%s" not exists';
-  en_PathsToFindNotExists = 'Paths to find files not exists';
   en_PlainText            = 'Plain Text';
   en_Position             = 'Position';
   en_Print                = 'Print';
@@ -108,6 +110,7 @@ resourcestring
   en_ProgramStopsWorking  = 'Application will be terminated!';
   en_ProgramVersion       = 'Version';
   en_Refresh              = 'Refresh';
+  en_RegExpIsEmpty        = 'There are no regular expression patterns';
   en_RegExpTemplate       = 'RegExp Template';
   en_Results              = 'Results';
   en_SampleText           = 'Sample Text';
@@ -132,11 +135,12 @@ resourcestring
   en_Utilities            = 'Utilities';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
-  en_RemoveChecks         = 'Remove all checks';
 
   //Ukrainian
   uk_Add                  = 'Додати';
   uk_AllAttachments       = 'Всі вкладення';
+  uk_AllCheck             = 'Встановити позначки';
+  uk_AllUnCheck           = 'Зняти всі позначки';
   uk_Attachment           = 'Вкладення';
   uk_Begin                = 'початок';
   uk_Body                 = 'Тіло';
@@ -163,7 +167,6 @@ resourcestring
   uk_Edit                 = 'Редагувати';
   uk_EditCommonParameters = 'Загальні параметри';
   uk_EditRegExpParameters = 'RegExp параметри';
-  uk_RegExpIsEmpty        = 'Шаблони регулярних виразів відсутні';
   uk_Email                = 'Лист';
   uk_Emails               = 'Листи';
   uk_Enabled              = 'Увімкнено';
@@ -182,6 +185,7 @@ resourcestring
   uk_FileNotFound         = 'Файл "%s" не знайдено';
   uk_FoundFiles           = 'Знайдено %d файлів';
   uk_From                 = 'Відправник';
+  uk_Filter               = 'Фільтрувати';
   uk_GettingStarted       = 'Початок роботи';
   uk_Go                   = 'Почати';
   uk_GroupIndex           = 'Індекс групи';
@@ -210,11 +214,11 @@ resourcestring
   uk_Paste                = 'Вставити';
   uk_Path                 = 'Шлях';
   uk_PathForAttachments   = 'Шляхи для збереження вкладень';
+  uk_PathNotExists        = 'Шлях "%s" не існує';
   uk_PathsToFindFiles     = 'Шляхи для пошуку файлів';
   uk_PathsToFindNotExists = 'Шляхи для пошуку файлів відсутні';
   uk_PathsToFindSaveFiles = 'Шляхи для пошуку та збереження файлів';
   uk_PathsToSaveFiles     = 'Шляхи для збереження файлів';
-  uk_PathNotExists        = 'Шлях "%s" не існує';
   uk_PlainText            = 'Простий текст';
   uk_Position             = 'Позиція';
   uk_Print                = 'Друк';
@@ -222,6 +226,7 @@ resourcestring
   uk_ProgramStopsWorking  = 'Програму буде зупинено!';
   uk_ProgramVersion       = 'Версія';
   uk_Refresh              = 'Оновити';
+  uk_RegExpIsEmpty        = 'Шаблони регулярних виразів відсутні';
   uk_RegExpTemplate       = 'Шаблон регулярного виразу';
   uk_Results              = 'Результат';
   uk_SampleText           = 'Приклад тексту';
@@ -246,13 +251,13 @@ resourcestring
   uk_Utilities            = 'Утиліти';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
-  uk_RemoveChecks         = 'Зняти всі позначки';
 
 const
-   ArrayMessages: array[1 .. 110] of TMessageItem = (
+   ArrayMessages: array[1 .. 112] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
+    (Key: 'AllCheck'             ; En: en_AllCheck;             Uk: uk_AllCheck),
     (Key: 'Begin'                ; En: en_Begin;                Uk: uk_Begin),
     (Key: 'Body'                 ; En: en_Body;                 Uk: uk_Body),
     (Key: 'Break'                ; En: en_Break;                Uk: uk_Break),
@@ -295,6 +300,7 @@ const
     (Key: 'FileName'             ; En: en_FileName;             Uk: uk_FileName),
     (Key: 'FileNotFound'         ; En: en_FileNotFound;         Uk: uk_FileNotFound),
     (Key: 'FoundFiles'           ; En: en_FoundFiles;           Uk: uk_FoundFiles),
+    (Key: 'Filter'               ; En: en_Filter;               Uk: uk_Filter),
     (Key: 'From'                 ; En: en_From;                 Uk: uk_From),
     (Key: 'GettingStarted'       ; En: en_GettingStarted;       Uk: uk_GettingStarted),
     (Key: 'Go'                   ; En: en_Go;                   Uk: uk_Go),
@@ -338,7 +344,7 @@ const
     (Key: 'ProgramVersion'       ; En: en_ProgramVersion;       Uk: uk_ProgramVersion),
     (Key: 'Refresh'              ; En: en_Refresh;              Uk: uk_Refresh),
     (Key: 'RegExpTemplate'       ; En: en_RegExpTemplate;       Uk: uk_RegExpTemplate),
-    (Key: 'RemoveChecks'         ; En: en_RemoveChecks;         Uk: uk_RemoveChecks),
+    (Key: 'AllUnCheck'           ; En: en_AllUnCheck;           Uk: uk_AllUnCheck),
     (Key: 'Results'              ; En: en_Results;              Uk: uk_Results),
     (Key: 'SampleText'           ; En: en_SampleText;           Uk: uk_SampleText),
     (Key: 'Save'                 ; En: en_Save;                 Uk: uk_Save),

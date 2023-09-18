@@ -80,7 +80,7 @@ begin
       Initialize;
       MessageText := THtmlLib.XmlToHtml(AMessageText);
       THtmlLib.LoadStringToBrowser(wbMessage, MessageText);
-      wbMessage.OleObject.Document.bgColor := THtmlLib.ColorToHtml(clWebWhiteSmoke);
+//      wbMessage.OleObject.Document.bgColor := THtmlLib.ColorToHtml(clWebWhiteSmoke);
       if wbMessage.Showing and Assigned(wbMessage.Document) then
         with wbMessage.Application as IOleobject do
           DoVerb(OLEIVERB_UIACTIVATE, nil, wbMessage, 0, Handle, GetClientRect);
@@ -117,7 +117,7 @@ begin
                  C_HTML_CLOSE);
 
   THtmlLib.LoadStringToBrowser(wbMessage, html);
-  wbMessage.OleObject.Document.bgColor := THtmlLib.ColorToHtml(clWebWhiteSmoke);
+//  wbMessage.OleObject.Document.bgColor := THtmlLib.ColorToHtml(clWebWhite);
   if wbMessage.Showing and Assigned(wbMessage.Document) then
     with wbMessage.Application as IOleobject do
       DoVerb(OLEIVERB_UIACTIVATE, nil, wbMessage, 0, Handle, GetClientRect);
