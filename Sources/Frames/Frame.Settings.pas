@@ -113,7 +113,7 @@ begin
   inherited;
   SaveToXML;
   TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
-  TPublishers.TranslatePublisher.LanguageChange;
+  TPublishers.ConfigPublisher.UpdateLanguage;
 end;
 
 procedure TframeSettings.aAttachmentsMainExecute(Sender: TObject);

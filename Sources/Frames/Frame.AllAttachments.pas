@@ -15,7 +15,7 @@ uses
 {$ENDREGION}
 
 type
-  TframeAllAttachments = class(TframeSource, IProgress, IUpdateXML)
+  TframeAllAttachments = class(TframeSource, IProgress, IConfig)
     aFileBreak           : TAction;
     aFileSearch          : TAction;
     aFileSearchShow      : TAction;
@@ -71,8 +71,9 @@ type
     FIsLoaded   : Boolean;
     FPerformer  : TPerformer;
 
-      //IUpdateXML
-    procedure IUpdateXML.UpdateXML = UpdateColumns;
+    //IConfig
+    procedure IConfig.UpdateRegExp = UpdateColumns;
+    procedure UpdateFilter;
 
     //IProgress
     procedure ClearTree;
@@ -108,14 +109,14 @@ begin
   inherited;
   vstTree.NodeDataSize := SizeOf(TAttachData);
   TPublishers.ProgressPublisher.Subscribe(Self);
-  TPublishers.UpdateXMLPublisher.Subscribe(Self);
+  TPublishers.ConfigPublisher.Subscribe(Self);
   FIsFiltered := False;
 end;
 
 destructor TframeAllAttachments.Destroy;
 begin
   TPublishers.ProgressPublisher.Unsubscribe(Self);
-  TPublishers.UpdateXMLPublisher.Unsubscribe(Self);
+  TPublishers.ConfigPublisher.Unsubscribe(Self);
   inherited;
 end;
 
@@ -627,6 +628,11 @@ begin
   finally
     vstTree.EndUpdate;
   end;
+end;
+
+procedure TframeAllAttachments.UpdateFilter;
+begin
+//
 end;
 
 procedure TframeAllAttachments.EndProgress;

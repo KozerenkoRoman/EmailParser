@@ -11,15 +11,19 @@ uses
 {$ENDREGION}
 
 type
-  TCustomPublisher = class(TList<TObject>)
+  TCustomPublisher = class(TThreadList<TObject>)
+  protected
+    function Count: Integer;
   public
     procedure Subscribe(aItem: TObject); virtual;
     procedure Unsubscribe(aItem: TObject); virtual;
   end;
 
-  TUpdateXMLPublisher = class(TCustomPublisher)
+  TConfigPublisher = class(TCustomPublisher)
   public
-    procedure UpdateXML;
+    procedure UpdateRegExp;
+    procedure UpdateFilter;
+    procedure UpdateLanguage;
   end;
 
   TProgressPublisher = class(TCustomPublisher)
@@ -37,54 +41,112 @@ type
     procedure FocusChanged(const aData: PResultData);
   end;
 
-  TTranslatePublisher = class(TCustomPublisher)
-  public
-    procedure LanguageChange;
-  end;
-
   TPublishers = class
   class var
-    EmailPublisher     : TEmailPublisher;
-    ProgressPublisher  : TProgressPublisher;
-    TranslatePublisher : TTranslatePublisher;
-    UpdateXMLPublisher : TUpdateXMLPublisher;
+    EmailPublisher    : TEmailPublisher;
+    ProgressPublisher : TProgressPublisher;
+    ConfigPublisher   : TConfigPublisher;
   end;
 
 implementation
 
 { TCustomPublisher }
 
+function TCustomPublisher.Count: Integer;
+begin
+  try
+    Result := Self.LockList.Count;
+  finally
+    Self.UnlockList;
+  end;
+end;
+
 procedure TCustomPublisher.Subscribe(aItem: TObject);
 begin
-  if (Self.IndexOf(aItem) < 0) then
-    Self.Add(aItem);
+  try
+    if (Self.LockList.IndexOf(aItem) < 0) then
+      Self.Add(aItem);
+  finally
+    Self.UnlockList;
+  end;
 end;
 
 procedure TCustomPublisher.Unsubscribe(aItem: TObject);
 begin
-  if (Self.IndexOf(aItem) >= 0) then
-    Self.Remove(aItem);
+  try
+    if (Self.LockList.IndexOf(aItem) >= 0) then
+      Self.Remove(aItem);
+  finally
+    Self.UnlockList;
+  end;
 end;
 
-{ TUpdateXMLPublisher }
+{ TConfigPublisher }
 
-procedure TUpdateXMLPublisher.UpdateXML;
+procedure TConfigPublisher.UpdateFilter;
 var
   Item: TObject;
-  obj: IUpdateXML;
 begin
   if not Application.Terminated then
-    TThread.Queue(nil,
-      procedure
-      begin
-        for var i := 0 to Self.Count - 1 do
-        begin
-          Item := Self.Items[i];
-          if Assigned(Item) then
-            if Supports(Item, IUpdateXML, obj) then
-              obj.UpdateXML;
-        end;
-      end);
+    for var i := 0 to Self.Count - 1 do
+      try
+        Item := Self.LockList.Items[i];
+        if Assigned(Item) then
+          TThread.Queue(nil,
+            procedure
+            var
+              obj: IConfig;
+            begin
+              if Supports(Item, IConfig, obj) then
+                obj.UpdateFilter;
+            end);
+      finally
+        Self.UnlockList;
+      end;
+end;
+
+procedure TConfigPublisher.UpdateLanguage;
+var
+  Item: TObject;
+begin
+  if not Application.Terminated then
+    for var i := 0 to Self.Count - 1 do
+      try
+        Item := Self.LockList.Items[i];
+        if Assigned(Item) then
+          TThread.Queue(nil,
+            procedure
+            var
+              obj: IConfig;
+            begin
+              if Supports(Item, IConfig, obj) then
+                obj.UpdateLanguage;
+            end);
+      finally
+        Self.UnlockList;
+      end;
+end;
+
+procedure TConfigPublisher.UpdateRegExp;
+var
+  Item: TObject;
+begin
+  if not Application.Terminated then
+    for var i := 0 to Self.Count - 1 do
+      try
+        Item := Self.LockList.Items[i];
+        if Assigned(Item) then
+          TThread.Queue(nil,
+            procedure
+            var
+              obj: IConfig;
+            begin
+              if Supports(Item, IConfig, obj) then
+                obj.UpdateRegExp;
+            end);
+      finally
+        Self.UnlockList;
+      end;
 end;
 
 { TProgressPublisher }
@@ -92,115 +154,133 @@ end;
 procedure TProgressPublisher.ClearTree;
 var
   Item: TObject;
-  obj: IProgress;
 begin
   if not Application.Terminated then
-    TThread.Queue(nil,
-      procedure
-      begin
-        for var i := 0 to Self.Count - 1 do
-        begin
-          Item := Self.Items[i];
-          if Assigned(Item) then
-            if Supports(Item, IProgress, obj) then
-              obj.ClearTree;
-        end;
-      end);
+    for var i := 0 to Self.Count - 1 do
+      try
+        Item := Self.LockList.Items[i];
+        if Assigned(Item) then
+          TThread.Queue(nil,
+            procedure
+            var
+              obj: IProgress;
+            begin
+              if Supports(Item, IProgress, obj) then
+                obj.ClearTree;
+            end);
+      finally
+        Self.UnlockList;
+      end;
 end;
 
 procedure TProgressPublisher.CompletedAttach(const aAttachment: PAttachment);
 var
   Item: TObject;
-  obj: IProgress;
 begin
   if not Application.Terminated then
     TThread.Queue(nil,
       procedure
+      var
+        obj: IProgress;
       begin
         for var i := 0 to Self.Count - 1 do
-        begin
-          Item := Self.Items[i];
-          if Assigned(Item) then
-            if Supports(Item, IProgress, obj) then
-              obj.CompletedAttach(aAttachment);
-        end;
+          try
+            Item := Self.LockList.Items[i];
+            if Assigned(Item) then
+              if Supports(Item, IProgress, obj) then
+                obj.CompletedAttach(aAttachment);
+          finally
+            Self.UnlockList;
+          end;
       end);
 end;
 
 procedure TProgressPublisher.CompletedItem(const aResultData: PResultData);
 var
   Item: TObject;
-  obj: IProgress;
 begin
   if not Application.Terminated then
-    TThread.Queue(nil,
-      procedure
-      begin
-        for var i := 0 to Self.Count - 1 do
-        begin
-          Item := Self.Items[i];
-          if Assigned(Item) then
-            if Supports(Item, IProgress, obj) then
-              obj.CompletedItem(aResultData);
-        end;
-      end);
+    for var i := 0 to Self.Count - 1 do
+      try
+        Item := Self.LockList.Items[i];
+        if Assigned(Item) then
+          TThread.Queue(nil,
+            procedure
+            var
+              obj: IProgress;
+            begin
+              if Supports(Item, IProgress, obj) then
+                obj.CompletedItem(aResultData);
+            end);
+      finally
+        Self.UnlockList;
+      end;
 end;
 
 procedure TProgressPublisher.EndProgress;
 var
   Item: TObject;
-  obj: IProgress;
 begin
   if not Application.Terminated then
-    TThread.Queue(nil,
-      procedure
-      begin
-        for var i := 0 to Self.Count - 1 do
-        begin
-          Item := Self.Items[i];
-          if Assigned(Item) then
-            if Supports(Item, IProgress, obj) then
-              obj.EndProgress;
-        end;
-      end);
+    for var i := 0 to Self.Count - 1 do
+      try
+        Item := Self.LockList.Items[i];
+        if Assigned(Item) then
+          TThread.Queue(nil,
+            procedure
+            var
+              obj: IProgress;
+            begin
+              if Supports(Item, IProgress, obj) then
+                obj.EndProgress;
+            end);
+      finally
+        Self.UnlockList;
+      end;
 end;
 
 procedure TProgressPublisher.Progress;
 var
   Item: TObject;
-  obj: IProgress;
 begin
-  TThread.Queue(nil,
-    procedure
-    begin
-      if not Application.Terminated then
-        for var i := 0 to Self.Count - 1 do
-        begin
-          Item := Self.Items[i];
-          if Assigned(Item) then
-            if Supports(Item, IProgress, obj) then
-              obj.Progress;
-        end;
-    end);
+  if not Application.Terminated then
+    for var i := 0 to Self.Count - 1 do
+      try
+        Item := Self.LockList.Items[i];
+        if Assigned(Item) then
+          TThread.Queue(nil,
+            procedure
+            var
+              obj: IProgress;
+            begin
+              if Supports(Item, IProgress, obj) then
+                obj.Progress;
+            end);
+      finally
+        Self.UnlockList;
+      end;
 end;
 
 procedure TProgressPublisher.StartProgress(const aMaxPosition: Integer);
 var
   Item: TObject;
-  obj: IProgress;
 begin
   if not Application.Terminated then
-    TThread.Queue(nil,
-      procedure
-      begin
-        for var i := 0 to Self.Count - 1 do
-        begin
-          Item := Self.Items[i];
-          if Assigned(Item) then
-            if Supports(Item, IProgress, obj) then
-              obj.StartProgress(aMaxPosition);
-        end;
-      end);
+    for var i := 0 to Self.Count - 1 do
+      try
+        Item := Self.LockList.Items[i];
+        if Assigned(Item) then
+          TThread.Queue(nil,
+            procedure
+            var
+              obj: IProgress;
+            begin
+              if Supports(Item, IProgress, obj) then
+                obj.StartProgress(aMaxPosition);
+            end);
+      finally
+        Self.UnlockList;
+      end;
 end;
 
 { TEmailPublisher }
@@ -208,57 +288,36 @@ end;
 procedure TEmailPublisher.FocusChanged(const aData: PResultData);
 var
   Item: TObject;
-  obj: IEmailChange;
 begin
   if not Application.Terminated then
-    TThread.Queue(nil,
-      procedure
-      begin
-        for var i := 0 to Self.Count - 1 do
-        begin
-          Item := Self.Items[i];
-          if Assigned(Item) then
-            if Supports(Item, IEmailChange, obj) then
-              obj.FocusChanged(aData);
-        end;
-      end);
-end;
-
-{ TTranslatePublisher }
-
-procedure TTranslatePublisher.LanguageChange;
-var
-  Item: TObject;
-  obj: ITranslate;
-begin
-  TThread.Queue(nil,
-    procedure
-    begin
-      if not Application.Terminated then
-        for var i := 0 to Self.Count - 1 do
-        begin
-          Item := Self.Items[i];
-          if Assigned(Item) then
-            if Supports(Item, ITranslate, obj) then
-              obj.LanguageChange;
-        end;
-    end);
+    for var i := 0 to Self.Count - 1 do
+      try
+        Item := Self.LockList.Items[i];
+        if Assigned(Item) then
+          TThread.Queue(nil,
+            procedure
+            var
+              obj: IEmailChange;
+            begin
+              if Supports(Item, IEmailChange, obj) then
+                obj.FocusChanged(aData);
+            end);
+      finally
+        Self.UnlockList;
+      end;
 end;
 
 initialization
-  TPublishers.ProgressPublisher  := TProgressPublisher.Create;
-  TPublishers.UpdateXMLPublisher := TUpdateXMLPublisher.Create;
-  TPublishers.EmailPublisher     := TEmailPublisher.Create;
-  TPublishers.TranslatePublisher := TTranslatePublisher.Create;
+  TPublishers.ProgressPublisher := TProgressPublisher.Create;
+  TPublishers.ConfigPublisher   := TConfigPublisher.Create;
+  TPublishers.EmailPublisher    := TEmailPublisher.Create;
 
 finalization
-  if Assigned(TPublishers.UpdateXMLPublisher) then
-    FreeAndNil(TPublishers.UpdateXMLPublisher);
+  if Assigned(TPublishers.ConfigPublisher) then
+    FreeAndNil(TPublishers.ConfigPublisher);
   if Assigned(TPublishers.ProgressPublisher) then
     FreeAndNil(TPublishers.ProgressPublisher);
   if Assigned(TPublishers.EmailPublisher) then
     FreeAndNil(TPublishers.EmailPublisher);
-  if Assigned(TPublishers.TranslatePublisher) then
-    FreeAndNil(TPublishers.TranslatePublisher);
 
 end.

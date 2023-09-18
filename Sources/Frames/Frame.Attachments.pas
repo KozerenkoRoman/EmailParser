@@ -15,7 +15,7 @@ uses
 {$ENDREGION}
 
 type
-  TframeAttachments = class(TframeSource, IEmailChange, IUpdateXML)
+  TframeAttachments = class(TframeSource, IEmailChange, IConfig)
     aOpenAttachFile      : TAction;
     aOpenParsedText      : TAction;
     btnOpenAttachFile    : TToolButton;
@@ -45,8 +45,9 @@ type
     //IEmailChange
     procedure FocusChanged(const aData: PResultData);
 
-    //IUpdateXML
-    procedure IUpdateXML.UpdateXML = UpdateColumns;
+    //IConfig
+    procedure IConfig.UpdateRegExp = UpdateColumns;
+    procedure UpdateFilter;
     procedure UpdateColumns;
   protected
     function GetIdentityName: string; override;
@@ -70,13 +71,13 @@ begin
   inherited;
   vstTree.NodeDataSize := SizeOf(TAttachData);
   TPublishers.EmailPublisher.Subscribe(Self);
-  TPublishers.UpdateXMLPublisher.Subscribe(Self);
+  TPublishers.ConfigPublisher.Subscribe(Self);
 end;
 
 destructor TframeAttachments.Destroy;
 begin
   TPublishers.EmailPublisher.Unsubscribe(Self);
-  TPublishers.UpdateXMLPublisher.Unsubscribe(Self);
+  TPublishers.ConfigPublisher.Unsubscribe(Self);
   inherited;
 end;
 
@@ -155,6 +156,11 @@ begin
   finally
     vstTree.EndUpdate;
   end;
+end;
+
+procedure TframeAttachments.UpdateFilter;
+begin
+  //nothing
 end;
 
 procedure TframeAttachments.aOpenAttachFileExecute(Sender: TObject);

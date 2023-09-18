@@ -15,7 +15,7 @@ uses
 {$ENDREGION}
 
 type
-  TfrmMain = class(TCommonForm, IProgress, ITranslate)
+  TfrmMain = class(TCommonForm, IProgress, IConfig)
     alSettings              : TActionList;
     ApplicationEvents       : TApplicationEvents;
     aToggleSplitPanel       : TAction;
@@ -46,25 +46,25 @@ type
     splPath                 : TSplitter;
     splView                 : TSplitView;
     srchBox                 : TSearchBox;
-
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
     procedure aToggleSplitPanelExecute(Sender: TObject);
+    procedure catMenuItemsSelectedItemChange(Sender: TObject; const Button: TButtonItem);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure srchBoxInvokeSearch(Sender: TObject);
-    procedure catMenuItemsSelectedItemChange(Sender: TObject; const Button: TButtonItem);
     procedure splViewClosed(Sender: TObject);
     procedure splViewOpened(Sender: TObject);
-    procedure cbRegExpDrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
+    procedure srchBoxInvokeSearch(Sender: TObject);
   private const
     C_IDENTITY_NAME = 'MainForm';
   private
     FProgressBar: TGauge;
     procedure CreateProgressBar;
 
-    //ITranslate
-    procedure ITranslate.LanguageChange = Translate;
+    //IConfig
+    procedure IConfig.UpdateLanguage = Translate;
+    procedure UpdateRegExp;
+    procedure UpdateFilter;
 
     //IProgress
     procedure ClearTree;
@@ -95,8 +95,7 @@ begin
   inherited;
   CreateProgressBar;
   TPublishers.ProgressPublisher.Subscribe(Self);
-  TPublishers.TranslatePublisher.Subscribe(Self);
-  TPublishers.UpdateXMLPublisher.Subscribe(Self);
+  TPublishers.ConfigPublisher.Subscribe(Self);
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -105,8 +104,7 @@ begin
   FreeAndNil(FProgressBar);
   Deinitialize;
   TPublishers.ProgressPublisher.Unsubscribe(Self);
-  TPublishers.TranslatePublisher.Unsubscribe(Self);
-  TPublishers.UpdateXMLPublisher.Unsubscribe(Self);
+  TPublishers.ConfigPublisher.Unsubscribe(Self);
 end;
 
 procedure TfrmMain.Initialize;
@@ -211,27 +209,8 @@ begin
     end;
   lblTitle.Caption := Button.Caption;
 
-  pnlMatchesFilter.Visible := pnlCard.ActiveCard = crdResultView;
-  splMatchesFilter.Visible := pnlCard.ActiveCard = crdResultView;
-end;
-
-procedure TfrmMain.cbRegExpDrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
-var
-  Flags: Longint;
-begin
-  inherited;
-  with (Control as TCheckListBox) do
-  begin
-    Canvas.Brush.Color := TGeneral.RegExpColumns[Index].Color;
-    Canvas.FillRect(Rect);
-
-    Flags := DrawTextBiDiModeFlags(DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
-    if not UseRightToLeftAlignment then
-      Inc(Rect.Left, 5)
-    else
-      Dec(Rect.Right, 5);
-    DrawText(Canvas.Handle, Items[Index], Length(Items[Index]), Rect, Flags);
-  end;
+  pnlMatchesFilter.Visible := (pnlCard.ActiveCard = crdResultView);
+  splMatchesFilter.Visible := (pnlCard.ActiveCard = crdResultView);
 end;
 
 procedure TfrmMain.aToggleSplitPanelExecute(Sender: TObject);
@@ -279,17 +258,27 @@ end;
 
 procedure TfrmMain.ClearTree;
 begin
-  //nothing
+  // nothing
 end;
 
 procedure TfrmMain.CompletedAttach(const aAttachment: PAttachment);
 begin
-  //nothing
+  // nothing
 end;
 
 procedure TfrmMain.CompletedItem(const aResultData: PResultData);
 begin
-  //nothing
+  // nothing
+end;
+
+procedure TfrmMain.UpdateFilter;
+begin
+  // nothing
+end;
+
+procedure TfrmMain.UpdateRegExp;
+begin
+  // nothing
 end;
 
 procedure TfrmMain.EndProgress;

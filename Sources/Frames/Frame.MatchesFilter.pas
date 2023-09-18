@@ -12,30 +12,35 @@ uses
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Publishers,
   VCLTee.TeCanvas, Global.Resources, Winapi.msxml, RegExp.Editor, Vcl.WinXPanels, Frame.Custom, RegExp.Import,
-  RegExp.Utils;
+  RegExp.Utils, Publishers.Interfaces;
 {$ENDREGION}
 
 type
-  TframeMatchesFilter = class(TframeSource)
-    btnAllCheck: TToolButton;
-    btnAllUnCheck: TToolButton;
-    aAllCheck: TAction;
-    aAllUnCheck: TAction;
-    btnFilter: TToolButton;
-    aFilter: TAction;
-    procedure vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
-    procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
-    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
-    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+  TframeMatchesFilter = class(TframeSource, IConfig)
+    aAllCheck     : TAction;
+    aAllUnCheck   : TAction;
+    aFilter       : TAction;
+    btnAllCheck   : TToolButton;
+    btnAllUnCheck : TToolButton;
+    btnFilter     : TToolButton;
     procedure aAllCheckExecute(Sender: TObject);
     procedure aAllUnCheckExecute(Sender: TObject);
     procedure aFilterExecute(Sender: TObject);
+    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+    procedure vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
   private const
     COL_PARAM_NAME = 0;
 
     C_IDENTITY_NAME = 'frameMatchesFilter';
   private
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
+
+    //IConfig
+    procedure IConfig.UpdateRegExp = LoadFromXML;
+    procedure UpdateFilter;
+
   protected
     function GetIdentityName: string; override;
     procedure SaveToXML; override;
@@ -59,11 +64,12 @@ constructor TframeMatchesFilter.Create(AOwner: TComponent);
 begin
   inherited;
   vstTree.NodeDataSize := SizeOf(TRegExpData);
+  TPublishers.ConfigPublisher.Subscribe(Self);
 end;
 
 destructor TframeMatchesFilter.Destroy;
 begin
-
+  TPublishers.ConfigPublisher.Unsubscribe(Self);
   inherited;
 end;
 
@@ -133,6 +139,11 @@ procedure TframeMatchesFilter.SaveToXML;
 begin
   inherited;
 
+end;
+
+procedure TframeMatchesFilter.UpdateFilter;
+begin
+  //nothing
 end;
 
 procedure TframeMatchesFilter.vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
@@ -240,9 +251,20 @@ begin
 end;
 
 procedure TframeMatchesFilter.aFilterExecute(Sender: TObject);
+var
+  Node: PVirtualNode;
+  i: Integer;
 begin
   inherited;
-//
+  i := 0;
+  Node := vstTree.RootNode.FirstChild;
+  while Assigned(Node) do
+  begin
+    TGeneral.RegExpColumns[i].IsSelected := Node.CheckState = TCheckState.csCheckedNormal;
+    Node := vstTree.GetNextSibling(Node);
+    Inc(i);
+  end;
+  TPublishers.ConfigPublisher.UpdateFilter;
 end;
 
 end.

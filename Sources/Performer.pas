@@ -336,6 +336,7 @@ begin
           begin
             TPublishers.ProgressPublisher.Progress;
           end);
+
       finally
         TPublishers.ProgressPublisher.EndProgress;
         LogWriter.Write(ddExitMethod, Self, 'FileSearch');

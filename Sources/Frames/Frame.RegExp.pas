@@ -117,7 +117,7 @@ begin
   LoadFromXML;
   UpdateRegExpColumns;
   Translate;
-  TPublishers.UpdateXMLPublisher.UpdateXML;
+  TPublishers.ConfigPublisher.UpdateRegExp;
 end;
 
 procedure TframeRegExp.Deinitialize;
@@ -458,7 +458,7 @@ begin
   SaveToXML;
   UpdateMatches;
   UpdateRegExpColumns;
-  TPublishers.UpdateXMLPublisher.UpdateXML;
+  TPublishers.ConfigPublisher.UpdateRegExp;
 end;
 
 procedure TframeRegExp.aSaveAsExecute(Sender: TObject);

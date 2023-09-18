@@ -15,7 +15,7 @@ uses
 {$ENDREGION}
 
 type
-  TframeEmails = class(TframeSource, IProgress, IUpdateXML)
+  TframeEmails = class(TframeSource, IProgress, IConfig)
     aBreak          : TAction;
     aFilter         : TAction;
     aOpenEmail      : TAction;
@@ -61,8 +61,9 @@ type
     FIsLoaded   : Boolean;
     FPerformer  : TPerformer;
 
-    //IUpdateXML
-    procedure IUpdateXML.UpdateXML = UpdateColumns;
+    //IConfig
+    procedure IConfig.UpdateRegExp = UpdateColumns;
+    procedure UpdateFilter;
 
     //IProgress
     procedure ClearTree;
@@ -99,16 +100,16 @@ begin
   vstTree.NodeDataSize := SizeOf(TEmail);
   FPerformer := TPerformer.GetInstance;
   TPublishers.ProgressPublisher.Subscribe(Self);
-  TPublishers.UpdateXMLPublisher.Subscribe(Self);
-  TPublishers.UpdateXMLPublisher.Subscribe(TPerformer.GetInstance);
+  TPublishers.ConfigPublisher.Subscribe(Self);
+  TPublishers.ConfigPublisher.Subscribe(TPerformer.GetInstance);
   FIsFiltered := False;
 end;
 
 destructor TframeEmails.Destroy;
 begin
   TPublishers.ProgressPublisher.Unsubscribe(Self);
-  TPublishers.UpdateXMLPublisher.Unsubscribe(Self);
-  TPublishers.UpdateXMLPublisher.Unsubscribe(TPerformer.GetInstance);
+  TPublishers.ConfigPublisher.Unsubscribe(Self);
+  TPublishers.ConfigPublisher.Unsubscribe(TPerformer.GetInstance);
   inherited;
 end;
 
@@ -223,6 +224,11 @@ procedure TframeEmails.LoadFromXML;
 begin
   inherited;
 
+end;
+
+procedure TframeEmails.UpdateFilter;
+begin
+ //
 end;
 
 procedure TframeEmails.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);

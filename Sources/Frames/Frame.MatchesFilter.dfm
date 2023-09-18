@@ -10,8 +10,8 @@ inherited frameMatchesFilter: TframeMatchesFilter
     ButtonHeight = 23
     ButtonWidth = 23
     Images = DMImage.vil16
-    ParentColor = False
     TabOrder = 1
+    Transparent = False
     ExplicitWidth = 341
     ExplicitHeight = 24
     inherited btnAdd: TToolButton
@@ -85,15 +85,15 @@ inherited frameMatchesFilter: TframeMatchesFilter
       ExplicitWidth = 23
       ExplicitHeight = 23
     end
-    object btnAllCheck: TToolButton
+    object btnAllUnCheck: TToolButton
       Left = 231
       Top = 0
-      Action = aAllCheck
+      Action = aAllUnCheck
     end
-    object btnAllUnCheck: TToolButton
+    object btnAllCheck: TToolButton
       Left = 254
       Top = 0
-      Action = aAllUnCheck
+      Action = aAllCheck
     end
     object btnFilter: TToolButton
       Left = 277

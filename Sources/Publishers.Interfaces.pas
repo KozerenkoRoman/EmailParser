@@ -9,9 +9,11 @@ uses
 {$ENDREGION}
 
 type
-  IUpdateXML = interface
+  IConfig = interface
     ['{8CB90EEC-FA3A-40EA-B04F-84A104F282B2}']
-    procedure UpdateXML;
+    procedure UpdateRegExp;
+    procedure UpdateFilter;
+    procedure UpdateLanguage;
   end;
 
   IProgress = interface
@@ -31,7 +33,7 @@ type
 
   ITranslate = interface
     ['{7BACF2F8-0FCA-4FF2-8095-81542FDEFE70}']
-    procedure LanguageChange;
+
   end;
 
 implementation

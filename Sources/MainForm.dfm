@@ -22,7 +22,7 @@ inherited frmMain: TfrmMain
     AnimationDelay = 20
     CloseStyle = svcCompact
     Color = clMedGray
-    CompactWidth = 47
+    CompactWidth = 48
     OpenedWidth = 250
     Placement = svpLeft
     TabOrder = 0
@@ -117,7 +117,7 @@ inherited frmMain: TfrmMain
       Height = 250
       Align = alBottom
       BevelOuter = bvNone
-      Color = clMedGray
+      ParentBackground = False
       TabOrder = 1
       Visible = False
       inline frameMatchesFilter: TframeMatchesFilter
@@ -126,6 +126,8 @@ inherited frmMain: TfrmMain
         Width = 250
         Height = 250
         Align = alClient
+        Color = clBtnFace
+        ParentColor = False
         TabOrder = 0
         ExplicitWidth = 250
         ExplicitHeight = 250
@@ -168,13 +170,13 @@ inherited frmMain: TfrmMain
             ExplicitLeft = 77
             ExplicitTop = 31
           end
-          inherited btnAllCheck: TToolButton
+          inherited btnAllCheck: TToolButton [12]
             Left = 100
             Top = 31
             ExplicitLeft = 100
             ExplicitTop = 31
           end
-          inherited btnAllUnCheck: TToolButton
+          inherited btnAllUnCheck: TToolButton [13]
             Left = 123
             Top = 31
             ExplicitLeft = 123
@@ -596,7 +598,7 @@ inherited frmMain: TfrmMain
               Top = 237
               Width = 730
               ExplicitTop = 358
-              ExplicitWidth = 734
+              ExplicitWidth = 730
             end
             inherited pcInfo: TPageControl
               Top = 242
@@ -614,8 +616,8 @@ inherited frmMain: TfrmMain
                   ExplicitHeight = 251
                   ControlData = {
                     4C0000009F4A0000F11900000000000000000000000000000000000000000000
-                    000000004C000000000000000000000001000000E0D057007335CF11AE690800
-                    2B2E126208000000000000004C0000000114020000000000C000000000000046
+                    000000004C000000000000000000000000000000000000000000000000000000
+                    0000000000000000000000004C0000000114020000000000C000000000000046
                     8000000000000000000000000000000000000000000000000000000000000000
                     00000000000000000100000000000000000000000000000000000000}
                 end
@@ -637,110 +639,92 @@ inherited frmMain: TfrmMain
               inherited tbMain: TToolBar
                 Width = 730
                 ExplicitWidth = 730
-                inherited btnPrint: TToolButton [0]
+                inherited btnOpenEmail: TToolButton [0]
                   Left = 0
                   ExplicitLeft = 0
                 end
-                inherited btnSep03: TToolButton [1]
+                inherited btnSep05: TToolButton [1]
+                  Left = 39
+                  ExplicitLeft = 39
+                end
+                inherited btnFilter: TToolButton [2]
+                  Left = 47
+                  ExplicitLeft = 47
+                end
+                inherited btnBreak: TToolButton [3]
+                  Left = 86
+                  ExplicitLeft = 86
+                end
+                inherited btnSep04: TToolButton [4]
+                  Left = 125
+                  ExplicitLeft = 125
+                end
+                inherited btnSearch: TToolButton [5]
+                  Left = 133
+                  ExplicitLeft = 133
+                end
+                inherited btnAdd: TToolButton [6]
+                  Left = 172
+                  ExplicitLeft = 172
+                end
+                inherited btnEdit: TToolButton [7]
+                  Left = 211
+                  ExplicitLeft = 211
+                end
+                inherited btnPrint: TToolButton [8]
+                  Left = 250
+                  ExplicitLeft = 250
+                end
+                inherited btnDelete: TToolButton [9]
+                  Left = 289
+                  ExplicitLeft = 289
+                end
+                inherited btnSep03: TToolButton
                   Left = 0
                   Wrap = True
                   ExplicitLeft = 0
                   ExplicitHeight = 47
                 end
-                inherited btnOpenEmail: TToolButton [2]
+                inherited btnExportToCSV: TToolButton [11]
                   Left = 0
                   Top = 47
                   ExplicitLeft = 0
                   ExplicitTop = 47
                 end
-                inherited btnSep05: TToolButton [3]
+                inherited btnExportToExcel: TToolButton [12]
                   Left = 39
                   Top = 47
                   ExplicitLeft = 39
                   ExplicitTop = 47
                 end
-                inherited btnFilter: TToolButton [4]
-                  Left = 47
+                inherited btnSep02: TToolButton [13]
+                  Left = 78
                   Top = 47
-                  ExplicitLeft = 47
+                  ExplicitLeft = 78
                   ExplicitTop = 47
                 end
-                inherited btnBreak: TToolButton [5]
+                inherited btnColumnSettings: TToolButton [14]
                   Left = 86
                   Top = 47
                   ExplicitLeft = 86
                   ExplicitTop = 47
                 end
-                inherited btnSep04: TToolButton [6]
+                inherited btnRefresh: TToolButton [15]
                   Left = 125
                   Top = 47
                   ExplicitLeft = 125
                   ExplicitTop = 47
                 end
-                inherited btnSearch: TToolButton [7]
-                  Left = 133
+                inherited btnSep01: TToolButton [16]
+                  Left = 164
                   Top = 47
-                  ExplicitLeft = 133
+                  ExplicitLeft = 164
                   ExplicitTop = 47
                 end
-                inherited btnAdd: TToolButton [8]
+                inherited btnSave: TToolButton [17]
                   Left = 172
                   Top = 47
                   ExplicitLeft = 172
-                  ExplicitTop = 47
-                end
-                inherited btnEdit: TToolButton [9]
-                  Left = 211
-                  Top = 47
-                  ExplicitLeft = 211
-                  ExplicitTop = 47
-                end
-                inherited btnDelete: TToolButton [10]
-                  Left = 250
-                  Top = 47
-                  ExplicitLeft = 250
-                  ExplicitTop = 47
-                end
-                inherited btnSave: TToolButton [11]
-                  Left = 289
-                  Top = 47
-                  ExplicitLeft = 289
-                  ExplicitTop = 47
-                end
-                inherited btnSep01: TToolButton [12]
-                  Left = 328
-                  Top = 47
-                  ExplicitLeft = 328
-                  ExplicitTop = 47
-                end
-                inherited btnRefresh: TToolButton [13]
-                  Left = 336
-                  Top = 47
-                  ExplicitLeft = 336
-                  ExplicitTop = 47
-                end
-                inherited btnColumnSettings: TToolButton [14]
-                  Left = 375
-                  Top = 47
-                  ExplicitLeft = 375
-                  ExplicitTop = 47
-                end
-                inherited btnSep02: TToolButton [15]
-                  Left = 414
-                  Top = 47
-                  ExplicitLeft = 414
-                  ExplicitTop = 47
-                end
-                inherited btnExportToExcel: TToolButton [16]
-                  Left = 422
-                  Top = 47
-                  ExplicitLeft = 422
-                  ExplicitTop = 47
-                end
-                inherited btnExportToCSV: TToolButton [17]
-                  Left = 461
-                  Top = 47
-                  ExplicitLeft = 461
                   ExplicitTop = 47
                 end
               end
