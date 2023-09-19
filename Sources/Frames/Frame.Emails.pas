@@ -63,7 +63,7 @@ type
 
     //IConfig
     procedure IConfig.UpdateRegExp = UpdateColumns;
-    procedure UpdateFilter;
+    procedure UpdateFilter(const aOperation: TFilterOperation);
 
     //IProgress
     procedure ClearTree;
@@ -153,41 +153,25 @@ procedure TframeEmails.UpdateColumns;
 var
   Column     : TVirtualTreeColumn;
   CurrNode   : PVirtualNode;
-  Node   : PVirtualNode;
+  Node       : PVirtualNode;
   DataEmail  : PEmail;
   RegExpList : TArrayRecord<TRegExpData>;
 begin
   vstTree.BeginUpdate;
-  while (C_FIXED_COLUMNS < vstTree.Header.Columns.Count) do
-    vstTree.Header.Columns.Delete(C_FIXED_COLUMNS);
+  try
+    while (C_FIXED_COLUMNS < vstTree.Header.Columns.Count) do
+      vstTree.Header.Columns.Delete(C_FIXED_COLUMNS);
 
-  RegExpList := TGeneral.GetRegExpParametersList;
+    RegExpList := TGeneral.GetRegExpParametersList;
 
-  Node := vstTree.RootNode.FirstChild;
-  while Assigned(Node) do
-  begin
-    DataEmail := Node^.GetData;
-    DataEmail^.Matches.Count := RegExpList.Count;
-    if (Node.ChildCount > 0) then
+    Node := vstTree.RootNode.FirstChild;
+    while Assigned(Node) do
     begin
-      CurrNode := Node.FirstChild;
-      while Assigned(CurrNode) do
+      DataEmail := Node^.GetData;
+      DataEmail^.Matches.Count := RegExpList.Count;
+      if (Node.ChildCount > 0) then
       begin
-        DataEmail := CurrNode^.GetData;
-        DataEmail^.Matches.Count := RegExpList.Count;
-        CurrNode := CurrNode.NextSibling;
-      end;
-    end;
-    Node := Node.NextSibling;
-  end;
-
-  for var ResultData in TGeneral.EmailList.Values do
-  begin
-    ResultData.Matches.Count := RegExpList.Count;
-    if Assigned(ResultData.ParentNode) then
-      if (ResultData.ParentNode.ChildCount > 0) then
-      begin
-        CurrNode := ResultData.ParentNode.FirstChild;
+        CurrNode := Node.FirstChild;
         while Assigned(CurrNode) do
         begin
           DataEmail := CurrNode^.GetData;
@@ -195,9 +179,25 @@ begin
           CurrNode := CurrNode.NextSibling;
         end;
       end;
-  end;
+      Node := Node.NextSibling;
+    end;
 
-  try
+    for var ResultData in TGeneral.EmailList.Values do
+    begin
+      ResultData.Matches.Count := RegExpList.Count;
+      if Assigned(ResultData.OwnerNode) then
+        if (ResultData.OwnerNode.ChildCount > 0) then
+        begin
+          CurrNode := ResultData.OwnerNode.FirstChild;
+          while Assigned(CurrNode) do
+          begin
+            DataEmail := CurrNode^.GetData;
+            DataEmail^.Matches.Count := RegExpList.Count;
+            CurrNode := CurrNode.NextSibling;
+          end;
+        end;
+    end;
+
     for var item in RegExpList do
     begin
       Column := vstTree.Header.Columns.Add;
@@ -226,9 +226,51 @@ begin
 
 end;
 
-procedure TframeEmails.UpdateFilter;
+procedure TframeEmails.UpdateFilter(const aOperation: TFilterOperation);
+var
+  ChildNode    : PVirtualNode;
+  Data         : PEmail;
+  FilterValue  : Cardinal;
+  MatchesValue : Cardinal;
+  Node         : PVirtualNode;
 begin
- //
+  inherited;
+  FilterValue := 0;
+  for var i := Low(TGeneral.RegExpColumns) to High(TGeneral.RegExpColumns) do
+    if TGeneral.RegExpColumns[i].IsSelected then
+      Include(TFilterSet(FilterValue), i);
+  if (FilterValue = 0) then
+    FilterValue := MaxCardinal;
+
+  vstTree.BeginUpdate;
+  try
+    Node := vstTree.RootNode.FirstChild;
+    while Assigned(Node) do
+    begin
+      MatchesValue := 0;
+      ChildNode := Node.FirstChild;
+      while Assigned(ChildNode) do
+      begin
+        Data := ChildNode^.GetData;
+        if Assigned(Data) then
+          for var i := 0 to Data^.Matches.Count - 1 do
+            if not Data^.Matches[i].IsEmpty then
+              Include(TFilterSet(MatchesValue), i);
+        ChildNode := vstTree.GetNextSibling(ChildNode);
+      end;
+
+      case aOperation of
+        foAnd:
+          vstTree.IsVisible[Node] := not FIsFiltered or ((MatchesValue and FilterValue) >= FilterValue);
+        foOr:
+          vstTree.IsVisible[Node] := not FIsFiltered or ((MatchesValue and FilterValue) > 0);
+      end;
+
+      Node := vstTree.GetNextSibling(Node);
+    end;
+  finally
+    vstTree.EndUpdate;
+  end;
 end;
 
 procedure TframeEmails.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
@@ -469,9 +511,6 @@ begin
 end;
 
 procedure TframeEmails.aFilterExecute(Sender: TObject);
-var
-  Node: PVirtualNode;
-  Data: PResultData;
 begin
   inherited;
   FIsFiltered := TAction(Sender).Checked;
@@ -480,25 +519,7 @@ begin
   else
     TAction(Sender).ImageIndex := 3;
 
-  if (vstTree.RootNode.ChildCount > 0) then
-  begin
-    Node := vstTree.RootNode.FirstChild;
-    vstTree.BeginUpdate;
-    try
-      while Assigned(Node) do
-      begin
-        Data := TGeneral.EmailList.GetItem(PEmail(Node^.GetData).Hash);
-        if Assigned(Data) then
-        begin
-          vstTree.IsVisible[Node] := not FIsFiltered or (Node.ChildCount > 0);
-          vstTree.InvalidateNode(Node);
-        end;
-        Node := Node.NextSibling;
-      end;
-    finally
-      vstTree.EndUpdate;
-    end;
-  end;
+  UpdateFilter(foOR);
 end;
 
 procedure TframeEmails.aSearchExecute(Sender: TObject);
@@ -540,13 +561,13 @@ begin
   if not Assigned(aResultData) then
     Exit;
 
-  if not Assigned(aResultData^.ParentNode) then
+  if not Assigned(aResultData^.OwnerNode) then
   begin
     Node := vstTree.AddChild(nil);
-    aResultData^.ParentNode := Node;
+    aResultData^.OwnerNode := Node;
   end
   else
-    Node := aResultData^.ParentNode;
+    Node := aResultData^.OwnerNode;
 
   Data := Node^.GetData;
   Data^.Hash := aResultData.Hash;

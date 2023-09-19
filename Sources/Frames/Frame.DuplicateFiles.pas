@@ -1,4 +1,4 @@
-unit Frame.DuplicateFiles;
+﻿unit Frame.DuplicateFiles;
 
 interface
 
@@ -34,6 +34,7 @@ type
     tbFileSearch      : TToolBar;
     btnAllUnCheck: TToolButton;
     procedure aAllCheckExecute(Sender: TObject);
+    procedure aAllCheckUpdate(Sender: TObject);
     procedure aAllUnCheckExecute(Sender: TObject);
     procedure aDeleteSelectedExecute(Sender: TObject);
     procedure aDeleteSelectedUpdate(Sender: TObject);
@@ -43,7 +44,6 @@ type
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
-    procedure aAllCheckUpdate(Sender: TObject);
   private const
     COL_SHORT_NAME = 0;
     COL_FILE_NAME  = 1;

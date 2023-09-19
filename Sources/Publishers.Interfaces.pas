@@ -12,7 +12,7 @@ type
   IConfig = interface
     ['{8CB90EEC-FA3A-40EA-B04F-84A104F282B2}']
     procedure UpdateRegExp;
-    procedure UpdateFilter;
+    procedure UpdateFilter(const aOperation: TFilterOperation);
     procedure UpdateLanguage;
   end;
 

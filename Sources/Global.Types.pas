@@ -58,7 +58,7 @@ type
     ParsedText  : string;
     ImageIndex  : Byte;
     Matches     : TArrayRecord<TStringArray>;
-    ParentNode  : PVirtualNode;
+    OwnerNode   : PVirtualNode;
     FromZip     : Boolean;
     FromDB      : Boolean;
     procedure Clear;
@@ -80,7 +80,7 @@ type
     ContentType : string;
     ParsedText  : string;
     Matches     : TArrayRecord<TStringArray>;
-    ParentNode  : PVirtualNode;
+    OwnerNode   : PVirtualNode;
     procedure Clear;
     procedure LengthAlignment;
     class operator Initialize(out aDest: TResultData);
@@ -149,6 +149,8 @@ type
     function FromString(aDir: string): TAttachmentDir;
   end;
 
+  TFilterSet = set of 0 .. SizeOf(Cardinal) * 8 - 1;     //Count of RegExp patterns - 32
+  TFilterOperation = (foAND, foOR);
   TExtIcon = (eiPdf = 20, eiPng = 21, eiGif = 8, eiIco = 2, eiJpg = 12, eiZip = 30, eiRar = 23, eiHtml = 9,
               eiTxt = 0,  eiXls = 29, eiDoc = 4);
   TExtIconHelper = record helper for TExtIcon
@@ -158,6 +160,7 @@ type
 const
   C_ICON_SIZE = 39;
   C_TOP_COLOR = $001E4DFF;
+  MaxCardinal: Cardinal = $FFFFFFFF;
 
 var
   General: TGeneral;
@@ -315,12 +318,12 @@ begin
   Matches.Clear;
   Self.Attachments.Clear;
   Self := Default(TResultData);
-  Self.ParentNode := nil;
+  Self.OwnerNode := nil;
 end;
 
 class operator TResultData.Initialize(out aDest: TResultData);
 begin
-  aDest.ParentNode := nil;
+  aDest.OwnerNode := nil;
 end;
 
 procedure TResultData.LengthAlignment;
@@ -345,7 +348,7 @@ end;
 
 class operator TAttachment.Initialize(out aDest: TAttachment);
 begin
-  aDest.ParentNode := nil;
+  aDest.OwnerNode := nil;
   aDest.FromZip    := False;
   aDest.FromDB     := False;
 end;
@@ -414,7 +417,7 @@ end;
 procedure TEmailList.ClearParentNodePointer;
 begin
   for var item in Self.Values do
-    item.ParentNode := nil;
+    item.OwnerNode := nil;
 end;
 
 { TAttachmentList }
@@ -448,7 +451,7 @@ end;
 procedure TAttachmentList.ClearParentNodePointer;
 begin
   for var item in Self.Values do
-    item.ParentNode := nil;
+    item.OwnerNode := nil;
 end;
 
 { TSorterPath }

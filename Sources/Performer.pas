@@ -254,7 +254,7 @@ begin
         end;
 
         Data := TGeneral.EmailList.Items[arrKeys[i]];
-        if Assigned(Data) and Assigned(Data^.ParentNode) then
+        if Assigned(Data) and Assigned(Data^.OwnerNode) then
         begin
           DoParseResultData(Data);
           TPublishers.ProgressPublisher.Progress;
@@ -326,7 +326,7 @@ begin
           Attachment^.Hash       := Hash;
           Attachment^.ParentHash := '';
           Attachment^.ParentName := '';
-          Attachment^.ParentNode := nil;
+          Attachment^.OwnerNode  := nil;
           TGeneral.AttachmentList.AddOrSetValue(Hash, Attachment);
           ResultData.Attachments.Add(Hash);
           Inc(FCount);
@@ -378,7 +378,7 @@ begin
         end;
 
         Attachment := TGeneral.AttachmentList.Items[arrKeys[i]];
-        if Assigned(Attachment) and Assigned(Attachment^.ParentNode) then
+        if Assigned(Attachment) and Assigned(Attachment^.OwnerNode) then
         begin
           LogWriter.Write(ddText, Self, 'RefreshAttachment', 'Attachment name - ' + Attachment^.ShortName);
           Inc(FCount);

@@ -1,4 +1,4 @@
-unit Frame.AllAttachments;
+﻿unit Frame.AllAttachments;
 
 interface
 
@@ -11,7 +11,7 @@ uses
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
   Vcl.WinXPanels, Publishers.Interfaces, Publishers, VirtualTrees.ExportHelper, Global.Resources, Global.Utils,
-  Performer, DaModule, Vcl.WinXCtrls;
+  Performer, DaModule, Vcl.WinXCtrls, EXIF.Dialog;
 {$ENDREGION}
 
 type
@@ -73,7 +73,7 @@ type
 
     //IConfig
     procedure IConfig.UpdateRegExp = UpdateColumns;
-    procedure UpdateFilter;
+    procedure UpdateFilter(const aOperation: TFilterOperation);
 
     //IProgress
     procedure ClearTree;
@@ -196,9 +196,6 @@ begin
 end;
 
 procedure TframeAllAttachments.aFilterExecute(Sender: TObject);
-var
-  Node: PVirtualNode;
-  Data: PAttachment;
 begin
   inherited;
   FIsFiltered := TAction(Sender).Checked;
@@ -206,26 +203,7 @@ begin
     TAction(Sender).ImageIndex := 56
   else
     TAction(Sender).ImageIndex := 3;
-
-  if (vstTree.RootNode.ChildCount > 0) then
-  begin
-    Node := vstTree.RootNode.FirstChild;
-    vstTree.BeginUpdate;
-    try
-      while Assigned(Node) do
-      begin
-        Data := TGeneral.AttachmentList.GetItem(PAttachData(Node^.GetData).Hash);
-        if Assigned(Data) then
-        begin
-          vstTree.IsVisible[Node] := not FIsFiltered or (Node.ChildCount > 0);
-          vstTree.InvalidateNode(Node);
-        end;
-        Node := Node.NextSibling;
-      end;
-    finally
-      vstTree.EndUpdate;
-    end;
-  end;
+  UpdateFilter(foOR);
 end;
 
 procedure TframeAllAttachments.aOpenAttachFileExecute(Sender: TObject);
@@ -287,7 +265,11 @@ begin
     begin
       if Data^.ParsedText.IsEmpty then
         Data^.ParsedText := TDaMod.GetAttachmentAsRawText(Data^.Hash);
-      TInformationDialog.ShowMessage(TGlobalUtils.GetHighlightText(Data^.ParsedText.Replace(#10, '<br>'), Data^.Matches), GetIdentityName);
+
+      if Data^.ContentType.StartsWith('image', True) then
+        TEXIFDialog.ShowMessage(Data^.ParsedText, Data^.FileName)
+      else
+        TInformationDialog.ShowMessage(TGlobalUtils.GetHighlightText(Data^.ParsedText.Replace(#10, '<br>'), Data^.Matches), GetIdentityName);
     end;
   end;
 end;
@@ -507,7 +489,11 @@ procedure TframeAllAttachments.StartProgress(const aMaxPosition: Integer);
 var
   CurrNode : PVirtualNode;
 begin
-  vstTree.BeginUpdate;
+  FIsLoaded   := True;
+  FIsFiltered := True;
+  aFilter.Checked    := True;
+  aFilter.ImageIndex := 56;
+
   CurrNode := vstTree.RootNode.FirstChild;
   while Assigned(CurrNode) do
   begin
@@ -540,13 +526,13 @@ var
 begin
   if not Assigned(aAttachment) then
     Exit;
-  if not Assigned(aAttachment^.ParentNode) then
+  if not Assigned(aAttachment^.OwnerNode) then
   begin
     Node := vstTree.AddChild(nil);
-    aAttachment^.ParentNode := Node;
+    aAttachment^.OwnerNode := Node;
   end
   else
-    Node := aAttachment^.ParentNode;
+    Node := aAttachment^.OwnerNode;
 
   Data := Node^.GetData;
   Data^.Hash := aAttachment^.Hash;
@@ -630,9 +616,51 @@ begin
   end;
 end;
 
-procedure TframeAllAttachments.UpdateFilter;
+procedure TframeAllAttachments.UpdateFilter(const aOperation: TFilterOperation);
+var
+  ChildNode    : PVirtualNode;
+  Data         : PAttachData;
+  FilterValue  : Cardinal;
+  MatchesValue : Cardinal;
+  Node         : PVirtualNode;
 begin
-//
+  inherited;
+  FilterValue := 0;
+  for var i := Low(TGeneral.RegExpColumns) to High(TGeneral.RegExpColumns) do
+    if TGeneral.RegExpColumns[i].IsSelected then
+      Include(TFilterSet(FilterValue), i);
+  if (FilterValue = 0) then
+    FilterValue := MaxCardinal;
+
+  vstTree.BeginUpdate;
+  try
+    Node := vstTree.RootNode.FirstChild;
+    while Assigned(Node) do
+    begin
+      MatchesValue := 0;
+      ChildNode := Node.FirstChild;
+      while Assigned(ChildNode) do
+      begin
+        Data := ChildNode^.GetData;
+        if Assigned(Data) then
+          for var i := 0 to Data^.Matches.Count - 1 do
+            if not Data^.Matches[i].IsEmpty then
+              Include(TFilterSet(MatchesValue), i);
+        ChildNode := vstTree.GetNextSibling(ChildNode);
+      end;
+
+      case aOperation of
+        foAnd:
+          vstTree.IsVisible[Node] := not FIsFiltered or ((MatchesValue and FilterValue) >= FilterValue);
+        foOr:
+          vstTree.IsVisible[Node] := not FIsFiltered or ((MatchesValue and FilterValue) > 0);
+      end;
+
+      Node := vstTree.GetNextSibling(Node);
+    end;
+  finally
+    vstTree.EndUpdate;
+  end;
 end;
 
 procedure TframeAllAttachments.EndProgress;

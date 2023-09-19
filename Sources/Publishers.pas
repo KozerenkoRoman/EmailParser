@@ -1,4 +1,4 @@
-unit Publishers;
+﻿unit Publishers;
 
 interface
 
@@ -22,7 +22,7 @@ type
   TConfigPublisher = class(TCustomPublisher)
   public
     procedure UpdateRegExp;
-    procedure UpdateFilter;
+    procedure UpdateFilter(const aOperation: TFilterOperation);
     procedure UpdateLanguage;
   end;
 
@@ -83,7 +83,7 @@ end;
 
 { TConfigPublisher }
 
-procedure TConfigPublisher.UpdateFilter;
+procedure TConfigPublisher.UpdateFilter(const aOperation: TFilterOperation);
 var
   Item: TObject;
 begin
@@ -98,7 +98,7 @@ begin
               obj: IConfig;
             begin
               if Supports(Item, IConfig, obj) then
-                obj.UpdateFilter;
+                obj.UpdateFilter(aOperation);
             end);
       finally
         Self.UnlockList;

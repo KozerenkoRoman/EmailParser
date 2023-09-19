@@ -155,7 +155,6 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
       Left = 617
       Top = 0
       Width = 8
-      ImageIndex = 83
       ImageName = 'all_check_boxes'
       Style = tbsSeparator
     end
@@ -168,11 +167,13 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
       Left = 664
       Top = 0
       Action = aAllUnCheck
+      ImageName = 'check_box_uncheck2'
     end
     object btnAllCheck: TToolButton
       Left = 703
       Top = 0
       Action = aAllCheck
+      ImageName = 'check_boxes2'
     end
   end
   inherited alFrame: TActionList

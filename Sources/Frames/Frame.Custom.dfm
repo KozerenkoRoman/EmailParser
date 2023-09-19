@@ -1,13 +1,13 @@
 object FrameCustom: TFrameCustom
   Left = 0
   Top = 0
-  Width = 377
+  Width = 373
   Height = 300
   TabOrder = 0
   object tbMain: TToolBar
     Left = 0
     Top = 0
-    Width = 377
+    Width = 373
     Height = 39
     ButtonHeight = 39
     ButtonWidth = 39
@@ -15,6 +15,7 @@ object FrameCustom: TFrameCustom
     EdgeOuter = esNone
     Images = DMImage.vil32
     TabOrder = 0
+    ExplicitWidth = 377
     object btnAdd: TToolButton
       Left = 0
       Top = 0

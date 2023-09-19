@@ -28,22 +28,21 @@ inherited frmMain: TfrmMain
     TabOrder = 0
     OnClosed = splViewClosed
     OnOpened = splViewOpened
-    object splMatchesFilter: TSplitter
+    object splExtendedFilter: TSplitter
       Left = 0
-      Top = 295
+      Top = 548
       Width = 250
-      Height = 8
+      Height = 5
       Cursor = crVSplit
       Align = alBottom
       Visible = False
-      ExplicitTop = 289
-      ExplicitWidth = 240
+      ExplicitTop = 300
     end
     object catMenuItems: TCategoryButtons
       Left = 0
       Top = 0
       Width = 250
-      Height = 295
+      Height = 298
       Align = alClient
       BevelInner = bvNone
       BevelOuter = bvNone
@@ -108,99 +107,53 @@ inherited frmMain: TfrmMain
       SelectedButtonColor = clNone
       TabOrder = 0
       OnSelectedItemChange = catMenuItemsSelectedItemChange
-      ExplicitHeight = 294
+      ExplicitHeight = 297
     end
-    object pnlMatchesFilter: TPanel
+    object pnlExtendedFilter: TGroupBox
       Left = 0
-      Top = 303
+      Top = 298
       Width = 250
       Height = 250
       Align = alBottom
-      BevelOuter = bvNone
+      Caption = 'Extended filter'
+      Color = clBtnFace
       ParentBackground = False
+      ParentColor = False
       TabOrder = 1
       Visible = False
       inline frameMatchesFilter: TframeMatchesFilter
-        Left = 0
-        Top = 0
-        Width = 250
-        Height = 250
+        Left = 2
+        Top = 17
+        Width = 246
+        Height = 231
         Align = alClient
-        Color = clBtnFace
-        ParentColor = False
         TabOrder = 0
-        ExplicitWidth = 250
-        ExplicitHeight = 250
+        ExplicitLeft = 2
+        ExplicitTop = 17
+        ExplicitWidth = 246
+        ExplicitHeight = 231
         inherited tbMain: TToolBar
-          Width = 250
-          ExplicitWidth = 250
-          inherited btnSep02: TToolButton
-            Left = 0
-            Wrap = True
-            ExplicitLeft = 0
-            ExplicitHeight = 31
+          Width = 246
+          ExplicitWidth = 246
+          inherited btnFilterAnd: TToolButton
+            ImageIndex = -1
           end
-          inherited btnExportToExcel: TToolButton
-            Left = 0
-            Top = 31
-            ExplicitLeft = 0
-            ExplicitTop = 31
-          end
-          inherited btnExportToCSV: TToolButton
-            Left = 23
-            Top = 31
-            ExplicitLeft = 23
-            ExplicitTop = 31
-          end
-          inherited btnPrint: TToolButton
-            Left = 46
-            Top = 31
-            ExplicitLeft = 46
-            ExplicitTop = 31
-          end
-          inherited btnSep03: TToolButton
-            Left = 69
-            Top = 31
-            ExplicitLeft = 69
-            ExplicitTop = 31
-          end
-          inherited btnColumnSettings: TToolButton
-            Left = 77
-            Top = 31
-            ExplicitLeft = 77
-            ExplicitTop = 31
-          end
-          inherited btnAllCheck: TToolButton [12]
-            Left = 100
-            Top = 31
-            ExplicitLeft = 100
-            ExplicitTop = 31
-          end
-          inherited btnAllUnCheck: TToolButton [13]
-            Left = 123
-            Top = 31
-            ExplicitLeft = 123
-            ExplicitTop = 31
-          end
-          inherited btnFilter: TToolButton
-            Left = 146
-            Top = 31
-            ExplicitLeft = 146
-            ExplicitTop = 31
+          inherited btnFilterOr: TToolButton
+            ImageIndex = -1
           end
         end
         inherited vstTree: TVirtualStringTree
-          Width = 250
-          Height = 226
-          ExplicitWidth = 250
-          ExplicitHeight = 226
+          Width = 246
+          Height = 207
+          ExplicitWidth = 246
+          ExplicitHeight = 207
           Columns = <
             item
               CaptionAlignment = taCenter
               Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
               Position = 0
               Text = 'Name'
-              Width = 246
+              Width = 242
             end>
           DefaultText = ''
         end
@@ -323,21 +276,13 @@ inherited frmMain: TfrmMain
         inherited vstTree: TVirtualStringTree
           Width = 738
           Height = 469
-          Font.Height = -11
-          Font.Name = 'Tahoma'
           ExplicitWidth = 738
           ExplicitHeight = 469
           DefaultText = ''
         end
         inherited tbSettings: TToolBar
           Width = 738
-          ExplicitWidth = 738
-          inherited pnlSettings: TPanel
-            inherited lblSetOfTemplates: TLabel
-              Font.Height = -13
-              ParentFont = False
-            end
-          end
+          ExplicitWidth = 372
         end
       end
     end
@@ -374,12 +319,6 @@ inherited frmMain: TfrmMain
           Width = 728
           Height = 291
           Align = alClient
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -12
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
           TabOrder = 0
           ExplicitLeft = 2
           ExplicitTop = 17
@@ -445,12 +384,6 @@ inherited frmMain: TfrmMain
         Width = 738
         Height = 551
         Align = alClient
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
         TabOrder = 0
         ExplicitWidth = 738
         ExplicitHeight = 551
@@ -512,45 +445,8 @@ inherited frmMain: TfrmMain
               Control = frameSettings.cbLoadRecordsFromDB
               Row = 4
             end>
-          ExplicitWidth = 738
-          ExplicitHeight = 512
-          inherited lblLanguage: TLabel
-            ExplicitLeft = 264
-            ExplicitWidth = 53
-            ExplicitHeight = 14
-          end
-          inherited lblExtensions: TLabel
-            ExplicitLeft = 183
-            ExplicitWidth = 134
-            ExplicitHeight = 14
-          end
-          inherited lblPathForAttachments: TLabel
-            ExplicitLeft = 158
-            ExplicitWidth = 159
-            ExplicitHeight = 14
-          end
-          inherited lblDeleteAttachments: TLabel
-            ExplicitLeft = 135
-            ExplicitWidth = 182
-            ExplicitHeight = 14
-          end
-          inherited cbLanguage: TComboBox
-            Height = 22
-            ExplicitHeight = 22
-          end
-          inherited edtExtensions: TEdit
-            Height = 22
-            ExplicitHeight = 22
-          end
-          inherited edtPathForAttachments: TButtonedEdit
-            Height = 22
-            ExplicitHeight = 22
-          end
-          inherited lblLoadRecordsFromDB: TLabel
-            ExplicitLeft = 84
-            ExplicitWidth = 233
-            ExplicitHeight = 14
-          end
+          ExplicitWidth = 372
+          ExplicitHeight = 339
         end
       end
     end
@@ -567,17 +463,7 @@ inherited frmMain: TfrmMain
         Top = 0
         Width = 738
         Height = 551
-        Margins.Left = 0
-        Margins.Top = 0
-        Margins.Right = 0
-        Margins.Bottom = 0
         Align = alClient
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
         TabOrder = 0
         ExplicitWidth = 738
         ExplicitHeight = 551
@@ -588,36 +474,32 @@ inherited frmMain: TfrmMain
         inherited pcMain: TPageControl
           Width = 738
           Height = 551
+          ExplicitTop = 0
           ExplicitWidth = 738
           ExplicitHeight = 551
           inherited tsEmail: TTabSheet
-            ExplicitTop = 25
             ExplicitWidth = 730
-            ExplicitHeight = 522
+            ExplicitHeight = 521
             inherited splInfo: TSplitter
-              Top = 237
+              Top = 236
               Width = 730
-              ExplicitTop = 358
+              ExplicitTop = 236
               ExplicitWidth = 730
             end
             inherited pcInfo: TPageControl
-              Top = 242
+              Top = 241
               Width = 730
-              ExplicitTop = 242
+              ExplicitTop = 241
               ExplicitWidth = 730
               inherited tsHtmlText: TTabSheet
-                ExplicitTop = 25
                 ExplicitWidth = 722
-                ExplicitHeight = 251
                 inherited wbBody: TWebBrowser
                   Width = 722
-                  Height = 251
-                  ExplicitWidth = 722
-                  ExplicitHeight = 251
+                  ExplicitWidth = 681
                   ControlData = {
-                    4C0000009F4A0000F11900000000000000000000000000000000000000000000
-                    000000004C000000000000000000000000000000000000000000000000000000
-                    0000000000000000000000004C0000000114020000000000C000000000000046
+                    4C0000009F4A0000D71900000000000000000000000000000000000000000000
+                    000000004C000000000000000000000001000000E0D057007335CF11AE690800
+                    2B2E12620A000000000000004C0000000114020000000000C000000000000046
                     8000000000000000000000000000000000000000000000000000000000000000
                     00000000000000000100000000000000000000000000000000000000}
                 end
@@ -625,7 +507,6 @@ inherited frmMain: TfrmMain
               inherited tsAttachments: TTabSheet
                 inherited frameAttachments: TframeAttachments
                   inherited vstTree: TVirtualStringTree
-                    Font.Name = 'Tahoma'
                     DefaultText = ''
                   end
                 end
@@ -633,107 +514,18 @@ inherited frmMain: TfrmMain
             end
             inherited frameEmails: TframeEmails
               Width = 730
-              Height = 237
+              Height = 236
               ExplicitWidth = 730
-              ExplicitHeight = 237
+              ExplicitHeight = 236
               inherited tbMain: TToolBar
                 Width = 730
                 ExplicitWidth = 730
-                inherited btnOpenEmail: TToolButton [0]
-                  Left = 0
-                  ExplicitLeft = 0
-                end
-                inherited btnSep05: TToolButton [1]
-                  Left = 39
-                  ExplicitLeft = 39
-                end
-                inherited btnFilter: TToolButton [2]
-                  Left = 47
-                  ExplicitLeft = 47
-                end
-                inherited btnBreak: TToolButton [3]
-                  Left = 86
-                  ExplicitLeft = 86
-                end
-                inherited btnSep04: TToolButton [4]
-                  Left = 125
-                  ExplicitLeft = 125
-                end
-                inherited btnSearch: TToolButton [5]
-                  Left = 133
-                  ExplicitLeft = 133
-                end
-                inherited btnAdd: TToolButton [6]
-                  Left = 172
-                  ExplicitLeft = 172
-                end
-                inherited btnEdit: TToolButton [7]
-                  Left = 211
-                  ExplicitLeft = 211
-                end
-                inherited btnPrint: TToolButton [8]
-                  Left = 250
-                  ExplicitLeft = 250
-                end
-                inherited btnDelete: TToolButton [9]
-                  Left = 289
-                  ExplicitLeft = 289
-                end
-                inherited btnSep03: TToolButton
-                  Left = 0
-                  Wrap = True
-                  ExplicitLeft = 0
-                  ExplicitHeight = 47
-                end
-                inherited btnExportToCSV: TToolButton [11]
-                  Left = 0
-                  Top = 47
-                  ExplicitLeft = 0
-                  ExplicitTop = 47
-                end
-                inherited btnExportToExcel: TToolButton [12]
-                  Left = 39
-                  Top = 47
-                  ExplicitLeft = 39
-                  ExplicitTop = 47
-                end
-                inherited btnSep02: TToolButton [13]
-                  Left = 78
-                  Top = 47
-                  ExplicitLeft = 78
-                  ExplicitTop = 47
-                end
-                inherited btnColumnSettings: TToolButton [14]
-                  Left = 86
-                  Top = 47
-                  ExplicitLeft = 86
-                  ExplicitTop = 47
-                end
-                inherited btnRefresh: TToolButton [15]
-                  Left = 125
-                  Top = 47
-                  ExplicitLeft = 125
-                  ExplicitTop = 47
-                end
-                inherited btnSep01: TToolButton [16]
-                  Left = 164
-                  Top = 47
-                  ExplicitLeft = 164
-                  ExplicitTop = 47
-                end
-                inherited btnSave: TToolButton [17]
-                  Left = 172
-                  Top = 47
-                  ExplicitLeft = 172
-                  ExplicitTop = 47
-                end
               end
               inherited vstTree: TVirtualStringTree
                 Width = 730
-                Height = 198
-                Font.Name = 'Tahoma'
+                Height = 197
                 ExplicitWidth = 730
-                ExplicitHeight = 198
+                ExplicitHeight = 197
                 DefaultText = ''
               end
             end
@@ -741,20 +533,8 @@ inherited frmMain: TfrmMain
           inherited tsAllAttachments: TTabSheet
             inherited frameAllAttachments: TframeAllAttachments
               inherited vstTree: TVirtualStringTree
-                Font.Name = 'Tahoma'
+                ExplicitHeight = 192
                 DefaultText = ''
-              end
-              inherited tbFileSearch: TToolBar
-                inherited pnlFileSearch: TPanel
-                  inherited edtPath: TButtonedEdit
-                    Height = 22
-                    ExplicitHeight = 22
-                  end
-                  inherited cbExt: TComboBox
-                    Height = 22
-                    ExplicitHeight = 22
-                  end
-                end
               end
             end
           end
@@ -791,10 +571,7 @@ inherited frmMain: TfrmMain
         end
         inherited tbFileSearch: TToolBar
           Width = 738
-          ExplicitWidth = 738
-          inherited pnlFileSearch: TPanel
-            ParentColor = True
-          end
+          ExplicitWidth = 372
           inherited btnFileSearch: TToolButton
             Wrap = True
           end

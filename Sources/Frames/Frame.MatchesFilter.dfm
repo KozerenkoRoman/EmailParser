@@ -1,18 +1,18 @@
 inherited frameMatchesFilter: TframeMatchesFilter
-  Width = 341
+  Width = 487
   Height = 298
   Align = alClient
-  ExplicitWidth = 341
+  ExplicitWidth = 487
   ExplicitHeight = 298
   inherited tbMain: TToolBar
-    Width = 341
+    Width = 487
     Height = 24
     ButtonHeight = 23
     ButtonWidth = 23
     Images = DMImage.vil16
     TabOrder = 1
     Transparent = False
-    ExplicitWidth = 341
+    ExplicitWidth = 487
     ExplicitHeight = 24
     inherited btnAdd: TToolButton
       ExplicitWidth = 23
@@ -95,15 +95,29 @@ inherited frameMatchesFilter: TframeMatchesFilter
       Top = 0
       Action = aAllCheck
     end
-    object btnFilter: TToolButton
+    object btnFilterAnd: TToolButton
       Left = 277
       Top = 0
-      Action = aFilter
+      Action = aFilterAnd
+    end
+    object btnFilterOr: TToolButton
+      Left = 300
+      Top = 0
+      Action = aFilterOr
+    end
+    object ToolButton1: TToolButton
+      Left = 323
+      Top = 0
+      Width = 8
+      Caption = 'ToolButton1'
+      ImageIndex = 0
+      ImageName = 'DeleteList_32x32'
+      Style = tbsSeparator
     end
   end
   inherited vstTree: TVirtualStringTree
     Top = 24
-    Width = 341
+    Width = 487
     Height = 274
     Alignment = taRightJustify
     Header.MainColumn = 0
@@ -117,7 +131,7 @@ inherited frameMatchesFilter: TframeMatchesFilter
     OnChecked = vstTreeChecked
     OnGetText = vstTreeGetText
     ExplicitTop = 24
-    ExplicitWidth = 341
+    ExplicitWidth = 487
     ExplicitHeight = 274
     Columns = <
       item
@@ -125,7 +139,7 @@ inherited frameMatchesFilter: TframeMatchesFilter
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 0
         Text = 'Name'
-        Width = 337
+        Width = 483
       end>
     DefaultText = ''
   end
@@ -159,15 +173,24 @@ inherited frameMatchesFilter: TframeMatchesFilter
       Visible = False
     end
     inherited aExpandAll: TAction
+      ImageIndex = -1
+      ImageName = ''
       Visible = False
     end
     inherited aCollapseAll: TAction
+      ImageIndex = -1
+      ImageName = ''
       Visible = False
     end
-    object aFilter: TAction
-      ImageIndex = 3
-      ImageName = 'MasterFilter_32x32'
-      OnExecute = aFilterExecute
+    object aFilterAnd: TAction
+      ImageIndex = 40
+      ImageName = 'sql_join_inner'
+      OnExecute = aFilterAndExecute
+    end
+    object aFilterOr: TAction
+      ImageIndex = 37
+      ImageName = 'sql_join_outer'
+      OnExecute = aFilterOrExecute
     end
     object aAllUnCheck: TAction
       ImageIndex = 84

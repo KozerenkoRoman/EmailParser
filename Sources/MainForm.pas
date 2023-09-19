@@ -37,12 +37,12 @@ type
     imgMenu                 : TImage;
     lblTitle                : TLabel;
     pnlCard                 : TCardPanel;
+    pnlExtendedFilter       : TGroupBox;
     pnlLeft                 : TPanel;
-    pnlMatchesFilter        : TPanel;
     pnlSrchBox              : TPanel;
     pnlTop                  : TPanel;
     sbMain                  : TStatusBar;
-    splMatchesFilter        : TSplitter;
+    splExtendedFilter       : TSplitter;
     splPath                 : TSplitter;
     splView                 : TSplitView;
     srchBox                 : TSearchBox;
@@ -55,6 +55,8 @@ type
     procedure splViewClosed(Sender: TObject);
     procedure splViewOpened(Sender: TObject);
     procedure srchBoxInvokeSearch(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
   private const
     C_IDENTITY_NAME = 'MainForm';
   private
@@ -64,7 +66,7 @@ type
     //IConfig
     procedure IConfig.UpdateLanguage = Translate;
     procedure UpdateRegExp;
-    procedure UpdateFilter;
+    procedure UpdateFilter(const aOperation: TFilterOperation);
 
     //IProgress
     procedure ClearTree;
@@ -111,7 +113,8 @@ procedure TfrmMain.Initialize;
 begin
   inherited;
   Randomize;
-  TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
+  TLang.Lang.Language      := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
+  pnlExtendedFilter.Height := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'ExtendedFilterHeight', 250);
   DaMod.Initialize;
   frameRegExp.Initialize;
   framePathes.Initialize;
@@ -129,7 +132,6 @@ end;
 
 procedure TfrmMain.Deinitialize;
 begin
-  inherited;
   frameRegExp.Deinitialize;
   framePathes.Deinitialize;
   frameSorter.Deinitialize;
@@ -139,6 +141,9 @@ begin
   frameMatchesFilter.Deinitialize;
   DaMod.Deinitialize;
   LogWriter.Active := False;
+  TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'ExtendedFilterHeight', pnlExtendedFilter.Height);
+  TGeneral.XMLParams.Save;
+  inherited;
 end;
 
 procedure TfrmMain.Translate;
@@ -160,6 +165,7 @@ begin
   crdSearchDuplicateFiles.Caption := TLang.Lang.Translate('SearchDuplicateFiles');
   gbPathes.Caption                := TLang.Lang.Translate('PathsToFindFiles');
   gbSorter.Caption                := TLang.Lang.Translate('PathsToSaveFiles');
+  pnlExtendedFilter.Caption       := TLang.Lang.Translate('ExtendedFilter');
   lblTitle.Caption                := pnlCard.ActiveCard.Caption;
 end;
 
@@ -179,7 +185,7 @@ end;
 procedure TfrmMain.CreateProgressBar;
 begin
   FProgressBar := TGauge.Create(nil);
-  FProgressBar.Parent := sbMain;
+  FProgressBar.Parent      := sbMain;
   FProgressBar.ForeColor   := C_TOP_COLOR;
   FProgressBar.BackColor   := clBtnFace;
   FProgressBar.BorderStyle := bsNone;
@@ -209,8 +215,8 @@ begin
     end;
   lblTitle.Caption := Button.Caption;
 
-  pnlMatchesFilter.Visible := (pnlCard.ActiveCard = crdResultView);
-  splMatchesFilter.Visible := (pnlCard.ActiveCard = crdResultView);
+  pnlExtendedFilter.Visible := (pnlCard.ActiveCard = crdResultView);
+  splExtendedFilter.Visible := (pnlCard.ActiveCard = crdResultView);
 end;
 
 procedure TfrmMain.aToggleSplitPanelExecute(Sender: TObject);
@@ -271,7 +277,7 @@ begin
   // nothing
 end;
 
-procedure TfrmMain.UpdateFilter;
+procedure TfrmMain.UpdateFilter(const aOperation: TFilterOperation);
 begin
   // nothing
 end;
@@ -294,6 +300,18 @@ begin
   FProgressBar.Progress := FProgressBar.Progress + 1;
   FProgressBar.Refresh;
   Application.ProcessMessages;
+end;
+
+procedure TfrmMain.SpeedButton1Click(Sender: TObject);
+begin
+  inherited;
+  //
+end;
+
+procedure TfrmMain.SpeedButton2Click(Sender: TObject);
+begin
+  inherited;
+  //
 end;
 
 procedure TfrmMain.StartProgress(const aMaxPosition: Integer);

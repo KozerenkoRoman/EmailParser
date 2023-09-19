@@ -62,14 +62,15 @@ resourcestring
   en_ExpandAll            = 'Expand All';
   en_ExportToCSV          = 'Export To CSV';
   en_ExportToExcel        = 'Export To Excel';
+  en_ExtendedFilter       = 'Extended filter';
   en_Failed               = 'Operation was failed';
   en_FileExtensions       = 'File extensions to search';
   en_FileIsDisabled       = 'File "%s" is disabled';
   en_FileName             = 'File name';
   en_FileNotFound         = 'File "%s" not found';
+  en_Filter               = 'Filter';
   en_FoundFiles           = 'Found %d files';
   en_From                 = 'From';
-  en_Filter               = 'Filter';
   en_GettingStarted       = 'Getting started';
   en_Go                   = 'Go';
   en_GroupIndex           = 'Group index';
@@ -178,14 +179,15 @@ resourcestring
   uk_ExpandAll            = 'Розгорнути все';
   uk_ExportToCSV          = 'Експортувати до CSV';
   uk_ExportToExcel        = 'Експортувати до Excel';
+  uk_ExtendedFilter       = 'Розширений фільтр';
   uk_Failed               = 'Операція була невдалою';
   uk_FileExtensions       = 'Розширення файлів для пошуку';
   uk_FileIsDisabled       = 'Файл "%s" вимкнено';
   uk_FileName             = 'Назва файлу';
   uk_FileNotFound         = 'Файл "%s" не знайдено';
+  uk_Filter               = 'Фільтрувати';
   uk_FoundFiles           = 'Знайдено %d файлів';
   uk_From                 = 'Відправник';
-  uk_Filter               = 'Фільтрувати';
   uk_GettingStarted       = 'Початок роботи';
   uk_Go                   = 'Почати';
   uk_GroupIndex           = 'Індекс групи';
@@ -253,7 +255,7 @@ resourcestring
   uk_WithSubdir           = 'З підкаталогами';
 
 const
-   ArrayMessages: array[1 .. 112] of TMessageItem = (
+   ArrayMessages: array[1 .. 113] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
@@ -294,13 +296,14 @@ const
     (Key: 'ExpandAll'            ; En: en_ExpandAll;            Uk: uk_ExpandAll),
     (Key: 'ExportToCSV'          ; En: en_ExportToCSV;          Uk: uk_ExportToCSV),
     (Key: 'ExportToExcel'        ; En: en_ExportToExcel;        Uk: uk_ExportToExcel),
+    (Key: 'ExtendedFilter'       ; En: en_ExtendedFilter;       Uk: uk_ExtendedFilter),
     (Key: 'Failed'               ; En: en_Failed;               Uk: uk_Failed),
     (Key: 'FileExtensions'       ; En: en_FileExtensions;       Uk: uk_FileExtensions),
     (Key: 'FileIsDisabled'       ; En: en_FileIsDisabled;       Uk: uk_FileIsDisabled),
     (Key: 'FileName'             ; En: en_FileName;             Uk: uk_FileName),
     (Key: 'FileNotFound'         ; En: en_FileNotFound;         Uk: uk_FileNotFound),
-    (Key: 'FoundFiles'           ; En: en_FoundFiles;           Uk: uk_FoundFiles),
     (Key: 'Filter'               ; En: en_Filter;               Uk: uk_Filter),
+    (Key: 'FoundFiles'           ; En: en_FoundFiles;           Uk: uk_FoundFiles),
     (Key: 'From'                 ; En: en_From;                 Uk: uk_From),
     (Key: 'GettingStarted'       ; En: en_GettingStarted;       Uk: uk_GettingStarted),
     (Key: 'Go'                   ; En: en_Go;                   Uk: uk_Go),

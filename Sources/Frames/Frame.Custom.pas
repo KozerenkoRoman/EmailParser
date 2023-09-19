@@ -36,7 +36,7 @@ type
     //IConfig
     procedure IConfig.UpdateLanguage = Translate;
     procedure UpdateRegExp;
-    procedure UpdateFilter;
+    procedure UpdateFilter(const aOperation: TFilterOperation);
   protected
     function GetIdentityName: string; virtual;
     procedure Deinitialize; virtual;
@@ -74,7 +74,7 @@ begin
   aSave.Hint    := TLang.Lang.Translate('Save');
 end;
 
-procedure TFrameCustom.UpdateFilter;
+procedure TFrameCustom.UpdateFilter(const aOperation: TFilterOperation);
 begin
   // nothing
 end;

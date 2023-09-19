@@ -1,4 +1,4 @@
-unit Frame.MatchesFilter;
+﻿unit Frame.MatchesFilter;
 
 interface
 
@@ -19,13 +19,17 @@ type
   TframeMatchesFilter = class(TframeSource, IConfig)
     aAllCheck     : TAction;
     aAllUnCheck   : TAction;
-    aFilter       : TAction;
+    aFilterAnd    : TAction;
+    aFilterOr     : TAction;
     btnAllCheck   : TToolButton;
     btnAllUnCheck : TToolButton;
-    btnFilter     : TToolButton;
+    btnFilterAnd  : TToolButton;
+    btnFilterOr   : TToolButton;
+    ToolButton1: TToolButton;
     procedure aAllCheckExecute(Sender: TObject);
     procedure aAllUnCheckExecute(Sender: TObject);
-    procedure aFilterExecute(Sender: TObject);
+    procedure aFilterAndExecute(Sender: TObject);
+    procedure aFilterOrExecute(Sender: TObject);
     procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -35,11 +39,12 @@ type
 
     C_IDENTITY_NAME = 'frameMatchesFilter';
   private
+    procedure FillRegExpColumns;
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
 
     //IConfig
     procedure IConfig.UpdateRegExp = LoadFromXML;
-    procedure UpdateFilter;
+    procedure UpdateFilter(const aOperation: TFilterOperation);
 
   protected
     function GetIdentityName: string; override;
@@ -100,7 +105,8 @@ begin
   vstTree.Header.Columns[COL_PARAM_NAME].Text := TLang.Lang.Translate('TemplateName');
   aAllCheck.Hint   := TLang.Lang.Translate('AllCheck');
   aAllUnCheck.Hint := TLang.Lang.Translate('AllUnCheck');
-  aFilter.Hint     := TLang.Lang.Translate('Filter');
+  aFilterAnd.Hint  := TLang.Lang.Translate('Filter') + ' "AND"';
+  aFilterOr.Hint   := TLang.Lang.Translate('Filter') + ' "OR"';
 end;
 
 procedure TframeMatchesFilter.LoadFromXML;
@@ -141,7 +147,7 @@ begin
 
 end;
 
-procedure TframeMatchesFilter.UpdateFilter;
+procedure TframeMatchesFilter.UpdateFilter(const aOperation: TFilterOperation);
 begin
   //nothing
 end;
@@ -250,7 +256,7 @@ begin
   end;
 end;
 
-procedure TframeMatchesFilter.aFilterExecute(Sender: TObject);
+procedure TframeMatchesFilter.FillRegExpColumns;
 var
   Node: PVirtualNode;
   i: Integer;
@@ -264,7 +270,20 @@ begin
     Node := vstTree.GetNextSibling(Node);
     Inc(i);
   end;
-  TPublishers.ConfigPublisher.UpdateFilter;
+end;
+
+procedure TframeMatchesFilter.aFilterAndExecute(Sender: TObject);
+begin
+  inherited;
+  FillRegExpColumns;
+  TPublishers.ConfigPublisher.UpdateFilter(foAND);
+end;
+
+procedure TframeMatchesFilter.aFilterOrExecute(Sender: TObject);
+begin
+  inherited;
+  FillRegExpColumns;
+  TPublishers.ConfigPublisher.UpdateFilter(foOR);
 end;
 
 end.

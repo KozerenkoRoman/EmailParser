@@ -21,6 +21,7 @@ uses
   DebugWriter in 'Sources\Common\DebugWriter.pas',
   dEXIF.Helper in 'Sources\dEXIF\dEXIF.Helper.pas',
   ExecConsoleProgram in 'Sources\Common\ExecConsoleProgram.pas',
+  EXIF.Dialog in 'Sources\Common\EXIF.Dialog.pas' {EXIFDialog},
   Files.Utils in 'Sources\Common\Files.Utils.pas',
   FireDAC.Phys.SQLiteIniFile in 'Sources\DataModules\FireDAC.Phys.SQLiteIniFile.pas',
   Frame.AllAttachments in 'Sources\Frames\Frame.AllAttachments.pas' {frameAllAttachments: TFrame},
@@ -83,9 +84,9 @@ begin
       TfrmSplashScreen.ShowSplashScreen;
 {$ENDIF}
       Application.CreateForm(TDMImage, DMImage);
-      Application.CreateForm(TDaMod, DaMod);
-      Application.CreateForm(TfrmMain, frmMain);
-      frmMain.Initialize;
+  Application.CreateForm(TDaMod, DaMod);
+  Application.CreateForm(TfrmMain, frmMain);
+  frmMain.Initialize;
     finally
       TfrmSplashScreen.HideSplashScreen;
     end;
