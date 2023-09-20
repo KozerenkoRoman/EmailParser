@@ -158,7 +158,7 @@ type
   end;
 
 const
-  C_ICON_SIZE = 39;
+  C_ICON_SIZE = 40;
   C_TOP_COLOR = $001E4DFF;
   MaxCardinal: Cardinal = $FFFFFFFF;
 
@@ -214,7 +214,7 @@ begin
         Data.RegExpTemplate := XMLParams.Attributes.GetAttributeValue('RegExpTemplate', '');
         Data.GroupIndex     := XMLParams.Attributes.GetAttributeValue('GroupIndex', 0);
         Data.UseRawText     := XMLParams.Attributes.GetAttributeValue('UseRawText', False);
-        Data.Color          := XMLParams.Attributes.GetAttributeValue('Color', arrWebColors[Random(High(arrWebColors))].Color);
+        Data.Color          := XMLParams.Attributes.GetAttributeValue('Color', clRed  {arrWebColors[Random(High(arrWebColors))].Color});
         Result[i] := Data;
         Inc(i);
       end;

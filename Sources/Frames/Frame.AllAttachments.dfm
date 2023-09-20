@@ -6,10 +6,6 @@ inherited frameAllAttachments: TframeAllAttachments
   inherited tbMain: TToolBar
     Width = 797
     ExplicitWidth = 797
-    inherited btnAdd: TToolButton
-      Action = aOpenAttachFile
-      Visible = False
-    end
     object btnSep04: TToolButton
       Left = 375
       Top = 0
@@ -41,14 +37,12 @@ inherited frameAllAttachments: TframeAllAttachments
       Top = 0
       Width = 8
       Caption = 'btnSep05'
-      ImageIndex = 76
-      ImageName = 'page_copy'
       Style = tbsSeparator
     end
-    object btnFileSearchShow: TToolButton
+    object btnShowSearchBar: TToolButton
       Left = 547
       Top = 0
-      Action = aFileSearchShow
+      Action = aShowSearchBar
     end
   end
   inherited vstTree: TVirtualStringTree
@@ -190,20 +184,27 @@ inherited frameAllAttachments: TframeAllAttachments
       Left = 539
       Top = 0
       Action = aFileSearch
+      ImageIndex = 11
     end
     object btnFileBreak: TToolButton
       Left = 578
       Top = 0
       Action = aFileBreak
+      ImageIndex = 12
     end
   end
   inherited alFrame: TActionList
     Left = 100
     inherited aAdd: TAction
       Visible = False
+      OnUpdate = aAddUpdate
+    end
+    inherited aEdit: TAction
+      OnUpdate = aAddUpdate
     end
     inherited aDelete: TAction
       Visible = False
+      OnUpdate = aAddUpdate
     end
     inherited aSave: TAction
       OnExecute = aSaveExecute
@@ -213,22 +214,24 @@ inherited frameAllAttachments: TframeAllAttachments
       OnExecute = aRefreshExecute
     end
     object aOpenAttachFile: TAction [9]
-      ImageIndex = 72
+      Hint = 'Open Attach File'
+      ImageIndex = 69
       ImageName = 'email_attach'
       OnExecute = aOpenAttachFileExecute
       OnUpdate = aOpenAttachFileUpdate
     end
     object aOpenParsedText: TAction [10]
       Hint = 'Open Parsed Text'
-      ImageIndex = 75
+      ImageIndex = 72
       ImageName = 'email_open'
       OnExecute = aOpenParsedTextExecute
       OnUpdate = aOpenAttachFileUpdate
     end
     object aOpenEmail: TAction [11]
-      ImageIndex = 71
+      ImageIndex = 68
       ImageName = 'email'
       OnExecute = aOpenEmailExecute
+      OnUpdate = aOpenAttachFileUpdate
     end
     inherited aExpandAll: TAction
       OnUpdate = aExpandAllUpdate
@@ -254,11 +257,11 @@ inherited frameAllAttachments: TframeAllAttachments
       ImageName = 'lightning_delete'
       OnExecute = aFileBreakExecute
     end
-    object aFileSearchShow: TAction
+    object aShowSearchBar: TAction
       AutoCheck = True
-      ImageIndex = 79
+      ImageIndex = 76
       ImageName = 'toolbar_add'
-      OnExecute = aFileSearchShowExecute
+      OnExecute = aShowSearchBarExecute
     end
   end
   object SaveDialogAttachment: TSaveDialog

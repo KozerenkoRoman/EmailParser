@@ -15,7 +15,6 @@ object FrameCustom: TFrameCustom
     EdgeOuter = esNone
     Images = DMImage.vil32
     TabOrder = 0
-    ExplicitWidth = 377
     object btnAdd: TToolButton
       Left = 0
       Top = 0
@@ -56,7 +55,7 @@ object FrameCustom: TFrameCustom
       Margins.Top = 8
       Margins.Right = 8
       Margins.Bottom = 8
-      ImageIndex = 16
+      ImageIndex = 15
       ImageName = 'ExportToXLS_32x32'
       Style = tbsSeparator
     end
@@ -77,7 +76,7 @@ object FrameCustom: TFrameCustom
       Margins.Top = 8
       Margins.Right = 8
       Margins.Bottom = 8
-      ImageIndex = 33
+      ImageIndex = 31
       ImageName = 'Download_32x32'
       Style = tbsSeparator
     end
@@ -88,7 +87,7 @@ object FrameCustom: TFrameCustom
     Top = 160
     object aAdd: TAction
       Hint = 'Add'
-      ImageIndex = 52
+      ImageIndex = 49
       ImageName = 'AddItem_32x32'
     end
     object aEdit: TAction
@@ -103,12 +102,12 @@ object FrameCustom: TFrameCustom
     end
     object aSave: TAction
       Hint = 'Save'
-      ImageIndex = 10
+      ImageIndex = 9
       ImageName = 'Save_32x32'
     end
     object aRefresh: TAction
       Hint = 'Refresh'
-      ImageIndex = 32
+      ImageIndex = 30
       ImageName = 'Refresh_32x32'
     end
   end

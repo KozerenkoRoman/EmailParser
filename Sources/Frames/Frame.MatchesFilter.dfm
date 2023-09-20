@@ -1,89 +1,87 @@
 inherited frameMatchesFilter: TframeMatchesFilter
-  Width = 487
-  Height = 298
+  Width = 606
+  Height = 265
   Align = alClient
-  ExplicitWidth = 487
-  ExplicitHeight = 298
+  ExplicitWidth = 606
+  ExplicitHeight = 265
   inherited tbMain: TToolBar
-    Width = 487
-    Height = 24
-    ButtonHeight = 23
+    Width = 606
+    Height = 22
+    ButtonHeight = 22
     ButtonWidth = 23
     Images = DMImage.vil16
     TabOrder = 1
     Transparent = False
-    ExplicitWidth = 487
-    ExplicitHeight = 24
+    ExplicitWidth = 606
+    ExplicitHeight = 22
     inherited btnAdd: TToolButton
       ExplicitWidth = 23
-      ExplicitHeight = 23
+      ExplicitHeight = 22
     end
     inherited btnEdit: TToolButton
       Left = 23
       ExplicitLeft = 23
       ExplicitWidth = 23
-      ExplicitHeight = 23
+      ExplicitHeight = 22
     end
     inherited btnDelete: TToolButton
       Left = 46
       ExplicitLeft = 46
       ExplicitWidth = 23
-      ExplicitHeight = 23
+      ExplicitHeight = 22
     end
     inherited btnSave: TToolButton
       Left = 69
-      Action = nil
-      Visible = False
       ExplicitLeft = 69
       ExplicitWidth = 23
-      ExplicitHeight = 23
+      ExplicitHeight = 22
     end
     inherited btnSep01: TToolButton
       Left = 92
       Visible = False
       ExplicitLeft = 92
-      ExplicitHeight = 23
+      ExplicitHeight = 22
     end
     inherited btnRefresh: TToolButton
       Left = 100
       ExplicitLeft = 100
       ExplicitWidth = 23
-      ExplicitHeight = 23
+      ExplicitHeight = 22
     end
     inherited btnSep02: TToolButton
       Left = 123
       Visible = False
       ExplicitLeft = 123
-      ExplicitHeight = 23
+      ExplicitHeight = 22
     end
     inherited btnExportToExcel: TToolButton
       Left = 131
       ExplicitLeft = 131
       ExplicitWidth = 23
-      ExplicitHeight = 23
+      ExplicitHeight = 22
     end
     inherited btnExportToCSV: TToolButton
       Left = 154
       ExplicitLeft = 154
       ExplicitWidth = 23
-      ExplicitHeight = 23
+      ExplicitHeight = 22
     end
     inherited btnPrint: TToolButton
       Left = 177
       ExplicitLeft = 177
       ExplicitWidth = 23
-      ExplicitHeight = 23
+      ExplicitHeight = 22
     end
     inherited btnSep03: TToolButton
       Left = 200
       ExplicitLeft = 200
-      ExplicitHeight = 23
+      ExplicitHeight = 22
     end
     inherited btnColumnSettings: TToolButton
       Left = 208
       ExplicitLeft = 208
       ExplicitWidth = 23
-      ExplicitHeight = 23
+      ExplicitHeight = 22
     end
     object btnAllUnCheck: TToolButton
       Left = 231
@@ -95,30 +93,21 @@ inherited frameMatchesFilter: TframeMatchesFilter
       Top = 0
       Action = aAllCheck
     end
-    object btnFilterAnd: TToolButton
+    object btnFilterAND: TToolButton
       Left = 277
       Top = 0
-      Action = aFilterAnd
+      Action = aFilterAND
     end
-    object btnFilterOr: TToolButton
+    object btnFilterOR: TToolButton
       Left = 300
       Top = 0
-      Action = aFilterOr
-    end
-    object ToolButton1: TToolButton
-      Left = 323
-      Top = 0
-      Width = 8
-      Caption = 'ToolButton1'
-      ImageIndex = 0
-      ImageName = 'DeleteList_32x32'
-      Style = tbsSeparator
+      Action = aFilterOR
     end
   end
   inherited vstTree: TVirtualStringTree
-    Top = 24
-    Width = 487
-    Height = 274
+    Top = 22
+    Width = 606
+    Height = 243
     Alignment = taRightJustify
     Header.MainColumn = 0
     Header.Options = [hoAutoResize, hoColumnResize, hoDblClickResize, hoDrag, hoShowHint, hoShowImages, hoShowSortGlyphs, hoVisible]
@@ -130,21 +119,21 @@ inherited frameMatchesFilter: TframeMatchesFilter
     OnBeforeCellPaint = vstTreeBeforeCellPaint
     OnChecked = vstTreeChecked
     OnGetText = vstTreeGetText
-    ExplicitTop = 24
-    ExplicitWidth = 487
-    ExplicitHeight = 274
+    ExplicitTop = 22
+    ExplicitWidth = 606
+    ExplicitHeight = 267
     Columns = <
       item
         CaptionAlignment = taCenter
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 0
         Text = 'Name'
-        Width = 483
+        Width = 602
       end>
     DefaultText = ''
   end
   inherited alFrame: TActionList
-    Images = DMImage.vil16
+    Left = 96
     Top = 64
     inherited aAdd: TAction
       Visible = False
@@ -173,37 +162,34 @@ inherited frameMatchesFilter: TframeMatchesFilter
       Visible = False
     end
     inherited aExpandAll: TAction
-      ImageIndex = -1
-      ImageName = ''
       Visible = False
     end
     inherited aCollapseAll: TAction
-      ImageIndex = -1
-      ImageName = ''
       Visible = False
     end
-    object aFilterAnd: TAction
-      ImageIndex = 40
-      ImageName = 'sql_join_inner'
-      OnExecute = aFilterAndExecute
+    object aFilterAND: TAction
+      ImageIndex = 38
+      ImageName = 'select_by_intersection'
+      OnExecute = aFilterANDExecute
     end
-    object aFilterOr: TAction
-      ImageIndex = 37
-      ImageName = 'sql_join_outer'
-      OnExecute = aFilterOrExecute
+    object aFilterOR: TAction
+      ImageIndex = 35
+      ImageName = 'select_by_adding_to_selection'
+      OnExecute = aFilterORExecute
     end
     object aAllUnCheck: TAction
-      ImageIndex = 84
+      ImageIndex = 81
       ImageName = 'check_box_uncheck2'
       OnExecute = aAllUnCheckExecute
     end
     object aAllCheck: TAction
-      ImageIndex = 83
+      ImageIndex = 80
       ImageName = 'check_boxes2'
       OnExecute = aAllCheckExecute
     end
   end
   inherited pmFrame: TPopupMenu
+    Images = DMImage.vil32
     Top = 124
   end
 end

@@ -145,11 +145,13 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
       Left = 539
       Top = 0
       Action = aFileSearch
+      ImageIndex = 11
     end
     object btnFileBreak: TToolButton
       Left = 578
       Top = 0
       Action = aFileBreak
+      ImageIndex = 12
     end
     object btnSep04: TToolButton
       Left = 617
@@ -162,18 +164,17 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
       Left = 625
       Top = 0
       Action = aDeleteSelected
+      ImageIndex = 62
     end
     object btnAllUnCheck: TToolButton
       Left = 664
       Top = 0
       Action = aAllUnCheck
-      ImageName = 'check_box_uncheck2'
     end
     object btnAllCheck: TToolButton
       Left = 703
       Top = 0
       Action = aAllCheck
-      ImageName = 'check_boxes2'
     end
   end
   inherited alFrame: TActionList
@@ -204,14 +205,14 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
       OnUpdate = aDeleteSelectedUpdate
     end
     object aAllUnCheck: TAction
-      ImageIndex = 84
-      ImageName = 'all_uncheck_boxes'
+      ImageIndex = 81
+      ImageName = 'check_box_uncheck2'
       OnExecute = aAllUnCheckExecute
       OnUpdate = aDeleteSelectedUpdate
     end
     object aAllCheck: TAction
-      ImageIndex = 83
-      ImageName = 'all_check_boxes'
+      ImageIndex = 80
+      ImageName = 'check_boxes2'
       OnExecute = aAllCheckExecute
       OnUpdate = aAllCheckUpdate
     end

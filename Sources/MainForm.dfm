@@ -59,7 +59,7 @@ inherited frmMain: TfrmMain
           Items = <
             item
               Caption = 'Paths to find files'
-              ImageIndex = 24
+              ImageIndex = 22
               ImageName = 'TreeView_32x32'
             end
             item
@@ -69,12 +69,12 @@ inherited frmMain: TfrmMain
             end
             item
               Caption = 'Edit Common Parameters'
-              ImageIndex = 63
+              ImageIndex = 60
               ImageName = 'PageSetup_32x32'
             end
             item
               Caption = 'Search'
-              ImageIndex = 21
+              ImageIndex = 20
               ImageName = 'Zoom_32x32'
             end>
           TextColor = clWindowFrame
@@ -86,12 +86,12 @@ inherited frmMain: TfrmMain
           Items = <
             item
               Caption = 'Search duplicate files'
-              ImageIndex = 81
+              ImageIndex = 78
               ImageName = 'Zoom100_32x32'
             end
             item
               Caption = 'Open Log File'
-              ImageIndex = 70
+              ImageIndex = 67
               ImageName = 'file_extension_log'
             end>
           TextColor = clWindowFrame
@@ -135,18 +135,12 @@ inherited frmMain: TfrmMain
         inherited tbMain: TToolBar
           Width = 246
           ExplicitWidth = 246
-          inherited btnFilterAnd: TToolButton
-            ImageIndex = -1
-          end
-          inherited btnFilterOr: TToolButton
-            ImageIndex = -1
-          end
         end
         inherited vstTree: TVirtualStringTree
           Width = 246
-          Height = 207
+          Height = 191
           ExplicitWidth = 246
-          ExplicitHeight = 207
+          ExplicitHeight = 191
           Columns = <
             item
               CaptionAlignment = taCenter
@@ -282,7 +276,7 @@ inherited frmMain: TfrmMain
         end
         inherited tbSettings: TToolBar
           Width = 738
-          ExplicitWidth = 372
+          ExplicitWidth = 738
         end
       end
     end
@@ -445,8 +439,8 @@ inherited frmMain: TfrmMain
               Control = frameSettings.cbLoadRecordsFromDB
               Row = 4
             end>
-          ExplicitWidth = 372
-          ExplicitHeight = 339
+          ExplicitWidth = 738
+          ExplicitHeight = 512
         end
       end
     end
@@ -474,7 +468,6 @@ inherited frmMain: TfrmMain
         inherited pcMain: TPageControl
           Width = 738
           Height = 551
-          ExplicitTop = 0
           ExplicitWidth = 738
           ExplicitHeight = 551
           inherited tsEmail: TTabSheet
@@ -533,7 +526,6 @@ inherited frmMain: TfrmMain
           inherited tsAllAttachments: TTabSheet
             inherited frameAllAttachments: TframeAllAttachments
               inherited vstTree: TVirtualStringTree
-                ExplicitHeight = 192
                 DefaultText = ''
               end
             end
@@ -571,7 +563,7 @@ inherited frmMain: TfrmMain
         end
         inherited tbFileSearch: TToolBar
           Width = 738
-          ExplicitWidth = 372
+          ExplicitWidth = 738
           inherited btnFileSearch: TToolButton
             Wrap = True
           end

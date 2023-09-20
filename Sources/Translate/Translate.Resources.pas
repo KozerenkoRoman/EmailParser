@@ -136,6 +136,7 @@ resourcestring
   en_Utilities            = 'Utilities';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
+  en_ShowSearchBar        = 'Show search bar';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -253,9 +254,10 @@ resourcestring
   uk_Utilities            = 'Утиліти';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
+  uk_ShowSearchBar        = 'Показати панель пошуку';
 
 const
-   ArrayMessages: array[1 .. 113] of TMessageItem = (
+   ArrayMessages: array[1 .. 114] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
@@ -363,6 +365,7 @@ const
     (Key: 'Successful'           ; En: en_Successful;           Uk: uk_Successful),
     (Key: 'SystemInfo'           ; En: en_SystemInfo;           Uk: uk_SystemInfo),
     (Key: 'TemplateName'         ; En: en_TemplateName;         Uk: uk_TemplateName),
+    (Key: 'ShowSearchBar'        ; En: en_ShowSearchBar;        Uk: uk_ShowSearchBar),
     (Key: 'Text'                 ; En: en_Text;                 Uk: uk_Text),
     (Key: 'Time'                 ; En: en_Time;                 Uk: uk_Time),
     (Key: 'UseRawText'           ; En: en_UseRawText;           Uk: uk_UseRawText),

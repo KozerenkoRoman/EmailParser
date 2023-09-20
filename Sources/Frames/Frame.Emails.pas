@@ -476,7 +476,7 @@ begin
     FIsLoaded   := True;
     FIsFiltered := True;
     aFilter.Checked    := True;
-    aFilter.ImageIndex := 56;
+    aFilter.ImageIndex := 53;
     Application.ProcessMessages;
     FPerformer.Count := vstTree.RootNode.ChildCount;
     FPerformer.RefreshEmails;
@@ -515,7 +515,7 @@ begin
   inherited;
   FIsFiltered := TAction(Sender).Checked;
   if TAction(Sender).Checked then
-    TAction(Sender).ImageIndex := 56
+    TAction(Sender).ImageIndex := 53
   else
     TAction(Sender).ImageIndex := 3;
 
@@ -528,7 +528,7 @@ begin
   FIsLoaded   := True;
   FIsFiltered := True;
   aFilter.Checked    := True;
-  aFilter.ImageIndex := 56;
+  aFilter.ImageIndex := 53;
   Application.ProcessMessages;
   FPerformer.Start;
 end;

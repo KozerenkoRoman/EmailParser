@@ -19,17 +19,16 @@ type
   TframeMatchesFilter = class(TframeSource, IConfig)
     aAllCheck     : TAction;
     aAllUnCheck   : TAction;
-    aFilterAnd    : TAction;
-    aFilterOr     : TAction;
+    aFilterAND    : TAction;
+    aFilterOR     : TAction;
     btnAllCheck   : TToolButton;
     btnAllUnCheck : TToolButton;
-    btnFilterAnd  : TToolButton;
-    btnFilterOr   : TToolButton;
-    ToolButton1: TToolButton;
+    btnFilterAND  : TToolButton;
+    btnFilterOR   : TToolButton;
     procedure aAllCheckExecute(Sender: TObject);
     procedure aAllUnCheckExecute(Sender: TObject);
-    procedure aFilterAndExecute(Sender: TObject);
-    procedure aFilterOrExecute(Sender: TObject);
+    procedure aFilterANDExecute(Sender: TObject);
+    procedure aFilterORExecute(Sender: TObject);
     procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -90,7 +89,6 @@ begin
   tbMain.ButtonHeight := C_ICON_SIZE div 2;
   tbMain.ButtonWidth  := C_ICON_SIZE div 2;
   tbMain.Height       := C_ICON_SIZE div 2 + 2;
-
   Translate;
 end;
 
@@ -105,8 +103,8 @@ begin
   vstTree.Header.Columns[COL_PARAM_NAME].Text := TLang.Lang.Translate('TemplateName');
   aAllCheck.Hint   := TLang.Lang.Translate('AllCheck');
   aAllUnCheck.Hint := TLang.Lang.Translate('AllUnCheck');
-  aFilterAnd.Hint  := TLang.Lang.Translate('Filter') + ' "AND"';
-  aFilterOr.Hint   := TLang.Lang.Translate('Filter') + ' "OR"';
+  aFilterAND.Hint  := TLang.Lang.Translate('Filter') + ' "AND"';
+  aFilterOR.Hint   := TLang.Lang.Translate('Filter') + ' "OR"';
 end;
 
 procedure TframeMatchesFilter.LoadFromXML;
@@ -272,14 +270,14 @@ begin
   end;
 end;
 
-procedure TframeMatchesFilter.aFilterAndExecute(Sender: TObject);
+procedure TframeMatchesFilter.aFilterANDExecute(Sender: TObject);
 begin
   inherited;
   FillRegExpColumns;
   TPublishers.ConfigPublisher.UpdateFilter(foAND);
 end;
 
-procedure TframeMatchesFilter.aFilterOrExecute(Sender: TObject);
+procedure TframeMatchesFilter.aFilterORExecute(Sender: TObject);
 begin
   inherited;
   FillRegExpColumns;

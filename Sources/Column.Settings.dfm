@@ -38,7 +38,7 @@ object frmColumnSettings: TfrmColumnSettings
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
-      ImageIndex = 43
+      ImageIndex = 41
       ImageName = 'RemovePivotField_32x32'
       Images = DMImage.vil32
       ModalResult = 2
@@ -56,7 +56,7 @@ object frmColumnSettings: TfrmColumnSettings
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
-      ImageIndex = 46
+      ImageIndex = 44
       ImageName = 'tick'
       Images = DMImage.vil32
       ModalResult = 1

@@ -21,7 +21,7 @@ inherited frameRegExp: TframeRegExp
       Top = 0
       Width = 8
       Caption = 'btnSep05'
-      ImageIndex = 31
+      ImageIndex = 29
       ImageName = 'transform_rotate'
       Style = tbsSeparator
     end
@@ -152,7 +152,7 @@ inherited frameRegExp: TframeRegExp
       Top = 0
       Width = 8
       Caption = 'btnSep04'
-      ImageIndex = 64
+      ImageIndex = 61
       ImageName = 'sql'
       Style = tbsSeparator
     end
@@ -171,18 +171,18 @@ inherited frameRegExp: TframeRegExp
     inherited aRefresh: TAction [1]
       OnExecute = aRefreshExecute
     end
-    inherited aExportToExcel: TAction [2]
-    end
-    inherited aEdit: TAction [3]
+    inherited aEdit: TAction [2]
       Visible = True
       OnExecute = aEditExecute
       OnUpdate = aDeleteUpdate
     end
-    inherited aExportToCSV: TAction [4]
-    end
-    inherited aDelete: TAction [5]
+    inherited aDelete: TAction [3]
       OnExecute = aDeleteExecute
       OnUpdate = aDeleteUpdate
+    end
+    inherited aExportToExcel: TAction [4]
+    end
+    inherited aExportToCSV: TAction [5]
     end
     inherited aPrint: TAction [6]
     end
@@ -192,7 +192,7 @@ inherited frameRegExp: TframeRegExp
     end
     object aSaveAs: TAction [8]
       Caption = 'Save temlate set as...'
-      ImageIndex = 26
+      ImageIndex = 24
       ImageName = 'SaveAll_32x32'
       OnExecute = aSaveAsExecute
     end
@@ -203,25 +203,25 @@ inherited frameRegExp: TframeRegExp
       Visible = False
     end
     object aDeleteSet: TAction
-      ImageIndex = 65
+      ImageIndex = 62
       ImageName = 'DeleteList2_32x32'
       OnExecute = aDeleteSetExecute
     end
     object aImportFromXML: TAction
-      ImageIndex = 62
+      ImageIndex = 59
       ImageName = 'ImportXML'
       OnExecute = aImportFromXMLExecute
     end
     object aUp: TAction
       Caption = 'aUp'
-      ImageIndex = 29
+      ImageIndex = 27
       ImageName = 'Up2_32x32'
       OnExecute = aUpExecute
       OnUpdate = aUpUpdate
     end
     object aDown: TAction
       Caption = 'aDown'
-      ImageIndex = 30
+      ImageIndex = 28
       ImageName = 'Fill_32x32'
       OnExecute = aDownExecute
       OnUpdate = aDownUpdate

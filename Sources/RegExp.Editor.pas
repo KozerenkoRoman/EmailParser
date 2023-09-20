@@ -57,6 +57,8 @@ type
     procedure aSelectAllExecute(Sender: TObject);
     procedure aTestExecute(Sender: TObject);
     procedure cbSetOfTemplatesCloseUp(Sender: TObject);
+    procedure tvResultsCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
+      var DefaultDraw: Boolean);
   private const
     C_IDENTITY_NAME = 'RegExpEditor';
   private
@@ -173,6 +175,15 @@ begin
   lblGroupIndex.Caption       := TLang.Lang.Translate('GroupIndex');
   lblTemplateName.Caption     := TLang.Lang.Translate('TemplateName');
   lblUseRawText.Caption       := TLang.Lang.Translate('UseRawText');
+end;
+
+procedure TfrmRegExpEditor.tvResultsCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+begin
+  inherited;
+  if (Node.Level >= 1) then
+    Sender.Canvas.Brush.Color := cbWebColor.Selected
+  else
+    DefaultDraw := True;
 end;
 
 procedure TfrmRegExpEditor.aTestExecute(Sender: TObject);

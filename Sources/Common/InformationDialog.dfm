@@ -19,6 +19,8 @@ object InformationDialog: TInformationDialog
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 470
+    ExplicitHeight = 476
     object wbMessage: TWebBrowser
       Left = 0
       Top = 0
@@ -35,7 +37,7 @@ object InformationDialog: TInformationDialog
       TabOrder = 0
       OnBeforeNavigate2 = wbMessageBeforeNavigate2
       ExplicitWidth = 470
-      ExplicitHeight = 431
+      ExplicitHeight = 434
       ControlData = {
         4C000000FD300000F52C00000000000000000000000000000000000000000000
         000000004C000000000000000000000001000000E0D057007335CF11AE690800
@@ -52,7 +54,7 @@ object InformationDialog: TInformationDialog
       BevelOuter = bvNone
       ParentBackground = False
       TabOrder = 1
-      ExplicitTop = 431
+      ExplicitTop = 434
       ExplicitWidth = 470
       DesignSize = (
         474
@@ -102,14 +104,14 @@ object InformationDialog: TInformationDialog
     Top = 160
     object aOk: TAction
       Caption = 'Ok'
-      ImageIndex = 46
+      ImageIndex = 44
       ImageName = 'tick'
       ShortCut = 27
       OnExecute = aOkExecute
     end
     object aSave: TAction
       Caption = 'Save'
-      ImageIndex = 10
+      ImageIndex = 9
       ImageName = 'Save_32x32'
       OnExecute = aSaveExecute
     end

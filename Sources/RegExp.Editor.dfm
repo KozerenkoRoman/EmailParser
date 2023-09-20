@@ -133,7 +133,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       860
       42)
     object btnCancel: TBitBtn
-      Left = 604
+      Left = 629
       Top = 1
       Width = 110
       Height = 40
@@ -144,16 +144,16 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
-      ImageIndex = 43
+      ImageIndex = 41
       ImageName = 'RemovePivotField_32x32'
       Images = DMImage.vil32
       ModalResult = 2
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 600
+      ExplicitLeft = 625
     end
     object btnOk: TBitBtn
-      Left = 716
+      Left = 741
       Top = 1
       Width = 110
       Height = 40
@@ -164,13 +164,13 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
-      ImageIndex = 46
+      ImageIndex = 44
       ImageName = 'tick'
       Images = DMImage.vil32
       ModalResult = 1
       ParentFont = False
       TabOrder = 1
-      ExplicitLeft = 712
+      ExplicitLeft = 737
     end
   end
   object tbPattern: TToolBar
@@ -220,6 +220,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       Left = 460
       Top = 0
       Action = aTest
+      ImageIndex = 40
     end
   end
   object pnlRight: TPanel
@@ -231,6 +232,8 @@ inherited frmRegExpEditor: TfrmRegExpEditor
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitLeft = 484
+    ExplicitHeight = 529
     object gbOptions: TGroupBox
       AlignWithMargins = True
       Left = 3
@@ -317,6 +320,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
         ShowHint = False
         TabOrder = 0
         ToolTips = False
+        OnCustomDrawItem = tvResultsCustomDrawItem
         ExplicitHeight = 326
       end
       object edtResult: TEdit
@@ -369,9 +373,11 @@ inherited frmRegExpEditor: TfrmRegExpEditor
     Top = 160
     object miCopy: TMenuItem
       Action = aCopy
+      ImageIndex = 73
     end
     object miPaste: TMenuItem
       Action = aPaste
+      ImageIndex = 74
     end
     object miSelectAll: TMenuItem
       Action = aSelectAll

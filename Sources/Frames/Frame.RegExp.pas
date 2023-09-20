@@ -535,7 +535,7 @@ end;
 procedure TframeRegExp.cbSetOfTemplatesChange(Sender: TObject);
 begin
   inherited;
-  if (cbSetOfTemplates.ItemIndex > -1) then
+  if Showing and (cbSetOfTemplates.ItemIndex > -1) then
     TRegExpUtils.RestoreSetOfTemplate(TGeneral.XMLParams, vstTree, TStringObject(cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex]).StringValue);
 end;
 

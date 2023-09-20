@@ -46,6 +46,7 @@ inherited frameSorter: TframeSorter
         Text = 'Info'
         Width = 100
       end>
+    DefaultText = ''
   end
   inherited alFrame: TActionList
     inherited aAdd: TAction
@@ -70,14 +71,6 @@ inherited frameSorter: TframeSorter
     end
     inherited aCollapseAll: TAction
       Visible = False
-    end
-  end
-  inherited pmFrame: TPopupMenu
-    inherited miExpandAll: TMenuItem
-      ImageName = 'ShowDetail_16x16'
-    end
-    inherited miCollapseAll: TMenuItem
-      ImageName = 'HideDetail_16x16'
     end
   end
   object OpenDialog: TFileOpenDialog

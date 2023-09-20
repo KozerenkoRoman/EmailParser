@@ -18,11 +18,11 @@ type
   TframeAllAttachments = class(TframeSource, IProgress, IConfig)
     aFileBreak           : TAction;
     aFileSearch          : TAction;
-    aFileSearchShow      : TAction;
     aFilter              : TAction;
     aOpenAttachFile      : TAction;
     aOpenEmail           : TAction;
     aOpenParsedText      : TAction;
+    aShowSearchBar       : TAction;
     btnFileBreak         : TToolButton;
     btnFileSearch        : TToolButton;
     btnFilter            : TToolButton;
@@ -41,7 +41,7 @@ type
     procedure aExpandAllUpdate(Sender: TObject);
     procedure aFileBreakExecute(Sender: TObject);
     procedure aFileSearchExecute(Sender: TObject);
-    procedure aFileSearchShowExecute(Sender: TObject);
+    procedure aShowSearchBarExecute(Sender: TObject);
     procedure aFileSearchUpdate(Sender: TObject);
     procedure aFilterExecute(Sender: TObject);
     procedure aOpenAttachFileExecute(Sender: TObject);
@@ -56,6 +56,7 @@ type
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
+    procedure aAddUpdate(Sender: TObject);
   private const
     COL_POSITION     = 0;
     COL_EMAIL_NAME   = 1;
@@ -150,11 +151,12 @@ end;
 procedure TframeAllAttachments.Translate;
 begin
   inherited;
+  aFileBreak.Hint      := TLang.Lang.Translate('Break');
+  aFileSearch.Hint     := TLang.Lang.Translate('StartSearch');
+  aShowSearchBar.Hint  := TLang.Lang.Translate('ShowSearchBar');
+  aFilter.Hint         := TLang.Lang.Translate('Filter');
   aOpenAttachFile.Hint := TLang.Lang.Translate('OpenFile');
   aOpenEmail.Hint      := TLang.Lang.Translate('OpenEmail');
-  aOpenEmail.Hint      := TLang.Lang.Translate('OpenEmail');
-  aFileSearch.Hint     := TLang.Lang.Translate('StartSearch');
-  aFileBreak.Hint      := TLang.Lang.Translate('Break');
   lblPath.Caption      := TLang.Lang.Translate('Path');
   vstTree.Header.Columns[COL_SHORT_NAME].Text   := TLang.Lang.Translate('FileName');
   vstTree.Header.Columns[COL_EMAIL_NAME].Text   := TLang.Lang.Translate('Email');
@@ -178,21 +180,15 @@ begin
   cbExt.Text   := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'AttachmentsExt', '*.*');
 end;
 
-procedure TframeAllAttachments.aFileSearchShowExecute(Sender: TObject);
+procedure TframeAllAttachments.aShowSearchBarExecute(Sender: TObject);
 begin
   inherited;
   tbFileSearch.Visible := not tbFileSearch.Visible;
   if tbFileSearch.Visible then
-    aFileSearchShow.ImageIndex := 80
+    TAction(Sender).ImageIndex := 77
   else
-    aFileSearchShow.ImageIndex := 79;
+    TAction(Sender).ImageIndex := 76;
   Self.Realign;
-end;
-
-procedure TframeAllAttachments.aFileSearchUpdate(Sender: TObject);
-begin
-  inherited;
-  TAction(Sender).Enabled := not FIsLoaded;
 end;
 
 procedure TframeAllAttachments.aFilterExecute(Sender: TObject);
@@ -200,10 +196,16 @@ begin
   inherited;
   FIsFiltered := TAction(Sender).Checked;
   if TAction(Sender).Checked then
-    TAction(Sender).ImageIndex := 56
+    TAction(Sender).ImageIndex := 53
   else
     TAction(Sender).ImageIndex := 3;
   UpdateFilter(foOR);
+end;
+
+procedure TframeAllAttachments.aFileSearchUpdate(Sender: TObject);
+begin
+  inherited;
+  TAction(Sender).Enabled := not FIsLoaded;
 end;
 
 procedure TframeAllAttachments.aOpenAttachFileExecute(Sender: TObject);
@@ -281,7 +283,7 @@ begin
   begin
     FIsFiltered := True;
     aFilter.Checked := True;
-    aFilter.ImageIndex := 56;
+    aFilter.ImageIndex := 53;
 
     FPerformer.IsQuiet := True;
     FPerformer.Count := vstTree.RootNodeCount;
@@ -459,6 +461,12 @@ begin
   end;
 end;
 
+procedure TframeAllAttachments.aAddUpdate(Sender: TObject);
+begin
+  inherited;
+  TAction(Sender).Visible := False;
+end;
+
 procedure TframeAllAttachments.aExpandAllUpdate(Sender: TObject);
 begin
   inherited;
@@ -480,7 +488,7 @@ begin
   FIsLoaded   := True;
   FIsFiltered := True;
   aFilter.Checked    := True;
-  aFilter.ImageIndex := 56;
+  aFilter.ImageIndex := 53;
   FPerformer.IsQuiet := False;
   FPerformer.FileSearch(edtPath.Text, cbExt.Text);
 end;
@@ -489,10 +497,11 @@ procedure TframeAllAttachments.StartProgress(const aMaxPosition: Integer);
 var
   CurrNode : PVirtualNode;
 begin
+  vstTree.BeginUpdate;
   FIsLoaded   := True;
   FIsFiltered := True;
   aFilter.Checked    := True;
-  aFilter.ImageIndex := 56;
+  aFilter.ImageIndex := 53;
 
   CurrNode := vstTree.RootNode.FirstChild;
   while Assigned(CurrNode) do
@@ -501,6 +510,14 @@ begin
       vstTree.DeleteChildren(CurrNode);
     CurrNode := CurrNode.NextSibling;
   end;
+end;
+
+procedure TframeAllAttachments.EndProgress;
+begin
+  FIsLoaded := False;
+  vstTree.EndUpdate;
+  FPerformer.IsQuiet := False;
+  FPerformer.Clear;
 end;
 
 procedure TframeAllAttachments.ClearTree;
@@ -561,11 +578,6 @@ begin
     end;
   vstTree.IsVisible[Node] := not FIsFiltered or (Node.ChildCount > 0);
   vstTree.ValidateNode(Node, False);
-end;
-
-procedure TframeAllAttachments.CompletedItem(const aResultData: PResultData);
-begin
-  //nothing
 end;
 
 procedure TframeAllAttachments.UpdateColumns;
@@ -663,17 +675,14 @@ begin
   end;
 end;
 
-procedure TframeAllAttachments.EndProgress;
+procedure TframeAllAttachments.CompletedItem(const aResultData: PResultData);
 begin
-  FIsLoaded := False;
-  vstTree.EndUpdate;
-  FPerformer.IsQuiet := False;
-  FPerformer.Clear;
+  //nothing
 end;
 
 procedure TframeAllAttachments.Progress;
 begin
-
+  //nothing
 end;
 
 end.

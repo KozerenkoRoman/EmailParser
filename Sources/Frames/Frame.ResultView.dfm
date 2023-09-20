@@ -34,9 +34,6 @@ inherited frameResultView: TframeResultView
     ActivePage = tsEmail
     Align = alClient
     TabOrder = 1
-    ExplicitTop = 39
-    ExplicitWidth = 377
-    ExplicitHeight = 261
     object tsEmail: TTabSheet
       Caption = 'Email'
       object splInfo: TSplitter
@@ -57,8 +54,6 @@ inherited frameResultView: TframeResultView
         ActivePage = tsHtmlText
         Align = alBottom
         TabOrder = 1
-        ExplicitTop = -49
-        ExplicitWidth = 369
         object tsBodyText: TTabSheet
           Caption = 'Body Text'
           ImageIndex = 3
@@ -124,7 +119,7 @@ inherited frameResultView: TframeResultView
             Height = 250
             Align = alClient
             TabOrder = 0
-            ExplicitWidth = 361
+            ExplicitWidth = 681
             ExplicitHeight = 250
             inherited tbMain: TToolBar
               Width = 681
@@ -151,16 +146,16 @@ inherited frameResultView: TframeResultView
         Margins.Bottom = 0
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 369
+        ExplicitWidth = 689
         ExplicitHeight = 358
         inherited tbMain: TToolBar
           Width = 689
-          ExplicitWidth = 369
+          ExplicitWidth = 689
         end
         inherited vstTree: TVirtualStringTree
           Width = 689
           Height = 319
-          ExplicitWidth = 369
+          ExplicitWidth = 689
           ExplicitHeight = 319
           DefaultText = ''
         end
@@ -176,8 +171,8 @@ inherited frameResultView: TframeResultView
         Height = 270
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 369
-        ExplicitHeight = 231
+        ExplicitWidth = 689
+        ExplicitHeight = 270
         inherited tbMain: TToolBar
           Width = 689
           ExplicitWidth = 689
@@ -186,7 +181,7 @@ inherited frameResultView: TframeResultView
           Width = 689
           Height = 192
           ExplicitWidth = 689
-          ExplicitHeight = 153
+          ExplicitHeight = 192
           DefaultText = ''
         end
         inherited tbFileSearch: TToolBar
@@ -243,9 +238,11 @@ inherited frameResultView: TframeResultView
     Top = 480
     object miCopy: TMenuItem
       Action = aCopy
+      ImageIndex = 73
     end
     object miPaste: TMenuItem
       Action = aPaste
+      ImageIndex = 74
     end
     object miSelectAll: TMenuItem
       Action = aSelectAll

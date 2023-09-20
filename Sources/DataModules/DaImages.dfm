@@ -45,386 +45,371 @@ object DMImage: TDMImage
       end
       item
         CollectionIndex = 8
-        CollectionName = 'Zoom_IB'
-        Name = 'Zoom_IB'
-      end
-      item
-        CollectionIndex = 9
         CollectionName = 'TextBox_32x32'
         Name = 'TextBox_32x32'
       end
       item
-        CollectionIndex = 10
+        CollectionIndex = 9
         CollectionName = 'Save_32x32'
         Name = 'Save_32x32'
       end
       item
-        CollectionIndex = 11
+        CollectionIndex = 10
         CollectionName = 'SortFields_32x32'
         Name = 'SortFields_32x32'
       end
       item
-        CollectionIndex = 12
+        CollectionIndex = 11
         CollectionName = 'lightning'
         Name = 'lightning'
       end
       item
-        CollectionIndex = 13
+        CollectionIndex = 12
         CollectionName = 'lightning_delete'
         Name = 'lightning_delete'
       end
       item
-        CollectionIndex = 14
+        CollectionIndex = 13
         CollectionName = 'lightning_add'
         Name = 'lightning_add'
       end
       item
-        CollectionIndex = 15
+        CollectionIndex = 14
         CollectionName = 'Print_32x32'
         Name = 'Print_32x32'
       end
       item
-        CollectionIndex = 16
+        CollectionIndex = 15
         CollectionName = 'ExportToXLS_32x32'
         Name = 'ExportToXLS_32x32'
       end
       item
-        CollectionIndex = 17
+        CollectionIndex = 16
         CollectionName = 'ExportToCSV_32x32'
         Name = 'ExportToCSV_32x32'
       end
       item
-        CollectionIndex = 18
+        CollectionIndex = 17
         CollectionName = 'ReviewingPane_32x32'
         Name = 'ReviewingPane_32x32'
       end
       item
-        CollectionIndex = 19
+        CollectionIndex = 18
         CollectionName = 'InsertSectionBreakContinuous_32x32'
         Name = 'InsertSectionBreakContinuous_32x32'
       end
       item
-        CollectionIndex = 20
+        CollectionIndex = 19
         CollectionName = 'UnprotectDocument_32x32'
         Name = 'UnprotectDocument_32x32'
       end
       item
-        CollectionIndex = 22
+        CollectionIndex = 20
         CollectionName = 'Zoom_32x32'
         Name = 'Zoom_32x32'
       end
       item
         CollectionIndex = 21
-        CollectionName = 'ContractInspector'
-        Name = 'ContractInspector'
-      end
-      item
-        CollectionIndex = 23
         CollectionName = 'New_32x32'
         Name = 'New_32x32'
       end
       item
-        CollectionIndex = 24
+        CollectionIndex = 22
         CollectionName = 'TreeView_32x32'
         Name = 'TreeView_32x32'
       end
       item
-        CollectionIndex = 25
+        CollectionIndex = 23
         CollectionName = 'AutoExpand_32x32'
         Name = 'AutoExpand_32x32'
       end
       item
-        CollectionIndex = 26
+        CollectionIndex = 24
         CollectionName = 'SaveAll_32x32'
         Name = 'SaveAll_32x32'
       end
       item
-        CollectionIndex = 27
+        CollectionIndex = 25
         CollectionName = 'Left_32x32'
         Name = 'Left_32x32'
       end
       item
-        CollectionIndex = 28
+        CollectionIndex = 26
         CollectionName = 'Right_32x32'
         Name = 'Right_32x32'
       end
       item
-        CollectionIndex = 29
+        CollectionIndex = 27
         CollectionName = 'Up2_32x32'
         Name = 'Up2_32x32'
       end
       item
-        CollectionIndex = 30
+        CollectionIndex = 28
         CollectionName = 'Fill_32x32'
         Name = 'Fill_32x32'
       end
       item
-        CollectionIndex = 31
+        CollectionIndex = 29
         CollectionName = 'transform_rotate'
         Name = 'transform_rotate'
       end
       item
-        CollectionIndex = 32
+        CollectionIndex = 30
         CollectionName = 'Refresh_32x32'
         Name = 'Refresh_32x32'
       end
       item
-        CollectionIndex = 33
+        CollectionIndex = 31
         CollectionName = 'Download_32x32'
         Name = 'Download_32x32'
       end
       item
-        CollectionIndex = 34
+        CollectionIndex = 32
         CollectionName = 'AddFooter_32x32'
         Name = 'AddFooter_32x32'
       end
       item
-        CollectionIndex = 35
+        CollectionIndex = 33
         CollectionName = 'DeleteFooter_32x32'
         Name = 'DeleteFooter_32x32'
       end
       item
-        CollectionIndex = 36
+        CollectionIndex = 34
         CollectionName = 'ColumnSettings'
         Name = 'ListBullets_32x32'
       end
       item
-        CollectionIndex = 37
+        CollectionIndex = 35
         CollectionName = 'sql_join_outer'
         Name = 'select_by_adding_to_selection'
       end
       item
-        CollectionIndex = 38
+        CollectionIndex = 36
         CollectionName = 'sql_join_left_exclude'
         Name = 'shape_move_backwards'
       end
       item
-        CollectionIndex = 39
+        CollectionIndex = 37
         CollectionName = 'sql_join_left'
         Name = 'shape_move_forwards'
       end
       item
-        CollectionIndex = 40
+        CollectionIndex = 38
         CollectionName = 'sql_join_inner'
         Name = 'select_by_intersection'
       end
       item
-        CollectionIndex = 41
+        CollectionIndex = 39
         CollectionName = 'plus'
         Name = 'plus'
       end
       item
-        CollectionIndex = 42
+        CollectionIndex = 40
         CollectionName = 'page_white_lightning'
         Name = 'page_white_lightning'
       end
       item
-        CollectionIndex = 43
+        CollectionIndex = 41
         CollectionName = 'RemovePivotField_32x32'
         Name = 'RemovePivotField_32x32'
       end
       item
-        CollectionIndex = 44
+        CollectionIndex = 42
         CollectionName = 'Refresh2_32x32'
         Name = 'Refresh2_32x32'
       end
       item
-        CollectionIndex = 45
+        CollectionIndex = 43
         CollectionName = 'EditDataSource_32x32'
         Name = 'EditDataSource_32x32'
       end
       item
-        CollectionIndex = 46
+        CollectionIndex = 44
         CollectionName = 'tick'
         Name = 'tick'
       end
       item
-        CollectionIndex = 47
+        CollectionIndex = 45
         CollectionName = 'ImportCSV'
         Name = 'tick_red'
       end
       item
-        CollectionIndex = 48
+        CollectionIndex = 46
         CollectionName = 'Area_32x32'
         Name = 'Area_32x32'
       end
       item
-        CollectionIndex = 49
-        CollectionName = 'lightning_red'
-        Name = 'lightning_red'
-      end
-      item
-        CollectionIndex = 50
+        CollectionIndex = 47
         CollectionName = 'Pause_32x32'
         Name = 'Pause_32x32'
       end
       item
-        CollectionIndex = 51
+        CollectionIndex = 48
         CollectionName = 'Play_32x32'
         Name = 'Play_32x32'
       end
       item
-        CollectionIndex = 52
+        CollectionIndex = 49
         CollectionName = 'AddItem_32x32'
         Name = 'AddItem_32x32'
       end
       item
-        CollectionIndex = 53
+        CollectionIndex = 50
         CollectionName = 'bullet_red'
         Name = 'bullet_red'
       end
       item
-        CollectionIndex = 54
+        CollectionIndex = 51
         CollectionName = 'bullet_green'
         Name = 'bullet_green'
       end
       item
-        CollectionIndex = 55
+        CollectionIndex = 52
         CollectionName = 'ExpandFieldPivotTable_32x32'
         Name = 'ExpandFieldPivotTable_32x32'
       end
       item
-        CollectionIndex = 56
+        CollectionIndex = 53
         CollectionName = 'filter_delete32'
         Name = 'ClearFilter_32x32'
       end
       item
-        CollectionIndex = 57
+        CollectionIndex = 54
         CollectionName = 'ChartsRotate_32x32'
         Name = 'ChartsRotate_32x32'
       end
       item
-        CollectionIndex = 58
+        CollectionIndex = 55
         CollectionName = 'Warning_32x32'
         Name = 'Warning_32x32'
       end
       item
-        CollectionIndex = 59
+        CollectionIndex = 56
         CollectionName = 'Clear_32x32'
         Name = 'Clear_32x32'
       end
       item
-        CollectionIndex = 60
+        CollectionIndex = 57
         CollectionName = 'google_webmaster_tools'
         Name = 'google_webmaster_tools'
       end
       item
-        CollectionIndex = 61
+        CollectionIndex = 58
         CollectionName = 'ExportToXML_32x32'
         Name = 'ExportToXML_32x32'
       end
       item
-        CollectionIndex = 62
+        CollectionIndex = 59
         CollectionName = 'ImportXML'
         Name = 'ImportXML'
       end
       item
-        CollectionIndex = 63
+        CollectionIndex = 60
         CollectionName = 'PageSetup_32x32'
         Name = 'PageSetup_32x32'
       end
       item
-        CollectionIndex = 64
+        CollectionIndex = 61
         CollectionName = 'sql'
         Name = 'sql'
       end
       item
-        CollectionIndex = 65
+        CollectionIndex = 62
         CollectionName = 'DeleteList2_32x32'
         Name = 'DeleteList2_32x32'
       end
       item
-        CollectionIndex = 66
+        CollectionIndex = 63
         CollectionName = 'ExportToHTML_32x32'
         Name = 'ExportToHTML_32x32'
       end
       item
-        CollectionIndex = 67
+        CollectionIndex = 64
         CollectionName = 'HideDetail_32x32'
         Name = 'HideDetail_32x32'
       end
       item
-        CollectionIndex = 68
+        CollectionIndex = 65
         CollectionName = 'ShowDetail_32x32'
         Name = 'ShowDetail_32x32'
       end
       item
-        CollectionIndex = 69
+        CollectionIndex = 66
         CollectionName = 'Find_32x32'
         Name = 'Find_32x32'
       end
       item
-        CollectionIndex = 70
+        CollectionIndex = 67
         CollectionName = 'file_extension_log'
         Name = 'file_extension_log'
       end
       item
-        CollectionIndex = 71
+        CollectionIndex = 68
         CollectionName = 'email'
         Name = 'email'
       end
       item
-        CollectionIndex = 72
+        CollectionIndex = 69
         CollectionName = 'email_attach'
         Name = 'email_attach'
       end
       item
-        CollectionIndex = 73
+        CollectionIndex = 70
         CollectionName = 'email_edit'
         Name = 'email_edit'
       end
       item
-        CollectionIndex = 74
+        CollectionIndex = 71
         CollectionName = 'email_go'
         Name = 'email_go'
       end
       item
-        CollectionIndex = 75
+        CollectionIndex = 72
         CollectionName = 'email_open'
         Name = 'email_open'
       end
       item
-        CollectionIndex = 76
+        CollectionIndex = 73
         CollectionName = 'page_copy'
         Name = 'page_copy'
       end
       item
-        CollectionIndex = 77
+        CollectionIndex = 74
         CollectionName = 'page_paste'
         Name = 'page_paste'
       end
       item
-        CollectionIndex = 78
+        CollectionIndex = 75
         CollectionName = 'check_box_list'
         Name = 'check_box_list'
       end
       item
-        CollectionIndex = 79
+        CollectionIndex = 76
         CollectionName = 'toolbar_add'
         Name = 'toolbar_add'
       end
       item
-        CollectionIndex = 80
+        CollectionIndex = 77
         CollectionName = 'toolbar_delete'
         Name = 'toolbar_delete'
       end
       item
-        CollectionIndex = 81
+        CollectionIndex = 78
         CollectionName = 'Zoom100_32x32'
         Name = 'Zoom100_32x32'
       end
       item
-        CollectionIndex = 82
+        CollectionIndex = 79
         CollectionName = 'check_boxes'
         Name = 'check_boxes'
       end
       item
-        CollectionIndex = 83
+        CollectionIndex = 80
         CollectionName = 'check_boxes2'
         Name = 'check_boxes2'
       end
       item
-        CollectionIndex = 84
+        CollectionIndex = 81
         CollectionName = 'check_box_uncheck2'
         Name = 'check_box_uncheck2'
       end>
@@ -977,81 +962,6 @@ object DMImage: TDMImage
               6466DB0A223977BDE863568AB37DA7DE19EC0FE3595B5BE80350317E8D1884D6
               434C9F0D704D02A8AAA7FF5BD34D602AEAE82ADCF2FF8602211646FE7F60EC66
               BB95F637D3DEE30DEC60042C0000000049454E44AE426082}
-          end>
-      end
-      item
-        Name = 'Zoom_IB'
-        SourceImages = <
-          item
-            Image.Data = {
-              89504E470D0A1A0A0000000D4948445200000020000000200806000000737A7A
-              F4000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
-              00097048597300000EC300000EC301C76FA864000007FE494441545847C5967B
-              50D4D715C7BFFBF8ED6F1F802CECAE585E2BAC22084244A262140C89096D50EC
-              63AA33B5367FC4D69ACEF4E1D434D3499CCEA4E9D84963A61D3BA9499A3893C4
-              549DCA98085AAAA8185EE1A5F25890872C200BECF2DEF76FB7E7FEDC65ACE595
-              6933FDCE9CBDFBDB7BEFB99F7BEEB9E7B7122C5D8B8D0D04DB2FA5C59C86FA59
-              2B0DB6CC428BB1D61F6C99BE34C44200E2A23F3DFA66B8C998B983E7552F0502
-              882753057C42A710102C0E87F3EF03FD6D65C77FFB331B8D15C81E865992E602
-              1077595858C815EDF9D501A54AF96B9331DA90B32E1E4A9E1307385D5E8CD8A7
-              D1DD67434797756A726AEA8DF22B67FF78E9CCBB53D4CD4018C492401E051017
-              7FF9B593FA84C4D433A9A698AD1BD62540ADE2E0747BE11302F0FB0390482490
-              4BA5507052FA4DC0CD2FBAD1D4D2D7DADDD6F8ED13C78F74910F1FD992201E05
-              901EFDFD29DD8A5853E5B68DC9ABD62419E0F50AE8EC1BC35BEF57A16F701232
-              B90CA6C468A4990CC8DF980043941A6A5E8EBBBDC3B854D1326236DF7AFAED3F
-              FCA28D7C310876240B4A166C9958D81599394525F99B4CD9A9A6E5B46B1F3EBA
-              700BC7DEBE017EC56AE81293116188852BC0A3CF3A838A9B9D50D1E2B13161D0
-              466AA08BD26806ACEEBC703EFAACD95CEB209F8B462004C022213D74F8CF3FCA
-              488D3B98939580C929378E1C2B4345A3152FEE7F12DFDC1287E5910A58A77C90
-              703C94E11150842D436BFB007AFAEC5897A24794360C1E8F57EF9228E59557CE
-              5D259F8B26E52CC0C183AF2F8B494CFCDBD70BD66AD88C37DEAB44CB3D074EFD
-              66278CCB35E2F9AB792956EA94181CF78AB9A0507008D346C1669BC0E4A403C9
-              C665488CD5A1B9C5921D1515FB71DB9DAA7172B520C0ECDD8E4F4B2F4E493618
-              346A1EAD5DA328FFBC0F3F7F3E0FB2EC7404766C47A0F433ACD89E85946FACC7
-              4F8EE4E3A5570BB0FFE421707229E25726A2BA690836BB0B1E9F1FE929B15C6C
-              52CAF3E4571EF43FAF180093C42F487EB925C7848969378E9DAC44DCFA2CAC5C
-              AE163B69B398F13CC8A7B14DDB71ED931AFC73DF2B88B1B4A1F8F42B902AA4C8
-              DA98820F3E35432693223BCB8440803B141111A7A229A135E6D42C00DDACAFA9
-              941C3C94F5A3D30E3AE33098AD2EB193C5D0C728480255A2498F80159656F1B9
-              2F3B1F3205101ECE8BF052A9040189946D5BB32A232B4C1CB440146601BC1E2F
-              51B385FC90D2558344C0F51E565748D4E1619D245D4D058AF6E522ADE22C2D9E
-              07CBD61DE0953282904290F969A844CC17AF4FA05D29967E042E977B6CC6E186
-              40918E318443F079304ED790C9476BBBD807A977FD36FCF5FD4A54FEF82812EA
-              AFE1D9D70E40A391C2E57543BB4C49F3FD5429DD703A1C5E7373CD044D61131F
-              4C9E43218080DBE369B10CD8881AC85E1B0BE70C2530E3277929FC8333DE070F
-              3443CE4B60D9B6437C54DB4710A19163D8368ED4A46871F7D6E171B8DDEECEA9
-              A981E0A4F9150280DBE5BA7CC76C01474994976D84677C94CE9295F5A0821796
-              8E17120233565F169F3D06037911D07D6F189BD25650E87D68EFE885636686D5
-              81D07B615ECD46802AD7E9AA3AB323E017A0D5F078FA712366EE5B82DD24E903
-              3F89B5D7F1BDEF6CC1E6E347E1D6E9D1F2970F50DBD885DC8C18446A14181B77
-              A2BAB65518ECBFFB110D5F14802508330622FDC18B6FBD5C909F753477532634
-              614A9C28F902BDE32EC4AD368253F1F4F291503192218CCA6FA44ACEA286FA86
-              5EE8D572FCB03093EA80039F5EBC89CBFFA8BC5276F6F53DE47392CC43362FC4
-              C3EF0278648166B73BA2C898A0D7734A1E4FE52443413BFFBCCE8C84F82818B4
-              1A5A5C06E7B413F7FA86D1D4D88B67A86CEFD9B606A3B47843D35D94965E03E5
-              5324A7D4968D0E758C92DB05CBF1C3EF82C0487F974F6F5859DED33FB9373E56
-              A792C979A41A75D89A118FABD5EDA86FEA4667C70040B7C5A40FC3FE82B5488D
-              8DC2D0C8349A6F77E1C30F2FA2E899C750FC5CBEAADF2AECE294D157862C77EC
-              E47B5E887F8B00537767DD84D660BAD8621E7C926A437444C43228E472146D5E
-              856F3D9182DDB9AB09280EA6E59170B97CB00C8EE1C2673770BEE40A3C6E0752
-              53D3B0F3D91C2426C4A83B7AA6F7C64471977A7A3AE685F80F0052A0B7A3D62E
-              F3E134FDE9D1D437B6674C4C38E4DA681D6C934ED8C69C189B70A2A1B90B57AF
-              D5E3E3D3A5B87DABB5CCEBF347673EB641D574A78BC004AA052EECCDE7B98CE9
-              8AE268A5FC6A75F7D89C107355A9871393CB7C7C77BC3626691FCF290FD31B50
-              29B07F44D42178BD751EAFF3FAB8BDFF4C6B7D4957F2DAC294A494CDE7D3D7A5
-              E9DA5ADAF0EA0B266CCA2BC044E37BA83A77C176A1EE7EF1898AEE669ACAEA7B
-              E81FD39C0021852098B14851C59F856362BB61D72C74D53853C67319F1491BCA
-              5F28E0D5B98A72189E28866AD57731D6F02E6E7C52421003BBDFB96969A2B1CE
-              E0BC398FE06131C7CCD8628C9A553676AD98B1EFEC3766CC99DF3EDC61D7AA3D
-              97B6710DC571E9C9EAE9B61AF06102C2D3BF0F836E462D1B1AD819C173E50D16
-              AA720FE6481603082904F1A889610C4A1C333464B16B2481AB52FBC4AEC4AC35
-              EAA9D62A7AB3FA4508A56450EDB70EA694340F9DA1B16C034B0658AA4488E6C1
-              193BE7132AFC23F65DA60DA96A47672345C2077DCE01349F3F155972DBFA271A
-              E726FB9F03308910AD232E9BCC19B8E6BA3FBC53976C54739E0958FBFAD156D3
-              5057DA3EC2CA3403583009FF1B31BFEC5DAA2C3446AC5D13A9F85DBC5E9DEBF2
-              F86FD48FB80F9F6B1D69A7BEAF148089F90EDD1E3EF89D251EBB862C89590E7D
-              A5004CCC3F337695591B4A66D632133BFE8F02FE05FC99607790EA31DF000000
-              0049454E44AE426082}
           end>
       end
       item
@@ -1771,52 +1681,6 @@ object DMImage: TDMImage
               DCCBCEF1FC060AB0976D096F06B6398AA83EDDB5B4031EE9751B8A087D599E95
               3A0D6827132B0F41F2BFC338AE01F92F3A47851789A4079C0000000049454E44
               AE426082}
-          end>
-      end
-      item
-        Name = 'ContractInspector'
-        SourceImages = <
-          item
-            Image.Data = {
-              89504E470D0A1A0A0000000D4948445200000020000000200806000000737A7A
-              F4000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
-              00097048597300000EC200000EC20115284A8000000456494441545847ED965B
-              6C544518C7FF7B6BB70D4B6CB5DBA2B535296D512128A6AD4D0815A12D6B44CA
-              127851F116A388540D98A889FA60A26F6D950744A50AD1186352888911497980
-              8765A12E6DB7AC5A85A64997520BDD652FECED5CC699D95364B66775B729F141
-              7FC9D973E6EC99F9FFE7FBBE9973F09FC7A09D395BF67C462AEF6E02610DFE93
-              86B006E1BFEC24C2FED22E88F60CBF77FD9A40D5CE174707F0C3DE1D82A6D0E8
-              3C30423E5C6DD45A0BCF733FC6D0DBD920688A6A73A6B7B0683111100C102298
-              5B70F4E69711EF9B1B013D07C2945FFED44BD6B7DEA6B5726353F512EDEA9F79
-              AAE70C0EBDD694BD0658E5DE4CF4C617DCBCF4C930696B2B83E239A5DD998BE9
-              8166ED2A0D8B405F5F9FD6CA8ED3E9C4935DA7F1E5EE07054DD1C0FE21D2D66E
-              E706D6D10E991CA7427A0672E5892E37BEDADD9CDDC08E8F0749FB86F2BC2390
-              4942E25B0F02C1AB18F4FA70EE97DF787B78EC0ABEEE7923BB8117A9810DD440
-              3E644BC1899169DCB3B41CF5CB576171A91D169301D199490C7A3CD8F9CCB6EB
-              BA828117F69D250E4785D6CA0D4765051F44A505C68A8CCDFA9BBEEF5155530B
-              7B6D038A0A8C28B2105869B9175A80782C8981332E3CBEA9956B8BAB404D5729
-              4B41B62393023A3336BB42B3110AEDEF193A87E24536942F6B40311737D0678C
-              28A4D716A301B1948A958D6BB4DE80593BCF215B11EA71630AFACF4E60DBD60E
-              58A9212B33C60D121A258248926032984049A919EFEFED256FED7AD62018D002
-              C0C926A6075B628C6034897EF707B0D19C5B8D040574740B8D31F580480A08C7
-              544C8553305855D896D4F33E620AB4AD98557AB6E3EF5055058AACD290139A12
-              A0882A9B4D4054A2B541C5C3290557AFC9D48C8AD245B42028BA35902F2C05EC
-              38D17F14EDABEF4364660A563A3E0B7D9C8A85620ACF7D3C45104B2A48314351
-              89F7CD88401ABDE29B3D32092714AC733C8696B647D1DCD28AB064C2105D6A2C
-              EC091A8D6B4C98EE0B713AFB98A4405655241582B19F3DBCBF500337EED5B916
-              218B9A4A07952409D14808E60BC7E03B1FA085568215B4DA990936E3A44CC565
-              42570AE0FFE928BADFE9E4CB90FFCC42DF56647347A5EE4C67C9AC83D99D90A5
-              C07F6C3F2A4B804BB20D23530654373D82AADAE528B657F35404FC6318F379D0
-              FD6E5A9C9161C04D0D5469ADDC68B4D970C57F01DE2FF6A076D5FD884502181F
-              1E42B0B006C18A664C5E9A463014A29152E83234A2FFDB7D82A6D0D8DEE5264E
-              677E0696C622F01ED88506C74648C910465D27717122849D07DDDA137FB1FE95
-              8338FED1D382A65084E957487E0C7FFE3A56B63C0CA35186DF3B00FFF81FBAE2
-              8CE25BE6BE6704376B9FEF26B7D7A73FCB333F1E5445869488A36EA257BB9366
-              636329CAAAEFC4F901173C9E71B8CAB6C3706B0D2CD6C530982C5C808DC53E37
-              A77F3F8D5387DE143485463EBCD7712FA9BBCB86156B1FC2AF2E377CA397F1F6
-              115FDEE30929C88799C065DC515F07F7E1EFE62DCE9877045E5D63278A2CC364
-              36A3E7E4F4BCC7F99F7F19E04FD27208DA4D979CA10000000049454E44AE4260
-              82}
           end>
       end
       item
@@ -3296,58 +3160,6 @@ object DMImage: TDMImage
               FAFA0A9E7041F5B63F41EF7B446D61047F748C63422E240E813B0F710F7B1240
               04C0208061B7834DFF5D002502DFFB20871F49E842FFCDA0FF034642BAAD181E
               CC490000000049454E44AE426082}
-          end>
-      end
-      item
-        Name = 'lightning_red'
-        SourceImages = <
-          item
-            Image.Data = {
-              89504E470D0A1A0A0000000D4948445200000020000000200802000000FC18ED
-              A3000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
-              00097048597300000EC300000EC301C76FA8640000052649444154484B9D565B
-              8C1355183EB73973EFB49DB608CB5E450C20A0A011C51821FA60343C90185F84
-              90181282F1C56C4C5022216EBCA0892FEA93A8111244E383908826464C0C0FA2
-              465D64C31A77178A716F65B7BBDD6EB79DCBF19F6D593AEDEC227EF95F664EE7
-              FFCEF9FFEFFB4F71FEA543280C81903373ADE85D28DFA5212182E768CC2F6084
-              A9C42F1463C6564AE8FCFB1022087CE115C706511B5AF9CAD1F92CA4B6D00858
-              721192BDE250F685E70CEB5E2EC9B5953A4410B8AE5B18EF35F7EF486EDC56E8
-              DD8B300FF6D9083899C3AC7BB45587B2079EA98CA52D3B1D4910B13B5FF83E2A
-              CB76AB373348688CB0785358849A584A6A9DDDB9F327CA577C45B72865B5EFC3
-              882010BE40745AB15BFDF25544154479533044B0DABEBF343A907FF75366752A
-              8A42A21A00682480BAFA4E094B123393DEEC00C632C61C63A92E181684DBDBA9
-              BA6AF4ADC3485EAD691A93587311AB683E8170662768322D7C57547298CA9848
-              A1C084F024CF3C3EFCFD0795714BD30D2E4B20A5DAD74D6824F03DDF7766D527
-              1F424E0E231F248809AB0B8231525A7715B2BF173F3927C75B64592138BA3855
-              3411F8BE87F38ABDD29F1B6EAA0FD4015AFB0826B1B12347B076A7AAAA942D95
-              1DD0440012C2D34ABA453839442544A09FD5A008132C2F63A987874E1DF1E6BA
-              345DE3D252C5A9A289C075B0C424DDF6E746308106F0BA065039B323F7EB69E7
-              8B61D54C29B202FDA87DB638424603F3CCE6C79CD8DFED87DFA88C7C0682ADDB
-              41E05B7EDBD3BDEFED17BEA7FD011E6E049C100E9A4C3F563F33420430240AFF
-              F4297B3767EEDEEEE4CE200CDEA9AB80F088DA41AD4D600204BDBE01E0163092
-              10CD640F3EAB94D7CAFC86A543043024F2C3E7332FEF3296A7DDE95F106A3067
-              60925ABA1004259C24B6E4072E5D7BFB9461AF07DFD5561A7A00271038AF655A
-              91374328274C82C07441A3D006E80A84723D8226812D88FDE8D45F97467B4E12
-              F5764A43BA0A137842108F265660A9429518554C2A1B4C5209B801345A132B08
-              772124C6D334F140F6DB63233DA799B526707558B8A112954AA5C2D459E4024F
-              AD0833EBA86CB5AEDB73C09FFA31BC9BA05084A7516CCDD56F8E168F6595641B
-              640F841B9656F88112C2EE73F026976CAE86F25B5B66D376E44ED6891522A818
-              515B90DCDE7FFC50F1F8B066B7EBBACE399C299410107A668C99B158F23AACB8
-              25F1B1E4EA0D3036C0C281A882A0E03BAC7521B6ACFFF337C577966EB7689A2E
-              2D62BA1001E817140603A00A8952DE96A13A68CE5DD87830FEF4AE4AB1FCE7BE
-              6E74D6322C1BB2B3C52DDD78A20580E94AE317537B9E42E57124E0E3F9000769
-              EDCE54FE72F76B42DA60C4535077CA169DD58045095CC775B4BCDED985DCE9F9
-              17700B71A4B54CF6FF3CF0FCEB48DE68C64C3825A17489EC8068029048797AC4
-              58B71695F320DEE0159391B6227FE9A7D19E2F597CB3694076054ABA74764034
-              81EF79733343CB76EF444E21A80D5391BAFCF2571F8FBEFAB594586B18A6A2CA
-              4B5F030B8826F07C9775685866C82F21AA212D75E5CC47A513399EAA66BFC925
-              538F080268EF5C6EC0DEFD04728B88E908AB173FEC993D31A1A53A0C539715F9
-              A677403D22083CD79BA3578DCE3B40B6A0FABE93EFD0732DBADDA10762E7B794
-              1DD04800ED754A85F8FDEB61263B93E3FDFB0E921F5618564AD76128055766ED
-              77FF194D04C29B9DE84BEFD9E98D67075F7C5F485BCC78FABAD86F393BA0F1AF
-              63C5A94C0C9F161EDCCD9C9A5B0C4357E49B8B7D0934F74070639B90B74AB107
-              4DC3002BC17CFFDFD9018D04F0175337F4442261C563B724C76820F42F926CAC
-              C66E1C83CA0000000049454E44AE426082}
           end>
       end
       item
@@ -5369,386 +5181,371 @@ object DMImage: TDMImage
       end
       item
         CollectionIndex = 8
-        CollectionName = 'Zoom_IB'
-        Name = 'Zoom_IB'
-      end
-      item
-        CollectionIndex = 9
         CollectionName = 'TextBox_16x16'
         Name = 'TextBox_32x32'
       end
       item
-        CollectionIndex = 10
+        CollectionIndex = 9
         CollectionName = 'Save_16x16'
         Name = 'Save_32x32'
       end
       item
-        CollectionIndex = 11
+        CollectionIndex = 10
         CollectionName = 'SortFields_16x16'
         Name = 'SortFields_32x32'
       end
       item
-        CollectionIndex = 12
+        CollectionIndex = 11
         CollectionName = 'lightning'
         Name = 'lightning'
       end
       item
-        CollectionIndex = 13
+        CollectionIndex = 12
         CollectionName = 'lightning_delete'
         Name = 'lightning_delete'
       end
       item
-        CollectionIndex = 14
+        CollectionIndex = 13
         CollectionName = 'lightning_add'
         Name = 'lightning_add'
       end
       item
-        CollectionIndex = 15
+        CollectionIndex = 14
         CollectionName = 'Printer_16x16'
         Name = 'Print_32x32'
       end
       item
-        CollectionIndex = 16
+        CollectionIndex = 15
         CollectionName = 'ExportToCSV_16x16'
         Name = 'ExportToXLS_32x32'
       end
       item
-        CollectionIndex = 17
+        CollectionIndex = 16
         CollectionName = 'ExportToXLS_16x16'
         Name = 'ExportToCSV_32x32'
       end
       item
-        CollectionIndex = 18
+        CollectionIndex = 17
         CollectionName = 'ReviewingPane_16x16'
         Name = 'ReviewingPane_32x32'
       end
       item
-        CollectionIndex = 19
+        CollectionIndex = 18
         CollectionName = 'InsertSectionBreakContinuous_16x16'
         Name = 'InsertSectionBreakContinuous_32x32'
       end
       item
-        CollectionIndex = 20
+        CollectionIndex = 19
         CollectionName = 'UnprotectDocument_16x16'
         Name = 'UnprotectDocument_32x32'
       end
       item
-        CollectionIndex = 21
-        CollectionName = 'ContractInspector'
-        Name = 'ContractInspector'
-      end
-      item
-        CollectionIndex = 22
+        CollectionIndex = 20
         CollectionName = 'Zoom_16x16'
         Name = 'Zoom_32x32'
       end
       item
-        CollectionIndex = 23
+        CollectionIndex = 21
         CollectionName = 'New_16x16'
         Name = 'New_32x32'
       end
       item
-        CollectionIndex = 24
+        CollectionIndex = 22
         CollectionName = 'TreeView_16x16'
         Name = 'TreeView_32x32'
       end
       item
-        CollectionIndex = 25
+        CollectionIndex = 23
         CollectionName = 'AutoExpand_16x16'
         Name = 'AutoExpand_32x32'
       end
       item
-        CollectionIndex = 26
+        CollectionIndex = 24
         CollectionName = 'SaveAll_16x16'
         Name = 'SaveAll_32x32'
       end
       item
-        CollectionIndex = 27
+        CollectionIndex = 25
         CollectionName = 'Left_16x16'
         Name = 'Left_32x32'
       end
       item
-        CollectionIndex = 28
+        CollectionIndex = 26
         CollectionName = 'Right_16x16'
         Name = 'Right_32x32'
       end
       item
-        CollectionIndex = 29
+        CollectionIndex = 27
         CollectionName = 'Fill_16x16'
         Name = 'Up2_32x32'
       end
       item
-        CollectionIndex = 30
+        CollectionIndex = 28
         CollectionName = 'Up2_16x16'
         Name = 'Fill_32x32'
       end
       item
-        CollectionIndex = 31
+        CollectionIndex = 29
         CollectionName = 'transform_rotate'
         Name = 'transform_rotate'
       end
       item
-        CollectionIndex = 32
+        CollectionIndex = 30
         CollectionName = 'Refresh_16x16'
         Name = 'Refresh_32x32'
       end
       item
-        CollectionIndex = 33
+        CollectionIndex = 31
         CollectionName = 'Download_16x16'
         Name = 'Download_32x32'
       end
       item
-        CollectionIndex = 34
+        CollectionIndex = 32
         CollectionName = 'AddFooter_16x16'
         Name = 'AddFooter_32x32'
       end
       item
-        CollectionIndex = 35
+        CollectionIndex = 33
         CollectionName = 'DeleteFooter_16x16'
         Name = 'DeleteFooter_32x32'
       end
       item
-        CollectionIndex = 36
+        CollectionIndex = 34
         CollectionName = 'ColumnSettings 16'
         Name = 'ColumnSettings'
       end
       item
+        CollectionIndex = 35
+        CollectionName = 'select_by_adding_to_selection'
+        Name = 'select_by_adding_to_selection'
+      end
+      item
+        CollectionIndex = 36
+        CollectionName = 'sql_join_left_exclude'
+        Name = 'shape_move_backwards'
+      end
+      item
         CollectionIndex = 37
-        CollectionName = 'sql_join_outer'
-        Name = 'sql_join_outer'
+        CollectionName = 'sql_join_left'
+        Name = 'shape_move_forwards'
       end
       item
         CollectionIndex = 38
-        CollectionName = 'sql_join_left_exclude'
-        Name = 'sql_join_left_exclude'
+        CollectionName = 'select_by_intersection'
+        Name = 'select_by_intersection'
       end
       item
         CollectionIndex = 39
-        CollectionName = 'sql_join_left'
-        Name = 'sql_join_left'
-      end
-      item
-        CollectionIndex = 40
-        CollectionName = 'sql_join_inner'
-        Name = 'sql_join_inner'
-      end
-      item
-        CollectionIndex = 41
         CollectionName = 'plus'
         Name = 'plus'
       end
       item
-        CollectionIndex = 42
+        CollectionIndex = 40
         CollectionName = 'page_white_lightning'
         Name = 'page_white_lightning'
       end
       item
-        CollectionIndex = 43
+        CollectionIndex = 41
         CollectionName = 'RemovePivotField_16x16'
         Name = 'RemovePivotField_32x32'
       end
       item
-        CollectionIndex = 44
+        CollectionIndex = 42
         CollectionName = 'Refresh2_16x16'
         Name = 'Refresh2_32x32'
       end
       item
-        CollectionIndex = 45
+        CollectionIndex = 43
         CollectionName = 'EditDataSource_16x16'
         Name = 'EditDataSource_32x32'
       end
       item
-        CollectionIndex = 46
+        CollectionIndex = 44
         CollectionName = 'tick'
         Name = 'tick'
       end
       item
-        CollectionIndex = 47
+        CollectionIndex = 45
         CollectionName = 'ImportCSV'
         Name = 'ImportCSV'
       end
       item
-        CollectionIndex = 48
+        CollectionIndex = 46
         CollectionName = 'Area_16x16'
         Name = 'Area_32x32'
       end
       item
-        CollectionIndex = 49
-        CollectionName = 'lightning_red'
-        Name = 'lightning_red'
-      end
-      item
-        CollectionIndex = 50
+        CollectionIndex = 47
         CollectionName = 'Pause_16x16'
         Name = 'Pause_32x32'
       end
       item
-        CollectionIndex = 51
+        CollectionIndex = 48
         CollectionName = 'Play_16x16'
         Name = 'Play_32x32'
       end
       item
-        CollectionIndex = 52
+        CollectionIndex = 49
         CollectionName = 'AddItem_16x16'
         Name = 'AddItem_32x32'
       end
       item
-        CollectionIndex = 53
+        CollectionIndex = 50
         CollectionName = 'bullet_red'
         Name = 'bullet_red'
       end
       item
-        CollectionIndex = 54
+        CollectionIndex = 51
         CollectionName = 'bullet_green'
         Name = 'bullet_green'
       end
       item
-        CollectionIndex = 55
+        CollectionIndex = 52
         CollectionName = 'ExpandFieldPivotTable_16x16'
         Name = 'ExpandFieldPivotTable_32x32'
       end
       item
-        CollectionIndex = 56
+        CollectionIndex = 53
         CollectionName = 'filter_delete16'
         Name = 'ClearFilter_32x32'
       end
       item
-        CollectionIndex = 57
+        CollectionIndex = 54
         CollectionName = 'ChartsRotate_16x16'
         Name = 'ChartsRotate_32x32'
       end
       item
-        CollectionIndex = 58
+        CollectionIndex = 55
         CollectionName = 'Warning_16x16'
         Name = 'Warning_32x32'
       end
       item
-        CollectionIndex = 59
+        CollectionIndex = 56
         CollectionName = 'Clear_16x16'
         Name = 'Clear_32x32'
       end
       item
-        CollectionIndex = 60
+        CollectionIndex = 57
         CollectionName = 'google_webmaster_tools'
         Name = 'google_webmaster_tools'
       end
       item
-        CollectionIndex = 61
+        CollectionIndex = 58
         CollectionName = 'ExportToXML_16x16'
         Name = 'ExportToXML_32x32'
       end
       item
-        CollectionIndex = 62
+        CollectionIndex = 59
         CollectionName = 'ImportXML'
         Name = 'ImportXML'
       end
       item
-        CollectionIndex = 63
+        CollectionIndex = 60
         CollectionName = 'PageSetup_16x16'
         Name = 'PageSetup_32x32'
       end
       item
-        CollectionIndex = 64
+        CollectionIndex = 61
         CollectionName = 'sql'
         Name = 'sql'
       end
       item
-        CollectionIndex = 65
+        CollectionIndex = 62
         CollectionName = 'DeleteList2_16x16'
         Name = 'DeleteList2_32x32'
       end
       item
-        CollectionIndex = 66
+        CollectionIndex = 63
         CollectionName = 'ExportToHTML_16x16'
         Name = 'ExportToHTML_16x16'
       end
       item
-        CollectionIndex = 67
+        CollectionIndex = 64
         CollectionName = 'HideDetail_16x16'
         Name = 'HideDetail_16x16'
       end
       item
-        CollectionIndex = 68
+        CollectionIndex = 65
         CollectionName = 'ShowDetail_16x16'
         Name = 'ShowDetail_16x16'
       end
       item
-        CollectionIndex = 69
+        CollectionIndex = 66
         CollectionName = 'Find_16x16'
         Name = 'Find_16x16'
       end
       item
-        CollectionIndex = 70
+        CollectionIndex = 67
         CollectionName = 'file_extension_log'
         Name = 'file_extension_log'
       end
       item
-        CollectionIndex = 71
+        CollectionIndex = 68
         CollectionName = 'email'
         Name = 'email'
       end
       item
-        CollectionIndex = 72
+        CollectionIndex = 69
         CollectionName = 'email_attach'
         Name = 'email_attach'
       end
       item
-        CollectionIndex = 73
+        CollectionIndex = 70
         CollectionName = 'email_edit'
         Name = 'email_edit'
       end
       item
-        CollectionIndex = 74
+        CollectionIndex = 71
         CollectionName = 'email_go'
         Name = 'email_go'
       end
       item
-        CollectionIndex = 75
+        CollectionIndex = 72
         CollectionName = 'email_open'
         Name = 'email_open'
       end
       item
-        CollectionIndex = 76
+        CollectionIndex = 73
         CollectionName = 'page_copy'
         Name = 'page_copy'
       end
       item
-        CollectionIndex = 77
+        CollectionIndex = 74
         CollectionName = 'page_paste'
         Name = 'page_paste'
       end
       item
-        CollectionIndex = 78
+        CollectionIndex = 75
         CollectionName = 'check_box_list'
         Name = 'check_box_list'
       end
       item
-        CollectionIndex = 79
+        CollectionIndex = 76
         CollectionName = 'toolbar_add'
         Name = 'toolbar_add'
       end
       item
-        CollectionIndex = 80
+        CollectionIndex = 77
         CollectionName = 'toolbar_delete'
         Name = 'toolbar_delete'
       end
       item
-        CollectionIndex = 81
+        CollectionIndex = 78
         CollectionName = 'Zoom100_16x16'
         Name = 'Zoom100_16x16'
       end
       item
-        CollectionIndex = 82
+        CollectionIndex = 79
         CollectionName = 'check_boxes'
         Name = 'check_boxes'
       end
       item
-        CollectionIndex = 83
+        CollectionIndex = 80
         CollectionName = 'check_boxes2'
         Name = 'check_boxes2'
       end
       item
-        CollectionIndex = 84
+        CollectionIndex = 81
         CollectionName = 'check_box_uncheck2'
         Name = 'check_box_uncheck2'
       end>
@@ -6012,81 +5809,6 @@ object DMImage: TDMImage
               0BE1704669D76ACC9903CAF33CB93439DD50A1DBCD13009DDFEBEBC9F4BD970D
               E528684BCB5F93B3E76E1A57149D444BF927F687B4BB90B52D687FEC83F99FF8
               0B660A66CE8F104BBB0000000049454E44AE426082}
-          end>
-      end
-      item
-        Name = 'Zoom_IB'
-        SourceImages = <
-          item
-            Image.Data = {
-              89504E470D0A1A0A0000000D4948445200000020000000200806000000737A7A
-              F4000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
-              00097048597300000EC300000EC301C76FA864000007FE494441545847C5967B
-              50D4D715C7BFFBF8ED6F1F802CECAE585E2BAC22084244A262140C89096D50EC
-              63AA33B5367FC4D69ACEF4E1D434D3499CCEA4E9D84963A61D3BA9499A3893C4
-              549DCA98085AAAA8185EE1A5F25890872C200BECF2DEF76FB7E7FEDC65ACE595
-              6933FDCE9CBDFBDB7BEFB99F7BEEB9E7B7122C5D8B8D0D04DB2FA5C59C86FA59
-              2B0DB6CC428BB1D61F6C99BE34C44200E2A23F3DFA66B8C998B983E7552F0502
-              882753057C42A710102C0E87F3EF03FD6D65C77FFB331B8D15C81E865992E602
-              1077595858C815EDF9D501A54AF96B9331DA90B32E1E4A9E1307385D5E8CD8A7
-              D1DD67434797756A726AEA8DF22B67FF78E9CCBB53D4CD4018C492401E051017
-              7FF9B593FA84C4D433A9A698AD1BD62540ADE2E0747BE11302F0FB0390482490
-              4BA5507052FA4DC0CD2FBAD1D4D2D7DADDD6F8ED13C78F74910F1FD992201E05
-              901EFDFD29DD8A5853E5B68DC9ABD62419E0F50AE8EC1BC35BEF57A16F701232
-              B90CA6C468A4990CC8DF980043941A6A5E8EBBBDC3B854D1326236DF7AFAED3F
-              FCA28D7C310876240B4A166C9958D81599394525F99B4CD9A9A6E5B46B1F3EBA
-              700BC7DEBE017EC56AE81293116188852BC0A3CF3A838A9B9D50D1E2B13161D0
-              466AA08BD26806ACEEBC703EFAACD95CEB209F8B462004C022213D74F8CF3FCA
-              488D3B98939580C929378E1C2B4345A3152FEE7F12DFDC1287E5910A58A77C90
-              703C94E11150842D436BFB007AFAEC5897A24794360C1E8F57EF9228E59557CE
-              5D259F8B26E52CC0C183AF2F8B494CFCDBD70BD66AD88C37DEAB44CB3D074EFD
-              66278CCB35E2F9AB792956EA94181CF78AB9A0507008D346C1669BC0E4A403C9
-              C665488CD5A1B9C5921D1515FB71DB9DAA7172B520C0ECDD8E4F4B2F4E493618
-              346A1EAD5DA328FFBC0F3F7F3E0FB2EC7404766C47A0F433ACD89E85946FACC7
-              4F8EE4E3A5570BB0FFE421707229E25726A2BA690836BB0B1E9F1FE929B15C6C
-              52CAF3E4571EF43FAF180093C42F487EB925C7848969378E9DAC44DCFA2CAC5C
-              AE163B69B398F13CC8A7B14DDB71ED931AFC73DF2B88B1B4A1F8F42B902AA4C8
-              DA98820F3E35432693223BCB8440803B141111A7A229A135E6D42C00DDACAFA9
-              941C3C94F5A3D30E3AE33098AD2EB193C5D0C728480255A2498F80159656F1B9
-              2F3B1F3205101ECE8BF052A9040189946D5BB32A232B4C1CB440146601BC1E2F
-              51B385FC90D2558344C0F51E565748D4E1619D245D4D058AF6E522ADE22C2D9E
-              07CBD61DE0953282904290F969A844CC17AF4FA05D29967E042E977B6CC6E186
-              40918E318443F079304ED790C9476BBBD807A977FD36FCF5FD4A54FEF82812EA
-              AFE1D9D70E40A391C2E57543BB4C49F3FD5429DD703A1C5E7373CD044D61131F
-              4C9E43218080DBE369B10CD8881AC85E1B0BE70C2530E3277929FC8333DE070F
-              3443CE4B60D9B6437C54DB4710A19163D8368ED4A46871F7D6E171B8DDEECEA9
-              A981E0A4F9150280DBE5BA7CC76C01474994976D84677C94CE9295F5A0821796
-              8E17120233565F169F3D06037911D07D6F189BD25650E87D68EFE885636686D5
-              81D07B615ECD46802AD7E9AA3AB323E017A0D5F078FA712366EE5B82DD24E903
-              3F89B5D7F1BDEF6CC1E6E347E1D6E9D1F2970F50DBD885DC8C18446A14181B77
-              A2BAB65518ECBFFB110D5F14802508330622FDC18B6FBD5C909F753477532634
-              614A9C28F902BDE32EC4AD368253F1F4F291503192218CCA6FA44ACEA286FA86
-              5EE8D572FCB03093EA80039F5EBC89CBFFA8BC5276F6F53DE47392CC43362FC4
-              C3EF0278648166B73BA2C898A0D7734A1E4FE52443413BFFBCCE8C84F82818B4
-              1A5A5C06E7B413F7FA86D1D4D88B67A86CEFD9B606A3B47843D35D94965E03E5
-              5324A7D4968D0E758C92DB05CBF1C3EF82C0487F974F6F5859DED33FB9373E56
-              A792C979A41A75D89A118FABD5EDA86FEA4667C70040B7C5A40FC3FE82B5488D
-              8DC2D0C8349A6F77E1C30F2FA2E899C750FC5CBEAADF2AECE294D157862C77EC
-              E47B5E887F8B00537767DD84D660BAD8621E7C926A437444C43228E472146D5E
-              856F3D9182DDB9AB09280EA6E59170B97CB00C8EE1C2673770BEE40A3C6E0752
-              53D3B0F3D91C2426C4A83B7AA6F7C64471977A7A3AE685F80F0052A0B7A3D62E
-              F3E134FDE9D1D437B6674C4C38E4DA681D6C934ED8C69C189B70A2A1B90B57AF
-              D5E3E3D3A5B87DABB5CCEBF347673EB641D574A78BC004AA052EECCDE7B98CE9
-              8AE268A5FC6A75F7D89C107355A9871393CB7C7C77BC3626691FCF290FD31B50
-              29B07F44D42178BD751EAFF3FAB8BDFF4C6B7D4957F2DAC294A494CDE7D3D7A5
-              E9DA5ADAF0EA0B266CCA2BC044E37BA83A77C176A1EE7EF1898AEE669ACAEA7B
-              E81FD39C0021852098B14851C59F856362BB61D72C74D53853C67319F1491BCA
-              5F28E0D5B98A72189E28866AD57731D6F02E6E7C52421003BBDFB96969A2B1CE
-              E0BC398FE06131C7CCD8628C9A553676AD98B1EFEC3766CC99DF3EDC61D7AA3D
-              97B6710DC571E9C9EAE9B61AF06102C2D3BF0F836E462D1B1AD819C173E50D16
-              AA720FE6481603082904F1A889610C4A1C333464B16B2481AB52FBC4AEC4AC35
-              EAA9D62A7AB3FA4508A56450EDB70EA694340F9DA1B16C034B0658AA4488E6C1
-              193BE7132AFC23F65DA60DA96A47672345C2077DCE01349F3F155972DBFA271A
-              E726FB9F03308910AD232E9BCC19B8E6BA3FBC53976C54739E0958FBFAD156D3
-              5057DA3EC2CA3403583009FF1B31BFEC5DAA2C3446AC5D13A9F85DBC5E9DEBF2
-              F86FD48FB80F9F6B1D69A7BEAF148089F90EDD1E3EF89D251EBB862C89590E7D
-              A5004CCC3F337695591B4A66D632133BFE8F02FE05FC99607790EA31DF000000
-              0049454E44AE426082}
           end>
       end
       item
@@ -6427,52 +6149,6 @@ object DMImage: TDMImage
               7F677E008CDF9A61688C8741B69B84A3F1F3C976341C615B8D406D3592FC0457
               D126E2A035D317CDE9DE683CBA0EB254366A933D14F4FDBF00F61462EEC66389
               DD2DD7F80B649C2C39357EF47C0000000049454E44AE426082}
-          end>
-      end
-      item
-        Name = 'ContractInspector'
-        SourceImages = <
-          item
-            Image.Data = {
-              89504E470D0A1A0A0000000D4948445200000020000000200806000000737A7A
-              F4000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
-              00097048597300000EC200000EC20115284A8000000456494441545847ED965B
-              6C544518C7FF7B6BB70D4B6CB5DBA2B535296D512128A6AD4D0815A12D6B44CA
-              127851F116A388540D98A889FA60A26F6D950744A50AD1186352888911497980
-              8765A12E6DB7AC5A85A64997520BDD652FECED5CC699D95364B66775B729F141
-              7FC9D973E6EC99F9FFE7FBBE9973F09FC7A09D395BF67C462AEF6E02610DFE93
-              86B006E1BFEC24C2FED22E88F60CBF77FD9A40D5CE174707F0C3DE1D82A6D0E8
-              3C30423E5C6DD45A0BCF733FC6D0DBD920688A6A73A6B7B0683111100C102298
-              5B70F4E69711EF9B1B013D07C2945FFED44BD6B7DEA6B5726353F512EDEA9F79
-              AAE70C0EBDD694BD0658E5DE4CF4C617DCBCF4C930696B2B83E239A5DD998BE9
-              8166ED2A0D8B405F5F9FD6CA8ED3E9C4935DA7F1E5EE07054DD1C0FE21D2D66E
-              E706D6D10E991CA7427A0672E5892E37BEDADD9CDDC08E8F0749FB86F2BC2390
-              4942E25B0F02C1AB18F4FA70EE97DF787B78EC0ABEEE7923BB8117A9810DD440
-              3E644BC1899169DCB3B41CF5CB576171A91D169301D199490C7A3CD8F9CCB6EB
-              BA828117F69D250E4785D6CA0D4765051F44A505C68A8CCDFA9BBEEF5155530B
-              7B6D038A0A8C28B2105869B9175A80782C8981332E3CBEA9956B8BAB404D5729
-              4B41B62393023A3336BB42B3110AEDEF193A87E24536942F6B40311737D0678C
-              28A4D716A301B1948A958D6BB4DE80593BCF215B11EA71630AFACF4E60DBD60E
-              58A9212B33C60D121A258248926032984049A919EFEFED256FED7AD62018D002
-              C0C926A6075B628C6034897EF707B0D19C5B8D040574740B8D31F580480A08C7
-              544C8553305855D896D4F33E620AB4AD98557AB6E3EF5055058AACD290139A12
-              A0882A9B4D4054A2B541C5C3290557AFC9D48C8AD245B42028BA35902F2C05EC
-              38D17F14EDABEF4364660A563A3E0B7D9C8A85620ACF7D3C45104B2A48314351
-              89F7CD88401ABDE29B3D32092714AC733C8696B647D1DCD28AB064C2105D6A2C
-              EC091A8D6B4C98EE0B713AFB98A4405655241582B19F3DBCBF500337EED5B916
-              218B9A4A07952409D14808E60BC7E03B1FA085568215B4DA990936E3A44CC565
-              42570AE0FFE928BADFE9E4CB90FFCC42DF56647347A5EE4C67C9AC83D99D90A5
-              C07F6C3F2A4B804BB20D23530654373D82AADAE528B657F35404FC6318F379D0
-              FD6E5A9C9161C04D0D5469ADDC68B4D970C57F01DE2FF6A076D5FD884502181F
-              1E42B0B006C18A664C5E9A463014A29152E83234A2FFDB7D82A6D0D8DEE5264E
-              677E0696C622F01ED88506C74648C910465D27717122849D07DDDA137FB1FE95
-              8338FED1D382A65084E957487E0C7FFE3A56B63C0CA35186DF3B00FFF81FBAE2
-              8CE25BE6BE6704376B9FEF26B7D7A73FCB333F1E5445869488A36EA257BB9366
-              636329CAAAEFC4F901173C9E71B8CAB6C3706B0D2CD6C530982C5C808DC53E37
-              A77F3F8D5387DE143485463EBCD7712FA9BBCB86156B1FC2AF2E377CA397F1F6
-              115FDEE30929C88799C065DC515F07F7E1EFE62DCE9877045E5D63278A2CC364
-              36A3E7E4F4BCC7F99F7F19E04FD27208DA4D979CA10000000049454E44AE4260
-              82}
           end>
       end
       item
@@ -6891,7 +6567,7 @@ object DMImage: TDMImage
           end>
       end
       item
-        Name = 'sql_join_outer'
+        Name = 'select_by_adding_to_selection'
         SourceImages = <
           item
             Image.Data = {
@@ -6975,7 +6651,7 @@ object DMImage: TDMImage
           end>
       end
       item
-        Name = 'sql_join_inner'
+        Name = 'select_by_intersection'
         SourceImages = <
           item
             Image.Data = {
@@ -7281,58 +6957,6 @@ object DMImage: TDMImage
               4841EB475B514C124605C4854152B83779C1574D44310D7B902C9510E78536D2
               9C492789F539687034D80611DFC6FD83CAECF55BCFC7D51FA92AA8D75E44FF5B
               F360CFFE05FEFF74AC03AD0DD90000000049454E44AE426082}
-          end>
-      end
-      item
-        Name = 'lightning_red'
-        SourceImages = <
-          item
-            Image.Data = {
-              89504E470D0A1A0A0000000D4948445200000020000000200802000000FC18ED
-              A3000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
-              00097048597300000EC300000EC301C76FA8640000052649444154484B9D565B
-              8C1355183EB73973EFB49DB608CB5E450C20A0A011C51821FA60343C90185F84
-              90181282F1C56C4C5022216EBCA0892FEA93A8111244E383908826464C0C0FA2
-              465D64C31A77178A716F65B7BBDD6EB79DCBF19F6D593AEDEC227EF95F664EE7
-              FFCEF9FFEFFB4F71FEA543280C81903373ADE85D28DFA5212182E768CC2F6084
-              A9C42F1463C6564AE8FCFB1022087CE115C706511B5AF9CAD1F92CA4B6D00858
-              721192BDE250F685E70CEB5E2EC9B5953A4410B8AE5B18EF35F7EF486EDC56E8
-              DD8B300FF6D9083899C3AC7BB45587B2079EA98CA52D3B1D4910B13B5FF83E2A
-              CB76AB373348688CB0785358849A584A6A9DDDB9F327CA577C45B72865B5EFC3
-              882010BE40745AB15BFDF25544154479533044B0DABEBF343A907FF75366752A
-              8A42A21A00682480BAFA4E094B123393DEEC00C632C61C63A92E181684DBDBA9
-              BA6AF4ADC3485EAD691A93587311AB683E8170662768322D7C57547298CA9848
-              A1C084F024CF3C3EFCFD0795714BD30D2E4B20A5DAD74D6824F03DDF7766D527
-              1F424E0E231F248809AB0B8231525A7715B2BF173F3927C75B64592138BA3855
-              3411F8BE87F38ABDD29F1B6EAA0FD4015AFB0826B1B12347B076A7AAAA942D95
-              1DD0440012C2D34ABA453839442544A09FD5A008132C2F63A987874E1DF1E6BA
-              345DE3D252C5A9A289C075B0C424DDF6E746308106F0BA065039B323F7EB69E7
-              8B61D54C29B202FDA87DB638424603F3CCE6C79CD8DFED87DFA88C7C0682ADDB
-              41E05B7EDBD3BDEFED17BEA7FD011E6E049C100E9A4C3F563F33420430240AFF
-              F4297B3767EEDEEEE4CE200CDEA9AB80F088DA41AD4D600204BDBE01E0163092
-              10CD640F3EAB94D7CAFC86A543043024F2C3E7332FEF3296A7DDE95F106A3067
-              60925ABA1004259C24B6E4072E5D7BFB9461AF07DFD5561A7A00271038AF655A
-              91374328274C82C07441A3D006E80A84723D8226812D88FDE8D45F97467B4E12
-              F5764A43BA0A137842108F265660A9429518554C2A1B4C5209B801345A132B08
-              772124C6D334F140F6DB63233DA799B526707558B8A112954AA5C2D459E4024F
-              AD0833EBA86CB5AEDB73C09FFA31BC9BA05084A7516CCDD56F8E168F6595641B
-              640F841B9656F88112C2EE73F026976CAE86F25B5B66D376E44ED6891522A818
-              515B90DCDE7FFC50F1F8B066B7EBBACE399C299410107A668C99B158F23AACB8
-              25F1B1E4EA0D3036C0C281A882A0E03BAC7521B6ACFFF337C577966EB7689A2E
-              2D62BA1001E817140603A00A8952DE96A13A68CE5DD87830FEF4AE4AB1FCE7BE
-              6E74D6322C1BB2B3C52DDD78A20580E94AE317537B9E42E57124E0E3F9000769
-              EDCE54FE72F76B42DA60C4535077CA169DD58045095CC775B4BCDED985DCE9F9
-              17700B71A4B54CF6FF3CF0FCEB48DE68C64C3825A17489EC8068029048797AC4
-              58B71695F320DEE0159391B6227FE9A7D19E2F597CB3694076054ABA74764034
-              81EF79733343CB76EF444E21A80D5391BAFCF2571F8FBEFAB594586B18A6A2CA
-              4B5F030B8826F07C9775685866C82F21AA212D75E5CC47A513399EAA66BFC925
-              538F080268EF5C6EC0DEFD04728B88E908AB173FEC993D31A1A53A0C539715F9
-              A677403D22083CD79BA3578DCE3B40B6A0FABE93EFD0732DBADDA10762E7B794
-              1DD04800ED754A85F8FDEB61263B93E3FDFB0E921F5618564AD76128055766ED
-              77FF194D04C29B9DE84BEFD9E98D67075F7C5F485BCC78FABAD86F393BA0F1AF
-              63C5A94C0C9F161EDCCD9C9A5B0C4357E49B8B7D0934F74070639B90B74AB107
-              4DC3002BC17CFFDFD9018D04F0175337F4442261C563B724C76820F42F926CAC
-              C66E1C83CA0000000049454E44AE426082}
           end>
       end
       item

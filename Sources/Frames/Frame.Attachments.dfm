@@ -102,14 +102,14 @@ inherited frameAttachments: TframeAttachments
       Visible = False
     end
     object aOpenAttachFile: TAction [9]
-      ImageIndex = 72
+      ImageIndex = 69
       ImageName = 'email_attach'
       OnExecute = aOpenAttachFileExecute
       OnUpdate = aOpenAttachFileUpdate
     end
     object aOpenParsedText: TAction [10]
       Hint = 'Open Parsed Text'
-      ImageIndex = 75
+      ImageIndex = 72
       ImageName = 'email_open'
       OnExecute = aOpenParsedTextExecute
       OnUpdate = aOpenAttachFileUpdate

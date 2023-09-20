@@ -26,7 +26,7 @@ object EXIFDialog: TEXIFDialog
       474
       42)
     object btnSave: TBitBtn
-      Left = 251
+      Left = 243
       Top = 1
       Width = 110
       Height = 40
@@ -42,10 +42,10 @@ object EXIFDialog: TEXIFDialog
       Images = DMImage.vil32
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 247
+      ExplicitLeft = 239
     end
     object btnOk: TBitBtn
-      Left = 364
+      Left = 356
       Top = 1
       Width = 110
       Height = 40
@@ -60,7 +60,7 @@ object EXIFDialog: TEXIFDialog
       Images = DMImage.vil32
       ParentFont = False
       TabOrder = 1
-      ExplicitLeft = 360
+      ExplicitLeft = 352
     end
   end
   object PageControl1: TPageControl
@@ -136,7 +136,7 @@ object EXIFDialog: TEXIFDialog
         TabOrder = 0
         OnBeforeNavigate2 = wbMessageBeforeNavigate2
         ControlData = {
-          4C000000C5170000D71900000000000000000000000000000000000000000000
+          4C0000002A300000112A00000000000000000000000000000000000000000000
           000000004C000000000000000000000001000000E0D057007335CF11AE690800
           2B2E12620B000000000000004C0000000114020000000000C000000000000046
           8000000000000000000000000000000000000000000000000000000000000000
@@ -150,14 +150,14 @@ object EXIFDialog: TEXIFDialog
     Top = 160
     object aOk: TAction
       Caption = 'Ok'
-      ImageIndex = 46
+      ImageIndex = 44
       ImageName = 'tick'
       ShortCut = 27
       OnExecute = aOkExecute
     end
     object aSave: TAction
       Caption = 'Save'
-      ImageIndex = 10
+      ImageIndex = 9
       ImageName = 'Save_32x32'
       OnExecute = aSaveExecute
     end

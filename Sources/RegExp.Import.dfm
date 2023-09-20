@@ -30,7 +30,7 @@ object frmImportFromXML: TfrmImportFromXML
       753
       42)
     object btnOk: TBitBtn
-      Left = 639
+      Left = 635
       Top = 1
       Width = 108
       Height = 40
@@ -41,13 +41,13 @@ object frmImportFromXML: TfrmImportFromXML
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
-      ImageIndex = 46
+      ImageIndex = 44
       ImageName = 'tick'
       Images = DMImage.vil32
       ModalResult = 1
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 635
+      ExplicitLeft = 631
     end
   end
   object vstTree: TVirtualStringTree
@@ -171,6 +171,7 @@ object frmImportFromXML: TfrmImportFromXML
       Left = 482
       Top = 0
       Action = aImport
+      ImageIndex = 58
     end
   end
   object pnlTop: TPanel
