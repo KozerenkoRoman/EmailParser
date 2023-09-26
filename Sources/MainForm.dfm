@@ -138,9 +138,9 @@ inherited frmMain: TfrmMain
         end
         inherited vstTree: TVirtualStringTree
           Width = 246
-          Height = 191
+          Height = 209
           ExplicitWidth = 246
-          ExplicitHeight = 191
+          ExplicitHeight = 209
           Columns = <
             item
               CaptionAlignment = taCenter
@@ -255,29 +255,7 @@ inherited frmMain: TfrmMain
       CardIndex = 0
       TabOrder = 0
       inline frameRegExp: TframeRegExp
-        Left = 0
-        Top = 0
-        Width = 738
-        Height = 551
         Align = alClient
-        TabOrder = 0
-        ExplicitWidth = 738
-        ExplicitHeight = 551
-        inherited tbMain: TToolBar
-          Width = 738
-          ExplicitWidth = 738
-        end
-        inherited vstTree: TVirtualStringTree
-          Width = 738
-          Height = 469
-          ExplicitWidth = 738
-          ExplicitHeight = 469
-          DefaultText = ''
-        end
-        inherited tbSettings: TToolBar
-          Width = 738
-          ExplicitWidth = 738
-        end
       end
     end
     object crdPathsToFindScripts: TCard
@@ -439,8 +417,8 @@ inherited frmMain: TfrmMain
               Control = frameSettings.cbLoadRecordsFromDB
               Row = 4
             end>
-          ExplicitWidth = 738
-          ExplicitHeight = 512
+          ExplicitWidth = 372
+          ExplicitHeight = 339
         end
       end
     end
@@ -563,7 +541,7 @@ inherited frmMain: TfrmMain
         end
         inherited tbFileSearch: TToolBar
           Width = 738
-          ExplicitWidth = 738
+          ExplicitWidth = 372
           inherited btnFileSearch: TToolButton
             Wrap = True
           end

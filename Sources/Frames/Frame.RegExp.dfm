@@ -16,24 +16,27 @@ inherited frameRegExp: TframeRegExp
       Visible = False
       OnClick = aSaveExecute
     end
-    object btnSep05: TToolButton
+    inherited btnSep03: TToolButton
+      ImageIndex = 0
+      ImageName = 'DeleteList_32x32'
+    end
+    object btnSep04: TToolButton
       Left = 375
       Top = 0
       Width = 8
-      Caption = 'btnSep05'
-      ImageIndex = 29
-      ImageName = 'transform_rotate'
+      ImageIndex = 28
+      ImageName = 'Fill_32x32'
       Style = tbsSeparator
     end
-    object btnUp: TToolButton
+    object btnDown: TToolButton
       Left = 383
       Top = 0
-      Action = aUp
+      Action = aDown
     end
-    object btnDown: TToolButton
+    object btnUp: TToolButton
       Left = 422
       Top = 0
-      Action = aDown
+      Action = aUp
     end
   end
   inherited vstTree: TVirtualStringTree
@@ -147,11 +150,11 @@ inherited frameRegExp: TframeRegExp
       Top = 0
       Action = aDeleteSet
     end
-    object btnSep04: TToolButton
+    object btnSep05: TToolButton
       Left = 453
       Top = 0
       Width = 8
-      Caption = 'btnSep04'
+      Caption = 'btnSep05'
       ImageIndex = 61
       ImageName = 'sql'
       Style = tbsSeparator
@@ -213,14 +216,12 @@ inherited frameRegExp: TframeRegExp
       OnExecute = aImportFromXMLExecute
     end
     object aUp: TAction
-      Caption = 'aUp'
       ImageIndex = 27
       ImageName = 'Up2_32x32'
       OnExecute = aUpExecute
       OnUpdate = aUpUpdate
     end
     object aDown: TAction
-      Caption = 'aDown'
       ImageIndex = 28
       ImageName = 'Fill_32x32'
       OnExecute = aDownExecute

@@ -11,7 +11,7 @@ uses
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
   Files.Utils, System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
   System.Math, System.ZLib, System.Zip, System.Masks, System.StrUtils, InformationDialog, Html.Lib,
-  Vcl.Graphics;
+  Vcl.Graphics, UnRAR.Helper;
 {$ENDREGION}
 
 type
@@ -35,6 +35,7 @@ type
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     function GetWordText(const aFileName: TFileName): string;
     function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
+    function GetRarFileList(const aFileName: TFileName; const aData: PResultData): string;
     function IsSuccessfulCheck: Boolean;
     procedure DoCopyAttachmentFiles(const aData: PResultData);
     procedure DoDeleteAttachmentFiles(const aData: PResultData);
@@ -721,7 +722,7 @@ begin
             begin
               Attachment.ContentType := 'application/rar';
               Attachment.ImageIndex  := TExtIcon.eiRar.ToByte;
-              Attachment.ParsedText  := '';
+              Attachment.ParsedText  := GetRarFileList(Attachment.FileName, aData);
             end;
           fsOffice:
             begin
@@ -1040,6 +1041,79 @@ begin
     end;
   finally
     FreeAndNil(ZipFile);
+  end;
+end;
+
+function TPerformer.GetRarFileList(const aFileName: TFileName; const aData: PResultData): string;
+var
+  Attachment     : PAttachment;
+  FileList       : TArray<string>;
+  FileName       : string;
+  IsNeedPassword : Boolean;
+  Path           : string;
+  RarFile        : TUnRAR;
+begin
+  RarFile := TUnRAR.Create(aFileName);
+  try
+    Path := TPath.Combine(GetAttchmentPath(aData.FileName), TPath.GetFileNameWithoutExtension(aFileName));
+    if not TDirectory.Exists(Path) then
+      try
+        TDirectory.CreateDirectory(Path);
+      except
+        on E: Exception do
+        begin
+          LogWriter.Write(ddError, Self, 'GetRarFileList', E.Message + sLineBreak + 'Directory - ' + Path);
+          Exit;
+        end;
+      end;
+    FileList := RarFile.GetFileList;
+    IsNeedPassword := RarFile.ArcInfo.IsNeedPassword;
+
+    if (RarFile.LastError <> 0) then
+    begin
+      LogWriter.Write(ddError, Self, 'GetRarFileList', RarFile.GetErrorText(RarFile.LastError));
+      Exit;
+    end;
+  finally
+    FreeAndNil(RarFile);
+  end;
+
+  try
+    for var i := Low(FileList) to High(FileList) do
+      if not TFileUtils.IsForbidden(FileList[i]) then
+      begin
+        RarFile := TUnRAR.Create(aFileName);
+        try
+          RarFile.DestPath := Path;
+          if IsNeedPassword then
+            RarFile.Password := '111'; //TODO: get passwords
+          RarFile.Extract(FileList[i]);
+          if (RarFile.LastError = 0) then
+          begin
+            FileName := Concat('[', aData^.ShortName, '] ', TFileUtils.GetCorrectFileName(FileList[i]));
+            SetLength(FileName, Min(Length(FileName), 255));
+            if not RenameFile(TPath.Combine(Path, FileList[i]), TPath.Combine(Path, FileName)) then
+              DeleteFile(TPath.Combine(Path, FileList[i]));
+
+            New(Attachment);
+            Attachment^.FileName := TPath.Combine(Path, FileName);
+            Attachment^.Hash := TFileUtils.GetHash(Attachment^.FileName);
+            Attachment^.ShortName := FileName;
+            Attachment^.ParentHash := aData^.Hash;
+            Attachment^.ParentName := aData^.ShortName;
+            Attachment^.Matches.Count := FRegExpList.Count;
+            Attachment^.FromZip := True;
+            TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+            aData^.Attachments.AddUnique(Attachment^.Hash);
+            Result := Concat(Result, (i + 1).ToString, '. ', FileName, '<br>');
+          end;
+        finally
+          FreeAndNil(RarFile);
+        end;
+      end;
+  except
+    on E: Exception do
+      LogWriter.Write(ddError, Self, 'GetZipFileList', E.Message + sLineBreak + aFileName);
   end;
 end;
 

@@ -61,6 +61,8 @@ uses
   Translate.Lang in 'Sources\Translate\Translate.Lang.pas',
   Translate.Resources in 'Sources\Translate\Translate.Resources.pas',
   UHtmlParse in 'Sources\HTMLParse\UHtmlParse.pas',
+  UnRAR in 'Sources\UnRAR\UnRAR.pas',
+  UnRAR.Helper in 'Sources\UnRAR\UnRAR.Helper.pas',
   Utils in 'Sources\Common\Utils.pas',
   Utils.Exceptions in 'Sources\Common\Utils.Exceptions.pas',
   Utils.LocalInformation in 'Sources\Common\Utils.LocalInformation.pas',

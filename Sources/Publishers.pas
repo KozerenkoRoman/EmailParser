@@ -200,21 +200,21 @@ var
   Item: TObject;
 begin
   if not Application.Terminated then
-    for var i := 0 to Self.Count - 1 do
-      try
-        Item := Self.LockList.Items[i];
-        if Assigned(Item) then
-          TThread.Queue(nil,
-            procedure
-            var
-              obj: IProgress;
-            begin
+    TThread.Queue(nil,
+      procedure
+      var
+        obj: IProgress;
+      begin
+        for var i := 0 to Self.Count - 1 do
+          try
+            Item := Self.LockList.Items[i];
+            if Assigned(Item) then
               if Supports(Item, IProgress, obj) then
                 obj.CompletedItem(aResultData);
-            end);
-      finally
-        Self.UnlockList;
-      end;
+          finally
+            Self.UnlockList;
+          end;
+      end);
 end;
 
 procedure TProgressPublisher.EndProgress;

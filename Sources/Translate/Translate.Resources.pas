@@ -137,6 +137,8 @@ resourcestring
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
   en_ShowSearchBar        = 'Show search bar';
+  en_Up                   = 'Up';
+  en_Down                 = 'Down';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -255,15 +257,18 @@ resourcestring
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
   uk_ShowSearchBar        = 'Показати панель пошуку';
+  uk_Up                   = 'Вгору';
+  uk_Down                 = 'Вниз';
 
 const
-   ArrayMessages: array[1 .. 114] of TMessageItem = (
+   ArrayMessages: array[1 .. 116] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
     (Key: 'AllCheck'             ; En: en_AllCheck;             Uk: uk_AllCheck),
     (Key: 'Begin'                ; En: en_Begin;                Uk: uk_Begin),
     (Key: 'Body'                 ; En: en_Body;                 Uk: uk_Body),
+    (Key: 'AllUnCheck'           ; En: en_AllUnCheck;           Uk: uk_AllUnCheck),
     (Key: 'Break'                ; En: en_Break;                Uk: uk_Break),
     (Key: 'Cancel'               ; En: en_Cancel;               Uk: uk_Cancel),
     (Key: 'ClassName'            ; En: en_ClassName;            Uk: uk_ClassName),
@@ -283,6 +288,7 @@ const
     (Key: 'DeleteSelectedPrompt' ; En: en_DeleteSelectedPrompt; Uk: uk_DeleteSelectedPrompt),
     (Key: 'DirectoryNotFound'    ; En: en_DirectoryNotFound;    Uk: uk_DirectoryNotFound),
     (Key: 'Disabled'             ; En: en_Disabled;             Uk: uk_Disabled),
+    (Key: 'Down'                 ; En: en_Down;                 Uk: uk_Down),
     (Key: 'DuplicateCount'       ; En: en_DuplicateCount;       Uk: uk_DuplicateCount),
     (Key: 'Edit'                 ; En: en_Edit;                 Uk: uk_Edit),
     (Key: 'EditCommonParameters' ; En: en_EditCommonParameters; Uk: uk_EditCommonParameters),
@@ -335,12 +341,11 @@ const
     (Key: 'Paste'                ; En: en_Paste;                Uk: uk_Paste),
     (Key: 'Path'                 ; En: en_Path;                 Uk: uk_Path),
     (Key: 'PathForAttachments'   ; En: en_PathForAttachments;   Uk: uk_PathForAttachments),
+    (Key: 'PathNotExists'        ; En: en_PathNotExists;        Uk: uk_PathNotExists),
     (Key: 'PathsToFindFiles'     ; En: en_PathsToFindFiles;     Uk: uk_PathsToFindFiles),
-    (Key: 'RegExpIsEmpty'        ; En: en_RegExpIsEmpty;        Uk: uk_RegExpIsEmpty),
+    (Key: 'PathsToFindNotExists' ; En: en_PathsToFindNotExists; Uk: uk_PathsToFindNotExists),
     (Key: 'PathsToFindSaveFiles' ; En: en_PathsToFindSaveFiles; Uk: uk_PathsToFindSaveFiles),
     (Key: 'PathsToSaveFiles'     ; En: en_PathsToSaveFiles;     Uk: uk_PathsToSaveFiles),
-    (Key: 'PathNotExists'        ; En: en_PathNotExists;        Uk: uk_PathNotExists),
-    (Key: 'PathsToFindNotExists' ; En: en_PathsToFindNotExists; Uk: uk_PathsToFindNotExists),
     (Key: 'PlainText'            ; En: en_PlainText;            Uk: uk_PlainText),
     (Key: 'Position'             ; En: en_Position;             Uk: uk_Position),
     (Key: 'Print'                ; En: en_Print;                Uk: uk_Print),
@@ -348,8 +353,8 @@ const
     (Key: 'ProgramStopsWorking'  ; En: en_ProgramStopsWorking;  Uk: uk_ProgramStopsWorking),
     (Key: 'ProgramVersion'       ; En: en_ProgramVersion;       Uk: uk_ProgramVersion),
     (Key: 'Refresh'              ; En: en_Refresh;              Uk: uk_Refresh),
+    (Key: 'RegExpIsEmpty'        ; En: en_RegExpIsEmpty;        Uk: uk_RegExpIsEmpty),
     (Key: 'RegExpTemplate'       ; En: en_RegExpTemplate;       Uk: uk_RegExpTemplate),
-    (Key: 'AllUnCheck'           ; En: en_AllUnCheck;           Uk: uk_AllUnCheck),
     (Key: 'Results'              ; En: en_Results;              Uk: uk_Results),
     (Key: 'SampleText'           ; En: en_SampleText;           Uk: uk_SampleText),
     (Key: 'Save'                 ; En: en_Save;                 Uk: uk_Save),
@@ -359,15 +364,16 @@ const
     (Key: 'SearchDuplicateFiles' ; En: en_SearchDuplicateFiles; Uk: uk_SearchDuplicateFiles),
     (Key: 'SelectAll'            ; En: en_SelectAll;            Uk: uk_SelectAll),
     (Key: 'SetOfTemplates'       ; En: en_SetOfTemplates;       Uk: uk_SetOfTemplates),
+    (Key: 'ShowSearchBar'        ; En: en_ShowSearchBar;        Uk: uk_ShowSearchBar),
     (Key: 'Size'                 ; En: en_Size;                 Uk: uk_Size),
     (Key: 'StartSearch'          ; En: en_StartSearch;          Uk: uk_StartSearch),
     (Key: 'Subject'              ; En: en_Subject;              Uk: uk_Subject),
     (Key: 'Successful'           ; En: en_Successful;           Uk: uk_Successful),
     (Key: 'SystemInfo'           ; En: en_SystemInfo;           Uk: uk_SystemInfo),
     (Key: 'TemplateName'         ; En: en_TemplateName;         Uk: uk_TemplateName),
-    (Key: 'ShowSearchBar'        ; En: en_ShowSearchBar;        Uk: uk_ShowSearchBar),
     (Key: 'Text'                 ; En: en_Text;                 Uk: uk_Text),
     (Key: 'Time'                 ; En: en_Time;                 Uk: uk_Time),
+    (Key: 'Up'                   ; En: en_Up;                   Uk: uk_Up),
     (Key: 'UseRawText'           ; En: en_UseRawText;           Uk: uk_UseRawText),
     (Key: 'Utilities'            ; En: en_Utilities;            Uk: uk_Utilities),
     (Key: 'Value'                ; En: en_Value;                Uk: uk_Value),

@@ -112,7 +112,6 @@ begin
   tbSettings.ButtonHeight := C_ICON_SIZE;
   tbSettings.ButtonWidth  := C_ICON_SIZE;
   tbSettings.Height       := C_ICON_SIZE + 2;
-  btnSave.Left            := btnSaveSetAs.Left;
 
   LoadFromXML;
   UpdateRegExpColumns;
@@ -130,9 +129,11 @@ procedure TframeRegExp.Translate;
 begin
   inherited;
   aDeleteSet.Hint           := TLang.Lang.Translate('Delete');
+  aDown.Hint                := TLang.Lang.Translate('Down');
   aImportFromXML.Hint       := TLang.Lang.Translate('Import');
   aSave.Hint                := TLang.Lang.Translate('Save');
   aSaveAs.Hint              := TLang.Lang.Translate('SaveAs');
+  aUp.Hint                  := TLang.Lang.Translate('Up');
   lblSetOfTemplates.Caption := TLang.Lang.Translate('SetOfTemplates');
   vstTree.Header.Columns[COL_PARAM_NAME].Text      := TLang.Lang.Translate('TemplateName');
   vstTree.Header.Columns[COL_REGEXP_TEMPLATE].Text := TLang.Lang.Translate('RegExpTemplate');

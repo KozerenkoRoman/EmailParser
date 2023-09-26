@@ -361,26 +361,39 @@ end;
 procedure TframeAllAttachments.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
 var
   Data1, Data2: PAttachment;
+  AttachData1, AttachData2: PAttachData;
 begin
   inherited;
-  Data1 := TGeneral.AttachmentList.GetItem(PAttachData(Node1^.GetData).Hash);
-  Data2 := TGeneral.AttachmentList.GetItem(PAttachData(Node2^.GetData).Hash);
-  if (not Assigned(Data1)) or (not Assigned(Data2)) then
-    Result := 0
+  Result := 0;
+  if (Column >= C_FIXED_COLUMNS) then
+  begin
+    if (Sender.GetNodeLevel(Node1) >= 1) and (Sender.GetNodeLevel(Node2) >= 1) then
+    begin
+      AttachData1 := Node1^.GetData;
+      AttachData2 := Node2^.GetData;
+      if Assigned(AttachData1) and Assigned(AttachData2) then
+        Result := CompareText(AttachData1^.Matches.Items[Column - C_FIXED_COLUMNS], AttachData2^.Matches.Items[Column - C_FIXED_COLUMNS]);
+    end
+  end
   else
-  case Column of
-    COL_POSITION:
-      Result := CompareValue(vstTree.AbsoluteIndex(Node1), vstTree.AbsoluteIndex(Node2));
-    COL_SHORT_NAME:
-      Result := CompareText(Data1^.ShortName, Data2^.ShortName);
-    COL_EMAIL_NAME:
-      Result := CompareText(Data1^.ParentName, Data2^.ParentName);
-    COL_FILE_NAME:
-      Result := CompareText(Data1^.FileName, Data2^.FileName);
-    COL_CONTENT_TYPE:
-      Result := CompareText(Data1^.ContentType, Data2^.ContentType);
-    COL_PARSED_TEXT:
-      Result := CompareText(Data1^.ParsedText, Data2^.ParsedText);
+  begin
+    Data1 := TGeneral.AttachmentList.GetItem(PAttachData(Node1^.GetData).Hash);
+    Data2 := TGeneral.AttachmentList.GetItem(PAttachData(Node2^.GetData).Hash);
+    if Assigned(Data1) and Assigned(Data2) then
+      case Column of
+      COL_POSITION:
+        Result := CompareValue(vstTree.AbsoluteIndex(Node1), vstTree.AbsoluteIndex(Node2));
+      COL_SHORT_NAME:
+        Result := CompareText(Data1^.ShortName, Data2^.ShortName);
+      COL_EMAIL_NAME:
+        Result := CompareText(Data1^.ParentName, Data2^.ParentName);
+      COL_FILE_NAME:
+        Result := CompareText(Data1^.FileName, Data2^.FileName);
+      COL_CONTENT_TYPE:
+        Result := CompareText(Data1^.ContentType, Data2^.ContentType);
+      COL_PARSED_TEXT:
+        Result := CompareText(Data1^.ParsedText, Data2^.ParsedText);
+    end;
   end;
 end;
 
@@ -537,9 +550,9 @@ var
   arr       : array of array of string;
   ChildNode : PVirtualNode;
   Data      : PAttachData;
-  IsEmpty   : Boolean;
   MaxCol    : Integer;
   Node      : PVirtualNode;
+  IsEmpty   : Boolean;
 begin
   if not Assigned(aAttachment) then
     Exit;
@@ -557,18 +570,18 @@ begin
   for var i := 0 to aAttachment.Matches.Count - 1 do
     MaxCol := Max(MaxCol, aAttachment.Matches[i].Count);
 
-  IsEmpty := False;
   SetLength(arr, MaxCol, aAttachment^.Matches.Count);
   for var i := 0 to aAttachment^.Matches.Count - 1 do
     for var j := 0 to aAttachment^.Matches[i].Count - 1 do
-    begin
       arr[j, i] := aAttachment^.Matches[i].Items[j].Trim;
-      IsEmpty := IsEmpty or arr[j, i].IsEmpty;
-    end;
 
   Data^.Matches.Count := MaxCol;
-  if not IsEmpty then
-    for var i := Low(arr) to High(arr) do
+  for var i := Low(arr) to High(arr) do
+  begin
+    IsEmpty := True;
+    for var j := Low(arr[i]) to High(arr[i]) do
+      IsEmpty := IsEmpty and string(arr[i]).IsEmpty;
+    if not IsEmpty then
     begin
       ChildNode := vstTree.AddChild(Node);
       Data := ChildNode^.GetData;
@@ -576,6 +589,7 @@ begin
       Data^.Matches.AddRange(arr[i]);
       vstTree.ValidateNode(ChildNode, False);
     end;
+  end;
   vstTree.IsVisible[Node] := not FIsFiltered or (Node.ChildCount > 0);
   vstTree.ValidateNode(Node, False);
 end;
@@ -616,7 +630,6 @@ begin
     begin
       Column := vstTree.Header.Columns.Add;
       Column.Text             := item.ParameterName;
-      Column.Options          := Column.Options - [coEditable];
       Column.CaptionAlignment := taCenter;
       Column.Alignment        := taLeftJustify;
       Column.Width            := 100;
@@ -630,11 +643,12 @@ end;
 
 procedure TframeAllAttachments.UpdateFilter(const aOperation: TFilterOperation);
 var
-  ChildNode    : PVirtualNode;
-  Data         : PAttachData;
-  FilterValue  : Cardinal;
-  MatchesValue : Cardinal;
-  Node         : PVirtualNode;
+  ChildMatches  : Cardinal;
+  ChildNode     : PVirtualNode;
+  Data          : PAttachData;
+  FilterValue   : Cardinal;
+  Node          : PVirtualNode;
+  ParentMatches : Cardinal;
 begin
   inherited;
   FilterValue := 0;
@@ -649,23 +663,33 @@ begin
     Node := vstTree.RootNode.FirstChild;
     while Assigned(Node) do
     begin
-      MatchesValue := 0;
+      ParentMatches := 0;
       ChildNode := Node.FirstChild;
       while Assigned(ChildNode) do
       begin
+        ChildMatches := 0;
         Data := ChildNode^.GetData;
         if Assigned(Data) then
           for var i := 0 to Data^.Matches.Count - 1 do
             if not Data^.Matches[i].IsEmpty then
-              Include(TFilterSet(MatchesValue), i);
+            begin
+              Include(TFilterSet(ParentMatches), i);
+              Include(TFilterSet(ChildMatches), i);
+            end;
+        case aOperation of
+          foAnd:
+            vstTree.IsVisible[ChildNode] := not FIsFiltered or ((ChildMatches and FilterValue) >= FilterValue);
+          foOR:
+            vstTree.IsVisible[ChildNode] := not FIsFiltered or ((ChildMatches and FilterValue) > 0);
+        end;
         ChildNode := vstTree.GetNextSibling(ChildNode);
       end;
 
       case aOperation of
         foAnd:
-          vstTree.IsVisible[Node] := not FIsFiltered or ((MatchesValue and FilterValue) >= FilterValue);
+          vstTree.IsVisible[Node] := not FIsFiltered or ((ParentMatches and FilterValue) >= FilterValue);
         foOr:
-          vstTree.IsVisible[Node] := not FIsFiltered or ((MatchesValue and FilterValue) > 0);
+          vstTree.IsVisible[Node] := not FIsFiltered or ((ParentMatches and FilterValue) > 0);
       end;
 
       Node := vstTree.GetNextSibling(Node);
