@@ -26,6 +26,7 @@ uses
   FireDAC.Phys.SQLiteIniFile in 'Sources\DataModules\FireDAC.Phys.SQLiteIniFile.pas',
   Frame.AllAttachments in 'Sources\Frames\Frame.AllAttachments.pas' {frameAllAttachments: TFrame},
   Frame.Attachments in 'Sources\Frames\Frame.Attachments.pas' {frameAttachments: TFrame},
+  Frame.BruteForce in 'Sources\Frames\Frame.BruteForce.pas' {frameBruteForce: TFrame},
   Frame.Custom in 'Sources\Frames\Frame.Custom.pas' {FrameCustom: TFrame},
   Frame.DuplicateFiles in 'Sources\Frames\Frame.DuplicateFiles.pas' {frameDuplicateFiles: TFrame},
   Frame.Emails in 'Sources\Frames\Frame.Emails.pas' {frameEmails: TFrame},
@@ -86,9 +87,9 @@ begin
       TfrmSplashScreen.ShowSplashScreen;
 {$ENDIF}
       Application.CreateForm(TDMImage, DMImage);
-  Application.CreateForm(TDaMod, DaMod);
-  Application.CreateForm(TfrmMain, frmMain);
-  frmMain.Initialize;
+      Application.CreateForm(TDaMod, DaMod);
+      Application.CreateForm(TfrmMain, frmMain);
+      frmMain.Initialize;
     finally
       TfrmSplashScreen.HideSplashScreen;
     end;

@@ -7,7 +7,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
   System.IOUtils, Vcl.Forms, ArrayHelper, Data.DB, System.Win.Registry, Common.Types, Translate.Lang,
-  System.IniFiles, VirtualTrees, System.RegularExpressions, System.Math, Vcl.Graphics, Html.Consts;
+  System.IniFiles, VirtualTrees, System.RegularExpressions, System.Math, Vcl.Graphics, Html.Consts,
+  Files.Utils;
 {$ENDREGION}
 
 type
@@ -110,6 +111,28 @@ type
     IsDeleted : Boolean;
   end;
 
+  PPassword = ^TPassword;
+  TPassword = record
+    Hash     : string;
+    FileName : string;
+    Password : string;
+    IsDeleted: Boolean;
+  end;
+  TPasswordArray = TArrayRecord<PPassword>;
+
+  PPasswordData = ^TPasswordData;
+  TPasswordData = record
+    Hash: string;
+  end;
+
+  TPasswordList = class(TObjectDictionary<string, PPassword>)
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function GetItem(const aKey: string): PPassword;
+    procedure ClearData;
+  end;
+
   TEmailList = class(TObjectDictionary<string, PResultData>)
   public
     constructor Create;
@@ -135,12 +158,14 @@ type
     class function GetRegExpCount: Integer; static;
     class function GetRegExpParametersList: TRegExpArray; static;
     class function GetSorterPathList: TSorterPathArray;  static;
+    class function GetPasswordList: TPasswordArray;  static;
     class function XMLFile: TXMLFile; static;
     class function XMLParams: TXMLFile; static;
     class procedure NoHibernate; static;
     class var
       AttachmentList : TAttachmentList;
       EmailList      : TEmailList;
+      PasswordList   : TPasswordList;
       RegExpColumns  : TArray<TRegExp>;
   end;
 
@@ -231,6 +256,37 @@ begin
   XMLParams.CurrentSection := C_SECTION_REGEXP;
   try
     Result := XMLParams.ChildCount;
+  finally
+    XMLParams.CurrentSection := '';
+  end;
+end;
+
+class function TGeneral.GetPasswordList: TPasswordArray;
+var
+  Data: PPassword;
+  i: Integer;
+begin
+  XMLParams.Open;
+  XMLParams.CurrentSection := 'Passwords';
+  try
+    i := 0;
+    Result.Count := XMLParams.ChildCount;
+    while not XMLParams.IsLastKey do
+    begin
+      if XMLParams.ReadAttributes then
+      begin
+        New(Data);
+        Data.FileName := XMLParams.Attributes.GetAttributeValue('FileName', '');
+        Data.Password := XMLParams.Attributes.GetAttributeValue('Password', '');
+        Data.Hash     := XMLParams.Attributes.GetAttributeValue('Hash', '');
+        Data.IsDeleted := not TFile.Exists(Data.FileName);
+        if Data.Hash.IsEmpty and not Data.IsDeleted then
+          Data.Hash := TFileUtils.GetHash(Data.FileName);
+        Result[i] := Data;
+        Inc(i);
+      end;
+      XMLParams.NextKey;
+    end;
   finally
     XMLParams.CurrentSection := '';
   end;
@@ -461,9 +517,38 @@ begin
   Self := Default(TSorterPath);
 end;
 
+{ TPasswordList }
+
+constructor TPasswordList.Create;
+begin
+  inherited Create([], 100);
+
+end;
+
+destructor TPasswordList.Destroy;
+begin
+  ClearData;
+  inherited;
+end;
+
+procedure TPasswordList.ClearData;
+begin
+  for var item in Self do
+    Dispose(item.Value);
+  Self.Clear;
+end;
+
+function TPasswordList.GetItem(const aKey: string): PPassword;
+begin
+  Result := nil;
+  if Self.ContainsKey(aKey) then
+    Result := Self.Items[aKey];
+end;
+
 initialization
-  TGeneral.EmailList := TEmailList.Create;
+  TGeneral.EmailList      := TEmailList.Create;
   TGeneral.AttachmentList := TAttachmentList.Create;
+  TGeneral.PasswordList   := TPasswordList.Create;
 
 finalization
   if Assigned(FXMLFile) then
@@ -475,5 +560,7 @@ finalization
     FreeAndNil(TGeneral.EmailList);
   if Assigned(TGeneral.AttachmentList) then
     FreeAndNil(TGeneral.AttachmentList);
+  if Assigned(TGeneral.PasswordList) then
+    FreeAndNil(TGeneral.PasswordList);
 
 end.

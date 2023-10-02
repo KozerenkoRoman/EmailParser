@@ -603,13 +603,25 @@ begin
     for var i := 0 to FRegExpList.Count - 1 do
       if FRegExpList[i].UseRawText then
       begin
+{$IFDEF DETAILED_LOG}
+        LogWriter.Write(ddText, Self, 'DoParseResultData', 'GetBodyAsRawText Before');
+{$ENDIF DETAILED_LOG}
         TextRaw := aData^.Subject + sLineBreak + TDaMod.GetBodyAsRawText(aData^.Hash);
+{$IFDEF DETAILED_LOG}
+        LogWriter.Write(ddText, Self, 'DoParseResultData', 'GetBodyAsRawText After');
+{$ENDIF DETAILED_LOG}
         Break;
       end;
     for var i := 0 to FRegExpList.Count - 1 do
       if not FRegExpList[i].UseRawText then
       begin
+{$IFDEF DETAILED_LOG}
+        LogWriter.Write(ddText, Self, 'DoParseResultData', 'GetBodyAsParsedText Before');
+{$ENDIF DETAILED_LOG}
         TextPlan := aData^.Subject + sLineBreak + TDaMod.GetBodyAsParsedText(aData^.Hash);
+{$IFDEF DETAILED_LOG}
+        LogWriter.Write(ddText, Self, 'DoParseResultData', 'GetBodyAsParsedText After');
+{$ENDIF DETAILED_LOG}
         Break;
       end;
 
@@ -619,7 +631,7 @@ begin
       begin
         TThread.NameThreadForDebugging('TPerformer.DoParseResultData');
 {$IFDEF DETAILED_LOG}
-        LogWriter.Write(ddText, Self, 'DoParseResultData', 'Email file name - ' + aData^.ShortName);
+        LogWriter.Write(ddText, Self, 'DoParseResultData', 'TTask0 Email file name - ' + aData^.ShortName);
 {$ENDIF DETAILED_LOG}
         for var i := 0 to FRegExpList.Count - 1 do
           if FRegExpList[i].UseRawText then
@@ -639,7 +651,7 @@ begin
             if Attachment^.ParsedText.IsEmpty then
               Attachment^.ParsedText := TDaMod.GetAttachmentAsRawText(Attachment^.Hash);
 {$IFDEF DETAILED_LOG}
-            LogWriter.Write(ddText, Self, 'DoParseResultData', ' Attachment file name - ' + Attachment^.ShortName);
+            LogWriter.Write(ddText, Self, 'DoParseResultData', 'TTask1 Attachment file name - ' + Attachment^.ShortName);
 {$ENDIF DETAILED_LOG}
             for var j := 0 to Attachment^.Matches.Count - 1 do
               Attachment^.Matches[j] := GetRegExpCollection(Attachment^.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
@@ -658,6 +670,9 @@ var
   Ext        : string;
   i          : Integer;
 begin
+{$IFDEF DETAILED_LOG}
+  LogWriter.Write(ddEnterMethod, Self, 'DoParseAttachmentFiles');
+{$ENDIF DETAILED_LOG}
   i := 0;
   while (i <= High(aData.Attachments.Items)) do
   begin
@@ -809,6 +824,9 @@ begin
       end;
     Inc(i);
   end;
+{$IFDEF DETAILED_LOG}
+  LogWriter.Write(ddExitMethod, Self, 'DoParseAttachmentFiles');
+{$ENDIF DETAILED_LOG}
 end;
 
 procedure TPerformer.DoFillAttachments(const aData: PResultData; const aMailMessage: TclMailMessage);
@@ -1130,7 +1148,7 @@ begin
     Exit;
 
 {$IFDEF DETAILED_LOG}
-  LogWriter.Write(ddText, Self, 'GetRegExpCollection', aPattern);
+  LogWriter.Write(ddEnterMethod, Self, 'GetRegExpCollection', aPattern);
 {$ENDIF DETAILED_LOG}
 
   RegExpr := TRegEx.Create(aPattern);
@@ -1149,6 +1167,9 @@ begin
       Result[i] := Matches.Item[i].Groups[GroupIndex].Value;
     end;
   end;
+{$IFDEF DETAILED_LOG}
+  LogWriter.Write(ddExitMethod, Self, 'GetRegExpCollection');
+{$ENDIF DETAILED_LOG}
 end;
 
 function GetStringFromMatches(const aText, aPattern: string; const aGroupIndex: Integer): string;

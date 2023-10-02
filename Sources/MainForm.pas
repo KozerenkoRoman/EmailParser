@@ -11,7 +11,7 @@ uses
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExp, Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.Settings, Global.Types, Vcl.Samples.Gauges,
   Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule, Frame.Sorter, Frame.DuplicateFiles,
-  Files.Utils, Vcl.CheckLst, ArrayHelper, System.Types, Frame.MatchesFilter;
+  Files.Utils, Vcl.CheckLst, ArrayHelper, System.Types, Frame.MatchesFilter, Frame.BruteForce;
 {$ENDREGION}
 
 type
@@ -46,6 +46,8 @@ type
     splPath                 : TSplitter;
     splView                 : TSplitView;
     srchBox                 : TSearchBox;
+    crdBruteForce: TCard;
+    frameBruteForce: TframeBruteForce;
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
     procedure aToggleSplitPanelExecute(Sender: TObject);
     procedure catMenuItemsSelectedItemChange(Sender: TObject; const Button: TButtonItem);
@@ -123,6 +125,7 @@ begin
   frameSettings.Initialize;
   frameDuplicateFiles.Initialize;
   frameMatchesFilter.Initialize;
+  frameBruteForce.Initialize;
 
   pnlTop.Color                := C_TOP_COLOR;
   catMenuItems.HotButtonColor := C_TOP_COLOR;
@@ -139,6 +142,7 @@ begin
   frameSettings.Deinitialize;
   frameDuplicateFiles.Deinitialize;
   frameMatchesFilter.Deinitialize;
+  frameBruteForce.Deinitialize;
   DaMod.Deinitialize;
   LogWriter.Active := False;
   TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'ExtendedFilterHeight', pnlExtendedFilter.Height);
@@ -156,8 +160,10 @@ begin
   catMenuItems.Categories[0].Items[2].Caption := TLang.Lang.Translate('EditCommonParameters');
   catMenuItems.Categories[0].Items[3].Caption := TLang.Lang.Translate('Search');
   catMenuItems.Categories[1].Items[0].Caption := TLang.Lang.Translate('SearchDuplicateFiles');
-  catMenuItems.Categories[1].Items[1].Caption := TLang.Lang.Translate('OpenLogFile');
+  catMenuItems.Categories[1].Items[1].Caption := TLang.Lang.Translate('BruteForce');
+  catMenuItems.Categories[1].Items[2].Caption := TLang.Lang.Translate('OpenLogFile');
 
+  crdBruteForce.Caption           := TLang.Lang.Translate('BruteForce');
   crdCommonParams.Caption         := TLang.Lang.Translate('EditCommonParameters');
   crdPathsToFindScripts.Caption   := TLang.Lang.Translate('PathsToFindFiles');
   crdRegExpParameters.Caption     := TLang.Lang.Translate('EditRegExpParameters');
@@ -210,7 +216,8 @@ begin
   else if (Button.Category.Id = 1) then
     case Button.Id of
       0: pnlCard.ActiveCard := crdSearchDuplicateFiles;
-      1: if FileExists(LogWriter.LogFileName) then
+      1: pnlCard.ActiveCard := crdBruteForce;
+      2: if FileExists(LogWriter.LogFileName) then
           TFileUtils.ShellOpen(LogWriter.LogFileName);
     end;
   lblTitle.Caption := Button.Caption;

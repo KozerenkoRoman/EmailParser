@@ -31,7 +31,6 @@ type
     FFileName     : TFileName;
     FMaxSize      : Integer;
     FQueue        : TThreadedQueue<string>;
-    function GetSize: Int64;
     function GetOpenHtmlText: string;
     function GetCloseHtmlText(const aOlfFileName: string): string;
     procedure SetCountFiles(const Value: Integer);
@@ -42,7 +41,6 @@ type
     destructor Destroy; override;
     class function GetLogFolder: string;
 
-    property Size       : Int64                  read GetSize;
     property LogQueue   : TThreadedQueue<string> read FQueue;
     property MaxSize    : Integer                read FMaxSize    write FMaxSize;
     property FileName   : TFileName              read FFileName   write FFileName;
@@ -109,6 +107,114 @@ var
   LogWriter : TLogWriter;
 
 implementation
+
+{ TFileWriter }
+
+constructor TFileWriter.Create;
+begin
+  inherited Create(True);
+  Priority      := tpLowest;
+  FQueue        := TThreadedQueue<string>.Create(10000);
+  FBaseFileName := TPath.Combine(GetLogFolder,
+                                 (TPath.GetFileNameWithoutExtension(Application.ExeName) +
+                                 FormatDateTime('_yyyy.mm.dd hh.nn.ss', Now) +
+                                 '_part_%d.html').ToLower);
+  CountFiles    := 1;
+end;
+
+destructor TFileWriter.Destroy;
+begin
+  FQueue.DoShutDown;
+  Sleep(10);
+  FreeAndNil(FQueue);
+  inherited;
+end;
+
+procedure TFileWriter.Execute;
+var
+  Bytes      : TBytes;
+  LogText    : string;
+  Stream     : TFileStream;
+  WaitResult : TWaitResult;
+begin
+  inherited;
+  Stream := TFileStream.Create(FileName, fmCreate or fmShareDenyWrite);
+  try
+    Bytes := TEncoding.UTF8.GetPreamble;
+    Stream.WriteBuffer(Bytes, Length(Bytes));
+    Bytes := TEncoding.UTF8.GetBytes(GetOpenHtmlText);
+    Stream.WriteBuffer(Bytes, Length(Bytes));
+
+    while not Terminated do
+    begin
+      WaitResult := FQueue.PopItem(LogText);
+      if (WaitResult = TWaitResult.wrSignaled) then
+        if not(LogText.IsEmpty) then
+        begin
+          Bytes := TEncoding.UTF8.GetBytes(LogText);
+          Stream.WriteBuffer(Bytes, Length(Bytes));
+
+          if (MaxSize > 0) and (Stream.Size >= MaxSize) then
+          begin
+            LogText := GetCloseHtmlText(Format(FBaseFileName, [CountFiles + 1]));
+            Bytes := TEncoding.UTF8.GetBytes(LogText);
+            Stream.WriteBuffer(Bytes, Length(Bytes));
+
+            CountFiles := AtomicIncrement(CountFiles);
+            FreeAndNil(Stream);
+
+            Stream := TFileStream.Create(FileName, fmCreate or fmShareDenyWrite);
+            Bytes := TEncoding.UTF8.GetBytes(GetOpenHtmlText);
+            Stream.WriteBuffer(Bytes, Length(Bytes));
+          end;
+        end;
+    end;
+  finally
+    FreeAndNil(Stream);
+  end;
+end;
+
+class function TFileWriter.GetLogFolder: string;
+begin
+  Result := TPath.Combine(TDirectory.GetCurrentDirectory, C_FOLDER_LOG);
+  if (ExtractFileDrive(Result) <> '') and (not TDirectory.Exists(Result)) then
+    try
+      ForceDirectories(Result);
+    except
+      raise Exception.Create(Format('Do not create folder [%s].', [Result]));
+    end;
+end;
+
+function TFileWriter.GetOpenHtmlText: string;
+begin
+  Result := Concat(C_HTML_OPEN,
+                   C_HTML_HEAD_OPEN,
+                   C_STYLE,
+                   C_HTML_HEAD_CLOSE,
+                   THtmlLib.GetTableTag(VarArrayOf([C_HTML_NBSP,
+                                                     'Line &#8470;',
+                                                     'Time',
+                                                     'Unit name',
+                                                     'Class name',
+                                                     'Method name',
+                                                     'Description'])));
+end;
+
+function TFileWriter.GetCloseHtmlText(const aOlfFileName: string): string;
+begin
+  Result := Concat(C_HTML_TABLE_CLOSE, Format(C_TAG_LINK, [aOlfFileName]), C_HTML_CLOSE);
+end;
+
+procedure TFileWriter.SetCountFiles(const Value: Integer);
+begin
+  System.TMonitor.Enter(Self);
+  try
+    FCountFiles := Value;
+    FFileName := Format(FBaseFileName, [FCountFiles]);
+  finally
+    System.TMonitor.Exit(Self);
+  end;
+end;
 
 { TLogWriter }
 
@@ -326,100 +432,6 @@ function TLogWriter.GetLogFileName: TFileName;
 begin
   if Assigned(FFileWriter) then
     Result := FFileWriter.FileName;
-end;
-
-{ TFileWriter }
-
-constructor TFileWriter.Create;
-begin
-  inherited Create(True);
-  Priority      := tpLowest;
-  FQueue        := TThreadedQueue<string>.Create(10000);
-  FBaseFileName := TPath.Combine(GetLogFolder,
-                                 (TPath.GetFileNameWithoutExtension(Application.ExeName) +
-                                 FormatDateTime('_yyyy.mm.dd hh.nn.ss', Now) +
-                                 '_part_%d.html').ToLower);
-  CountFiles    := 1;
-end;
-
-destructor TFileWriter.Destroy;
-begin
-  FQueue.DoShutDown;
-  Sleep(10);
-  FreeAndNil(FQueue);
-  inherited;
-end;
-
-procedure TFileWriter.Execute;
-var
-  LogText    : string;
-  WaitResult : TWaitResult;
-begin
-  inherited;
-  TThread.NameThreadForDebugging('TFileWriter');
-  TFile.WriteAllBytes(FileName, TEncoding.UTF8.GetPreamble);
-  TFile.AppendAllText(FileName, GetOpenHtmlText);
-  try
-    while not Terminated do
-    begin
-      WaitResult := FQueue.PopItem(LogText);
-      if (WaitResult = TWaitResult.wrSignaled) then
-        if not(LogText.IsEmpty) then
-        begin
-          TFile.AppendAllText(FileName, LogText);
-          if (MaxSize > 0) and (Size >= MaxSize) then
-          begin
-            TFile.AppendAllText(FileName, GetCloseHtmlText(Format(FBaseFileName, [CountFiles + 1])));
-            CountFiles := CountFiles + 1;
-            TFile.AppendAllText(FileName, GetOpenHtmlText);
-          end;
-      end;
-    end;
-  except
-
-  end;
-end;
-
-class function TFileWriter.GetLogFolder: string;
-begin
-  Result := TPath.Combine(TDirectory.GetCurrentDirectory, C_FOLDER_LOG);
-  if (ExtractFileDrive(Result) <> '') and (not TDirectory.Exists(Result)) then
-    try
-      ForceDirectories(Result);
-    except
-      raise Exception.Create(Format('Do not create folder [%s].', [Result]));
-    end;
-end;
-
-function TFileWriter.GetOpenHtmlText: string;
-begin
-  Result := Concat(C_HTML_OPEN,
-                   C_HTML_HEAD_OPEN,
-                   C_STYLE,
-                   C_HTML_HEAD_CLOSE,
-                   THtmlLib.GetTableTag(VarArrayOf([C_HTML_NBSP,
-                                                     'Line &#8470;',
-                                                     'Time',
-                                                     'Unit name',
-                                                     'Class name',
-                                                     'Method name',
-                                                     'Description'])));
-end;
-
-function TFileWriter.GetCloseHtmlText(const aOlfFileName: string): string;
-begin
-  Result := Concat(C_HTML_TABLE_CLOSE, Format(C_TAG_LINK, [aOlfFileName]), C_HTML_CLOSE);
-end;
-
-function TFileWriter.GetSize: Int64;
-begin
-  Result := TFile.GetSize(FileName);
-end;
-
-procedure TFileWriter.SetCountFiles(const Value: Integer);
-begin
-  FCountFiles := Value;
-  FFileName := Format(FBaseFileName, [FCountFiles]);
 end;
 
 { TLogDetailTypeHelper }

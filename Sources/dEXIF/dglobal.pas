@@ -188,7 +188,7 @@ const
   {$IFDEF FPC}
   crlf = LineEnding;
   {$ELSE}
-  crlf: ansistring = #13#10;
+  crlf: string = sLineBreak;
   {$ENDIF}
 
 var

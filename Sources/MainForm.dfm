@@ -90,6 +90,11 @@ inherited frmMain: TfrmMain
               ImageName = 'Zoom100_32x32'
             end
             item
+              Caption = 'Brute Force'
+              ImageIndex = 82
+              ImageName = 'winrar_view'
+            end
+            item
               Caption = 'Open Log File'
               ImageIndex = 67
               ImageName = 'file_extension_log'
@@ -255,7 +260,29 @@ inherited frmMain: TfrmMain
       CardIndex = 0
       TabOrder = 0
       inline frameRegExp: TframeRegExp
+        Left = 0
+        Top = 0
+        Width = 738
+        Height = 551
         Align = alClient
+        TabOrder = 0
+        ExplicitWidth = 738
+        ExplicitHeight = 551
+        inherited tbMain: TToolBar
+          Width = 738
+          ExplicitWidth = 738
+        end
+        inherited vstTree: TVirtualStringTree
+          Width = 738
+          Height = 469
+          ExplicitWidth = 738
+          ExplicitHeight = 469
+          DefaultText = ''
+        end
+        inherited tbSettings: TToolBar
+          Width = 738
+          ExplicitWidth = 738
+        end
       end
     end
     object crdPathsToFindScripts: TCard
@@ -417,8 +444,8 @@ inherited frmMain: TfrmMain
               Control = frameSettings.cbLoadRecordsFromDB
               Row = 4
             end>
-          ExplicitWidth = 372
-          ExplicitHeight = 339
+          ExplicitWidth = 738
+          ExplicitHeight = 512
         end
       end
     end
@@ -466,11 +493,11 @@ inherited frmMain: TfrmMain
                 ExplicitWidth = 722
                 inherited wbBody: TWebBrowser
                   Width = 722
-                  ExplicitWidth = 681
+                  ExplicitWidth = 722
                   ControlData = {
                     4C0000009F4A0000D71900000000000000000000000000000000000000000000
-                    000000004C000000000000000000000001000000E0D057007335CF11AE690800
-                    2B2E12620A000000000000004C0000000114020000000000C000000000000046
+                    000000004C000000000000000000000000000000000000000000000000000000
+                    0000000002000000000000004C0000000114020000000000C000000000000046
                     8000000000000000000000000000000000000000000000000000000000000000
                     00000000000000000100000000000000000000000000000000000000}
                 end
@@ -541,7 +568,7 @@ inherited frmMain: TfrmMain
         end
         inherited tbFileSearch: TToolBar
           Width = 738
-          ExplicitWidth = 372
+          ExplicitWidth = 738
           inherited btnFileSearch: TToolButton
             Wrap = True
           end
@@ -575,6 +602,36 @@ inherited frmMain: TfrmMain
             ExplicitLeft = 125
             ExplicitTop = 38
           end
+        end
+      end
+    end
+    object crdBruteForce: TCard
+      Left = 1
+      Top = 1
+      Width = 738
+      Height = 551
+      Caption = 'crdBruteForce'
+      CardIndex = 5
+      TabOrder = 5
+      inline frameBruteForce: TframeBruteForce
+        Left = 0
+        Top = 0
+        Width = 738
+        Height = 551
+        Align = alClient
+        TabOrder = 0
+        ExplicitWidth = 738
+        ExplicitHeight = 551
+        inherited tbMain: TToolBar
+          Width = 738
+        end
+        inherited vstTree: TVirtualStringTree
+          Width = 738
+          Height = 469
+          DefaultText = ''
+        end
+        inherited tbSettings: TToolBar
+          Width = 738
         end
       end
     end

@@ -47,6 +47,7 @@ resourcestring
   en_DeleteSelectedPrompt = '%d items will be removed. Continue?';
   en_DirectoryNotFound    = 'Directory "%s" not found';
   en_Disabled             = 'Disabled';
+  en_Down                 = 'Down';
   en_DuplicateCount       = 'Found %d records in DB / Duplicates';
   en_Edit                 = 'Edit';
   en_EditCommonParameters = 'Common parameters';
@@ -96,6 +97,8 @@ resourcestring
   en_Options              = 'Options';
   en_Parameter            = 'Parameter';
   en_Parameters           = 'Parameters';
+  en_Password             = 'Password';
+  en_PasswordList         = 'Password list';
   en_Paste                = 'Paste';
   en_Path                 = 'Path';
   en_PathForAttachments   = 'Paths for saving attachments';
@@ -124,6 +127,7 @@ resourcestring
   en_SelectAll            = 'SelectAll';
   en_Server               = 'Server';
   en_SetOfTemplates       = 'Set of templates';
+  en_ShowSearchBar        = 'Show search bar';
   en_Size                 = 'Size';
   en_StartSearch          = 'Start Search';
   en_Subject              = 'Subject';
@@ -132,13 +136,13 @@ resourcestring
   en_TemplateName         = 'Template name';
   en_Text                 = 'Text';
   en_Time                 = 'Time';
+  en_Up                   = 'Up';
   en_UseRawText           = 'Use raw text';
   en_Utilities            = 'Utilities';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
-  en_ShowSearchBar        = 'Show search bar';
-  en_Up                   = 'Up';
-  en_Down                 = 'Down';
+  en_BruteForce           = 'Brute force';
+  en_FileNotSelected      = 'No file selected';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -167,6 +171,7 @@ resourcestring
   uk_DeleteSelectedPrompt = 'Буде видалено %d записів. Продовжити?';
   uk_DirectoryNotFound    = 'Каталог "%s" не знайдено';
   uk_Disabled             = 'Вимкнено';
+  uk_Down                 = 'Вниз';
   uk_DuplicateCount       = 'Знайдено %d записів в БД / дублікатів файлів';
   uk_Edit                 = 'Редагувати';
   uk_EditCommonParameters = 'Загальні параметри';
@@ -216,6 +221,8 @@ resourcestring
   uk_Options              = 'Опції';
   uk_Parameter            = 'Параметр';
   uk_Parameters           = 'Параметри';
+  uk_Password             = 'Пароль';
+  uk_PasswordList         = 'Список паролів';
   uk_Paste                = 'Вставити';
   uk_Path                 = 'Шлях';
   uk_PathForAttachments   = 'Шляхи для збереження вкладень';
@@ -244,6 +251,7 @@ resourcestring
   uk_SelectAll            = 'Виділити все';
   uk_Server               = 'Сервер';
   uk_SetOfTemplates       = 'Набір шаблонів';
+  uk_ShowSearchBar        = 'Показати панель пошуку';
   uk_Size                 = 'Розмір';
   uk_StartSearch          = 'Почати пошук';
   uk_Subject              = 'Тема';
@@ -252,24 +260,25 @@ resourcestring
   uk_TemplateName         = 'Назва шаблону';
   uk_Text                 = 'Текст';
   uk_Time                 = 'Час';
+  uk_Up                   = 'Вгору';
   uk_UseRawText           = 'Парсити сирий текст';
   uk_Utilities            = 'Утиліти';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
-  uk_ShowSearchBar        = 'Показати панель пошуку';
-  uk_Up                   = 'Вгору';
-  uk_Down                 = 'Вниз';
+  uk_BruteForce           = 'Підбір паролів';
+  uk_FileNotSelected      = 'Файл не вибрано';
 
 const
-   ArrayMessages: array[1 .. 116] of TMessageItem = (
+   ArrayMessages: array[1 .. 120] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
-    (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
     (Key: 'AllCheck'             ; En: en_AllCheck;             Uk: uk_AllCheck),
+    (Key: 'AllUnCheck'           ; En: en_AllUnCheck;           Uk: uk_AllUnCheck),
+    (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
     (Key: 'Begin'                ; En: en_Begin;                Uk: uk_Begin),
     (Key: 'Body'                 ; En: en_Body;                 Uk: uk_Body),
-    (Key: 'AllUnCheck'           ; En: en_AllUnCheck;           Uk: uk_AllUnCheck),
     (Key: 'Break'                ; En: en_Break;                Uk: uk_Break),
+    (Key: 'BruteForce'           ; En: en_BruteForce;           Uk: uk_BruteForce),
     (Key: 'Cancel'               ; En: en_Cancel;               Uk: uk_Cancel),
     (Key: 'ClassName'            ; En: en_ClassName;            Uk: uk_ClassName),
     (Key: 'CollapseAll'          ; En: en_CollapseAll;          Uk: uk_CollapseAll),
@@ -290,6 +299,7 @@ const
     (Key: 'Disabled'             ; En: en_Disabled;             Uk: uk_Disabled),
     (Key: 'Down'                 ; En: en_Down;                 Uk: uk_Down),
     (Key: 'DuplicateCount'       ; En: en_DuplicateCount;       Uk: uk_DuplicateCount),
+    (Key: 'FileNotSelected'      ; En: en_FileNotSelected;      Uk: uk_FileNotSelected),
     (Key: 'Edit'                 ; En: en_Edit;                 Uk: uk_Edit),
     (Key: 'EditCommonParameters' ; En: en_EditCommonParameters; Uk: uk_EditCommonParameters),
     (Key: 'EditRegExpParameters' ; En: en_EditRegExpParameters; Uk: uk_EditRegExpParameters),
@@ -338,6 +348,8 @@ const
     (Key: 'Options'              ; En: en_Options;              Uk: uk_Options),
     (Key: 'Parameter'            ; En: en_Parameter;            Uk: uk_Parameter),
     (Key: 'Parameters'           ; En: en_Parameters;           Uk: uk_Parameters),
+    (Key: 'Password'             ; En: en_Password;             Uk: uk_Password),
+    (Key: 'PasswordList'         ; En: en_PasswordList;         Uk: uk_PasswordList),
     (Key: 'Paste'                ; En: en_Paste;                Uk: uk_Paste),
     (Key: 'Path'                 ; En: en_Path;                 Uk: uk_Path),
     (Key: 'PathForAttachments'   ; En: en_PathForAttachments;   Uk: uk_PathForAttachments),
