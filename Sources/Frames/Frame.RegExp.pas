@@ -520,17 +520,19 @@ end;
 procedure TframeRegExp.aUpUpdate(Sender: TObject);
 begin
   inherited;
-  TAction(Sender).Enabled := False;
   if Assigned(vstTree.FocusedNode) then
-    TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.FirstChild;
+    TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.FirstChild
+  else
+    TAction(Sender).Enabled := False;
 end;
 
 procedure TframeRegExp.aDownUpdate(Sender: TObject);
 begin
   inherited;
-  TAction(Sender).Enabled := False;
   if Assigned(vstTree.FocusedNode) then
-    TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.LastChild;
+    TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.LastChild
+  else
+    TAction(Sender).Enabled := False;
 end;
 
 procedure TframeRegExp.cbSetOfTemplatesChange(Sender: TObject);

@@ -35,6 +35,7 @@ const
   ERAR_NO_MEMORY      = 11;
   ERAR_SMALL_BUF      = 20;
   ERAR_UNKNOWN        = 21;
+  ERAR_NEED_PASSWORD  = 22;
   ERAR_UNKNOWN_FORMAT = 14;
   ERAR_INCORRECT_PWD  = 24;
 
@@ -128,7 +129,7 @@ type
     IsSolid           : Boolean;
   end;
 
-  TUnrarCallback = function(Msg: UINT; UserData, P1, P2: Integer): Integer; stdcall;
+  TUnrarCallback = function(Msg: UINT; UserData, P1, P2: LPARAM): LPARAM; stdcall;
 
 const
   _unrar = {$IFDEF CPUX64} 'unrar64.dll' {$ELSE} 'unrar.dll' {$ENDIF CPUX64};
@@ -139,7 +140,7 @@ function RAROpenArchiveEx(var ArchiveData: RAROpenArchiveDataEx): THandle; stdca
 function RARProcessFile(hArcData: THandle; Operation: Integer; DestPath, DestName: PAnsiChar): Integer; stdcall; external _unrar;
 function RARReadHeader(hArcData: THandle; var HeaderData: RARHeaderData): Integer; stdcall; external _unrar;
 function RARReadHeaderEx(hArcData: THandle; var HeaderData: RARHeaderDataEx): Integer; stdcall; external _unrar;
-procedure RARSetCallback(hArcData: THandle; UnrarCallback: TUnrarCallback; UserData: Integer); stdcall; external _unrar;
+procedure RARSetCallback(hArcData: THandle; UnrarCallback: TUnrarCallback; UserData: LPARAM); stdcall; external _unrar;
 procedure RARSetPassword(hArcData: THandle; Password: PAnsiChar); stdcall; external _unrar;
 
 // Wrapper for DLL's function - old unrar.dll doesn't export RARGetDllVersion

@@ -117,6 +117,7 @@ type
     FileName : string;
     Password : string;
     IsDeleted: Boolean;
+    Info     : string;
   end;
   TPasswordArray = TArrayRecord<PPassword>;
 
@@ -185,6 +186,7 @@ type
 const
   C_ICON_SIZE = 40;
   C_TOP_COLOR = $001E4DFF;
+  C_PROGRESS_STEP = 50;
   MaxCardinal: Cardinal = $FFFFFFFF;
 
 var
@@ -279,6 +281,7 @@ begin
         Data.FileName := XMLParams.Attributes.GetAttributeValue('FileName', '');
         Data.Password := XMLParams.Attributes.GetAttributeValue('Password', '');
         Data.Hash     := XMLParams.Attributes.GetAttributeValue('Hash', '');
+        Data.Info     := XMLParams.Attributes.GetAttributeValue('Info', '');
         Data.IsDeleted := not TFile.Exists(Data.FileName);
         if Data.Hash.IsEmpty and not Data.IsDeleted then
           Data.Hash := TFileUtils.GetHash(Data.FileName);

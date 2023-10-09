@@ -143,6 +143,8 @@ resourcestring
   en_WithSubdir           = 'With subdir';
   en_BruteForce           = 'Brute force';
   en_FileNotSelected      = 'No file selected';
+  en_PasswordNotRequired  = 'Password is not required';
+  en_PasswordNotFound     = 'Password not found';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -267,9 +269,11 @@ resourcestring
   uk_WithSubdir           = 'З підкаталогами';
   uk_BruteForce           = 'Підбір паролів';
   uk_FileNotSelected      = 'Файл не вибрано';
+  uk_PasswordNotRequired  = 'Не потребує паролю';
+  uk_PasswordNotFound     = 'Пароль не знайдено';
 
 const
-   ArrayMessages: array[1 .. 120] of TMessageItem = (
+   ArrayMessages: array[1 .. 122] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'AllCheck'             ; En: en_AllCheck;             Uk: uk_AllCheck),
@@ -299,7 +303,6 @@ const
     (Key: 'Disabled'             ; En: en_Disabled;             Uk: uk_Disabled),
     (Key: 'Down'                 ; En: en_Down;                 Uk: uk_Down),
     (Key: 'DuplicateCount'       ; En: en_DuplicateCount;       Uk: uk_DuplicateCount),
-    (Key: 'FileNotSelected'      ; En: en_FileNotSelected;      Uk: uk_FileNotSelected),
     (Key: 'Edit'                 ; En: en_Edit;                 Uk: uk_Edit),
     (Key: 'EditCommonParameters' ; En: en_EditCommonParameters; Uk: uk_EditCommonParameters),
     (Key: 'EditRegExpParameters' ; En: en_EditRegExpParameters; Uk: uk_EditRegExpParameters),
@@ -320,6 +323,7 @@ const
     (Key: 'FileIsDisabled'       ; En: en_FileIsDisabled;       Uk: uk_FileIsDisabled),
     (Key: 'FileName'             ; En: en_FileName;             Uk: uk_FileName),
     (Key: 'FileNotFound'         ; En: en_FileNotFound;         Uk: uk_FileNotFound),
+    (Key: 'FileNotSelected'      ; En: en_FileNotSelected;      Uk: uk_FileNotSelected),
     (Key: 'Filter'               ; En: en_Filter;               Uk: uk_Filter),
     (Key: 'FoundFiles'           ; En: en_FoundFiles;           Uk: uk_FoundFiles),
     (Key: 'From'                 ; En: en_From;                 Uk: uk_From),
@@ -350,6 +354,8 @@ const
     (Key: 'Parameters'           ; En: en_Parameters;           Uk: uk_Parameters),
     (Key: 'Password'             ; En: en_Password;             Uk: uk_Password),
     (Key: 'PasswordList'         ; En: en_PasswordList;         Uk: uk_PasswordList),
+    (Key: 'PasswordNotFound'     ; En: en_PasswordNotFound;     Uk: uk_PasswordNotFound),
+    (Key: 'PasswordNotRequired'  ; En: en_PasswordNotRequired;  Uk: uk_PasswordNotRequired),
     (Key: 'Paste'                ; En: en_Paste;                Uk: uk_Paste),
     (Key: 'Path'                 ; En: en_Path;                 Uk: uk_Path),
     (Key: 'PathForAttachments'   ; En: en_PathForAttachments;   Uk: uk_PathForAttachments),

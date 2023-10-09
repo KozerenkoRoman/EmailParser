@@ -64,11 +64,11 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
       end
       item
         CaptionAlignment = taCenter
-        MaxWidth = 500
+        MaxWidth = 1000
         MinWidth = 50
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coStyleColor]
         Position = 3
-        Text = 'Hash'
+        Text = 'Info'
         Width = 131
       end>
     DefaultText = ''

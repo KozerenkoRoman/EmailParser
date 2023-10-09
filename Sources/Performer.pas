@@ -11,7 +11,7 @@ uses
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
   Files.Utils, System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
   System.Math, System.ZLib, System.Zip, System.Masks, System.StrUtils, InformationDialog, Html.Lib,
-  Vcl.Graphics, UnRAR.Helper;
+  Vcl.Graphics, UnRAR.Helper, Excel4Delphi, Excel4Delphi.Stream, System.Hash;
 {$ENDREGION}
 
 type
@@ -36,6 +36,7 @@ type
     function GetWordText(const aFileName: TFileName): string;
     function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
     function GetRarFileList(const aFileName: TFileName; const aData: PResultData): string;
+    function GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
     function IsSuccessfulCheck: Boolean;
     procedure DoCopyAttachmentFiles(const aData: PResultData);
     procedure DoDeleteAttachmentFiles(const aData: PResultData);
@@ -676,8 +677,7 @@ begin
   i := 0;
   while (i <= High(aData.Attachments.Items)) do
   begin
-    if TGeneral.AttachmentList.TryGetValue(aData.Attachments[i], Attachment) and
-       TFile.Exists(Attachment.FileName) then
+    if TGeneral.AttachmentList.TryGetValue(aData.Attachments[i], Attachment) then
       try
         Attachment.Matches.Count := FRegExpList.Count;
         Ext := TPath.GetExtension(Attachment.FileName).ToLower;
@@ -718,7 +718,7 @@ begin
               begin
                 Attachment.ContentType := 'application/excel';
                 Attachment.ImageIndex  := TExtIcon.eiXls.ToByte;
-                Attachment.ParsedText  := '';
+                Attachment.ParsedText  := GetXlsxSheetList(Attachment.FileName, aData);
               end
               else if Ext.Contains('.docx') then
               begin
@@ -782,6 +782,7 @@ begin
               if Ext.Contains('.txt') or
                  Ext.Contains('.opt') or
                  Ext.Contains('.ini') or
+                 Ext.Contains('.csv') or
                  Ext.Contains('.cfg') then
               begin
                 Attachment.ParsedText  := TFile.ReadAllText(Attachment.FileName);
@@ -799,9 +800,7 @@ begin
                 Attachment.ParsedText  := TFile.ReadAllText(Attachment.FileName);
                 Attachment.ContentType := 'text/html';
                 Attachment.ImageIndex  := TExtIcon.eiHtml.ToByte;
-              end
-              else
-                Attachment.ParsedText := '';
+              end;
             end;
         end;
 {$IFDEF DETAILED_LOG}
@@ -1007,6 +1006,53 @@ begin
   end;
 end;
 
+function TPerformer.GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
+var
+  Attachment : PAttachment;
+  FileName   : string;
+  WorkBook   : TZWorkBook;
+  ParsedText : string;
+begin
+  Result := '';
+  WorkBook := TZWorkBook.Create(nil);
+  try
+    try
+      WorkBook.LoadFromFile(aFileName);
+      for var i := 0 to WorkBook.Sheets.Count - 1 do
+        if (WorkBook.Sheets[i].ColCount > 0) and (WorkBook.Sheets[i].RowCount > 0) then
+        begin
+          ParsedText := '';
+          for var row := 0 to WorkBook.Sheets[i].RowCount - 1 do
+          begin
+            for var col := 0 to WorkBook.Sheets[i].ColCount - 1 do
+              ParsedText := Concat(ParsedText, '"', WorkBook.Sheets[i].Cell[col, row].AsString.Replace('"', '""'), '";');
+            ParsedText := Concat(ParsedText, sLineBreak);
+          end;
+          FileName := Concat(TPath.GetFileNameWithoutExtension(aFileName), '\', WorkBook.Sheets[i].Title);
+          New(Attachment);
+          Attachment^.ParsedText    := ParsedText;
+          Attachment^.FileName      := FileName;
+          Attachment^.ShortName     := FileName;
+          Attachment^.Hash          := THashSHA1.GetHashString(aFileName);
+          Attachment^.ParentHash    := aData^.Hash;
+          Attachment^.ParentName    := aData^.ShortName;
+          Attachment^.Matches.Count := FRegExpList.Count;
+          Attachment^.FromZip       := True;
+          Attachment^.ContentType   := 'text/sheet';
+          Attachment^.ImageIndex    := TExtIcon.eiXls.ToByte;
+          TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+          aData^.Attachments.AddUnique(Attachment^.Hash);
+          Result := Concat(Result, (i + 1).ToString, '. ', WorkBook.Sheets[i].Title, '<br>');
+        end;
+    except
+      on E: Exception do
+        LogWriter.Write(ddError, Self, 'GetXlsxSheetList', E.Message + sLineBreak + aFileName);
+    end;
+  finally
+    FreeAndNil(WorkBook);
+  end;
+end;
+
 function TPerformer.GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
 var
   Attachment : PAttachment;
@@ -1070,6 +1116,7 @@ var
   IsNeedPassword : Boolean;
   Path           : string;
   RarFile        : TUnRAR;
+  Pwd            : string;
 begin
   RarFile := TUnRAR.Create(aFileName);
   try
@@ -1086,6 +1133,25 @@ begin
       end;
     FileList := RarFile.GetFileList;
     IsNeedPassword := RarFile.ArcInfo.IsNeedPassword;
+    if IsNeedPassword then
+    begin
+      if TGeneral.PasswordList.ContainsKey(aData^.Hash) then
+        Pwd := TGeneral.PasswordList.Items[aData^.Hash].Password
+      else
+      begin
+        var Password: PPassword;
+        New(Password);
+        Password.FileName  := aFileName;
+        Password.Hash      := aData^.Hash;
+        Password.IsDeleted := False;
+        TThread.Queue(nil,
+          procedure
+          begin
+            TGeneral.PasswordList.Add(aData^.Hash, Password);
+          end);
+        Pwd := '';
+      end;
+    end;
 
     if (RarFile.LastError <> 0) then
     begin
@@ -1104,7 +1170,7 @@ begin
         try
           RarFile.DestPath := Path;
           if IsNeedPassword then
-            RarFile.Password := '111'; //TODO: get passwords
+            RarFile.Password := Pwd;
           RarFile.Extract(FileList[i]);
           if (RarFile.LastError = 0) then
           begin

@@ -27,6 +27,8 @@ type
   end;
 
   TProgressPublisher = class(TCustomPublisher)
+  private
+    FPosition: Integer;
   public
     procedure EndProgress;
     procedure StartProgress(const aMaxPosition: Integer);
@@ -243,28 +245,31 @@ procedure TProgressPublisher.Progress;
 var
   Item: TObject;
 begin
-  if not Application.Terminated then
-    for var i := 0 to Self.Count - 1 do
-      try
-        Item := Self.LockList.Items[i];
-        if Assigned(Item) then
-          TThread.Queue(nil,
-            procedure
-            var
-              obj: IProgress;
-            begin
-              if Supports(Item, IProgress, obj) then
-                obj.Progress;
-            end);
-      finally
-        Self.UnlockList;
-      end;
+  FPosition := AtomicIncrement(FPosition);
+  if ((FPosition mod C_PROGRESS_STEP) = 0) then
+    if not Application.Terminated then
+      for var i := 0 to Self.Count - 1 do
+        try
+          Item := Self.LockList.Items[i];
+          if Assigned(Item) then
+            TThread.Queue(nil,
+              procedure
+              var
+                obj: IProgress;
+              begin
+                if Supports(Item, IProgress, obj) then
+                  obj.Progress;
+              end);
+        finally
+          Self.UnlockList;
+        end;
 end;
 
 procedure TProgressPublisher.StartProgress(const aMaxPosition: Integer);
 var
   Item: TObject;
 begin
+  FPosition := 0;
   if not Application.Terminated then
     for var i := 0 to Self.Count - 1 do
       try

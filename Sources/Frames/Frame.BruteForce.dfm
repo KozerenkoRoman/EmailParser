@@ -9,7 +9,7 @@ inherited frameBruteForce: TframeBruteForce
     Height = 41
     TabOrder = 2
     ExplicitTop = 41
-    ExplicitWidth = 749
+    ExplicitWidth = 662
     ExplicitHeight = 41
     inherited btnSep02: TToolButton
       Visible = False
@@ -69,8 +69,7 @@ inherited frameBruteForce: TframeBruteForce
     OnGetText = vstTreeGetText
     OnPaintText = vstTreePaintText
     OnNewText = vstTreeNewText
-    ExplicitLeft = 776
-    ExplicitTop = 178
+    ExplicitTop = 82
     ExplicitWidth = 662
     ExplicitHeight = 318
     Columns = <
@@ -90,11 +89,11 @@ inherited frameBruteForce: TframeBruteForce
       end
       item
         CaptionAlignment = taCenter
-        MaxWidth = 500
+        MaxWidth = 1000
         MinWidth = 50
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coStyleColor]
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coStyleColor]
         Position = 2
-        Text = 'Hash'
+        Text = 'Info'
         Width = 100
       end>
     DefaultText = ''
@@ -110,7 +109,6 @@ inherited frameBruteForce: TframeBruteForce
     EdgeOuter = esNone
     Images = DMImage.vil32
     TabOrder = 0
-    ExplicitWidth = 749
     object pnlSettings: TPanel
       Left = 0
       Top = 0

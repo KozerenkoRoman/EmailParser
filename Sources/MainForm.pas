@@ -20,11 +20,13 @@ type
     ApplicationEvents       : TApplicationEvents;
     aToggleSplitPanel       : TAction;
     catMenuItems            : TCategoryButtons;
+    crdBruteForce           : TCard;
     crdCommonParams         : TCard;
     crdPathsToFindScripts   : TCard;
     crdRegExpParameters     : TCard;
     crdResultView           : TCard;
     crdSearchDuplicateFiles : TCard;
+    frameBruteForce         : TframeBruteForce;
     frameDuplicateFiles     : TframeDuplicateFiles;
     frameMatchesFilter      : TframeMatchesFilter;
     framePathes             : TframePathes;
@@ -46,8 +48,6 @@ type
     splPath                 : TSplitter;
     splView                 : TSplitView;
     srchBox                 : TSearchBox;
-    crdBruteForce: TCard;
-    frameBruteForce: TframeBruteForce;
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
     procedure aToggleSplitPanelExecute(Sender: TObject);
     procedure catMenuItemsSelectedItemChange(Sender: TObject; const Button: TButtonItem);
@@ -57,8 +57,6 @@ type
     procedure splViewClosed(Sender: TObject);
     procedure splViewOpened(Sender: TObject);
     procedure srchBoxInvokeSearch(Sender: TObject);
-    procedure SpeedButton1Click(Sender: TObject);
-    procedure SpeedButton2Click(Sender: TObject);
   private const
     C_IDENTITY_NAME = 'MainForm';
   private
@@ -303,22 +301,10 @@ end;
 procedure TfrmMain.Progress;
 begin
   if (FProgressBar.Progress >= FProgressBar.MaxValue) then
-    FProgressBar.MaxValue := FProgressBar.MaxValue + 1;
-  FProgressBar.Progress := FProgressBar.Progress + 1;
+    FProgressBar.MaxValue := FProgressBar.MaxValue + C_PROGRESS_STEP;
+  FProgressBar.Progress := FProgressBar.Progress + C_PROGRESS_STEP;
   FProgressBar.Refresh;
   Application.ProcessMessages;
-end;
-
-procedure TfrmMain.SpeedButton1Click(Sender: TObject);
-begin
-  inherited;
-  //
-end;
-
-procedure TfrmMain.SpeedButton2Click(Sender: TObject);
-begin
-  inherited;
-  //
 end;
 
 procedure TfrmMain.StartProgress(const aMaxPosition: Integer);

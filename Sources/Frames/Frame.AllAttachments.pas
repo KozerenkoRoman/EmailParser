@@ -38,10 +38,10 @@ type
     pnlFileSearch        : TPanel;
     SaveDialogAttachment : TSaveDialog;
     tbFileSearch         : TToolBar;
+    procedure aAddUpdate(Sender: TObject);
     procedure aExpandAllUpdate(Sender: TObject);
     procedure aFileBreakExecute(Sender: TObject);
     procedure aFileSearchExecute(Sender: TObject);
-    procedure aShowSearchBarExecute(Sender: TObject);
     procedure aFileSearchUpdate(Sender: TObject);
     procedure aFilterExecute(Sender: TObject);
     procedure aOpenAttachFileExecute(Sender: TObject);
@@ -50,13 +50,13 @@ type
     procedure aOpenParsedTextExecute(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
+    procedure aShowSearchBarExecute(Sender: TObject);
     procedure edtPathRightButtonClick(Sender: TObject);
     procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
-    procedure aAddUpdate(Sender: TObject);
   private const
     COL_POSITION     = 0;
     COL_EMAIL_NAME   = 1;

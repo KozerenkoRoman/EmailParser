@@ -11,7 +11,8 @@ uses
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Publishers,
-  VCLTee.TeCanvas, Global.Resources, Winapi.msxml, Frame.Custom, Files.Utils, UnRAR.Helper, UnRAR;
+  VCLTee.TeCanvas, Global.Resources, Winapi.msxml, Frame.Custom, Files.Utils, UnRAR.Helper, UnRAR, System.Threading,
+  Performer;
 {$ENDREGION}
 
 type
@@ -52,7 +53,7 @@ type
   private const
     COL_FILE_NAME   = 0;
     COL_PASSWORD    = 1;
-    COL_HASH        = 2;
+    COL_INFO        = 2;
 
     C_IDENTITY_NAME = 'frameBruteForce';
   private
@@ -126,7 +127,7 @@ begin
 
   vstTree.Header.Columns[COL_FILE_NAME].Text := TLang.Lang.Translate('FileName');
   vstTree.Header.Columns[COL_PASSWORD].Text  := TLang.Lang.Translate('Password');
-  vstTree.Header.Columns[COL_HASH].Text      := TLang.Lang.Translate('Hash');
+  vstTree.Header.Columns[COL_INFO].Text      := TLang.Lang.Translate('Info');
 end;
 
 procedure TframeBruteForce.LoadFromXML;
@@ -168,7 +169,7 @@ begin
         Data := Node.GetData;
         Data^.Hash := Item^.Hash;
         vstTree.CheckType[Node] := ctCheckBox;
-        if Item^.Password.IsEmpty then
+        if Item^.Password.IsEmpty and (not Item^.Info.StartsWith('PasswordNotRequired')) then
           vstTree.CheckState[Node] := TCheckState.csCheckedNormal;
         vstTree.ValidateNode(Node, False);
       end;
@@ -195,6 +196,7 @@ procedure TframeBruteForce.SaveToXML;
         TGeneral.XMLParams.Attributes.SetAttributeValue('FileName', Data.FileName);
         TGeneral.XMLParams.Attributes.SetAttributeValue('Password', Data.Password);
         TGeneral.XMLParams.Attributes.SetAttributeValue('Hash', Data.Hash);
+        TGeneral.XMLParams.Attributes.SetAttributeValue('Info', Data.Info);
         TGeneral.XMLParams.WriteAttributes;
       end;
     end;
@@ -283,8 +285,8 @@ begin
         Result := CompareText(Data1^.FileName, Data2^.FileName);
       COL_PASSWORD:
         Result := CompareText(Data1^.Password, Data2^.Password);
-      COL_HASH:
-        Result := CompareText(Data1^.Hash, Data2^.Hash);
+      COL_INFO:
+        Result := CompareText(Data1^.Info, Data2^.Info);
     end;
 end;
 
@@ -341,8 +343,8 @@ begin
         CellText := Data^.FileName;
       COL_PASSWORD:
         CellText := Data^.Password;
-      COL_HASH:
-        CellText := Data^.Hash;
+      COL_INFO:
+        CellText := TLang.Lang.Translate(Data^.Info);
     end;
 end;
 
@@ -383,6 +385,7 @@ procedure TframeBruteForce.aStartExecute(Sender: TObject);
 var
   Node: PVirtualNode;
   Data: PPassword;
+  Performer: TPerformer;
 begin
   inherited;
   if string(edtFileName.Text).Trim.IsEmpty then
@@ -397,8 +400,20 @@ begin
     SetFocusSafely(edtFileName);
     Exit;
   end;
-  FPasswordsList := Concat([''], TFile.ReadAllLines(edtFileName.Text));
+
+  var i := 1;
+  SetLength(FPasswordsList, TGeneral.PasswordList.Count + 1);
+  for var pwd in TGeneral.PasswordList.Values do
+  begin
+    FPasswordsList[i] := pwd.Password;
+    Inc(i);
+  end;
+  FPasswordsList := Concat(FPasswordsList, TFile.ReadAllLines(edtFileName.Text));
   FBreak := False;
+
+  Performer := TPerformer.GetInstance;
+  Performer.IsQuiet := True;
+  TPublishers.ProgressPublisher.StartProgress(vstTree.CheckedCount * Length(FPasswordsList));
 
   Node := vstTree.GetFirstChecked(TCheckState.csCheckedNormal);
   vstTree.BeginUpdate;
@@ -421,7 +436,9 @@ begin
       Node := vstTree.GetNextChecked(Node, True);
     end;
   finally
+    TPublishers.ProgressPublisher.EndProgress;
     vstTree.EndUpdate;
+    Performer.IsQuiet := True;
     TMessageDialog.ShowInfo(TLang.Lang.Translate('Successful'));
   end;
 end;
@@ -456,10 +473,22 @@ begin
           if (UnRAR.LastError = ERAR_SUCCESS) then
           begin
             if not UnRAR.ArcInfo.IsNeedPassword then
-              aData.Password := string.Empty
+            begin
+              aData.Password := string.Empty;
+              aData.Info := 'PasswordNotRequired';
+              LogWriter.Write(ddText, Self, 'Password is not required');
+            end
             else
+            begin
               aData.Password := pwd;
+              LogWriter.Write(ddText, Self, 'Password is: ' + pwd);
+            end;
             Break;
+          end
+          else if (i = High(FPasswordsList)) then
+          begin
+            aData.Info := 'PasswordNotFound';
+            LogWriter.Write(ddText, Self, 'Password not found');
           end;
         except
           LogWriter.Write(ddError, Self, (i + 1).ToString + ': ' + pwd);
@@ -467,6 +496,7 @@ begin
       finally
         FreeAndNil(UnRAR);
       end;
+       TPublishers.ProgressPublisher.Progress;
     end;
   finally
     LogWriter.Write(ddExitMethod, Self, 'BruteForceProcess', aData.FileName);
@@ -506,17 +536,19 @@ end;
 procedure TframeBruteForce.aUpUpdate(Sender: TObject);
 begin
   inherited;
-  TAction(Sender).Enabled := False;
   if Assigned(vstTree.FocusedNode) then
-    TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.FirstChild;
+    TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.FirstChild
+  else
+    TAction(Sender).Enabled := False;
 end;
 
 procedure TframeBruteForce.aDownUpdate(Sender: TObject);
 begin
   inherited;
-  TAction(Sender).Enabled := False;
   if Assigned(vstTree.FocusedNode) then
-    TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.LastChild;
+    TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.LastChild
+  else
+    TAction(Sender).Enabled := False;
 end;
 
 procedure TframeBruteForce.edtFileNameRightButtonClick(Sender: TObject);

@@ -496,8 +496,8 @@ inherited frmMain: TfrmMain
                   ExplicitWidth = 722
                   ControlData = {
                     4C0000009F4A0000D71900000000000000000000000000000000000000000000
-                    000000004C000000000000000000000000000000000000000000000000000000
-                    0000000002000000000000004C0000000114020000000000C000000000000046
+                    000000004C000000000000000000000001000000E0D057007335CF11AE690800
+                    2B2E126202000000000000004C0000000114020000000000C000000000000046
                     8000000000000000000000000000000000000000000000000000000000000000
                     00000000000000000100000000000000000000000000000000000000}
                 end
@@ -624,14 +624,18 @@ inherited frmMain: TfrmMain
         ExplicitHeight = 551
         inherited tbMain: TToolBar
           Width = 738
+          ExplicitWidth = 738
         end
         inherited vstTree: TVirtualStringTree
           Width = 738
           Height = 469
+          ExplicitWidth = 738
+          ExplicitHeight = 469
           DefaultText = ''
         end
         inherited tbSettings: TToolBar
           Width = 738
+          ExplicitWidth = 738
         end
       end
     end

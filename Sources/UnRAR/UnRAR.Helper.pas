@@ -34,7 +34,7 @@ type
     FOnPassword     : TRarPromptPassEvent;
     FPassword       : string;
     FStopProcessing : Boolean;
-    function DoUnRarCallBack(msg: UINT; UserData, P1, P2: LongInt): Integer; stdcall;
+    function DoUnRarCallBack(msg: UINT; UserData, P1, P2: LPARAM): LPARAM; stdcall;
     function GetArcInfo(const aOpenArchiveData : RAROpenArchiveDataEx): RARInfoData;
     function GetHandle(const aMode: Byte): THandle;
     procedure DoError(const aMessageID: Integer);
@@ -43,9 +43,9 @@ type
     destructor Destroy; override;
 
     function ExtractAll: TArray<string>;
+    function GetErrorText(const aError: Integer): string;
     function GetFileList: TArray<string>;
     procedure Extract(const aFileName: string);
-    function GetErrorText(const aError: Integer): string;
 
     class function IsUnRARExists: Boolean;
     property ArcInfo        : RARInfoData         read FArcInfo;
@@ -59,12 +59,12 @@ type
 
 implementation
 
-function CallbackProc(msg: UINT; UserData, P1, P2: Integer): Integer; stdcall;
+function CallbackProc(msg: UINT; UserData, P1, P2: LPARAM): LPARAM; stdcall;
 begin
   Result := TUnRAR(TUnRAR.FSelf).DoUnRarCallBack(msg, UserData, P1, P2);
 end;
 
-function TUnRAR.DoUnRarCallBack(msg: UINT; UserData, P1, P2: Integer): Integer; stdcall;
+function TUnRAR.DoUnRarCallBack(msg: UINT; UserData, P1, P2: LPARAM): LPARAM; stdcall;
 var
   PwdString : string;
   UnRarRef  : TUnRAR;
@@ -79,13 +79,13 @@ begin
       Result := 0;
     UCM_NEEDPASSWORD:
       begin
-        PwdString := '';
+        PwdString := UnRarRef.Password;
         if Assigned(UnRarRef.OnPassword) then
           UnRarRef.OnPassword(UnRarRef, PwdString);
         if not PwdString.IsEmpty then
         begin
-          var Buf := TEncoding.Default.GetBytes(PwdString);
-          Move(Buf, Pointer(P1)^, Length(Buf));
+          var Buf := TEncoding.ASCII.GetBytes(PwdString);
+          Move(Pointer(Buf)^, Pointer(P1)^, Length(Buf) + 1);
         end;
       end;
     UCM_PROCESSDATA:
@@ -148,14 +148,27 @@ begin
       HeaderData.CmtBuf := @CmtBuf;
       HeaderData.CmtBufSize := SizeOf(CmtBuf);
       hProcessHeader := 0;
+
+      if not FPassword.IsEmpty then
+      begin
+        var Buf := TEncoding.Default.GetBytes(FPassword);
+        RARSetPassword(hHandle, Pointer(Buf));
+      end;
+
       repeat
         hReadHeader := RARReadHeaderEx(hHandle, HeaderData);
         if (hReadHeader = ERAR_END_ARCHIVE) then
           Break
         else if (hReadHeader = ERAR_BAD_DATA) then
         begin
-          DoError(hProcessHeader);
-          Break;
+          DoError(hReadHeader);
+          Exit;
+        end
+        else if (hReadHeader in [ERAR_INCORRECT_PWD, ERAR_NEED_PASSWORD]) then
+        begin
+          FArcInfo.IsNeedPassword := True;
+          DoError(hReadHeader);
+          Exit;
         end
         else if (hReadHeader = ERAR_SUCCESS) then
         begin
@@ -195,10 +208,7 @@ begin
       if not FPassword.IsEmpty then
       begin
         var Buf := TEncoding.Default.GetBytes(FPassword);
-        var PasswordAnsi: AnsiString;
-        SetLength(PasswordAnsi, Length(Buf));
-        SetString(PasswordAnsi, PAnsiChar(@Buf[0]), Length(Buf));
-        RARSetPassword(hHandle, PAnsiChar(PasswordAnsi));
+        RARSetPassword(hHandle, Pointer(Buf));
       end;
 
       HeaderData.CmtBuf := @CmtBuf;
@@ -210,8 +220,14 @@ begin
           Break
         else if (hReadHeader = ERAR_BAD_DATA) then
         begin
-          DoError(hProcessHeader);
-          Break;
+          DoError(hReadHeader);
+          Exit;
+        end
+        else if (hReadHeader in [ERAR_INCORRECT_PWD, ERAR_NEED_PASSWORD]) then
+        begin
+          FArcInfo.IsNeedPassword := True;
+          DoError(hReadHeader);
+          Exit;
         end
         else if (hReadHeader = ERAR_SUCCESS) then
         begin
@@ -251,10 +267,7 @@ begin
       if not FPassword.IsEmpty then
       begin
         var Buf := TEncoding.Default.GetBytes(FPassword);
-        var PasswordAnsi: AnsiString;
-        SetLength(PasswordAnsi, Length(Buf));
-        SetString(PasswordAnsi, PAnsiChar(@Buf[0]), Length(Buf));
-        RARSetPassword(hHandle, PAnsiChar(PasswordAnsi));
+        RARSetPassword(hHandle, Pointer(Buf));
       end;
 
       HeaderData.CmtBuf := @CmtBuf;
@@ -266,8 +279,14 @@ begin
           Break
         else if (hReadHeader = ERAR_BAD_DATA) then
         begin
-          DoError(hProcessHeader);
-          Break;
+          DoError(hReadHeader);
+          Exit;
+        end
+        else if (hReadHeader in [ERAR_INCORRECT_PWD, ERAR_NEED_PASSWORD]) then
+        begin
+          FArcInfo.IsNeedPassword := True;
+          DoError(hReadHeader);
+          Exit;
         end
         else if (hReadHeader = ERAR_SUCCESS) then
         begin
@@ -324,7 +343,7 @@ begin
       Result := 'Write error';
     ERAR_BAD_DATA:
       Result := FArcName + ': archive header broken, CRC error';
-    ERAR_NO_PASSWORD:
+    ERAR_NO_PASSWORD, ERAR_NEED_PASSWORD:
       Result := 'No password!';
     ERAR_INCORRECT_PWD:
       Result := 'Incorrect password!';
