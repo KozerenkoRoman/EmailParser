@@ -11,7 +11,7 @@ uses
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
   Vcl.WinXPanels, Publishers.Interfaces, Publishers, Global.Utils, VirtualTrees.ExportHelper, Global.Resources,
-  DaModule, System.Threading;
+  DaModule, System.Threading, EXIF.Dialog, XLSX.Dialog;
 {$ENDREGION}
 
 type
@@ -199,7 +199,12 @@ begin
     begin
       if Data^.ParsedText.IsEmpty then
         Data^.ParsedText := TDaMod.GetAttachmentAsRawText(Data^.Hash);
-      TInformationDialog.ShowMessage(TGlobalUtils.GetHighlightText(Data^.ParsedText, Data^.Matches), GetIdentityName);
+      if Data^.ContentType.StartsWith('image', True) then
+        TEXIFDialog.ShowMessage(Data^.ParsedText, Data^.FileName, Data^.Matches)
+      else if Data^.ContentType.EndsWith('sheet', True) then
+        TXLSXDialog.ShowMessage(Data^.ParsedText, Data^.Matches)
+      else
+        TInformationDialog.ShowMessage(TGlobalUtils.GetHighlightText(Data^.ParsedText.Replace(#10, '<br>'), Data^.Matches), GetIdentityName);
     end;
   end;
 end;

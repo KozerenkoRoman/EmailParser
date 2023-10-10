@@ -1,6 +1,7 @@
 inherited frameSettings: TframeSettings
   Width = 784
   Height = 356
+  OnCanResize = FrameCanResize
   ExplicitWidth = 784
   ExplicitHeight = 356
   PixelsPerInch = 144

@@ -1,4 +1,4 @@
-object EXIFDialog: TEXIFDialog
+object XLSXDialog: TXLSXDialog
   Left = 0
   Top = 0
   ClientHeight = 477
@@ -26,7 +26,7 @@ object EXIFDialog: TEXIFDialog
       474
       42)
     object btnSave: TBitBtn
-      Left = 239
+      Left = 243
       Top = 1
       Width = 110
       Height = 40
@@ -42,10 +42,10 @@ object EXIFDialog: TEXIFDialog
       Images = DMImage.vil32
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 235
+      ExplicitLeft = 239
     end
     object btnOk: TBitBtn
-      Left = 352
+      Left = 356
       Top = 1
       Width = 110
       Height = 40
@@ -60,10 +60,10 @@ object EXIFDialog: TEXIFDialog
       Images = DMImage.vil32
       ParentFont = False
       TabOrder = 1
-      ExplicitLeft = 348
+      ExplicitLeft = 352
     end
   end
-  object PageControl1: TPageControl
+  object pcXLSDialog: TPageControl
     Left = 0
     Top = 0
     Width = 474
@@ -75,46 +75,21 @@ object EXIFDialog: TEXIFDialog
     ExplicitHeight = 434
     object tsMain: TTabSheet
       Caption = 'Main'
-      object ValueListEditor: TValueListEditor
+      object StringGrid: TStringGrid
         Left = 0
         Top = 0
         Width = 466
         Height = 407
         Align = alClient
-        DoubleBuffered = True
-        FixedCols = 1
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goColSizing, goEditing, goThumbTracking]
-        ParentDoubleBuffered = False
-        ParentFont = False
-        ScrollBars = ssVertical
+        DefaultColWidth = 40
+        DefaultRowHeight = 21
+        DrawingStyle = gdsGradient
+        GradientStartColor = clBtnFace
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goEditing, goTabs, goFixedRowDefAlign]
         TabOrder = 0
+        OnDrawCell = StringGridDrawCell
         ExplicitWidth = 462
         ExplicitHeight = 406
-        ColWidths = (
-          208
-          252)
-      end
-    end
-    object tsPhoto: TTabSheet
-      Caption = 'Photo'
-      ImageIndex = 2
-      object Image: TImage
-        Left = 0
-        Top = 0
-        Width = 466
-        Height = 407
-        Align = alClient
-        Center = True
-        Proportional = True
-        ExplicitLeft = 64
-        ExplicitTop = 72
-        ExplicitWidth = 105
-        ExplicitHeight = 105
       end
     end
     object tsPlainText: TTabSheet
@@ -123,8 +98,8 @@ object EXIFDialog: TEXIFDialog
       object wbMessage: TWebBrowser
         Left = 0
         Top = 0
-        Width = 466
-        Height = 407
+        Width = 562
+        Height = 455
         Margins.Left = 0
         Margins.Top = 0
         Margins.Right = 0
@@ -136,9 +111,9 @@ object EXIFDialog: TEXIFDialog
         TabOrder = 0
         OnBeforeNavigate2 = wbMessageBeforeNavigate2
         ControlData = {
-          4C0000002A300000112A00000000000000000000000000000000000000000000
-          000000004C000000000000000000000001000000E0D057007335CF11AE690800
-          2B2E12620B000000000000004C0000000114020000000000C000000000000046
+          4C000000163A0000072F00000000000000000000000000000000000000000000
+          000000004C000000000000000000000000000000000000000000000000000000
+          0000000003000000000000004C0000000114020000000000C000000000000046
           8000000000000000000000000000000000000000000000000000000000000000
           00000000000000000100000000000000000000000000000000000000}
       end
@@ -163,8 +138,8 @@ object EXIFDialog: TEXIFDialog
     end
   end
   object SaveTextFileDialog: TSaveTextFileDialog
-    DefaultExt = '*.html'
-    Filter = 'HTML|*.html|All files|*.*'
+    DefaultExt = '*.csv'
+    Filter = 'CSV-file|*.csv|All files|*.*'
     FilterIndex = 0
     Options = [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofEnableSizing]
     Encodings.Strings = (
@@ -173,6 +148,7 @@ object EXIFDialog: TEXIFDialog
       'Unicode'
       'UTF-8'
       'UTF-7')
+    ShowEncodingList = False
     Left = 168
     Top = 104
   end

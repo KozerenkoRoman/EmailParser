@@ -11,11 +11,31 @@ uses
 type
   TGlobalUtils = class(TObject)
     class function GetHighlightText(const aText: string; const aMatches: TArrayRecord<TStringArray>): string;
+    class function GetHighlightColor(const aText: string; const aMatches: TArrayRecord<TStringArray>): TColor;
   end;
 
 implementation
 
 { TGlobalUtils }
+
+class function TGlobalUtils.GetHighlightColor(const aText: string; const aMatches: TArrayRecord<TStringArray>): TColor;
+var
+  subArray: TStringArray;
+begin
+  Result := clWindow;
+  if aText.IsEmpty then
+    Exit
+  else if (aMatches.Count = 0) then
+    Exit;
+
+  for var i := Low(aMatches.Items) to High(aMatches.Items) do
+  begin
+    subArray := aMatches[i];
+    if (subArray.Count > 0) then
+      if aText.ToLower.Contains(subArray[0].ToLower) then
+        Exit(TGeneral.RegExpColumns[i].Color);
+  end;
+end;
 
 class function TGlobalUtils.GetHighlightText(const aText: string; const aMatches: TArrayRecord<TStringArray>): string;
 var

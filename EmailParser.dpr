@@ -71,6 +71,7 @@ uses
   Utils.Zip in 'Sources\Common\Utils.Zip.pas',
   VirtualTrees.ExportHelper in 'Sources\Virtual TreeView\VirtualTrees.ExportHelper.pas',
   VirtualTrees.Helper in 'Sources\Virtual TreeView\VirtualTrees.Helper.pas',
+  XLSX.Dialog in 'Sources\Common\XLSX.Dialog.pas' {XLSXDialog},
   XmlFiles in 'Sources\Common\XmlFiles.pas';
 
 {$R *.res}
@@ -87,9 +88,9 @@ begin
       TfrmSplashScreen.ShowSplashScreen;
 {$ENDIF}
       Application.CreateForm(TDMImage, DMImage);
-      Application.CreateForm(TDaMod, DaMod);
-      Application.CreateForm(TfrmMain, frmMain);
-      frmMain.Initialize;
+  Application.CreateForm(TDaMod, DaMod);
+  Application.CreateForm(TfrmMain, frmMain);
+  frmMain.Initialize;
     finally
       TfrmSplashScreen.HideSplashScreen;
     end;

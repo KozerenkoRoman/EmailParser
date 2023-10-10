@@ -9,6 +9,10 @@ uses
   Vcl.Controls, Winapi.ShellAPI, System.IOUtils, Vcl.Forms;
 {$ENDREGION}
 
+type
+  TColNum    = 1..256;  // Excel columns only go up to IV
+  TColString = string[2];
+
   function BoolToChar(const aValue: Boolean): string; inline;
   function FloatToStrEx(Value: Double): string;
   function GetLeftPadString(aText: string; aLength: Integer): string;
@@ -31,6 +35,9 @@ uses
   function VarToInt64Def(const Value: Variant; DefValue: Int64 = 0): Int64; inline;
   function VarToIntDef(const Value: Variant; DefValue: Integer = 0): Integer; inline;
   procedure SetFocusSafely(const aControl: TWinControl); inline;
+
+  function XlsColToInt(const aCol: TColString): TColNum;
+  function IntToXlsCol(const aColNum: TColNum): TColString;
 
 const
   C_ROUND_SEC = 2;
@@ -230,6 +237,44 @@ begin
   if Assigned(aControl) then
     if aControl.CanFocus and aControl.Enabled then
       aControl.SetFocus;
+end;
+
+const
+  MaxLetters = 26;
+
+function IntToXlsCol(const aColNum: TColNum): TColString;
+{ Turns a column number into the corresponding column letter }
+const
+  Letters: array [0 .. MaxLetters] of AnsiChar = 'ZABCDEFGHIJKLMNOPQRSTUVWXYZ';
+var
+  nQuot, nMod: Integer;
+Begin
+  if (aColNum <= MaxLetters) then
+  begin
+    Result[0] := Chr(1);
+    Result[1] := Letters[aColNum];
+  end
+  else
+  begin
+    nQuot := ((aColNum - 1) * 10083) shr 18;
+    nMod := aColNum - (nQuot * MaxLetters);
+    Result[0] := Chr(2);
+    Result[1] := Letters[nQuot];
+    Result[2] := Letters[nMod];
+  end;
+end;
+
+function XlsColToInt(const aCol: TColString): TColNum;
+{ Turns a column identifier into the corresponding integer, A=1, ..., AA = 27, ..., IV = 256 }
+const
+  ASCIIOffset = Ord('A') - 1;
+var
+  Len: cardinal;
+begin
+  Len := Length(aCol);
+  Result := Ord(UpCase(aCol[Len])) - ASCIIOffset;
+  if (Len > 1) then
+    Inc(Result, (Ord(UpCase(aCol[1])) - ASCIIOffset) * MaxLetters);
 end;
 
 end.

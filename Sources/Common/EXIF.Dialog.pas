@@ -8,7 +8,7 @@ uses
   System.SysUtils, System.Variants, Vcl.ActnList, System.Actions, Vcl.OleCtrls, System.IOUtils, MessageDialog,
   DebugWriter, Html.Consts, Html.Lib, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} CommonForms, Vcl.ExtDlgs,
   Vcl.StdCtrls, DaImages, Common.Types, Translate.Lang, Vcl.Grids, Vcl.ValEdit, Generics.Collections,
-  Generics.Defaults, Vcl.VirtualImage, VCLTee.TeeFilters, Vcl.Imaging.jpeg;
+  Generics.Defaults, Vcl.VirtualImage, VCLTee.TeeFilters, Vcl.Imaging.jpeg, ArrayHelper, Global.Utils;
 {$ENDREGION}
 
 type
@@ -36,6 +36,7 @@ type
   private
     FMessageText : string;
     FImageFile: TFileName;
+    FMatches: TArrayRecord<TStringArray>;
   protected
     function GetIdentityName: string; override;
   public
@@ -46,14 +47,14 @@ type
     property MessageText : string    read FMessageText write FMessageText;
     property ImageFile   : TFileName read FImageFile   write FImageFile;
 
-    class procedure ShowMessage(const aMessageText: string; const aImageFile: TFileName);
+    class procedure ShowMessage(const aMessageText: string; const aImageFile: TFileName; const aMatches: TArrayRecord<TStringArray>);
   end;
 
 implementation
 
 {$R *.dfm}
 
-class procedure TEXIFDialog.ShowMessage(const aMessageText: string; const aImageFile: TFileName);
+class procedure TEXIFDialog.ShowMessage(const aMessageText: string; const aImageFile: TFileName; const aMatches: TArrayRecord<TStringArray>);
 begin
   if aMessageText.IsEmpty and not TFile.Exists(aImageFile) then
     TMessageDialog.ShowWarning(TLang.Lang.Translate('NoDataToDisplay'))
@@ -63,6 +64,7 @@ begin
     try
       MessageText := aMessageText;
       ImageFile   := aImageFile;
+      FMatches    := aMatches;
       Caption     := Application.Title;
       Initialize;
       ShowModal;
@@ -88,11 +90,11 @@ begin
                  C_HTML_HEAD_OPEN,
                  C_HTML_HEAD_CLOSE,
                  C_HTML_BODY_OPEN,
-                 FMessageText,
+                 TGlobalUtils.GetHighlightText(FMessageText.Replace(#10, '<br>'), FMatches),
                  C_HTML_BODY_CLOSE,
                  C_HTML_CLOSE);
 
-  THtmlLib.LoadStringToBrowser(wbMessage, html.Replace(#10, '<br>'));
+  THtmlLib.LoadStringToBrowser(wbMessage, html);
   if wbMessage.Showing and Assigned(wbMessage.Document) then
     with wbMessage.Application as IOleobject do
       DoVerb(OLEIVERB_UIACTIVATE, nil, wbMessage, 0, Handle, GetClientRect);

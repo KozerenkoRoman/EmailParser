@@ -37,6 +37,7 @@ type
     procedure aPathForAttachmentsExecute(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
+    procedure FrameCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
   private const
     C_IDENTITY_NAME = 'frameSettings';
   protected
@@ -67,6 +68,12 @@ end;
 procedure TframeSettings.Deinitialize;
 begin
   inherited Deinitialize;
+end;
+
+procedure TframeSettings.FrameCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
+begin
+  inherited;
+  edtPathForAttachments.Width := NewWidth - Trunc(grdCommonParams.ColumnCollection.Items[0].Value) - 30;
 end;
 
 procedure TframeSettings.Translate;
