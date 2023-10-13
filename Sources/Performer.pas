@@ -66,8 +66,6 @@ type
     class function GetInstance: TPerformer;
   end;
 
-function GetStringFromMatches(const aText, aPattern: string; const aGroupIndex: Integer): string; inline;
-
 implementation
 
 { TPerformer }
@@ -1244,28 +1242,6 @@ begin
 {$IFDEF DETAILED_LOG}
   LogWriter.Write(ddExitMethod, Self, 'GetRegExpCollection');
 {$ENDIF DETAILED_LOG}
-end;
-
-function GetStringFromMatches(const aText, aPattern: string; const aGroupIndex: Integer): string;
-var
-  GroupIndex : Integer;
-  Matches    : TMatchCollection;
-  RegExpr    : TRegEx;
-begin
-  Result := '';
-  RegExpr := TRegEx.Create(aPattern);
-
-  Matches := RegExpr.Matches(aText, aPattern);
-  for var i := 0 to Matches.Count - 1 do
-  begin
-    if (aGroupIndex <= 0) then
-      GroupIndex := 0
-    else if (aGroupIndex > Matches.Item[i].Groups.Count - 1) then
-      GroupIndex := Matches.Item[i].Groups.Count - 1
-    else
-      GroupIndex := aGroupIndex;
-    Result := Concat(Result, Matches.Item[i].Groups[GroupIndex].Value, '; ');
-  end;
 end;
 
 initialization

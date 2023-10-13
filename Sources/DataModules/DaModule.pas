@@ -128,10 +128,10 @@ begin
   try
     with Connection do
     begin
-      FetchOptions.Mode := fmAll;
+      FetchOptions.Mode          := fmAll;
       TxOptions.DisconnectAction := xdNone;
-      UpdateOptions.LockWait := True;
-      LoginPrompt := False;
+      UpdateOptions.LockWait     := True;
+      LoginPrompt                := False;
       Params.Clear;
       Params.Add('Database=' + DBFile);
       Params.Add('DriverID=SQLite');
@@ -227,9 +227,8 @@ var
   Attachment: PAttachment;
 begin
   LogWriter.Write(ddEnterMethod, Self, 'FillAllEmailsRecord');
+  qAllEmails.Open;
   try
-
-    qAllEmails.Open;
     qAllEmails.FetchAll;
     TGeneral.EmailList.SetCapacity(qAllEmails.RecordCount);
     while not qAllEmails.Eof do

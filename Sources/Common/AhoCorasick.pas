@@ -121,7 +121,7 @@ var
   NextNode: TNode;
   Node: TNode;
 begin
-  Result := TStringList.Create;
+  Result := TStringList.Create(TDuplicates.dupIgnore, False, False);
   Node := Root;
   for i := 1 to Length(aText) do
   begin

@@ -86,6 +86,7 @@ begin
         begin
           var Buf := TEncoding.ASCII.GetBytes(PwdString);
           Move(Pointer(Buf)^, Pointer(P1)^, Length(Buf) + 1);
+          Result := 1;
         end;
       end;
     UCM_PROCESSDATA:

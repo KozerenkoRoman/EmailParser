@@ -36,6 +36,7 @@ begin
       begin
         Node := aTree.AddChild(nil);
         Data := Node.GetData;
+        Data^.TypePattern    := aXmlFile.Attributes.GetAttributeValue('TypePattern', TTypePattern.tpRegularExpression);
         Data^.ParameterName  := aXmlFile.Attributes.GetAttributeValue('ParameterName', '');
         Data^.RegExpTemplate := aXmlFile.Attributes.GetAttributeValue('RegExpTemplate', '');
         Data^.GroupIndex     := aXmlFile.Attributes.GetAttributeValue('GroupIndex', 0);
@@ -67,6 +68,7 @@ class function TRegExpUtils.SaveSetOfTemplate(const aTree: TVirtualStringTree; c
       with TGeneral.XMLParams do
       begin
         Attributes.Node := aXmlNode;
+        Attributes.SetAttributeValue('TypePattern', Data^.TypePattern);
         Attributes.SetAttributeValue('ParameterName', Data^.ParameterName);
         Attributes.SetAttributeValue('RegExpTemplate', Data^.RegExpTemplate);
         Attributes.SetAttributeValue('GroupIndex', Data^.GroupIndex);

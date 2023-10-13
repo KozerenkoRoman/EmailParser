@@ -1,8 +1,4 @@
-<<<<<<< HEAD:Sources/CustomForms.pas
-﻿unit CustomForms;
-=======
 ﻿unit CommonForms;
->>>>>>> Development:Sources/CommonForms.pas
 
 interface
 

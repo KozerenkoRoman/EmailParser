@@ -30,7 +30,7 @@ object frmImportFromXML: TfrmImportFromXML
       753
       42)
     object btnOk: TBitBtn
-      Left = 635
+      Left = 631
       Top = 1
       Width = 108
       Height = 40
@@ -47,7 +47,7 @@ object frmImportFromXML: TfrmImportFromXML
       ModalResult = 1
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 631
+      ExplicitLeft = 627
     end
   end
   object vstTree: TVirtualStringTree
@@ -116,6 +116,12 @@ object frmImportFromXML: TfrmImportFromXML
         Position = 3
         Text = 'Use Raw Text'
         Width = 103
+      end
+      item
+        Alignment = taCenter
+        Position = 4
+        Text = 'Type Pattern'
+        Width = 200
       end>
   end
   object tbSettings: TToolBar
