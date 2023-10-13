@@ -63,6 +63,7 @@ type
     COL_REGEXP_TEMPLATE = 1;
     COL_GROUP_INDEX     = 2;
     COL_USE_RAW_TEXT    = 3;
+    COL_TYPE_PATTERN    = 4;
 
     C_IDENTITY_NAME = 'frameRegExp';
   private
@@ -139,6 +140,7 @@ begin
   vstTree.Header.Columns[COL_REGEXP_TEMPLATE].Text := TLang.Lang.Translate('RegExpTemplate');
   vstTree.Header.Columns[COL_GROUP_INDEX].Text     := TLang.Lang.Translate('GroupIndex');
   vstTree.Header.Columns[COL_USE_RAW_TEXT].Text    := TLang.Lang.Translate('UseRawText');
+  vstTree.Header.Columns[COL_TYPE_PATTERN].Text    := TLang.Lang.Translate('TypePattern');
 end;
 
 procedure TframeRegExp.LoadFromXML;
@@ -205,6 +207,7 @@ procedure TframeRegExp.SaveToXML;
   begin
     Data := aNode^.GetData;
     TGeneral.XMLParams.Attributes.AddNode;
+    TGeneral.XMLParams.Attributes.SetAttributeValue('TypePattern', Data.TypePattern);
     TGeneral.XMLParams.Attributes.SetAttributeValue('ParameterName', Data.ParameterName);
     TGeneral.XMLParams.Attributes.SetAttributeValue('RegExpTemplate', Data.RegExpTemplate);
     TGeneral.XMLParams.Attributes.SetAttributeValue('GroupIndex', Data.GroupIndex);
@@ -333,6 +336,8 @@ begin
       Result := CompareText(Data1^.RegExpTemplate, Data2^.RegExpTemplate);
     COL_GROUP_INDEX:
       Result := CompareValue(Data1^.GroupIndex, Data2^.GroupIndex);
+    COL_TYPE_PATTERN:
+      Result := CompareText(TLang.Lang.Translate(Data1^.TypePattern.ToString), TLang.Lang.Translate(Data2^.TypePattern.ToString));
   end;
 end;
 
@@ -388,6 +393,8 @@ begin
       CellText := Data^.RegExpTemplate;
     COL_GROUP_INDEX:
       CellText := Data^.GroupIndex.ToString;
+    COL_TYPE_PATTERN:
+      CellText := TLang.Lang.Translate(Data^.TypePattern.ToString);
   end;
 end;
 

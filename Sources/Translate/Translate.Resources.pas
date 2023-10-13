@@ -22,6 +22,7 @@ type
 resourcestring
   //English
   en_Add                  = 'Add';
+  en_AhoCorasick          = 'Aho Corasick Algorithm';
   en_AllAttachments       = 'All attachments';
   en_AllCheck             = 'Set all checks';
   en_AllUnCheck           = 'Remove all checks';
@@ -148,9 +149,11 @@ resourcestring
   en_Utilities            = 'Utilities';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
+  en_TypePattern          = 'Type Pattern';
 
   //Ukrainian
   uk_Add                  = 'Додати';
+  uk_AhoCorasick          = 'Алгоритм Ахо-Корасік';
   uk_AllAttachments       = 'Всі вкладення';
   uk_AllCheck             = 'Встановити позначки';
   uk_AllUnCheck           = 'Зняти всі позначки';
@@ -277,10 +280,12 @@ resourcestring
   uk_Utilities            = 'Утиліти';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
+  uk_TypePattern          = 'Тип шаблону';
 
 const
-   ArrayMessages: array[1 .. 125] of TMessageItem = (
+   ArrayMessages: array[1 .. 127] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
+    (Key: 'AhoCorasick'          ; En: en_AhoCorasick;          Uk: uk_AhoCorasick),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'AllCheck'             ; En: en_AllCheck;             Uk: uk_AllCheck),
     (Key: 'AllUnCheck'           ; En: en_AllUnCheck;           Uk: uk_AllUnCheck),
@@ -400,6 +405,7 @@ const
     (Key: 'TemplateName'         ; En: en_TemplateName;         Uk: uk_TemplateName),
     (Key: 'Text'                 ; En: en_Text;                 Uk: uk_Text),
     (Key: 'Time'                 ; En: en_Time;                 Uk: uk_Time),
+    (Key: 'TypePattern'          ; En: en_TypePattern;          Uk: uk_TypePattern),
     (Key: 'Up'                   ; En: en_Up;                   Uk: uk_Up),
     (Key: 'UseRawText'           ; En: en_UseRawText;           Uk: uk_UseRawText),
     (Key: 'Utilities'            ; En: en_Utilities;            Uk: uk_Utilities),

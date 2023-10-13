@@ -10,7 +10,7 @@ uses
   Html.Lib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
   Vcl.CategoryButtons, Vcl.ComCtrls, Vcl.Menus, Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, Global.Types,
   Publishers.Interfaces, Publishers, CommonForms, System.RegularExpressions, RegExp.Types, Vcl.NumberBox,
-  Vcl.Samples.Spin, Performer, Vcl.ActnMan, Vcl.ActnColorMaps, Html.Consts;
+  Vcl.Samples.Spin, Performer, Vcl.ActnMan, Vcl.ActnColorMaps, Html.Consts, AhoCorasick;
 {$ENDREGION}
 
 type
@@ -24,25 +24,27 @@ type
     btnOk                 : TBitBtn;
     btnTest               : TToolButton;
     cbSetOfTemplates      : TComboBox;
+    cbTypePattern         : TComboBox;
     cbUseRawText          : TCheckBox;
     cbWebColor            : TColorBox;
+    edAhoCorasick         : TMemo;
     edRegEx               : TMemo;
     edSample              : TMemo;
     edtGroupIndex         : TNumberBox;
-    edtResult             : TEdit;
     edtTemplateName       : TEdit;
     gbOptions             : TGroupBox;
-    gbRegularExpression   : TGroupBox;
     gbResults             : TGroupBox;
     gbSampleText          : TGroupBox;
     lblColor              : TLabel;
     lblExamples           : TLabel;
     lblGroupIndex         : TLabel;
     lblTemplateName       : TLabel;
+    lblTypePattern        : TLabel;
     lblUseRawText         : TLabel;
     miCopy                : TMenuItem;
     miPaste               : TMenuItem;
     miSelectAll           : TMenuItem;
+    pcTypePattern         : TPageControl;
     pmMemo                : TPopupMenu;
     pnlBottom             : TPanel;
     pnlMain               : TPanel;
@@ -51,14 +53,16 @@ type
     pnlTemplateName       : TPanel;
     splPattern            : TSplitter;
     tbPattern             : TToolBar;
+    tsAhoCorasick         : TTabSheet;
+    tsRegularExpression   : TTabSheet;
     tvResults             : TTreeView;
     procedure aCopyExecute(Sender: TObject);
     procedure aPasteExecute(Sender: TObject);
     procedure aSelectAllExecute(Sender: TObject);
     procedure aTestExecute(Sender: TObject);
     procedure cbSetOfTemplatesCloseUp(Sender: TObject);
-    procedure tvResultsCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
-      var DefaultDraw: Boolean);
+    procedure tvResultsCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure cbTypePatternChange(Sender: TObject);
   private const
     C_IDENTITY_NAME = 'RegExpEditor';
   private
@@ -66,6 +70,7 @@ type
     function GetPattern_: string;
     function GetSelectedColor: TColor;
     function GetTemplateName: string;
+    function GetTypePattern: TTypePattern;
     function GetUseRawText: Boolean;
     procedure LoadFromXML;
     procedure SaveToXML;
@@ -73,16 +78,20 @@ type
     procedure SetPattern(const Value: string);
     procedure SetSelectedColor(const Value: TColor);
     procedure SetTemplateName(const Value: string);
+    procedure SetTypePattern(const Value: TTypePattern);
     procedure SetUseRawText(const Value: Boolean);
 
-    property GroupIndex    : Integer read GetGroupIndex    write SetGroupIndex;
-    property Pattern       : string  read GetPattern_      write SetPattern;
-    property SelectedColor : TColor  read GetSelectedColor write SetSelectedColor;
-    property TemplateName  : string  read GetTemplateName  write SetTemplateName;
-    property UseRawText    : Boolean read GetUseRawText    write SetUseRawText;
+    procedure AddMatchToTree(aMatch: TMatch); overload;
+    procedure AddMatchToTree(aMatch: string); overload;
+
+    property TypePattern   : TTypePattern read GetTypePattern   write SetTypePattern;
+    property GroupIndex    : Integer      read GetGroupIndex    write SetGroupIndex;
+    property Pattern       : string       read GetPattern_      write SetPattern;
+    property SelectedColor : TColor       read GetSelectedColor write SetSelectedColor;
+    property TemplateName  : string       read GetTemplateName  write SetTemplateName;
+    property UseRawText    : Boolean      read GetUseRawText    write SetUseRawText;
   protected
     function GetIdentityName: string; override;
-    procedure AddMatchToTree(aMatch: TMatch);
   public
     class function GetPattern(var aData: TRegExpData): TModalResult;
 
@@ -101,17 +110,21 @@ begin
   with TfrmRegExpEditor.Create(nil) do
     try
       Initialize;
-      Pattern       := aData.RegExpTemplate;
-      TemplateName  := aData.ParameterName;
       GroupIndex    := aData.GroupIndex;
+      Pattern       := aData.RegExpTemplate;
       SelectedColor := aData.Color;
+      TemplateName  := aData.ParameterName;
+      TypePattern   := aData.TypePattern;
       UseRawText    := aData.UseRawText;
+      cbTypePatternChange(nil);
+
       if (ShowModal = mrOk) then
       begin
-        aData.RegExpTemplate := Pattern;
-        aData.ParameterName  := TemplateName;
-        aData.GroupIndex     := GroupIndex;
         aData.Color          := SelectedColor;
+        aData.GroupIndex     := GroupIndex;
+        aData.ParameterName  := TemplateName;
+        aData.RegExpTemplate := Pattern;
+        aData.TypePattern    := TypePattern;
         aData.UseRawText     := UseRawText;
         Result := mrOk;
       end;
@@ -167,14 +180,20 @@ begin
   btnCancel.Caption           := TLang.Lang.Translate('Cancel');
   btnOk.Caption               := TLang.Lang.Translate('Ok');
   gbOptions.Caption           := TLang.Lang.Translate('Options');
-  gbRegularExpression.Caption := TLang.Lang.Translate('RegExpTemplate');
   gbResults.Caption           := TLang.Lang.Translate('Results');
   gbSampleText.Caption        := TLang.Lang.Translate('SampleText');
   lblColor.Caption            := TLang.Lang.Translate('Color');
   lblExamples.Caption         := TLang.Lang.Translate('Examples');
   lblGroupIndex.Caption       := TLang.Lang.Translate('GroupIndex');
   lblTemplateName.Caption     := TLang.Lang.Translate('TemplateName');
+  lblTypePattern.Caption      := TLang.Lang.Translate('TypePattern');
   lblUseRawText.Caption       := TLang.Lang.Translate('UseRawText');
+  tsAhoCorasick.Caption       := TLang.Lang.Translate('AhoCorasick');
+  tsRegularExpression.Caption := TLang.Lang.Translate('RegExpTemplate');
+
+  cbTypePattern.Items.Clear;
+  cbTypePattern.Items.Add(TLang.Lang.Translate('RegExpTemplate'));
+  cbTypePattern.Items.Add(TLang.Lang.Translate('AhoCorasick'));
 end;
 
 procedure TfrmRegExpEditor.tvResultsCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
@@ -188,24 +207,52 @@ end;
 
 procedure TfrmRegExpEditor.aTestExecute(Sender: TObject);
 var
-  Match   : TMatch;
-  Options : TRegExOptions;
-  RegExp  : TRegEx;
+  AhoCorasick : TAhoCorasick;
+  arrValue    : TArray<string>;
+  Match       : TMatch;
+  Options     : TRegExOptions;
+  RegExp      : TRegEx;
+  ResList     : TStringList;
 begin
   inherited;
   tvResults.Items.Clear;
   try
-    Options := [{roIgnoreCase, roSingleLine}roNotEmpty];
-    RegExp := TRegEx.Create(Pattern, Options);
-    Match  := RegExp.Match(edSample.Text);
-    if Match.Success then
-    begin
-      AddMatchToTree(Match);
-      edtResult.Text := GetStringFromMatches(edSample.Text, Pattern, edtGroupIndex.ValueInt);
-    end
-    else
-      TMessageDialog.ShowInfo(TLang.Lang.Translate('NoMatchFound'));
-   tvResults.FullExpand;
+    case TypePattern of
+      tpRegularExpression:
+        begin
+          Options := [ { roIgnoreCase, roSingleLine } roNotEmpty];
+          RegExp := TRegEx.Create(Pattern, Options);
+          Match := RegExp.Match(edSample.Text);
+          if Match.Success then
+            AddMatchToTree(Match)
+          else
+            TMessageDialog.ShowInfo(TLang.Lang.Translate('NoMatchFound'));
+        end;
+      tpAhoCorasick:
+        begin
+          AhoCorasick := TAhoCorasick.Create;
+          try
+            arrValue := Pattern.Split([#13#10]);
+            for var i := Low(arrValue) to High(arrValue) do
+              if not arrValue[i].Trim.IsEmpty then
+                AhoCorasick.AddPattern(arrValue[i].Trim);
+            AhoCorasick.Build;
+            ResList := AhoCorasick.Search(edSample.Text);
+            try
+              if (ResList.Count = 0) then
+                TMessageDialog.ShowInfo(TLang.Lang.Translate('NoMatchFound'))
+              else
+                for var i := 0 to ResList.Count - 1 do
+                  AddMatchToTree(ResList[i]);
+            finally
+              FreeAndNil(ResList);
+            end;
+          finally
+            FreeAndNil(AhoCorasick);
+          end;
+        end;
+    end;
+    tvResults.FullExpand;
   except
     on E: Exception do
     begin
@@ -236,11 +283,29 @@ begin
     AddMatchToTree(aMatch);
 end;
 
+procedure TfrmRegExpEditor.AddMatchToTree(aMatch: string);
+var
+  NodeText: string;
+begin
+  NodeText  := aMatch.Replace(#10, ' ').Replace(#13, '').Replace(#9, ' ');
+  tvResults.Items.AddChild(nil, 'Match: ' + NodeText);
+end;
+
 procedure TfrmRegExpEditor.cbSetOfTemplatesCloseUp(Sender: TObject);
 begin
   inherited;
   if (cbSetOfTemplates.ItemIndex > -1) then
     Pattern := TStringObject(cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex]).StringValue;
+end;
+
+procedure TfrmRegExpEditor.cbTypePatternChange(Sender: TObject);
+begin
+  inherited;
+  if (cbTypePattern.ItemIndex > -1) then
+  begin
+    pcTypePattern.ActivePageIndex := cbTypePattern.ItemIndex;
+    TypePattern := TTypePattern(cbTypePattern.ItemIndex);
+  end;
 end;
 
 procedure TfrmRegExpEditor.aCopyExecute(Sender: TObject);
@@ -271,12 +336,40 @@ end;
 
 function TfrmRegExpEditor.GetPattern_: string;
 begin
-  Result := edRegEx.Text;
+  case TypePattern of
+    tpRegularExpression:
+      Result := edRegEx.Text;
+    tpAhoCorasick:
+      Result := edAhoCorasick.Text;
+  end;
+end;
+
+procedure TfrmRegExpEditor.SetPattern(const Value: string);
+var
+  arrValue: TArray<string>;
+begin
+  arrValue := Value.Split([#10]);
+  edRegEx.Lines.AddStrings(arrValue);
+  edAhoCorasick.Lines.AddStrings(arrValue);
 end;
 
 function TfrmRegExpEditor.GetTemplateName: string;
 begin
   Result := edtTemplateName.Text;
+end;
+
+function TfrmRegExpEditor.GetTypePattern: TTypePattern;
+begin
+  if (cbTypePattern.ItemIndex > -1) then
+    Result := TTypePattern(cbTypePattern.ItemIndex)
+  else
+    Result := TTypePattern.tpRegularExpression;
+end;
+
+procedure TfrmRegExpEditor.SetTypePattern(const Value: TTypePattern);
+begin
+  cbTypePattern.ItemIndex := Ord(Value);
+  edtGroupIndex.Enabled := Value = TTypePattern.tpRegularExpression;
 end;
 
 function TfrmRegExpEditor.GetUseRawText: Boolean;
@@ -312,11 +405,6 @@ end;
 function TfrmRegExpEditor.GetGroupIndex: Integer;
 begin
   Result := edtGroupIndex.ValueInt
-end;
-
-procedure TfrmRegExpEditor.SetPattern(const Value: string);
-begin
-  edRegEx.Text := Value;
 end;
 
 end.

@@ -90,6 +90,13 @@ inherited frameRegExp: TframeRegExp
         Position = 3
         Text = 'Use Raw Text'
         Width = 103
+      end
+      item
+        CaptionAlignment = taCenter
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 4
+        Text = 'Type Pattern'
+        Width = 200
       end>
     DefaultText = ''
   end

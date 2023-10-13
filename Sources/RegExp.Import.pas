@@ -42,6 +42,7 @@ type
     COL_REGEXP_TEMPLATE = 1;
     COL_GROUP_INDEX     = 2;
     COL_USE_RAW_TEXT    = 3;
+    COL_TYPE_PATTERN    = 4;
 
     C_IDENTITY_NAME = 'ImportFromXML';
   private
@@ -111,6 +112,7 @@ begin
   vstTree.Header.Columns[COL_REGEXP_TEMPLATE].Text := TLang.Lang.Translate('RegExpTemplate');
   vstTree.Header.Columns[COL_GROUP_INDEX].Text     := TLang.Lang.Translate('GroupIndex');
   vstTree.Header.Columns[COL_USE_RAW_TEXT].Text    := TLang.Lang.Translate('UseRawText');
+  vstTree.Header.Columns[COL_TYPE_PATTERN].Text    := TLang.Lang.Translate('TypePattern');
 end;
 
 procedure TfrmImportFromXML.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -137,6 +139,8 @@ begin
       CellText := Data^.RegExpTemplate;
     COL_GROUP_INDEX:
       CellText := Data^.GroupIndex.ToString;
+    COL_TYPE_PATTERN:
+      CellText :=TLang.Lang.Translate(Data^.TypePattern.ToString);
   end;
 end;
 
@@ -206,6 +210,7 @@ var
       begin
         if XmlFile.ReadAttributes then
         begin
+          Data.TypePattern    := XmlFile.Attributes.GetAttributeValue('TypePattern', TTypePattern.tpRegularExpression);
           Data.ParameterName  := XmlFile.Attributes.GetAttributeValue('ParameterName', '');
           Data.RegExpTemplate := XmlFile.Attributes.GetAttributeValue('RegExpTemplate', '');
           Data.GroupIndex     := XmlFile.Attributes.GetAttributeValue('GroupIndex', 0);

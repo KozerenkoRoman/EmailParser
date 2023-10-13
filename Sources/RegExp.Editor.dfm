@@ -29,85 +29,22 @@ inherited frmRegExpEditor: TfrmRegExpEditor
     TabOrder = 0
     ExplicitWidth = 472
     ExplicitHeight = 529
-    object gbRegularExpression: TGroupBox
-      AlignWithMargins = True
-      Left = 3
-      Top = 10
-      Width = 470
-      Height = 135
-      Margins.Top = 10
-      Align = alTop
-      Caption = 'Regular Expression'
-      TabOrder = 0
-      ExplicitWidth = 466
-      object edRegEx: TMemo
-        AlignWithMargins = True
-        Left = 5
-        Top = 49
-        Width = 460
-        Height = 81
-        Align = alClient
-        Ctl3D = True
-        ParentCtl3D = False
-        PopupMenu = pmMemo
-        ScrollBars = ssVertical
-        TabOrder = 0
-        ExplicitWidth = 456
-      end
-      object pnlTemplateName: TPanel
-        Left = 2
-        Top = 19
-        Width = 466
-        Height = 27
-        Align = alTop
-        BevelOuter = bvNone
-        TabOrder = 1
-        ExplicitWidth = 462
-        DesignSize = (
-          466
-          27)
-        object lblExamples: TLabel
-          Left = 0
-          Top = 0
-          Width = 95
-          Height = 27
-          Align = alLeft
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Examples'
-          Layout = tlCenter
-        end
-        object cbSetOfTemplates: TComboBox
-          AlignWithMargins = True
-          Left = 101
-          Top = 0
-          Width = 354
-          Height = 25
-          Style = csDropDownList
-          Anchors = [akLeft, akTop, akRight]
-          ParentColor = True
-          TabOrder = 0
-          OnCloseUp = cbSetOfTemplatesCloseUp
-          ExplicitWidth = 350
-        end
-      end
-    end
     object gbSampleText: TGroupBox
       AlignWithMargins = True
       Left = 3
-      Top = 151
+      Top = 188
       Width = 470
-      Height = 376
+      Height = 339
       Align = alClient
       Caption = 'Sample Text'
       TabOrder = 1
       ExplicitWidth = 466
-      ExplicitHeight = 375
+      ExplicitHeight = 338
       object edSample: TMemo
         Left = 2
         Top = 19
         Width = 466
-        Height = 355
+        Height = 318
         Align = alClient
         Ctl3D = True
         ParentCtl3D = False
@@ -115,7 +52,84 @@ inherited frmRegExpEditor: TfrmRegExpEditor
         ScrollBars = ssVertical
         TabOrder = 0
         ExplicitWidth = 462
-        ExplicitHeight = 354
+        ExplicitHeight = 317
+      end
+    end
+    object pcTypePattern: TPageControl
+      Left = 0
+      Top = 0
+      Width = 476
+      Height = 185
+      ActivePage = tsRegularExpression
+      Align = alTop
+      MultiLine = True
+      TabOrder = 0
+      object tsRegularExpression: TTabSheet
+        Caption = 'Regular Expression'
+        object pnlTemplateName: TPanel
+          Left = 0
+          Top = 0
+          Width = 468
+          Height = 27
+          Align = alTop
+          BevelOuter = bvNone
+          TabOrder = 0
+          DesignSize = (
+            468
+            27)
+          object lblExamples: TLabel
+            Left = 0
+            Top = 0
+            Width = 88
+            Height = 27
+            Align = alLeft
+            Alignment = taRightJustify
+            AutoSize = False
+            Caption = 'Examples'
+            Layout = tlCenter
+          end
+          object cbSetOfTemplates: TComboBox
+            AlignWithMargins = True
+            Left = 94
+            Top = 0
+            Width = 371
+            Height = 25
+            Style = csDropDownList
+            Anchors = [akLeft, akTop, akRight]
+            ParentColor = True
+            TabOrder = 0
+            OnCloseUp = cbSetOfTemplatesCloseUp
+          end
+        end
+        object edRegEx: TMemo
+          AlignWithMargins = True
+          Left = 3
+          Top = 30
+          Width = 462
+          Height = 120
+          Align = alClient
+          Ctl3D = True
+          ParentCtl3D = False
+          PopupMenu = pmMemo
+          ScrollBars = ssVertical
+          TabOrder = 1
+        end
+      end
+      object tsAhoCorasick: TTabSheet
+        Caption = 'Aho Corasick'
+        ImageIndex = 1
+        object edAhoCorasick: TMemo
+          Left = 0
+          Top = 0
+          Width = 468
+          Height = 153
+          Align = alClient
+          Ctl3D = True
+          ParentCtl3D = False
+          PopupMenu = pmMemo
+          ScrollBars = ssVertical
+          TabOrder = 0
+        end
       end
     end
   end
@@ -231,8 +245,6 @@ inherited frmRegExpEditor: TfrmRegExpEditor
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitLeft = 484
-    ExplicitHeight = 529
     object gbOptions: TGroupBox
       AlignWithMargins = True
       Left = 3
@@ -245,28 +257,35 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       TabOrder = 0
       object lblGroupIndex: TLabel
         Left = 14
-        Top = 22
+        Top = 53
         Width = 72
         Height = 17
         Caption = 'Group index'
       end
       object lblColor: TLabel
         Left = 14
-        Top = 50
+        Top = 81
         Width = 32
         Height = 17
         Caption = 'Color'
       end
       object lblUseRawText: TLabel
         Left = 14
-        Top = 78
+        Top = 109
         Width = 69
         Height = 17
         Caption = 'UseRawText'
       end
+      object lblTypePattern: TLabel
+        Left = 14
+        Top = 22
+        Width = 72
+        Height = 17
+        Caption = 'Type Pattern'
+      end
       object edtGroupIndex: TNumberBox
-        Left = 170
-        Top = 19
+        Left = 144
+        Top = 50
         Width = 56
         Height = 25
         Decimal = 0
@@ -277,9 +296,9 @@ inherited frmRegExpEditor: TfrmRegExpEditor
         UseMouseWheel = True
       end
       object cbWebColor: TColorBox
-        Left = 170
-        Top = 50
-        Width = 145
+        Left = 144
+        Top = 81
+        Width = 201
         Height = 22
         DefaultColorColor = clInfoBk
         Selected = clInfoBk
@@ -287,11 +306,20 @@ inherited frmRegExpEditor: TfrmRegExpEditor
         TabOrder = 1
       end
       object cbUseRawText: TCheckBox
-        Left = 170
-        Top = 79
-        Width = 97
+        Left = 143
+        Top = 110
+        Width = 39
         Height = 17
         TabOrder = 2
+      end
+      object cbTypePattern: TComboBox
+        Left = 144
+        Top = 19
+        Width = 201
+        Height = 25
+        Style = csDropDownList
+        TabOrder = 3
+        OnChange = cbTypePatternChange
       end
     end
     object gbResults: TGroupBox
@@ -303,12 +331,11 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       Align = alClient
       Caption = 'Results'
       TabOrder = 1
-      ExplicitHeight = 375
       object tvResults: TTreeView
         Left = 2
         Top = 19
         Width = 359
-        Height = 327
+        Height = 355
         Align = alClient
         BevelInner = bvNone
         BevelOuter = bvNone
@@ -320,20 +347,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
         TabOrder = 0
         ToolTips = False
         OnCustomDrawItem = tvResultsCustomDrawItem
-        ExplicitHeight = 326
-      end
-      object edtResult: TEdit
-        AlignWithMargins = True
-        Left = 2
-        Top = 349
-        Width = 359
-        Height = 25
-        Margins.Left = 0
-        Margins.Right = 0
-        Margins.Bottom = 0
-        Align = alBottom
-        TabOrder = 1
-        ExplicitTop = 348
+        ExplicitHeight = 354
       end
     end
   end

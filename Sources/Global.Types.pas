@@ -12,8 +12,14 @@ uses
 {$ENDREGION}
 
 type
+  TTypePattern = (tpRegularExpression, tpAhoCorasick);
+  TTypePatternHelper = record helper for TTypePattern
+    function ToString: string;
+  end;
+
   PRegExpData = ^TRegExpData;
   TRegExpData = record
+    TypePattern    : TTypePattern;
     ParameterName  : string;
     RegExpTemplate : string;
     GroupIndex     : Integer;
@@ -239,6 +245,7 @@ begin
     begin
       if XMLParams.ReadAttributes then
       begin
+        Data.TypePattern    := XMLParams.Attributes.GetAttributeValue('TypePattern', TTypePattern.tpRegularExpression);
         Data.ParameterName  := XMLParams.Attributes.GetAttributeValue('ParameterName', '');
         Data.RegExpTemplate := XMLParams.Attributes.GetAttributeValue('RegExpTemplate', '');
         Data.GroupIndex     := XMLParams.Attributes.GetAttributeValue('GroupIndex', 0);
@@ -560,6 +567,18 @@ begin
   Result := nil;
   if Self.ContainsKey(aKey) then
     Result := Self.Items[aKey];
+end;
+
+{ TTypePatternHelper }
+
+function TTypePatternHelper.ToString: string;
+begin
+  case Self of
+    tpRegularExpression:
+      Result := 'RegExpTemplate';
+    tpAhoCorasick:
+      Result := 'AhoCorasick';
+  end;
 end;
 
 initialization

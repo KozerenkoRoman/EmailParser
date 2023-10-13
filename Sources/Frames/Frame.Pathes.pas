@@ -244,10 +244,7 @@ begin
       OpenDialog.DefaultFolder := TDirectory.GetCurrentDirectory;
     if OpenDialog.Execute then
       Data^.Path := OpenDialog.FileName;
-<<<<<<< HEAD:Sources/Frame.Pathes.pas
-=======
     vstTree.FocusedColumn := COL_PATH;
->>>>>>> Development:Sources/Frames/Frame.Pathes.pas
   end;
 end;
 
@@ -350,7 +347,5 @@ begin
     vstTree.EndUpdate;
   end;
 end;
-
-
 
 end.
