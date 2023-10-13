@@ -11,7 +11,7 @@ uses
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
   Files.Utils, System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
   System.Math, System.ZLib, System.Zip, System.Masks, System.StrUtils, InformationDialog, Html.Lib,
-  Vcl.Graphics, UnRAR.Helper, Excel4Delphi, Excel4Delphi.Stream, System.Hash;
+  Vcl.Graphics, UnRAR.Helper, Excel4Delphi, Excel4Delphi.Stream, System.Hash, AhoCorasick;
 {$ENDREGION}
 
 type
@@ -333,6 +333,7 @@ begin
           ResultData.Attachments.Add(Hash);
           Inc(FCount);
         end;
+
         DoParseAttachmentFiles(@ResultData,
           procedure()
           begin
@@ -670,6 +671,15 @@ var
   Attachment : PAttachment;
   Ext        : string;
   i          : Integer;
+
+  function ClearUrlData(AValue: string): string;
+  var
+    RegEx: TRegEx;
+  begin
+    RegEx := TRegEx.Create('(\(@"|url\(data)(.*?)\)', [roIgnoreCase, roSingleLine]);
+    Result := RegEx.Replace(AValue, 'url()');
+  end;
+
 begin
 {$IFDEF DETAILED_LOG}
   LogWriter.Write(ddEnterMethod, Self, 'DoParseAttachmentFiles');
@@ -714,7 +724,7 @@ begin
             end;
           fsZip:
             begin
-              if Ext.Contains('.xlsx') then
+              if Ext.Contains('.xlsx') or Ext.Contains('.xlsm') then
               begin
                 Attachment.ContentType := 'application/excel';
                 Attachment.ImageIndex  := TExtIcon.eiXls.ToByte;
@@ -785,7 +795,7 @@ begin
                  Ext.Contains('.csv') or
                  Ext.Contains('.cfg') then
               begin
-                Attachment.ParsedText  := TFile.ReadAllText(Attachment.FileName);
+                Attachment.ParsedText  := ClearUrlData(TFile.ReadAllText(Attachment.FileName));
                 Attachment.ContentType := 'text/plain';
                 Attachment.ImageIndex  := TExtIcon.eiTxt.ToByte;
               end
@@ -1031,9 +1041,9 @@ begin
           FileName := Concat(TPath.GetFileNameWithoutExtension(aFileName), '\', WorkBook.Sheets[i].Title);
           New(Attachment);
           Attachment^.ParsedText    := ParsedText;
-          Attachment^.FileName      := FileName;
+          Attachment^.FileName      := aFileName;
           Attachment^.ShortName     := FileName;
-          Attachment^.Hash          := THashSHA1.GetHashString(aFileName);
+          Attachment^.Hash          := THashSHA1.GetHashString(ParsedText);
           Attachment^.ParentHash    := aData^.Hash;
           Attachment^.ParentName    := aData^.ShortName;
           Attachment^.Matches.Count := FRegExpList.Count;
@@ -1180,14 +1190,14 @@ begin
               DeleteFile(TPath.Combine(Path, FileList[i]));
 
             New(Attachment);
-            Attachment^.FileName := TPath.Combine(Path, FileName);
-            Attachment^.Hash := TFileUtils.GetHash(Attachment^.FileName);
-            Attachment^.ShortName := FileName;
-            Attachment^.ParentHash := aData^.Hash;
-            Attachment^.ParentName := aData^.ShortName;
+            Attachment^.FileName      := TPath.Combine(Path, FileName);
+            Attachment^.Hash          := TFileUtils.GetHash(Attachment^.FileName);
+            Attachment^.ShortName     := FileName;
+            Attachment^.ParentHash    := aData^.Hash;
+            Attachment^.ParentName    := aData^.ShortName;
             Attachment^.Matches.Count := FRegExpList.Count;
-            Attachment^.FromZip := True;
-            TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+            Attachment^.FromZip       := True;
+            TGeneral.AttachmentList.TryAdd(Attachment^.Hash, Attachment);
             aData^.Attachments.AddUnique(Attachment^.Hash);
             Result := Concat(Result, (i + 1).ToString, '. ', FileName, '<br>');
           end;
@@ -1197,7 +1207,7 @@ begin
       end;
   except
     on E: Exception do
-      LogWriter.Write(ddError, Self, 'GetZipFileList', E.Message + sLineBreak + aFileName);
+      LogWriter.Write(ddError, Self, 'GetRarFileList', E.Message + sLineBreak + aFileName);
   end;
 end;
 
@@ -1218,21 +1228,19 @@ begin
 {$ENDIF DETAILED_LOG}
 
   RegExpr := TRegEx.Create(aPattern);
-  if RegExpr.IsMatch(aText) then
+  Matches := RegExpr.Matches(aText, aPattern);
+  Result.Count := Matches.Count;
+  for var i := 0 to Matches.Count - 1 do
   begin
-    Matches := RegExpr.Matches(aText, aPattern);
-    Result.Count := Matches.Count;
-    for var i := 0 to Matches.Count - 1 do
-    begin
-      if (aGroupIndex <= 0) then
-        GroupIndex := 0
-      else if (aGroupIndex > Matches.Item[i].Groups.Count - 1) then
-        GroupIndex := Matches.Item[i].Groups.Count - 1
-      else
-        GroupIndex := aGroupIndex;
-      Result[i] := Matches.Item[i].Groups[GroupIndex].Value;
-    end;
+    if (aGroupIndex <= 0) then
+      GroupIndex := 0
+    else if (aGroupIndex > Matches.Item[i].Groups.Count - 1) then
+      GroupIndex := Matches.Item[i].Groups.Count - 1
+    else
+      GroupIndex := aGroupIndex;
+    Result[i] := Matches.Item[i].Groups[GroupIndex].Value;
   end;
+
 {$IFDEF DETAILED_LOG}
   LogWriter.Write(ddExitMethod, Self, 'GetRegExpCollection');
 {$ENDIF DETAILED_LOG}
@@ -1246,19 +1254,17 @@ var
 begin
   Result := '';
   RegExpr := TRegEx.Create(aPattern);
-  if RegExpr.IsMatch(aText) then
+
+  Matches := RegExpr.Matches(aText, aPattern);
+  for var i := 0 to Matches.Count - 1 do
   begin
-    Matches := RegExpr.Matches(aText, aPattern);
-    for var i := 0 to Matches.Count - 1 do
-    begin
-      if (aGroupIndex <= 0) then
-        GroupIndex := 0
-      else if (aGroupIndex > Matches.Item[i].Groups.Count - 1) then
-        GroupIndex := Matches.Item[i].Groups.Count - 1
-      else
-        GroupIndex := aGroupIndex;
-      Result := Concat(Result, Matches.Item[i].Groups[GroupIndex].Value, '; ');
-    end;
+    if (aGroupIndex <= 0) then
+      GroupIndex := 0
+    else if (aGroupIndex > Matches.Item[i].Groups.Count - 1) then
+      GroupIndex := Matches.Item[i].Groups.Count - 1
+    else
+      GroupIndex := aGroupIndex;
+    Result := Concat(Result, Matches.Item[i].Groups[GroupIndex].Value, '; ');
   end;
 end;
 

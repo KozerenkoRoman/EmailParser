@@ -9,7 +9,7 @@ uses
   Vcl.ToolWin, VirtualTrees, Vcl.StdCtrls, Vcl.ExtCtrls, System.Generics.Defaults,Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Global.Types, Vcl.FileCtrl,
-  Global.Resources, Vcl.WinXPanels, Frame.Custom, Publishers;
+  Global.Resources, Vcl.WinXPanels, Frame.Custom, Publishers, Vcl.NumberBox;
 {$ENDREGION}
 
 type
@@ -32,6 +32,13 @@ type
     miAttachmentsMain      : TMenuItem;
     miAttachmentsSub       : TMenuItem;
     miPathForAttachments   : TMenuItem;
+    Shape1: TShape;
+    lblMaxSize: TLabel;
+    lblLogWriteActive: TLabel;
+    lblNumberOfDays: TLabel;
+    cbLogWriteActive: TCheckBox;
+    edtMaxSize: TNumberBox;
+    edtNumberOfDays: TNumberBox;
     procedure aAttachmentsMainExecute(Sender: TObject);
     procedure aAttachmentsSubExecute(Sender: TObject);
     procedure aPathForAttachmentsExecute(Sender: TObject);
@@ -62,7 +69,9 @@ begin
   LoadFromXML;
   Translate;
   dlgAttachmments.Title := Application.Title;
-  edtPathForAttachments.Width := Self.Width - Trunc(grdCommonParams.ColumnCollection.Items[0].Value) - 30;
+  edtPathForAttachments.Width    := Self.Width - Trunc(grdCommonParams.ColumnCollection.Items[0].Value) - 30;
+  edtMaxSize.CurrencyString      := '';
+  edtNumberOfDays.CurrencyString := '';
 end;
 
 procedure TframeSettings.Deinitialize;
@@ -83,6 +92,9 @@ begin
   lblExtensions.Caption         := TLang.Lang.Translate('FileExtensions');
   lblLanguage.Caption           := TLang.Lang.Translate('Language');
   lblLoadRecordsFromDB.Caption  := TLang.Lang.Translate('LoadRecordsFromDB');
+  lblLogWriteActive.Caption     := TLang.Lang.Translate('IsLogginActive');
+  lblMaxSize.Caption            := TLang.Lang.Translate('MaxSizeLogFile');
+  lblNumberOfDays.Caption       := TLang.Lang.Translate('NumberOfDays');
   lblPathForAttachments.Caption := TLang.Lang.Translate('PathForAttachments');
 end;
 
@@ -97,18 +109,24 @@ begin
   cbLanguage.Items.Clear;
   for var lang := Low(TLanguage) to High(TLanguage) do
     cbLanguage.Items.Add(lang.ToString);
-  cbDeleteAttachments.Checked   := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
-  cbLoadRecordsFromDB.Checked   := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'LoadRecordsFromDB', True);
-  cbLanguage.ItemIndex          := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0);
-  edtExtensions.Text            := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
-  edtPathForAttachments.Text    := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
+  cbDeleteAttachments.Checked := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
+  cbLanguage.ItemIndex        := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0);
+  cbLoadRecordsFromDB.Checked := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'LoadRecordsFromDB', True);
+  cbLogWriteActive.Checked    := TGeneral.XMLParams.ReadBool(C_SECTION_DEBUG, C_KEY_IS_ACTIVE, True);
+  edtExtensions.Text          := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
+  edtMaxSize.ValueInt         := TGeneral.XMLParams.ReadInteger(C_SECTION_DEBUG, C_KEY_MAX_SIZE, 1);
+  edtNumberOfDays.ValueInt    := TGeneral.XMLParams.ReadInteger(C_SECTION_DEBUG, C_KEY_COUNT_OF_DAYS, 30);
+  edtPathForAttachments.Text  := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
 end;
 
 procedure TframeSettings.SaveToXML;
 begin
   inherited;
+  TGeneral.XMLParams.WriteBool(C_SECTION_DEBUG, C_KEY_IS_ACTIVE, cbLogWriteActive.Checked, lblLogWriteActive.Caption);
   TGeneral.XMLParams.WriteBool(C_SECTION_MAIN, 'DeleteAttachments', cbDeleteAttachments.Checked, lblDeleteAttachments.Caption);
   TGeneral.XMLParams.WriteBool(C_SECTION_MAIN, 'LoadRecordsFromDB', cbLoadRecordsFromDB.Checked, lblLoadRecordsFromDB.Caption);
+  TGeneral.XMLParams.WriteInteger(C_SECTION_DEBUG, C_KEY_MAX_SIZE, edtMaxSize.ValueInt, lblMaxSize.Caption);
+  TGeneral.XMLParams.WriteInteger(C_SECTION_DEBUG, C_KEY_COUNT_OF_DAYS, edtNumberOfDays.ValueInt, lblNumberOfDays.Caption);
   TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'Language', cbLanguage.ItemIndex, cbLanguage.Text);
   TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'Extensions', edtExtensions.Text, lblExtensions.Caption);
   TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'PathForAttachments', edtPathForAttachments.Text, lblPathForAttachments.Caption);

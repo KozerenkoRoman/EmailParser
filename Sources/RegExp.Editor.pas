@@ -195,6 +195,7 @@ begin
   inherited;
   tvResults.Items.Clear;
   try
+    Options := [{roIgnoreCase, roSingleLine}roNotEmpty];
     RegExp := TRegEx.Create(Pattern, Options);
     Match  := RegExp.Match(edSample.Text);
     if Match.Success then

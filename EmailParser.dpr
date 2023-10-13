@@ -11,6 +11,7 @@ uses
   System.IOUtils,
   Winapi.Windows,
   ArrayHelper in 'Sources\Common\ArrayHelper.pas',
+  AhoCorasick in 'Sources\Common\AhoCorasick.pas',
   Column.Settings in 'Sources\Column.Settings.pas' {frmColumnSettings},
   Column.Types in 'Sources\Common\Column.Types.pas',
   Common.Types in 'Sources\Common\Common.Types.pas',

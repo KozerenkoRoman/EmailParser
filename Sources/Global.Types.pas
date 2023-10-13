@@ -5,10 +5,10 @@ interface
 {$REGION 'Region uses'}
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
-  System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
+  System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} XmlFiles,
   System.IOUtils, Vcl.Forms, ArrayHelper, Data.DB, System.Win.Registry, Common.Types, Translate.Lang,
   System.IniFiles, VirtualTrees, System.RegularExpressions, System.Math, Vcl.Graphics, Html.Consts,
-  Files.Utils;
+  Files.Utils, System.Generics.Defaults;
 {$ENDREGION}
 
 type
@@ -141,6 +141,7 @@ type
     function GetItem(const aKey: string): PResultData;
     procedure ClearData;
     procedure ClearParentNodePointer;
+    procedure SetCapacity(aValue: Integer);
   end;
 
   TAttachmentList = class(TObjectDictionary<string, PAttachment>)
@@ -150,6 +151,7 @@ type
     function GetItem(const aKey: string): PAttachment;
     procedure ClearData;
     procedure ClearParentNodePointer;
+    procedure SetCapacity(aValue: Integer);
   end;
 
   TGeneral = record
@@ -466,6 +468,12 @@ begin
     Result := Self.Items[aKey];
 end;
 
+procedure TEmailList.SetCapacity(aValue: Integer);
+begin
+  if (aValue > Self.Count) and (aValue > Self.Capacity) then
+    Self.Capacity := aValue * 2;
+end;
+
 procedure TEmailList.ClearData;
 begin
   for var item in Self do
@@ -498,6 +506,12 @@ begin
   Result := nil;
   if Self.ContainsKey(aKey) then
     Result := Self.Items[aKey];
+end;
+
+procedure TAttachmentList.SetCapacity(aValue: Integer);
+begin
+  if (aValue > Self.Count) and (aValue > Self.Capacity) then
+    Self.Capacity := aValue * 2;
 end;
 
 procedure TAttachmentList.ClearData;

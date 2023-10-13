@@ -220,7 +220,6 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       Left = 460
       Top = 0
       Action = aTest
-      ImageIndex = 40
     end
   end
   object pnlRight: TPanel
@@ -343,20 +342,20 @@ inherited frmRegExpEditor: TfrmRegExpEditor
     Left = 104
     Top = 248
     object aTest: TAction
-      ImageIndex = 42
+      ImageIndex = 40
       ImageName = 'page_white_lightning'
       OnExecute = aTestExecute
     end
     object aCopy: TAction
       Caption = 'Copy'
-      ImageIndex = 76
+      ImageIndex = 73
       ImageName = 'page_copy'
       ShortCut = 16451
       OnExecute = aCopyExecute
     end
     object aPaste: TAction
       Caption = 'Paste'
-      ImageIndex = 77
+      ImageIndex = 74
       ImageName = 'page_paste'
       ShortCut = 16470
       OnExecute = aPasteExecute
@@ -373,11 +372,9 @@ inherited frmRegExpEditor: TfrmRegExpEditor
     Top = 160
     object miCopy: TMenuItem
       Action = aCopy
-      ImageIndex = 73
     end
     object miPaste: TMenuItem
       Action = aPaste
-      ImageIndex = 74
     end
     object miSelectAll: TMenuItem
       Action = aSelectAll

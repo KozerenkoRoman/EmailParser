@@ -228,8 +228,10 @@ var
 begin
   LogWriter.Write(ddEnterMethod, Self, 'FillAllEmailsRecord');
   try
+
     qAllEmails.Open;
-    qAllEmails.First;
+    qAllEmails.FetchAll;
+    TGeneral.EmailList.SetCapacity(qAllEmails.RecordCount);
     while not qAllEmails.Eof do
     begin
       New(ResultData);

@@ -142,7 +142,7 @@ begin
   frameMatchesFilter.Deinitialize;
   frameBruteForce.Deinitialize;
   DaMod.Deinitialize;
-  LogWriter.Active := False;
+  LogWriter.Finish;
   TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'ExtendedFilterHeight', pnlExtendedFilter.Height);
   TGeneral.XMLParams.Save;
   inherited;

@@ -4704,33 +4704,45 @@ begin
         begin
           // load images
           s := 'xl/drawings/drawing' + IntToStr(i + 1) + '.xml';
-          Zip.Read(s, Stream, zipHdr);
-          try
-            ZEXLSXReadDrawing(XMLSS.Sheets[i], Stream);
-          finally
-            Stream.Free();
+          if (Zip.IndexOf(s) > -1) then
+          begin
+            Zip.Read(s, Stream, zipHdr);
+            try
+              ZEXLSXReadDrawing(XMLSS.Sheets[i], Stream);
+            finally
+              Stream.Free();
+            end;
           end;
+
           // read drawing rels
           s := 'xl/drawings/_rels/drawing' + IntToStr(i + 1) + '.xml.rels';
-          Zip.Read(s, Stream, zipHdr);
-          try
-            ZEXLSXReadDrawingRels(XMLSS.Sheets[i], Stream);
-          finally
-            Stream.Free();
+          if (Zip.IndexOf(s) > -1) then
+          begin
+            Zip.Read(s, Stream, zipHdr);
+            try
+              ZEXLSXReadDrawingRels(XMLSS.Sheets[i], Stream);
+            finally
+              Stream.Free();
+            end;
           end;
+
           // read img file
           for j := 0 to XMLSS.Sheets[i].Drawing.Count - 1 do
           begin
             s := XMLSS.Sheets[i].Drawing[j].name;
-            Zip.Read('xl/media/' + s, buff);
+            if (Zip.IndexOf(s) > -1) then
+            begin
+              Zip.Read('xl/media/' + s, buff);
               // only unique content
-            XMLSS.AddMediaContent(s, buff, true);
+              XMLSS.AddMediaContent(s, buff, true);
+            end;
           end;
         end;
       end;
     except
       Result := 2;
     end;
+
   finally
     Zip.Free();
     encoding.Free;
@@ -4826,9 +4838,9 @@ var
       begin
         _WriteOverride('/xl/drawings/drawing' + IntToStr(i + 1) + '.xml', 9);
         // _WriteOverride('/xl/drawings/_rels/drawing' + IntToStr(i+1) + '.xml.rels', 3);
-// for ii := 0 to _drawing.PictureStore.Count - 1 do begin
-// _picture := _drawing.PictureStore.Items[ii];
-// // image/ override
+        // for ii := 0 to _drawing.PictureStore.Count - 1 do begin
+        // _picture := _drawing.PictureStore.Items[ii];
+        // // image/ override
 // xml.Attributes.Clear();
 // xml.Attributes.Add('PartName', '/xl/media/' + _picture.Name);
 // xml.Attributes.Add('ContentType', 'image/' + Copy(ExtractFileExt(_picture.Name), 2, 99), false);
@@ -8617,4 +8629,3 @@ begin
 end;
 
 end.
-

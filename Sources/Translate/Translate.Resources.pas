@@ -29,6 +29,7 @@ resourcestring
   en_Begin                = 'begin';
   en_Body                 = 'Body';
   en_Break                = 'Break';
+  en_BruteForce           = 'Brute force';
   en_Cancel               = 'Cancel';
   en_ClassName            = 'Class name';
   en_CollapseAll          = 'Collapse All';
@@ -69,6 +70,7 @@ resourcestring
   en_FileIsDisabled       = 'File "%s" is disabled';
   en_FileName             = 'File name';
   en_FileNotFound         = 'File "%s" not found';
+  en_FileNotSelected      = 'No file selected';
   en_Filter               = 'Filter';
   en_FoundFiles           = 'Found %d files';
   en_From                 = 'From';
@@ -78,17 +80,20 @@ resourcestring
   en_Hash                 = 'Hash';
   en_Import               = 'Import';
   en_Info                 = 'Info ';
+  en_IsLogginActive       = 'Write information to the log file';
   en_Language             = 'Language';
   en_LoadRecordsFromDB    = 'Load records from DB at startup';
   en_Main                 = 'Main';
   en_Mask                 = 'Mask';
   en_Matches              = 'Matches';
+  en_MaxSizeLogFile       = 'Max Size Of Log File (Mb)';
   en_MessageId            = 'Message Id';
   en_ModuleName           = 'Module name';
   en_NewNamePrompt        = 'Enter a name for the new template set';
   en_NewNameSet           = 'New template set';
   en_NoDataToDisplay      = 'No data to display';
   en_NoMatchFound         = 'No match found';
+  en_NumberOfDays         = 'Number of days during which logs are stored';
   en_Ok                   = 'Ok';
   en_OpenEmail            = 'Open email';
   en_OpenFile             = 'Open File';
@@ -99,6 +104,8 @@ resourcestring
   en_Parameters           = 'Parameters';
   en_Password             = 'Password';
   en_PasswordList         = 'Password list';
+  en_PasswordNotFound     = 'Password not found';
+  en_PasswordNotRequired  = 'Password is not required';
   en_Paste                = 'Paste';
   en_Path                 = 'Path';
   en_PathForAttachments   = 'Paths for saving attachments';
@@ -141,10 +148,6 @@ resourcestring
   en_Utilities            = 'Utilities';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
-  en_BruteForce           = 'Brute force';
-  en_FileNotSelected      = 'No file selected';
-  en_PasswordNotRequired  = 'Password is not required';
-  en_PasswordNotFound     = 'Password not found';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -155,6 +158,7 @@ resourcestring
   uk_Begin                = 'початок';
   uk_Body                 = 'Тіло';
   uk_Break                = 'Зупинити';
+  uk_BruteForce           = 'Підбір паролів';
   uk_Cancel               = 'Скасувати';
   uk_ClassName            = 'Назва класу';
   uk_CollapseAll          = 'Згорнути все';
@@ -195,6 +199,7 @@ resourcestring
   uk_FileIsDisabled       = 'Файл "%s" вимкнено';
   uk_FileName             = 'Назва файлу';
   uk_FileNotFound         = 'Файл "%s" не знайдено';
+  uk_FileNotSelected      = 'Файл не вибрано';
   uk_Filter               = 'Фільтрувати';
   uk_FoundFiles           = 'Знайдено %d файлів';
   uk_From                 = 'Відправник';
@@ -204,17 +209,20 @@ resourcestring
   uk_Hash                 = 'Хеш';
   uk_Import               = 'Імпорт';
   uk_Info                 = 'Опис ';
+  uk_IsLogginActive       = 'Записувати інформацію в лог-файл';
   uk_Language             = 'Мова';
   uk_LoadRecordsFromDB    = 'Завантажувати записи з БД при старті';
   uk_Main                 = 'Основне';
   uk_Mask                 = 'Маска';
   uk_Matches              = 'Співпадіння';
+  uk_MaxSizeLogFile       = 'Максимальний розмір лог-файлу (Mb)';
   uk_MessageId            = 'Id листа';
   uk_ModuleName           = 'Назва модуля';
   uk_NewNamePrompt        = 'Введіть назву нового набору шаблонів';
   uk_NewNameSet           = 'Новий набір шаблонів';
   uk_NoDataToDisplay      = 'Немає даних для відображення';
   uk_NoMatchFound         = 'Співпадіння відсутні';
+  uk_NumberOfDays         = 'Кількість днів, протягом яких зберігаються логи';
   uk_Ok                   = 'Ок';
   uk_OpenEmail            = 'Відкрити email';
   uk_OpenFile             = 'Відкрити файл';
@@ -225,6 +233,8 @@ resourcestring
   uk_Parameters           = 'Параметри';
   uk_Password             = 'Пароль';
   uk_PasswordList         = 'Список паролів';
+  uk_PasswordNotFound     = 'Пароль не знайдено';
+  uk_PasswordNotRequired  = 'Не потребує паролю';
   uk_Paste                = 'Вставити';
   uk_Path                 = 'Шлях';
   uk_PathForAttachments   = 'Шляхи для збереження вкладень';
@@ -267,13 +277,9 @@ resourcestring
   uk_Utilities            = 'Утиліти';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
-  uk_BruteForce           = 'Підбір паролів';
-  uk_FileNotSelected      = 'Файл не вибрано';
-  uk_PasswordNotRequired  = 'Не потребує паролю';
-  uk_PasswordNotFound     = 'Пароль не знайдено';
 
 const
-   ArrayMessages: array[1 .. 122] of TMessageItem = (
+   ArrayMessages: array[1 .. 125] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
     (Key: 'AllCheck'             ; En: en_AllCheck;             Uk: uk_AllCheck),
@@ -333,17 +339,20 @@ const
     (Key: 'Hash'                 ; En: en_Hash;                 Uk: uk_Hash),
     (Key: 'Import'               ; En: en_Import;               Uk: uk_Import),
     (Key: 'Info'                 ; En: en_Info;                 Uk: uk_Info),
+    (Key: 'IsLogginActive'       ; En: en_IsLogginActive;       Uk: uk_IsLogginActive),
     (Key: 'Language'             ; En: en_Language;             Uk: uk_Language),
     (Key: 'LoadRecordsFromDB'    ; En: en_LoadRecordsFromDB;    Uk: uk_LoadRecordsFromDB),
     (Key: 'Main'                 ; En: en_Main;                 Uk: uk_Main),
     (Key: 'Mask'                 ; En: en_Mask;                 Uk: uk_Mask),
     (Key: 'Matches'              ; En: en_Matches;              Uk: uk_Matches),
+    (Key: 'MaxSizeLogFile'       ; En: en_MaxSizeLogFile;       Uk: uk_MaxSizeLogFile),
     (Key: 'MessageId'            ; En: en_MessageId;            Uk: uk_MessageId),
     (Key: 'ModuleName'           ; En: en_ModuleName;           Uk: uk_ModuleName),
     (Key: 'NewNamePrompt'        ; En: en_NewNamePrompt;        Uk: uk_NewNamePrompt),
     (Key: 'NewNameSet'           ; En: en_NewNameSet;           Uk: uk_NewNameSet),
     (Key: 'NoDataToDisplay'      ; En: en_NoDataToDisplay;      Uk: uk_NoDataToDisplay),
     (Key: 'NoMatchFound'         ; En: en_NoMatchFound;         Uk: uk_NoMatchFound),
+    (Key: 'NumberOfDays'         ; En: en_NumberOfDays;         Uk: uk_NumberOfDays),
     (Key: 'Ok'                   ; En: en_Ok;                   Uk: uk_Ok),
     (Key: 'OpenEmail'            ; En: en_OpenEmail;            Uk: uk_OpenEmail),
     (Key: 'OpenFile'             ; En: en_OpenFile;             Uk: uk_OpenFile),
