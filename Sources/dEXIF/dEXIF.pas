@@ -161,7 +161,6 @@ type
     function GetThumbTagByIndex(AIndex: integer): TTagEntry;
     procedure SetThumbTagByIndex(AIndex: integer; const AValue: TTagEntry);
     function GetThumbTagByName(ATagName: String): TTagEntry;
-    procedure SetThumbTagByName(ATagName: String; const AValue: TTagEntry);
     function GetThumbTagValue(ATagName: String): variant;
     procedure SetThumbTagValue(ATagName: String; AValue: variant);
     function GetThumbTagValueAsString(ATagName: String): string;
@@ -209,17 +208,17 @@ type
     // Height, Width, HPosn, WPosn: integer;
     FlashUsed: integer;
     BuildList: integer;
-    MakerNote: ansistring;
+    MakerNote: string;
     TiffFmt: boolean;
     // Add support for thumbnail
-    ThumbTrace: ansistring;
+    ThumbTrace: string;
     MaxThumbTag: integer;
     // Added the following elements to make the structure a little more code-friendly
     TraceLevel: integer;
-    TraceStr: ansistring;
-    msTraceStr: ansistring;
+    TraceStr: string;
+    msTraceStr: string;
     msAvailable: boolean;
-    msName: ansistring;
+    msName: string;
     MakerOffset: integer;
 
   public
@@ -2694,27 +2693,6 @@ begin
   Result := EmptyEntry;
 end;
 
-procedure TImageInfo.SetThumbTagByName(ATagName: String; const AValue: TTagEntry);
-var
-  i: integer;
-  P: PTagEntry;
-begin
-  ATagName := UpperCase(ATagName);
-  for i := 0 to FIThumbCount - 1 do
-    if UpperCase(FIThumbArray[i].Name) = ATagName then
-    begin
-      FIThumbArray[i] := AValue;
-      exit;
-    end;
-  {
-    // If not found: add it as a new tag to the array
-    P := FindExifTagDefByName(ATagName);   // Thumb tags are stored in Exif table
-    if P = nil then
-    raise Exception.Create('Tag "' + ATagName + '" unknown.');
-    AddTagToThumbArray(AValue);
-  }
-end;
-
 function TImageInfo.GetThumbTagValue(ATagName: String): variant;
 var
   Tag: TTagEntry;
@@ -3402,8 +3380,6 @@ begin
   if LookupTagIndex('FocalLengthin35mmFilm') >= 0 then
     exit; // no need to calculate - already have it
 
-  CCDWidth := 0.0;
-  CCDHeight := 0.0;
   tmp := GetRawInt('FocalPlaneResolutionUnit');
   if (tmp <= 0) then
     tmp := GetRawInt('ResolutionUnit');
@@ -3449,7 +3425,7 @@ begin
 
   LookUpE := TagTable[tmp];
   NewE := LookUpE;
-  NewE.data := ansistring(Format('%0.2f', [fl35]));
+  NewE.data := Format('%0.2f', [fl35]);
   NewE.FormatS := '%s mm';
   SetLength(NewE.Raw, 2);
   Move(w, NewE.Raw[1], 2);

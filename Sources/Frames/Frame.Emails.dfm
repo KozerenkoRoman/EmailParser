@@ -15,7 +15,7 @@ inherited frameEmails: TframeEmails
       Top = 0
       Width = 8
       Caption = 'btnSep04'
-      ImageIndex = 71
+      ImageIndex = 68
       ImageName = 'email'
       Style = tbsSeparator
     end
@@ -40,7 +40,7 @@ inherited frameEmails: TframeEmails
       Left = 500
       Top = 0
       Width = 8
-      ImageIndex = 71
+      ImageIndex = 68
       ImageName = 'email'
       Style = tbsSeparator
     end
@@ -167,20 +167,20 @@ inherited frameEmails: TframeEmails
     end
     object aSearch: TAction [9]
       Hint = 'Start Search'
-      ImageIndex = 12
+      ImageIndex = 11
       ImageName = 'lightning'
       OnExecute = aSearchExecute
       OnUpdate = aSearchUpdate
     end
     object aBreak: TAction [10]
       Hint = 'Break'
-      ImageIndex = 13
+      ImageIndex = 12
       ImageName = 'lightning_delete'
       OnExecute = aBreakExecute
     end
     object aOpenEmail: TAction [11]
       Hint = 'Open Email'
-      ImageIndex = 71
+      ImageIndex = 68
       ImageName = 'email'
       OnExecute = aOpenEmailExecute
       OnUpdate = aOpenEmailUpdate

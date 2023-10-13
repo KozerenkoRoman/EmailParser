@@ -1,21 +1,22 @@
 inherited frameSettings: TframeSettings
   Width = 784
-  Height = 356
+  Height = 519
+  OnCanResize = FrameCanResize
   ExplicitWidth = 784
-  ExplicitHeight = 356
+  ExplicitHeight = 519
   PixelsPerInch = 144
   inherited tbMain: TToolBar
     Width = 784
-    ExplicitWidth = 600
+    ExplicitWidth = 784
   end
   object grdCommonParams: TGridPanel [1]
     Left = 0
     Top = 39
     Width = 784
-    Height = 317
+    Height = 480
+    Margins.Top = 6
     Align = alClient
     BevelOuter = bvNone
-    Color = clWindow
     ColumnCollection = <
       item
         SizeStyle = ssAbsolute
@@ -74,15 +75,56 @@ inherited frameSettings: TframeSettings
         Column = 1
         Control = cbLoadRecordsFromDB
         Row = 4
+      end
+      item
+        Column = 0
+        Control = Shape1
+        Row = 5
+      end
+      item
+        Column = 0
+        Control = lblMaxSize
+        Row = 7
+      end
+      item
+        Column = 0
+        Control = lblLogWriteActive
+        Row = 6
+      end
+      item
+        Column = 0
+        Control = lblNumberOfDays
+        Row = 8
+      end
+      item
+        Column = 1
+        Control = cbLogWriteActive
+        Row = 6
+      end
+      item
+        Column = 1
+        Control = edtMaxSize
+        Row = 7
+      end
+      item
+        Column = 1
+        Control = edtNumberOfDays
+        Row = 8
       end>
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentBackground = False
-    ParentFont = False
+    ParentColor = True
     RowCollection = <
+      item
+        SizeStyle = ssAbsolute
+        Value = 35.000000000000000000
+      end
+      item
+        SizeStyle = ssAbsolute
+        Value = 35.000000000000000000
+      end
+      item
+        SizeStyle = ssAbsolute
+        Value = 35.000000000000000000
+      end
       item
         SizeStyle = ssAbsolute
         Value = 35.000000000000000000
@@ -115,8 +157,9 @@ inherited frameSettings: TframeSettings
         Value = 100.000000000000000000
       end>
     TabOrder = 1
-    ExplicitTop = 45
-    ExplicitWidth = 763
+    DesignSize = (
+      784
+      480)
     object lblLanguage: TLabel
       AlignWithMargins = True
       Left = 3
@@ -127,9 +170,9 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'Language'
       Layout = tlCenter
-      ExplicitLeft = 260
-      ExplicitWidth = 57
-      ExplicitHeight = 17
+      ExplicitLeft = 265
+      ExplicitWidth = 52
+      ExplicitHeight = 15
     end
     object lblExtensions: TLabel
       AlignWithMargins = True
@@ -141,9 +184,9 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'File extensions to search'
       Layout = tlCenter
-      ExplicitLeft = 175
-      ExplicitWidth = 142
-      ExplicitHeight = 17
+      ExplicitLeft = 189
+      ExplicitWidth = 128
+      ExplicitHeight = 15
     end
     object lblPathForAttachments: TLabel
       AlignWithMargins = True
@@ -155,9 +198,9 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'Paths for saving attachments'
       Layout = tlCenter
-      ExplicitLeft = 150
-      ExplicitWidth = 167
-      ExplicitHeight = 17
+      ExplicitLeft = 164
+      ExplicitWidth = 153
+      ExplicitHeight = 15
     end
     object lblDeleteAttachments: TLabel
       AlignWithMargins = True
@@ -169,17 +212,19 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'Delete attachments after analysis'
       Layout = tlCenter
-      ExplicitLeft = 126
-      ExplicitWidth = 191
-      ExplicitHeight = 17
+      ExplicitLeft = 144
+      ExplicitWidth = 173
+      ExplicitHeight = 15
     end
     object cbLanguage: TComboBox
       AlignWithMargins = True
       Left = 330
-      Top = 3
+      Top = 6
       Width = 140
-      Height = 25
+      Height = 23
       Margins.Left = 10
+      Margins.Top = 6
+      Margins.Bottom = 6
       Align = alLeft
       Style = csDropDownList
       TabOrder = 0
@@ -187,24 +232,26 @@ inherited frameSettings: TframeSettings
     object edtExtensions: TEdit
       AlignWithMargins = True
       Left = 330
-      Top = 38
+      Top = 41
       Width = 50
-      Height = 29
+      Height = 23
       Margins.Left = 10
+      Margins.Top = 6
+      Margins.Bottom = 6
       Align = alLeft
       TabOrder = 1
       Text = '*.eml'
-      ExplicitHeight = 25
     end
     object edtPathForAttachments: TButtonedEdit
       AlignWithMargins = True
       Left = 330
-      Top = 73
-      Width = 140
-      Height = 29
+      Top = 76
+      Width = 319
+      Height = 23
       Margins.Left = 10
+      Margins.Top = 6
+      Margins.Bottom = 6
       Align = alLeft
-      Anchors = [akLeft, akTop, akRight, akBottom]
       Images = DMImage.vil16
       RightButton.DropDownMenu = pmFrame
       RightButton.ImageIndex = 5
@@ -234,9 +281,9 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'Load records from the database at startup'
       Layout = tlCenter
-      ExplicitLeft = 67
-      ExplicitWidth = 250
-      ExplicitHeight = 17
+      ExplicitLeft = 97
+      ExplicitWidth = 220
+      ExplicitHeight = 15
     end
     object cbLoadRecordsFromDB: TCheckBox
       AlignWithMargins = True
@@ -247,6 +294,103 @@ inherited frameSettings: TframeSettings
       Margins.Left = 10
       Align = alLeft
       TabOrder = 4
+    end
+    object Shape1: TShape
+      Left = 1
+      Top = 192
+      Width = 317
+      Height = 1
+      Anchors = []
+      Pen.Color = clBtnShadow
+      ExplicitLeft = 0
+    end
+    object lblMaxSize: TLabel
+      AlignWithMargins = True
+      Left = 3
+      Top = 248
+      Width = 314
+      Height = 29
+      Align = alClient
+      Alignment = taRightJustify
+      Caption = 'Max size of log file (Mb)'
+      Layout = tlCenter
+      ExplicitLeft = 190
+      ExplicitWidth = 127
+      ExplicitHeight = 15
+    end
+    object lblLogWriteActive: TLabel
+      AlignWithMargins = True
+      Left = 3
+      Top = 213
+      Width = 314
+      Height = 29
+      Align = alClient
+      Alignment = taRightJustify
+      Caption = 'Is loggin write active'
+      Layout = tlCenter
+      ExplicitLeft = 209
+      ExplicitWidth = 108
+      ExplicitHeight = 15
+    end
+    object lblNumberOfDays: TLabel
+      AlignWithMargins = True
+      Left = 3
+      Top = 283
+      Width = 314
+      Height = 29
+      Align = alClient
+      Alignment = taRightJustify
+      Caption = 'Number of days during which logs are stored'
+      Layout = tlCenter
+      ExplicitLeft = 79
+      ExplicitWidth = 238
+      ExplicitHeight = 15
+    end
+    object cbLogWriteActive: TCheckBox
+      AlignWithMargins = True
+      Left = 330
+      Top = 213
+      Width = 97
+      Height = 29
+      Margins.Left = 10
+      Align = alLeft
+      TabOrder = 5
+    end
+    object edtMaxSize: TNumberBox
+      AlignWithMargins = True
+      Left = 330
+      Top = 251
+      Width = 70
+      Height = 23
+      Margins.Left = 10
+      Margins.Top = 6
+      Margins.Bottom = 6
+      Align = alLeft
+      Decimal = 0
+      Mode = nbmCurrency
+      MaxValue = 100.000000000000000000
+      TabOrder = 6
+      SpinButtonOptions.Placement = nbspCompact
+      UseMouseWheel = True
+      ExplicitTop = 248
+    end
+    object edtNumberOfDays: TNumberBox
+      AlignWithMargins = True
+      Left = 330
+      Top = 286
+      Width = 70
+      Height = 23
+      Margins.Left = 10
+      Margins.Top = 6
+      Margins.Bottom = 6
+      Align = alLeft
+      Decimal = 0
+      Mode = nbmCurrency
+      MaxValue = 100.000000000000000000
+      TabOrder = 7
+      SpinButtonOptions.Placement = nbspCompact
+      UseMouseWheel = True
+      ExplicitTop = 283
     end
   end
   inherited alFrame: TActionList

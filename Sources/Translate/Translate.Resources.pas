@@ -23,13 +23,17 @@ resourcestring
   //English
   en_Add                  = 'Add';
   en_AllAttachments       = 'All attachments';
+  en_AllCheck             = 'Set all checks';
+  en_AllUnCheck           = 'Remove all checks';
   en_Attachment           = 'Attachment';
   en_Begin                = 'begin';
   en_Body                 = 'Body';
   en_Break                = 'Break';
+  en_BruteForce           = 'Brute force';
   en_Cancel               = 'Cancel';
   en_ClassName            = 'Class name';
   en_CollapseAll          = 'Collapse All';
+  en_Color                = 'Color';
   en_ColumnSettings       = 'Column settings';
   en_Compatibility        = 'Compatibility';
   en_CompHierarchy        = 'Components hierarchy';
@@ -44,6 +48,7 @@ resourcestring
   en_DeleteSelectedPrompt = '%d items will be removed. Continue?';
   en_DirectoryNotFound    = 'Directory "%s" not found';
   en_Disabled             = 'Disabled';
+  en_Down                 = 'Down';
   en_DuplicateCount       = 'Found %d records in DB / Duplicates';
   en_Edit                 = 'Edit';
   en_EditCommonParameters = 'Common parameters';
@@ -59,11 +64,14 @@ resourcestring
   en_ExpandAll            = 'Expand All';
   en_ExportToCSV          = 'Export To CSV';
   en_ExportToExcel        = 'Export To Excel';
+  en_ExtendedFilter       = 'Extended filter';
   en_Failed               = 'Operation was failed';
   en_FileExtensions       = 'File extensions to search';
   en_FileIsDisabled       = 'File "%s" is disabled';
   en_FileName             = 'File name';
   en_FileNotFound         = 'File "%s" not found';
+  en_FileNotSelected      = 'No file selected';
+  en_Filter               = 'Filter';
   en_FoundFiles           = 'Found %d files';
   en_From                 = 'From';
   en_GettingStarted       = 'Getting started';
@@ -72,17 +80,20 @@ resourcestring
   en_Hash                 = 'Hash';
   en_Import               = 'Import';
   en_Info                 = 'Info ';
+  en_IsLogginActive       = 'Write information to the log file';
   en_Language             = 'Language';
   en_LoadRecordsFromDB    = 'Load records from DB at startup';
   en_Main                 = 'Main';
   en_Mask                 = 'Mask';
   en_Matches              = 'Matches';
+  en_MaxSizeLogFile       = 'Max Size Of Log File (Mb)';
   en_MessageId            = 'Message Id';
   en_ModuleName           = 'Module name';
   en_NewNamePrompt        = 'Enter a name for the new template set';
   en_NewNameSet           = 'New template set';
   en_NoDataToDisplay      = 'No data to display';
   en_NoMatchFound         = 'No match found';
+  en_NumberOfDays         = 'Number of days during which logs are stored';
   en_Ok                   = 'Ok';
   en_OpenEmail            = 'Open email';
   en_OpenFile             = 'Open File';
@@ -91,10 +102,16 @@ resourcestring
   en_Options              = 'Options';
   en_Parameter            = 'Parameter';
   en_Parameters           = 'Parameters';
+  en_Password             = 'Password';
+  en_PasswordList         = 'Password list';
+  en_PasswordNotFound     = 'Password not found';
+  en_PasswordNotRequired  = 'Password is not required';
   en_Paste                = 'Paste';
   en_Path                 = 'Path';
   en_PathForAttachments   = 'Paths for saving attachments';
+  en_PathNotExists        = 'Paths "%s" not exists';
   en_PathsToFindFiles     = 'Paths to find files';
+  en_PathsToFindNotExists = 'Paths to find files not exists';
   en_PathsToFindSaveFiles = 'Paths for search and saving attachments';
   en_PathsToSaveFiles     = 'Paths for saving files';
   en_PlainText            = 'Plain Text';
@@ -104,6 +121,7 @@ resourcestring
   en_ProgramStopsWorking  = 'Application will be terminated!';
   en_ProgramVersion       = 'Version';
   en_Refresh              = 'Refresh';
+  en_RegExpIsEmpty        = 'There are no regular expression patterns';
   en_RegExpTemplate       = 'RegExp Template';
   en_Results              = 'Results';
   en_SampleText           = 'Sample Text';
@@ -116,6 +134,7 @@ resourcestring
   en_SelectAll            = 'SelectAll';
   en_Server               = 'Server';
   en_SetOfTemplates       = 'Set of templates';
+  en_ShowSearchBar        = 'Show search bar';
   en_Size                 = 'Size';
   en_StartSearch          = 'Start Search';
   en_Subject              = 'Subject';
@@ -124,22 +143,26 @@ resourcestring
   en_TemplateName         = 'Template name';
   en_Text                 = 'Text';
   en_Time                 = 'Time';
+  en_Up                   = 'Up';
   en_UseRawText           = 'Use raw text';
   en_Utilities            = 'Utilities';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
-  en_RemoveChecks         = 'Remove all checks';
 
   //Ukrainian
   uk_Add                  = 'Додати';
   uk_AllAttachments       = 'Всі вкладення';
+  uk_AllCheck             = 'Встановити позначки';
+  uk_AllUnCheck           = 'Зняти всі позначки';
   uk_Attachment           = 'Вкладення';
   uk_Begin                = 'початок';
   uk_Body                 = 'Тіло';
   uk_Break                = 'Зупинити';
+  uk_BruteForce           = 'Підбір паролів';
   uk_Cancel               = 'Скасувати';
   uk_ClassName            = 'Назва класу';
   uk_CollapseAll          = 'Згорнути все';
+  uk_Color                = 'Колір';
   uk_ColumnSettings       = 'Налаштування стовпців';
   uk_Compatibility        = 'Сумісність';
   uk_CompHierarchy        = 'Ієрархія компонентів';
@@ -154,6 +177,7 @@ resourcestring
   uk_DeleteSelectedPrompt = 'Буде видалено %d записів. Продовжити?';
   uk_DirectoryNotFound    = 'Каталог "%s" не знайдено';
   uk_Disabled             = 'Вимкнено';
+  uk_Down                 = 'Вниз';
   uk_DuplicateCount       = 'Знайдено %d записів в БД / дублікатів файлів';
   uk_Edit                 = 'Редагувати';
   uk_EditCommonParameters = 'Загальні параметри';
@@ -169,11 +193,14 @@ resourcestring
   uk_ExpandAll            = 'Розгорнути все';
   uk_ExportToCSV          = 'Експортувати до CSV';
   uk_ExportToExcel        = 'Експортувати до Excel';
+  uk_ExtendedFilter       = 'Розширений фільтр';
   uk_Failed               = 'Операція була невдалою';
   uk_FileExtensions       = 'Розширення файлів для пошуку';
   uk_FileIsDisabled       = 'Файл "%s" вимкнено';
   uk_FileName             = 'Назва файлу';
   uk_FileNotFound         = 'Файл "%s" не знайдено';
+  uk_FileNotSelected      = 'Файл не вибрано';
+  uk_Filter               = 'Фільтрувати';
   uk_FoundFiles           = 'Знайдено %d файлів';
   uk_From                 = 'Відправник';
   uk_GettingStarted       = 'Початок роботи';
@@ -182,17 +209,20 @@ resourcestring
   uk_Hash                 = 'Хеш';
   uk_Import               = 'Імпорт';
   uk_Info                 = 'Опис ';
+  uk_IsLogginActive       = 'Записувати інформацію в лог-файл';
   uk_Language             = 'Мова';
   uk_LoadRecordsFromDB    = 'Завантажувати записи з БД при старті';
   uk_Main                 = 'Основне';
   uk_Mask                 = 'Маска';
   uk_Matches              = 'Співпадіння';
+  uk_MaxSizeLogFile       = 'Максимальний розмір лог-файлу (Mb)';
   uk_MessageId            = 'Id листа';
   uk_ModuleName           = 'Назва модуля';
   uk_NewNamePrompt        = 'Введіть назву нового набору шаблонів';
   uk_NewNameSet           = 'Новий набір шаблонів';
   uk_NoDataToDisplay      = 'Немає даних для відображення';
   uk_NoMatchFound         = 'Співпадіння відсутні';
+  uk_NumberOfDays         = 'Кількість днів, протягом яких зберігаються логи';
   uk_Ok                   = 'Ок';
   uk_OpenEmail            = 'Відкрити email';
   uk_OpenFile             = 'Відкрити файл';
@@ -201,10 +231,16 @@ resourcestring
   uk_Options              = 'Опції';
   uk_Parameter            = 'Параметр';
   uk_Parameters           = 'Параметри';
+  uk_Password             = 'Пароль';
+  uk_PasswordList         = 'Список паролів';
+  uk_PasswordNotFound     = 'Пароль не знайдено';
+  uk_PasswordNotRequired  = 'Не потребує паролю';
   uk_Paste                = 'Вставити';
   uk_Path                 = 'Шлях';
   uk_PathForAttachments   = 'Шляхи для збереження вкладень';
+  uk_PathNotExists        = 'Шлях "%s" не існує';
   uk_PathsToFindFiles     = 'Шляхи для пошуку файлів';
+  uk_PathsToFindNotExists = 'Шляхи для пошуку файлів відсутні';
   uk_PathsToFindSaveFiles = 'Шляхи для пошуку та збереження файлів';
   uk_PathsToSaveFiles     = 'Шляхи для збереження файлів';
   uk_PlainText            = 'Простий текст';
@@ -214,6 +250,7 @@ resourcestring
   uk_ProgramStopsWorking  = 'Програму буде зупинено!';
   uk_ProgramVersion       = 'Версія';
   uk_Refresh              = 'Оновити';
+  uk_RegExpIsEmpty        = 'Шаблони регулярних виразів відсутні';
   uk_RegExpTemplate       = 'Шаблон регулярного виразу';
   uk_Results              = 'Результат';
   uk_SampleText           = 'Приклад тексту';
@@ -226,6 +263,7 @@ resourcestring
   uk_SelectAll            = 'Виділити все';
   uk_Server               = 'Сервер';
   uk_SetOfTemplates       = 'Набір шаблонів';
+  uk_ShowSearchBar        = 'Показати панель пошуку';
   uk_Size                 = 'Розмір';
   uk_StartSearch          = 'Почати пошук';
   uk_Subject              = 'Тема';
@@ -234,23 +272,27 @@ resourcestring
   uk_TemplateName         = 'Назва шаблону';
   uk_Text                 = 'Текст';
   uk_Time                 = 'Час';
+  uk_Up                   = 'Вгору';
   uk_UseRawText           = 'Парсити сирий текст';
   uk_Utilities            = 'Утиліти';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
-  uk_RemoveChecks         = 'Зняти всі позначки';
 
 const
-   ArrayMessages: array[1 .. 106] of TMessageItem = (
+   ArrayMessages: array[1 .. 125] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
+    (Key: 'AllCheck'             ; En: en_AllCheck;             Uk: uk_AllCheck),
+    (Key: 'AllUnCheck'           ; En: en_AllUnCheck;           Uk: uk_AllUnCheck),
     (Key: 'Attachment'           ; En: en_Attachment;           Uk: uk_Attachment),
     (Key: 'Begin'                ; En: en_Begin;                Uk: uk_Begin),
     (Key: 'Body'                 ; En: en_Body;                 Uk: uk_Body),
     (Key: 'Break'                ; En: en_Break;                Uk: uk_Break),
+    (Key: 'BruteForce'           ; En: en_BruteForce;           Uk: uk_BruteForce),
     (Key: 'Cancel'               ; En: en_Cancel;               Uk: uk_Cancel),
     (Key: 'ClassName'            ; En: en_ClassName;            Uk: uk_ClassName),
     (Key: 'CollapseAll'          ; En: en_CollapseAll;          Uk: uk_CollapseAll),
+    (Key: 'Color'                ; En: en_Color;                Uk: uk_Color),
     (Key: 'ColumnSettings'       ; En: en_ColumnSettings;       Uk: uk_ColumnSettings),
     (Key: 'Compatibility'        ; En: en_Compatibility;        Uk: uk_Compatibility),
     (Key: 'CompHierarchy'        ; En: en_CompHierarchy;        Uk: uk_CompHierarchy),
@@ -265,6 +307,7 @@ const
     (Key: 'DeleteSelectedPrompt' ; En: en_DeleteSelectedPrompt; Uk: uk_DeleteSelectedPrompt),
     (Key: 'DirectoryNotFound'    ; En: en_DirectoryNotFound;    Uk: uk_DirectoryNotFound),
     (Key: 'Disabled'             ; En: en_Disabled;             Uk: uk_Disabled),
+    (Key: 'Down'                 ; En: en_Down;                 Uk: uk_Down),
     (Key: 'DuplicateCount'       ; En: en_DuplicateCount;       Uk: uk_DuplicateCount),
     (Key: 'Edit'                 ; En: en_Edit;                 Uk: uk_Edit),
     (Key: 'EditCommonParameters' ; En: en_EditCommonParameters; Uk: uk_EditCommonParameters),
@@ -280,11 +323,14 @@ const
     (Key: 'ExpandAll'            ; En: en_ExpandAll;            Uk: uk_ExpandAll),
     (Key: 'ExportToCSV'          ; En: en_ExportToCSV;          Uk: uk_ExportToCSV),
     (Key: 'ExportToExcel'        ; En: en_ExportToExcel;        Uk: uk_ExportToExcel),
+    (Key: 'ExtendedFilter'       ; En: en_ExtendedFilter;       Uk: uk_ExtendedFilter),
     (Key: 'Failed'               ; En: en_Failed;               Uk: uk_Failed),
     (Key: 'FileExtensions'       ; En: en_FileExtensions;       Uk: uk_FileExtensions),
     (Key: 'FileIsDisabled'       ; En: en_FileIsDisabled;       Uk: uk_FileIsDisabled),
     (Key: 'FileName'             ; En: en_FileName;             Uk: uk_FileName),
     (Key: 'FileNotFound'         ; En: en_FileNotFound;         Uk: uk_FileNotFound),
+    (Key: 'FileNotSelected'      ; En: en_FileNotSelected;      Uk: uk_FileNotSelected),
+    (Key: 'Filter'               ; En: en_Filter;               Uk: uk_Filter),
     (Key: 'FoundFiles'           ; En: en_FoundFiles;           Uk: uk_FoundFiles),
     (Key: 'From'                 ; En: en_From;                 Uk: uk_From),
     (Key: 'GettingStarted'       ; En: en_GettingStarted;       Uk: uk_GettingStarted),
@@ -293,17 +339,20 @@ const
     (Key: 'Hash'                 ; En: en_Hash;                 Uk: uk_Hash),
     (Key: 'Import'               ; En: en_Import;               Uk: uk_Import),
     (Key: 'Info'                 ; En: en_Info;                 Uk: uk_Info),
+    (Key: 'IsLogginActive'       ; En: en_IsLogginActive;       Uk: uk_IsLogginActive),
     (Key: 'Language'             ; En: en_Language;             Uk: uk_Language),
     (Key: 'LoadRecordsFromDB'    ; En: en_LoadRecordsFromDB;    Uk: uk_LoadRecordsFromDB),
     (Key: 'Main'                 ; En: en_Main;                 Uk: uk_Main),
     (Key: 'Mask'                 ; En: en_Mask;                 Uk: uk_Mask),
     (Key: 'Matches'              ; En: en_Matches;              Uk: uk_Matches),
+    (Key: 'MaxSizeLogFile'       ; En: en_MaxSizeLogFile;       Uk: uk_MaxSizeLogFile),
     (Key: 'MessageId'            ; En: en_MessageId;            Uk: uk_MessageId),
     (Key: 'ModuleName'           ; En: en_ModuleName;           Uk: uk_ModuleName),
     (Key: 'NewNamePrompt'        ; En: en_NewNamePrompt;        Uk: uk_NewNamePrompt),
     (Key: 'NewNameSet'           ; En: en_NewNameSet;           Uk: uk_NewNameSet),
     (Key: 'NoDataToDisplay'      ; En: en_NoDataToDisplay;      Uk: uk_NoDataToDisplay),
     (Key: 'NoMatchFound'         ; En: en_NoMatchFound;         Uk: uk_NoMatchFound),
+    (Key: 'NumberOfDays'         ; En: en_NumberOfDays;         Uk: uk_NumberOfDays),
     (Key: 'Ok'                   ; En: en_Ok;                   Uk: uk_Ok),
     (Key: 'OpenEmail'            ; En: en_OpenEmail;            Uk: uk_OpenEmail),
     (Key: 'OpenFile'             ; En: en_OpenFile;             Uk: uk_OpenFile),
@@ -312,10 +361,16 @@ const
     (Key: 'Options'              ; En: en_Options;              Uk: uk_Options),
     (Key: 'Parameter'            ; En: en_Parameter;            Uk: uk_Parameter),
     (Key: 'Parameters'           ; En: en_Parameters;           Uk: uk_Parameters),
+    (Key: 'Password'             ; En: en_Password;             Uk: uk_Password),
+    (Key: 'PasswordList'         ; En: en_PasswordList;         Uk: uk_PasswordList),
+    (Key: 'PasswordNotFound'     ; En: en_PasswordNotFound;     Uk: uk_PasswordNotFound),
+    (Key: 'PasswordNotRequired'  ; En: en_PasswordNotRequired;  Uk: uk_PasswordNotRequired),
     (Key: 'Paste'                ; En: en_Paste;                Uk: uk_Paste),
     (Key: 'Path'                 ; En: en_Path;                 Uk: uk_Path),
     (Key: 'PathForAttachments'   ; En: en_PathForAttachments;   Uk: uk_PathForAttachments),
+    (Key: 'PathNotExists'        ; En: en_PathNotExists;        Uk: uk_PathNotExists),
     (Key: 'PathsToFindFiles'     ; En: en_PathsToFindFiles;     Uk: uk_PathsToFindFiles),
+    (Key: 'PathsToFindNotExists' ; En: en_PathsToFindNotExists; Uk: uk_PathsToFindNotExists),
     (Key: 'PathsToFindSaveFiles' ; En: en_PathsToFindSaveFiles; Uk: uk_PathsToFindSaveFiles),
     (Key: 'PathsToSaveFiles'     ; En: en_PathsToSaveFiles;     Uk: uk_PathsToSaveFiles),
     (Key: 'PlainText'            ; En: en_PlainText;            Uk: uk_PlainText),
@@ -325,8 +380,8 @@ const
     (Key: 'ProgramStopsWorking'  ; En: en_ProgramStopsWorking;  Uk: uk_ProgramStopsWorking),
     (Key: 'ProgramVersion'       ; En: en_ProgramVersion;       Uk: uk_ProgramVersion),
     (Key: 'Refresh'              ; En: en_Refresh;              Uk: uk_Refresh),
+    (Key: 'RegExpIsEmpty'        ; En: en_RegExpIsEmpty;        Uk: uk_RegExpIsEmpty),
     (Key: 'RegExpTemplate'       ; En: en_RegExpTemplate;       Uk: uk_RegExpTemplate),
-    (Key: 'RemoveChecks'         ; En: en_RemoveChecks;         Uk: uk_RemoveChecks),
     (Key: 'Results'              ; En: en_Results;              Uk: uk_Results),
     (Key: 'SampleText'           ; En: en_SampleText;           Uk: uk_SampleText),
     (Key: 'Save'                 ; En: en_Save;                 Uk: uk_Save),
@@ -336,6 +391,7 @@ const
     (Key: 'SearchDuplicateFiles' ; En: en_SearchDuplicateFiles; Uk: uk_SearchDuplicateFiles),
     (Key: 'SelectAll'            ; En: en_SelectAll;            Uk: uk_SelectAll),
     (Key: 'SetOfTemplates'       ; En: en_SetOfTemplates;       Uk: uk_SetOfTemplates),
+    (Key: 'ShowSearchBar'        ; En: en_ShowSearchBar;        Uk: uk_ShowSearchBar),
     (Key: 'Size'                 ; En: en_Size;                 Uk: uk_Size),
     (Key: 'StartSearch'          ; En: en_StartSearch;          Uk: uk_StartSearch),
     (Key: 'Subject'              ; En: en_Subject;              Uk: uk_Subject),
@@ -344,6 +400,7 @@ const
     (Key: 'TemplateName'         ; En: en_TemplateName;         Uk: uk_TemplateName),
     (Key: 'Text'                 ; En: en_Text;                 Uk: uk_Text),
     (Key: 'Time'                 ; En: en_Time;                 Uk: uk_Time),
+    (Key: 'Up'                   ; En: en_Up;                   Uk: uk_Up),
     (Key: 'UseRawText'           ; En: en_UseRawText;           Uk: uk_UseRawText),
     (Key: 'Utilities'            ; En: en_Utilities;            Uk: uk_Utilities),
     (Key: 'Value'                ; En: en_Value;                Uk: uk_Value),

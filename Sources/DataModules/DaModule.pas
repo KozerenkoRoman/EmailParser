@@ -80,7 +80,7 @@ begin
   if not FThreadEmails.Started then
     FThreadEmails.Start;
 
-  DBFile := TPath.Combine(TPath.GetDirectoryName(Application.ExeName), C_SQLITE_DB_FILE);
+  DBFile := TPath.Combine(TDirectory.GetCurrentDirectory, C_SQLITE_DB_FILE);
   with Connection do
   begin
     FetchOptions.Mode := fmAll;
@@ -228,8 +228,10 @@ var
 begin
   LogWriter.Write(ddEnterMethod, Self, 'FillAllEmailsRecord');
   try
+
     qAllEmails.Open;
-    qAllEmails.First;
+    qAllEmails.FetchAll;
+    TGeneral.EmailList.SetCapacity(qAllEmails.RecordCount);
     while not qAllEmails.Eof do
     begin
       New(ResultData);

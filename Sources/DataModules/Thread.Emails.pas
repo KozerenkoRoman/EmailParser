@@ -91,7 +91,7 @@ var
   IsStartTransaction: Boolean;
   DBFile: TFileName;
 begin
-  DBFile := TPath.Combine(TPath.GetDirectoryName(Application.ExeName), C_SQLITE_DB_FILE);
+  DBFile := TPath.Combine(TDirectory.GetCurrentDirectory, C_SQLITE_DB_FILE);
   FConnection := TFDConnection.Create(nil);
   with FConnection do
   begin

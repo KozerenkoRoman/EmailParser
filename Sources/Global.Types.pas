@@ -5,30 +5,28 @@ interface
 {$REGION 'Region uses'}
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
-  System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
+  System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} XmlFiles,
   System.IOUtils, Vcl.Forms, ArrayHelper, Data.DB, System.Win.Registry, Common.Types, Translate.Lang,
-<<<<<<< HEAD
-  System.IniFiles;
+  System.IniFiles, VirtualTrees, System.RegularExpressions, System.Math, Vcl.Graphics, Html.Consts,
+  Files.Utils, System.Generics.Defaults;
 {$ENDREGION}
 
 type
-  TNodeType = (ntNode, ntGroup);
-
-=======
-  System.IniFiles, VirtualTrees, System.RegularExpressions, System.Math;
-{$ENDREGION}
-
-type
->>>>>>> Development
   PRegExpData = ^TRegExpData;
   TRegExpData = record
     ParameterName  : string;
     RegExpTemplate : string;
     GroupIndex     : Integer;
     UseRawText     : Boolean;
+    Color          : TColor;
     procedure Clear;
   end;
   TRegExpArray = TArrayRecord<TRegExpData>;
+
+  TRegExp = record
+    Color: TColor;
+    IsSelected: Boolean;
+  end;
 
   PParamPath = ^TParamPath;
   TParamPath = record
@@ -39,18 +37,6 @@ type
   end;
   TParamPathArray = TArrayRecord<TParamPath>;
 
-<<<<<<< HEAD
-  PResultData = ^TResultData;
-  TResultData = record
-    ShortName : string;
-    FileName  : TFileName;
-    MessageId : string;
-    Subject   : string;
-    Attach    : Integer;
-    TimeStamp : TDateTime;
-    procedure Clear;
-    procedure Assign(const aData: TResultData);
-=======
   PSorterPath = ^TSorterPath;
   TSorterPath = record
     Mask       : string;
@@ -73,7 +59,7 @@ type
     ParsedText  : string;
     ImageIndex  : Byte;
     Matches     : TArrayRecord<TStringArray>;
-    ParentNode  : PVirtualNode;
+    OwnerNode   : PVirtualNode;
     FromZip     : Boolean;
     FromDB      : Boolean;
     procedure Clear;
@@ -95,7 +81,7 @@ type
     ContentType : string;
     ParsedText  : string;
     Matches     : TArrayRecord<TStringArray>;
-    ParentNode  : PVirtualNode;
+    OwnerNode   : PVirtualNode;
     procedure Clear;
     procedure LengthAlignment;
     class operator Initialize(out aDest: TResultData);
@@ -125,6 +111,29 @@ type
     IsDeleted : Boolean;
   end;
 
+  PPassword = ^TPassword;
+  TPassword = record
+    Hash     : string;
+    FileName : string;
+    Password : string;
+    IsDeleted: Boolean;
+    Info     : string;
+  end;
+  TPasswordArray = TArrayRecord<PPassword>;
+
+  PPasswordData = ^TPasswordData;
+  TPasswordData = record
+    Hash: string;
+  end;
+
+  TPasswordList = class(TObjectDictionary<string, PPassword>)
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function GetItem(const aKey: string): PPassword;
+    procedure ClearData;
+  end;
+
   TEmailList = class(TObjectDictionary<string, PResultData>)
   public
     constructor Create;
@@ -132,6 +141,7 @@ type
     function GetItem(const aKey: string): PResultData;
     procedure ClearData;
     procedure ClearParentNodePointer;
+    procedure SetCapacity(aValue: Integer);
   end;
 
   TAttachmentList = class(TObjectDictionary<string, PAttachment>)
@@ -141,7 +151,7 @@ type
     function GetItem(const aKey: string): PAttachment;
     procedure ClearData;
     procedure ClearParentNodePointer;
->>>>>>> Development
+    procedure SetCapacity(aValue: Integer);
   end;
 
   TGeneral = record
@@ -151,23 +161,24 @@ type
     class function GetRegExpCount: Integer; static;
     class function GetRegExpParametersList: TRegExpArray; static;
     class function GetSorterPathList: TSorterPathArray;  static;
+    class function GetPasswordList: TPasswordArray;  static;
     class function XMLFile: TXMLFile; static;
     class function XMLParams: TXMLFile; static;
     class procedure NoHibernate; static;
     class var
       AttachmentList : TAttachmentList;
       EmailList      : TEmailList;
+      PasswordList   : TPasswordList;
+      RegExpColumns  : TArray<TRegExp>;
   end;
 
-<<<<<<< HEAD
-const
-  C_SECTION_MAIN = 'Main';
-=======
   TAttachmentDir = (adAttachment, adSubAttachment, adUserDefined);
   TAttachmentDirHelper = record helper for TAttachmentDir
     function FromString(aDir: string): TAttachmentDir;
   end;
 
+  TFilterSet = set of 0 .. SizeOf(Cardinal) * 8 - 1;     //Count of RegExp patterns - 32
+  TFilterOperation = (foAND, foOR);
   TExtIcon = (eiPdf = 20, eiPng = 21, eiGif = 8, eiIco = 2, eiJpg = 12, eiZip = 30, eiRar = 23, eiHtml = 9,
               eiTxt = 0,  eiXls = 29, eiDoc = 4);
   TExtIconHelper = record helper for TExtIcon
@@ -175,9 +186,10 @@ const
   end;
 
 const
-  C_ICON_SIZE = 39;
+  C_ICON_SIZE = 40;
   C_TOP_COLOR = $001E4DFF;
->>>>>>> Development
+  C_PROGRESS_STEP = 50;
+  MaxCardinal: Cardinal = $FFFFFFFF;
 
 var
   General: TGeneral;
@@ -192,67 +204,8 @@ var
 
 class procedure TGeneral.NoHibernate;
 begin
-<<<<<<< HEAD
-  if not Assigned(FXMLParams) then
-    FXMLParams := TXmlFile.Create(TPath.ChangeExtension(TPath.GetFullPath(Application.ExeName), '.xml'));
-  Result := FXMLParams;
-end;
-
-class function TGeneral.GetRegExpParametersList: TArray<TRegExpData>;
-var
-  Data: TRegExpData;
-  i: Integer;
-begin
-  XmlParams.Open;
-  XmlParams.CurrentSection := 'RegExpParameters';
-  try
-    i := 0;
-    SetLength(Result, XmlParams.ChildCount);
-     while not XmlParams.IsLastKey do
-    begin
-      if XmlParams.ReadAttributes then
-      begin
-        Data.ParameterName  := XmlParams.Attributes.GetAttributeValue('ParameterName', '');
-        Data.RegExpTemplate := XmlParams.Attributes.GetAttributeValue('RegExpTemplate', '');
-        Result[i] := Data;
-        Inc(i);
-      end;
-      XmlParams.NextKey;
-    end;
-  finally
-    XmlParams.CurrentSection := '';
-  end;
-end;
-
-class function TGeneral.GetPathList: TArray<TParamPath>;
-var
-  Data: TParamPath;
-  i: Integer;
-begin
-  XmlParams.Open;
-  XmlParams.CurrentSection := 'Path';
-  try
-    i := 0;
-    SetLength(Result, XmlParams.ChildCount);
-    while not XmlParams.IsLastKey do
-    begin
-      if XmlParams.ReadAttributes then
-      begin
-        Data.WithSubdir := XmlParams.Attributes.GetAttributeValue('WithSubdir', True);
-        Data.Path       := XmlParams.Attributes.GetAttributeValue('Path', '');
-        Data.Info       := XmlParams.Attributes.GetAttributeValue('Info', '');
-        Result[i]       := Data;
-        Inc(i);
-      end;
-      XmlParams.NextKey;
-    end;
-  finally
-    XmlParams.CurrentSection := '';
-  end;
-=======
   if Assigned(@SetThreadExecutionState) then
     SetThreadExecutionState(ES_SYSTEM_REQUIRED or ES_CONTINUOUS {or ES_DISPLAY_REQUIRED});
->>>>>>> Development
 end;
 
 class function TGeneral.XMLFile: TXMLFile;
@@ -290,6 +243,7 @@ begin
         Data.RegExpTemplate := XMLParams.Attributes.GetAttributeValue('RegExpTemplate', '');
         Data.GroupIndex     := XMLParams.Attributes.GetAttributeValue('GroupIndex', 0);
         Data.UseRawText     := XMLParams.Attributes.GetAttributeValue('UseRawText', False);
+        Data.Color          := XMLParams.Attributes.GetAttributeValue('Color', clRed  {arrWebColors[Random(High(arrWebColors))].Color});
         Result[i] := Data;
         Inc(i);
       end;
@@ -306,6 +260,38 @@ begin
   XMLParams.CurrentSection := C_SECTION_REGEXP;
   try
     Result := XMLParams.ChildCount;
+  finally
+    XMLParams.CurrentSection := '';
+  end;
+end;
+
+class function TGeneral.GetPasswordList: TPasswordArray;
+var
+  Data: PPassword;
+  i: Integer;
+begin
+  XMLParams.Open;
+  XMLParams.CurrentSection := 'Passwords';
+  try
+    i := 0;
+    Result.Count := XMLParams.ChildCount;
+    while not XMLParams.IsLastKey do
+    begin
+      if XMLParams.ReadAttributes then
+      begin
+        New(Data);
+        Data.FileName := XMLParams.Attributes.GetAttributeValue('FileName', '');
+        Data.Password := XMLParams.Attributes.GetAttributeValue('Password', '');
+        Data.Hash     := XMLParams.Attributes.GetAttributeValue('Hash', '');
+        Data.Info     := XMLParams.Attributes.GetAttributeValue('Info', '');
+        Data.IsDeleted := not TFile.Exists(Data.FileName);
+        if Data.Hash.IsEmpty and not Data.IsDeleted then
+          Data.Hash := TFileUtils.GetHash(Data.FileName);
+        Result[i] := Data;
+        Inc(i);
+      end;
+      XMLParams.NextKey;
+    end;
   finally
     XMLParams.CurrentSection := '';
   end;
@@ -388,32 +374,17 @@ end;
 
 { TResultData }
 
-<<<<<<< HEAD
-procedure TResultData.Assign(const aData: TResultData);
-begin
-  Self.ShortName := aData.ShortName;
-  Self.FileName  := aData.FileName;
-  Self.MessageId := aData.MessageId;
-  Self.Subject   := aData.Subject;
-  Self.Attach    := aData.Attach;
-  Self.TimeStamp := aData.TimeStamp;
-end;
-
-procedure TResultData.Clear;
-begin
-  Self := Default(TResultData);
-=======
 procedure TResultData.Clear;
 begin
   Matches.Clear;
   Self.Attachments.Clear;
   Self := Default(TResultData);
-  Self.ParentNode := nil;
+  Self.OwnerNode := nil;
 end;
 
 class operator TResultData.Initialize(out aDest: TResultData);
 begin
-  aDest.ParentNode := nil;
+  aDest.OwnerNode := nil;
 end;
 
 procedure TResultData.LengthAlignment;
@@ -438,7 +409,7 @@ end;
 
 class operator TAttachment.Initialize(out aDest: TAttachment);
 begin
-  aDest.ParentNode := nil;
+  aDest.OwnerNode := nil;
   aDest.FromZip    := False;
   aDest.FromDB     := False;
 end;
@@ -497,6 +468,12 @@ begin
     Result := Self.Items[aKey];
 end;
 
+procedure TEmailList.SetCapacity(aValue: Integer);
+begin
+  if (aValue > Self.Count) and (aValue > Self.Capacity) then
+    Self.Capacity := aValue * 2;
+end;
+
 procedure TEmailList.ClearData;
 begin
   for var item in Self do
@@ -507,7 +484,7 @@ end;
 procedure TEmailList.ClearParentNodePointer;
 begin
   for var item in Self.Values do
-    item.ParentNode := nil;
+    item.OwnerNode := nil;
 end;
 
 { TAttachmentList }
@@ -531,6 +508,12 @@ begin
     Result := Self.Items[aKey];
 end;
 
+procedure TAttachmentList.SetCapacity(aValue: Integer);
+begin
+  if (aValue > Self.Count) and (aValue > Self.Capacity) then
+    Self.Capacity := aValue * 2;
+end;
+
 procedure TAttachmentList.ClearData;
 begin
   for var item in Self do
@@ -541,7 +524,7 @@ end;
 procedure TAttachmentList.ClearParentNodePointer;
 begin
   for var item in Self.Values do
-    item.ParentNode := nil;
+    item.OwnerNode := nil;
 end;
 
 { TSorterPath }
@@ -549,12 +532,40 @@ end;
 procedure TSorterPath.Clear;
 begin
   Self := Default(TSorterPath);
->>>>>>> Development
+end;
+
+{ TPasswordList }
+
+constructor TPasswordList.Create;
+begin
+  inherited Create([], 100);
+
+end;
+
+destructor TPasswordList.Destroy;
+begin
+  ClearData;
+  inherited;
+end;
+
+procedure TPasswordList.ClearData;
+begin
+  for var item in Self do
+    Dispose(item.Value);
+  Self.Clear;
+end;
+
+function TPasswordList.GetItem(const aKey: string): PPassword;
+begin
+  Result := nil;
+  if Self.ContainsKey(aKey) then
+    Result := Self.Items[aKey];
 end;
 
 initialization
-  TGeneral.EmailList := TEmailList.Create;
+  TGeneral.EmailList      := TEmailList.Create;
   TGeneral.AttachmentList := TAttachmentList.Create;
+  TGeneral.PasswordList   := TPasswordList.Create;
 
 finalization
   if Assigned(FXMLFile) then
@@ -566,5 +577,7 @@ finalization
     FreeAndNil(TGeneral.EmailList);
   if Assigned(TGeneral.AttachmentList) then
     FreeAndNil(TGeneral.AttachmentList);
+  if Assigned(TGeneral.PasswordList) then
+    FreeAndNil(TGeneral.PasswordList);
 
 end.

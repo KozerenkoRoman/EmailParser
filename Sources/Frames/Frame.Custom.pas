@@ -14,7 +14,7 @@ uses
 {$ENDREGION}
 
 type
-  TFrameCustom = class(TFrame, ITranslate)
+  TFrameCustom = class(TFrame, IConfig)
     aAdd       : TAction;
     aDelete    : TAction;
     aEdit      : TAction;
@@ -33,8 +33,10 @@ type
   private const
     C_IDENTITY_NAME = 'frameCustom';
   private
-    //ITranslate
-    procedure ITranslate.LanguageChange = Translate;
+    //IConfig
+    procedure IConfig.UpdateLanguage = Translate;
+    procedure UpdateRegExp;
+    procedure UpdateFilter(const aOperation: TFilterOperation);
   protected
     function GetIdentityName: string; virtual;
     procedure Deinitialize; virtual;
@@ -54,13 +56,13 @@ implementation
 procedure TFrameCustom.Initialize;
 begin
   TGeneral.XMLParams.Open;
-  TPublishers.TranslatePublisher.Subscribe(Self);
+  TPublishers.ConfigPublisher.Subscribe(Self);
 end;
 
 procedure TFrameCustom.Deinitialize;
 begin
   TGeneral.XMLParams.Save;
-  TPublishers.TranslatePublisher.Unsubscribe(Self);
+  TPublishers.ConfigPublisher.Unsubscribe(Self);
 end;
 
 procedure TFrameCustom.Translate;
@@ -70,6 +72,16 @@ begin
   aEdit.Hint    := TLang.Lang.Translate('Edit');
   aRefresh.Hint := TLang.Lang.Translate('Refresh');
   aSave.Hint    := TLang.Lang.Translate('Save');
+end;
+
+procedure TFrameCustom.UpdateFilter(const aOperation: TFilterOperation);
+begin
+  // nothing
+end;
+
+procedure TFrameCustom.UpdateRegExp;
+begin
+  // nothing
 end;
 
 function TFrameCustom.GetIdentityName: string;

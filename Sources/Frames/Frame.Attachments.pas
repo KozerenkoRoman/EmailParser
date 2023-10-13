@@ -10,12 +10,12 @@ uses
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
-  Vcl.WinXPanels, Publishers.Interfaces, Publishers, Html.Utils, VirtualTrees.ExportHelper, Global.Resources,
-  DaModule, System.Threading;
+  Vcl.WinXPanels, Publishers.Interfaces, Publishers, Global.Utils, VirtualTrees.ExportHelper, Global.Resources,
+  DaModule, System.Threading, EXIF.Dialog, XLSX.Dialog;
 {$ENDREGION}
 
 type
-  TframeAttachments = class(TframeSource, IEmailChange, IUpdateXML)
+  TframeAttachments = class(TframeSource, IEmailChange, IConfig)
     aOpenAttachFile      : TAction;
     aOpenParsedText      : TAction;
     btnOpenAttachFile    : TToolButton;
@@ -45,8 +45,9 @@ type
     //IEmailChange
     procedure FocusChanged(const aData: PResultData);
 
-    //IUpdateXML
-    procedure IUpdateXML.UpdateXML = UpdateColumns;
+    //IConfig
+    procedure IConfig.UpdateRegExp = UpdateColumns;
+    procedure UpdateFilter;
     procedure UpdateColumns;
   protected
     function GetIdentityName: string; override;
@@ -70,13 +71,13 @@ begin
   inherited;
   vstTree.NodeDataSize := SizeOf(TAttachData);
   TPublishers.EmailPublisher.Subscribe(Self);
-  TPublishers.UpdateXMLPublisher.Subscribe(Self);
+  TPublishers.ConfigPublisher.Subscribe(Self);
 end;
 
 destructor TframeAttachments.Destroy;
 begin
   TPublishers.EmailPublisher.Unsubscribe(Self);
-  TPublishers.UpdateXMLPublisher.Unsubscribe(Self);
+  TPublishers.ConfigPublisher.Unsubscribe(Self);
   inherited;
 end;
 
@@ -157,6 +158,11 @@ begin
   end;
 end;
 
+procedure TframeAttachments.UpdateFilter;
+begin
+  //nothing
+end;
+
 procedure TframeAttachments.aOpenAttachFileExecute(Sender: TObject);
 var
   Data: PAttachment;
@@ -193,7 +199,12 @@ begin
     begin
       if Data^.ParsedText.IsEmpty then
         Data^.ParsedText := TDaMod.GetAttachmentAsRawText(Data^.Hash);
-      TInformationDialog.ShowMessage(THtmlUtils.GetHighlightText(Data^.ParsedText, Data^.Matches), GetIdentityName);
+      if Data^.ContentType.StartsWith('image', True) then
+        TEXIFDialog.ShowMessage(Data^.ParsedText, Data^.FileName, Data^.Matches)
+      else if Data^.ContentType.EndsWith('sheet', True) then
+        TXLSXDialog.ShowMessage(Data^.ParsedText, Data^.Matches)
+      else
+        TInformationDialog.ShowMessage(TGlobalUtils.GetHighlightText(Data^.ParsedText.Replace(#10, '<br>'), Data^.Matches), GetIdentityName);
     end;
   end;
 end;
@@ -231,7 +242,7 @@ begin
     if Assigned(AttachData) and (Column >= C_FIXED_COLUMNS) then
       if not AttachData^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
       begin
-        TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+        TargetCanvas.Brush.Color := TGeneral.RegExpColumns[Column - C_FIXED_COLUMNS].Color;
         TargetCanvas.FillRect(CellRect);
       end;
   end
@@ -249,7 +260,7 @@ begin
       end
       else if (Data^.Matches[Column - C_FIXED_COLUMNS].Count > 0) then
       begin
-        TargetCanvas.Brush.Color := arrWebColors[Column - C_FIXED_COLUMNS];
+        TargetCanvas.Brush.Color := TGeneral.RegExpColumns[Column - C_FIXED_COLUMNS].Color;
         TargetCanvas.FillRect(CellRect);
       end;
   end;

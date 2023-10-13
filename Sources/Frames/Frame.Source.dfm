@@ -1,10 +1,11 @@
 inherited frameSource: TframeSource
   Width = 551
-  Height = 399
+  Height = 284
   ExplicitWidth = 551
-  ExplicitHeight = 399
+  ExplicitHeight = 284
   inherited tbMain: TToolBar
     Width = 551
+    Images = DMImage.vil32
     ExplicitWidth = 551
     object btnExportToExcel: TToolButton
       Left = 211
@@ -42,7 +43,7 @@ inherited frameSource: TframeSource
       Margins.Right = 5
       Margins.Bottom = 5
       Caption = 'btnSep03'
-      ImageIndex = 16
+      ImageIndex = 15
       ImageName = 'ExportToXLS_32x32'
       Style = tbsSeparator
     end
@@ -60,7 +61,7 @@ inherited frameSource: TframeSource
     Left = 0
     Top = 39
     Width = 551
-    Height = 360
+    Height = 245
     Margins.Left = 5
     Margins.Top = 5
     Margins.Right = 5
@@ -101,46 +102,53 @@ inherited frameSource: TframeSource
     DefaultText = ''
   end
   inherited alFrame: TActionList
+    Images = DMImage.vil32
     Left = 104
     Top = 168
     object aExportToExcel: TAction
       Hint = 'Export To Excel'
-      ImageIndex = 16
+      ImageIndex = 15
       ImageName = 'ExportToXLS_32x32'
       OnExecute = aExportToExcelExecute
+      OnUpdate = aExportToExcelUpdate
     end
     object aExportToCSV: TAction
       Hint = 'Export to CSV'
-      ImageIndex = 17
+      ImageIndex = 16
       ImageName = 'ExportToCSV_32x32'
       OnExecute = aExportToCSVExecute
+      OnUpdate = aExportToExcelUpdate
     end
     object aPrint: TAction
       Hint = 'Print'
-      ImageIndex = 15
+      ImageIndex = 14
       ImageName = 'Print_32x32'
       OnExecute = aPrintExecute
+      OnUpdate = aExportToExcelUpdate
     end
     object aColumnSettings: TAction
       Hint = 'Column Settings'
-      ImageIndex = 78
+      ImageIndex = 75
       ImageName = 'check_box_list'
       OnExecute = aColumnSettingsExecute
     end
     object aExpandAll: TAction
       Caption = 'Expand all'
-      ImageIndex = 68
+      ImageIndex = 65
       ImageName = 'ShowDetail_32x32'
       OnExecute = aExpandAllExecute
+      OnUpdate = aExportToExcelUpdate
     end
     object aCollapseAll: TAction
       Caption = 'Collapse All'
-      ImageIndex = 67
+      ImageIndex = 64
       ImageName = 'HideDetail_32x32'
       OnExecute = aCollapseAllExecute
+      OnUpdate = aExportToExcelUpdate
     end
   end
   inherited pmFrame: TPopupMenu
+    Images = DMImage.vil16
     object miExpandAll: TMenuItem
       Action = aExpandAll
       ImageName = 'ShowDetail_16x16'

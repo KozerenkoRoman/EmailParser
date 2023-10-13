@@ -1,48 +1,52 @@
 inherited frameRegExp: TframeRegExp
-  Width = 950
+  Width = 749
   Height = 444
-  ExplicitWidth = 950
+  ExplicitWidth = 749
   ExplicitHeight = 444
   inherited tbMain: TToolBar
     Top = 41
-    Width = 950
+    Width = 749
     Height = 41
     TabOrder = 2
     ExplicitTop = 41
-    ExplicitWidth = 950
+    ExplicitWidth = 749
     ExplicitHeight = 41
     inherited btnSave: TToolButton
       Action = nil
       Visible = False
       OnClick = aSaveExecute
     end
-    object btnSep05: TToolButton
+    inherited btnSep03: TToolButton
+      ImageIndex = 0
+      ImageName = 'DeleteList_32x32'
+    end
+    object btnSep04: TToolButton
       Left = 375
       Top = 0
       Width = 8
-      Caption = 'btnSep05'
-      ImageIndex = 31
-      ImageName = 'transform_rotate'
+      ImageIndex = 28
+      ImageName = 'Fill_32x32'
       Style = tbsSeparator
     end
-    object btnUp: TToolButton
+    object btnDown: TToolButton
       Left = 383
       Top = 0
-      Action = aUp
+      Action = aDown
     end
-    object btnDown: TToolButton
+    object btnUp: TToolButton
       Left = 422
       Top = 0
-      Action = aDown
+      Action = aUp
     end
   end
   inherited vstTree: TVirtualStringTree
     Top = 82
-    Width = 950
+    Width = 749
     Height = 362
     Alignment = taRightJustify
     Header.MainColumn = 3
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowHint, hoShowImages, hoShowSortGlyphs, hoVisible]
+    OnBeforeCellPaint = vstTreeBeforeCellPaint
     OnChecked = vstTreeChecked
     OnCompareNodes = vstTreeCompareNodes
     OnCreateEditor = vstTreeCreateEditor
@@ -51,7 +55,7 @@ inherited frameRegExp: TframeRegExp
     OnGetText = vstTreeGetText
     OnNewText = vstTreeNewText
     ExplicitTop = 82
-    ExplicitWidth = 950
+    ExplicitWidth = 749
     ExplicitHeight = 362
     Columns = <
       item
@@ -92,7 +96,7 @@ inherited frameRegExp: TframeRegExp
   object tbSettings: TToolBar [2]
     Left = 0
     Top = 0
-    Width = 950
+    Width = 749
     Height = 41
     ButtonHeight = 39
     ButtonWidth = 39
@@ -117,12 +121,6 @@ inherited frameRegExp: TframeRegExp
         Alignment = taRightJustify
         AutoSize = False
         Caption = 'Set of templates'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
         Transparent = False
         Layout = tlCenter
       end
@@ -152,12 +150,12 @@ inherited frameRegExp: TframeRegExp
       Top = 0
       Action = aDeleteSet
     end
-    object btnSep04: TToolButton
+    object btnSep05: TToolButton
       Left = 453
       Top = 0
       Width = 8
-      Caption = 'btnSep04'
-      ImageIndex = 64
+      Caption = 'btnSep05'
+      ImageIndex = 61
       ImageName = 'sql'
       Style = tbsSeparator
     end
@@ -176,18 +174,18 @@ inherited frameRegExp: TframeRegExp
     inherited aRefresh: TAction [1]
       OnExecute = aRefreshExecute
     end
-    inherited aExportToExcel: TAction [2]
-    end
-    inherited aEdit: TAction [3]
+    inherited aEdit: TAction [2]
       Visible = True
       OnExecute = aEditExecute
       OnUpdate = aDeleteUpdate
     end
-    inherited aExportToCSV: TAction [4]
-    end
-    inherited aDelete: TAction [5]
+    inherited aDelete: TAction [3]
       OnExecute = aDeleteExecute
       OnUpdate = aDeleteUpdate
+    end
+    inherited aExportToExcel: TAction [4]
+    end
+    inherited aExportToCSV: TAction [5]
     end
     inherited aPrint: TAction [6]
     end
@@ -197,7 +195,7 @@ inherited frameRegExp: TframeRegExp
     end
     object aSaveAs: TAction [8]
       Caption = 'Save temlate set as...'
-      ImageIndex = 26
+      ImageIndex = 24
       ImageName = 'SaveAll_32x32'
       OnExecute = aSaveAsExecute
     end
@@ -208,25 +206,23 @@ inherited frameRegExp: TframeRegExp
       Visible = False
     end
     object aDeleteSet: TAction
-      ImageIndex = 65
+      ImageIndex = 62
       ImageName = 'DeleteList2_32x32'
       OnExecute = aDeleteSetExecute
     end
     object aImportFromXML: TAction
-      ImageIndex = 62
+      ImageIndex = 59
       ImageName = 'ImportXML'
       OnExecute = aImportFromXMLExecute
     end
     object aUp: TAction
-      Caption = 'aUp'
-      ImageIndex = 29
+      ImageIndex = 27
       ImageName = 'Up2_32x32'
       OnExecute = aUpExecute
       OnUpdate = aUpUpdate
     end
     object aDown: TAction
-      Caption = 'aDown'
-      ImageIndex = 30
+      ImageIndex = 28
       ImageName = 'Fill_32x32'
       OnExecute = aDownExecute
       OnUpdate = aDownUpdate

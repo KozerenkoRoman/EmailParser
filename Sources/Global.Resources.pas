@@ -12,9 +12,16 @@ resourcestring
   C_SECTION_REGEXP        = 'RegExpParameters';
   C_SECTION_TEMPLATE_SETS = 'TemplateSets';
 
+  //DebugWriter
+  C_KEY_COUNT_OF_DAYS = 'CountOfDays';
+  C_KEY_IS_ACTIVE     = 'IsActive';
+  C_KEY_MAX_SIZE      = 'MaxSizeOfLogFile';
+  C_SECTION_DEBUG     = 'Debug';
+
   //Files
   C_SQLITE_DB_FILE        = 'EmailParser.db';
   C_XML_PARAMS_FILE       = 'EmailParser.xml';
+
 
 implementation
 

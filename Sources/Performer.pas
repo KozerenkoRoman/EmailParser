@@ -7,33 +7,11 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
   System.IOUtils, Vcl.Forms, ArrayHelper, Common.Types, Translate.Lang, System.IniFiles, Global.Types,
-<<<<<<< HEAD
-  System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog;
-{$ENDREGION}
-
-type
-  TAbortEvent = function: Boolean of object;
-  TEndEvent = procedure of object;
-  TProgressEvent = procedure of object;
-  TStartProgressEvent = procedure(const aMaxPosition: Integer) of object;
-  TCompletedItem = procedure(const aResultData: TResultData) of object;
-
-  TPerformer = class
-  private
-    FRegExpList : TArray<TRegExpData>;
-    FPathList   : TArray<TParamPath>;
-    procedure ParseFile(const aFileName: TFileName);
-  public
-    OnStartProgressEvent : TStartProgressEvent;
-    OnProgressEvent      : TProgressEvent;
-    OnEndEvent           : TEndEvent;
-    OnCompletedItem      : TCompletedItem;
-    procedure Start;
-=======
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
   Files.Utils, System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
-  System.Math, System.ZLib, System.Zip, System.Masks, System.StrUtils;
+  System.Math, System.ZLib, System.Zip, System.Masks, System.StrUtils, InformationDialog, Html.Lib,
+  Vcl.Graphics, UnRAR.Helper, Excel4Delphi, Excel4Delphi.Stream, System.Hash, AhoCorasick;
 {$ENDREGION}
 
 type
@@ -57,6 +35,9 @@ type
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     function GetWordText(const aFileName: TFileName): string;
     function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
+    function GetRarFileList(const aFileName: TFileName; const aData: PResultData): string;
+    function GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
+    function IsSuccessfulCheck: Boolean;
     procedure DoCopyAttachmentFiles(const aData: PResultData);
     procedure DoDeleteAttachmentFiles(const aData: PResultData);
     procedure DoFillAttachments(const aData: PResultData; const aMailMessage: TclMailMessage);
@@ -83,7 +64,6 @@ type
     property IsQuiet     : Boolean read FIsQuiet     write FIsQuiet;
 
     class function GetInstance: TPerformer;
->>>>>>> Development
   end;
 
 function GetStringFromMatches(const aText, aPattern: string; const aGroupIndex: Integer): string; inline;
@@ -92,41 +72,6 @@ implementation
 
 { TPerformer }
 
-<<<<<<< HEAD
-procedure TPerformer.Start;
-var
-  FileList: TStringDynArray;
-  FileExt: string;
-begin
-  LogWriter.Write(ddEnterMethod, 'TPerformer.Start');
-  if not Assigned(OnCompletedItem) then
-    Exit;
-
-  FRegExpList := TGeneral.GetRegExpParametersList;
-  FPathList   := TGeneral.GetPathList;
-  FileList    := [];
-  FileExt     := TGeneral.XMLFile.ReadString('Extensions', C_SECTION_MAIN, '*.eml');
-  for var Dir in FPathList do
-    if Dir.WithSubdir then
-      FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FileExt, TSearchOption.soAllDirectories))
-    else
-      FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FileExt, TSearchOption.soTopDirectoryOnly));
-
-  if Assigned(OnStartProgressEvent) then
-    OnStartProgressEvent(Length(FileList));
-
-  LogWriter.Write(ddText, 'Length FileList - ' + Length(FileList).ToString);
-  try
-    for var FileName in FileList do
-      ParseFile(FileName);
-
-  except
-    on E: Exception do
-    begin
-      LogWriter.Write(ddError, E.Message);
-      if Assigned(OnEndEvent) then
-        OnEndEvent;
-=======
 constructor TPerformer.Create;
 begin
   FCriticalSection := TCriticalSection.Create;
@@ -163,27 +108,82 @@ begin
   FFileExt          := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
 end;
 
+function TPerformer.IsSuccessfulCheck: Boolean;
+var
+  sb: TStringBuilder;
+  FailedText: string;
+begin
+  Result := True;
+  FailedText := '';
+  sb := TStringBuilder.Create;
+  try
+    sb.AppendLine('<b>RegExp list</b>');
+    for var item in FRegExpList.Items do
+      sb.AppendFormat('%s [%d]: %s', [item.ParameterName, item.GroupIndex, item.RegExpTemplate]).AppendLine;
+    if (FRegExpList.Count = 0) then
+    begin
+      Result := False;
+      FailedText := TLang.Lang.Translate('RegExpIsEmpty') + sLineBreak;
+    end;
+
+    sb.AppendLine;
+    sb.AppendLine('<b>Path list</b>');
+    for var item in FPathList.Items do
+    begin
+      sb.Append(item.Path).AppendLine;
+      if not TDirectory.Exists(item.Path) then
+      begin
+        Result := False;
+        FailedText := Concat(FailedText, Format(TLang.Lang.Translate('PathNotExists'), [item.Path]), sLineBreak);
+      end;
+    end;
+    if (FPathList.Count = 0) then
+    begin
+      Result := False;
+      FailedText := TLang.Lang.Translate('PathsToFindNotExists') + sLineBreak;
+    end;
+
+    sb.AppendLine;
+    sb.AppendLine('<b>Sorter list</b>');
+    for var item in FSorterPathList.Items do
+    begin
+      sb.Append(item.Path).AppendLine;
+      if not TDirectory.Exists(item.Path) then
+      begin
+        Result := False;
+        FailedText := Concat(FailedText, Format(TLang.Lang.Translate('PathNotExists'), [item.Path]), sLineBreak);
+      end;
+    end;
+    LogWriter.Write(ddText, Self, sb.ToString);
+  finally
+    FreeAndNil(sb);
+  end;
+
+  if not Result then
+  begin
+    LogWriter.Write(ddError, Self, 'Start', FailedText);
+    TMessageDialog.ShowError(FailedText);
+  end;
+end;
+
 procedure TPerformer.Start;
 var
   FileList : TStringDynArray;
-  DirList  : string;
 begin
   LogWriter.Write(ddEnterMethod, Self, 'Start');
   FillStartParameters;
+  if not IsSuccessfulCheck then
+    Exit;
+
   FIsBreak     := False;
   FileList     := [];
   FFromDBCount := 0;
   try
-    DirList := '';
     for var Dir in FPathList do
-    begin
-      DirList := DirList + sLineBreak + Dir.Path + IfThen(Dir.WithSubdir, ' with subdir');
       if Dir.WithSubdir then
         FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FFileExt, TSearchOption.soAllDirectories))
       else
         FileList := Concat(FileList, TDirectory.GetFiles(Dir.Path, FFileExt, TSearchOption.soTopDirectoryOnly));
-    end;
-    LogWriter.Write(ddText, Self, '<b>Paths to find files:</b>' + DirList);
 
     FCount := Length(FileList);
     TPublishers.ProgressPublisher.ClearTree;
@@ -232,12 +232,15 @@ var
 begin
   if (TGeneral.EmailList.Count = 0) then
     Exit;
+  FillStartParameters;
+  if not IsSuccessfulCheck then
+    Exit;
+
   LogWriter.Write(ddText, Self, 'Emails List Count - ' + TGeneral.EmailList.Count.ToString);
   TPublishers.ProgressPublisher.StartProgress(FCount);
   try
     LogWriter.Write(ddEnterMethod, Self, 'Refresh');
     FIsBreak := False;
-    FillStartParameters;
 
     try
       arrKeys := TGeneral.EmailList.Keys.ToArray;
@@ -253,7 +256,7 @@ begin
         end;
 
         Data := TGeneral.EmailList.Items[arrKeys[i]];
-        if Assigned(Data) and Assigned(Data^.ParentNode) then
+        if Assigned(Data) and Assigned(Data^.OwnerNode) then
         begin
           DoParseResultData(Data);
           TPublishers.ProgressPublisher.Progress;
@@ -309,31 +312,34 @@ begin
           if not Assigned(Attachment) then
           begin
             New(Attachment);
-            Attachment^.FileName      := FileList[i];
-            Attachment^.ShortName     := TPath.GetFileName(FileList[i]);
-            Attachment^.FromZip       := False;
-            Attachment^.Hash          := Hash;
-            Attachment^.Matches.Count := FRegExpList.Count;
-            Attachment^.ParentHash    := '';
-            Attachment^.ParentName    := '';
-            Attachment^.FromDB        := False;
-            Attachment^.ParentNode    := nil;
-            TGeneral.AttachmentList.AddOrSetValue(Hash, Attachment);
-            ResultData.Attachments.Add(Hash);
+            Attachment^.FileName  := FileList[i];
+            Attachment^.ShortName := TPath.GetFileName(FileList[i]);
+            Attachment^.FromZip   := False;
+            Attachment^.FromDB    := False;
             LogWriter.Write(ddText, Self, 'FileSearch', 'Found file - ' + Attachment^.ShortName);
           end
           else
           begin
-            LogWriter.Write(ddWarning, Self, 'FileSearch', 'Skip file - ' + Attachment^.ShortName + '. Duplicate found');
+            Attachment^.FromDB := True;
+            LogWriter.Write(ddWarning, Self, 'FileSearch', 'Duplicate file - ' + Attachment^.ShortName);
             Inc(FFromDBCount);
           end;
+          Attachment^.Matches.Count := FRegExpList.Count;
+          Attachment^.Hash       := Hash;
+          Attachment^.ParentHash := '';
+          Attachment^.ParentName := '';
+          Attachment^.OwnerNode  := nil;
+          TGeneral.AttachmentList.AddOrSetValue(Hash, Attachment);
+          ResultData.Attachments.Add(Hash);
           Inc(FCount);
         end;
+
         DoParseAttachmentFiles(@ResultData,
           procedure()
           begin
             TPublishers.ProgressPublisher.Progress;
           end);
+
       finally
         TPublishers.ProgressPublisher.EndProgress;
         LogWriter.Write(ddExitMethod, Self, 'FileSearch');
@@ -354,11 +360,13 @@ var
 begin
   if (TGeneral.EmailList.Count = 0) then
     Exit;
+  FillStartParameters;
+  if not IsSuccessfulCheck then
+    Exit;
   TPublishers.ProgressPublisher.StartProgress(FCount);
   try
     LogWriter.Write(ddEnterMethod, Self, 'RefreshAttachment');
     FIsBreak := False;
-    FillStartParameters;
     try
       arrKeys := TGeneral.AttachmentList.Keys.ToArray;
       FCount := 0;
@@ -373,7 +381,7 @@ begin
         end;
 
         Attachment := TGeneral.AttachmentList.Items[arrKeys[i]];
-        if Assigned(Attachment) and Assigned(Attachment^.ParentNode) then
+        if Assigned(Attachment) and Assigned(Attachment^.OwnerNode) then
         begin
           LogWriter.Write(ddText, Self, 'RefreshAttachment', 'Attachment name - ' + Attachment^.ShortName);
           Inc(FCount);
@@ -428,47 +436,9 @@ begin
     except
       on E: Exception do
         LogWriter.Write(ddError, Self, 'GetAttchmentPath', E.Message + sLineBreak + 'Directory - ' + Result);
->>>>>>> Development
     end;
-  end;
-
-  if Assigned(OnEndEvent) then
-    TThread.Queue(nil,
-      procedure
-      begin
-        LogWriter.Write(ddExitMethod, 'TPerformer.Start');
-      end);
 end;
 
-<<<<<<< HEAD
-procedure TPerformer.ParseFile(const aFileName: TFileName);
-var
-  Data: TResultData;
-begin
-  if (not Assigned(OnCompletedItem)) or (Length(FRegExpList) = 0) then
-    Exit;
-
-  Data.ShortName := TPath.GetFileNameWithoutExtension(aFileName);
-  Data.FileName  := aFileName;
-
-  Data.MessageId := aFileName;
-  Data.Subject   := aFileName;
-  Data.Attach    := 0;
-  Data.TimeStamp := Now;
-
-  if Assigned(OnProgressEvent) then
-    TThread.Queue(nil,
-      procedure
-      begin
-        OnProgressEvent;
-      end);
-
-  TThread.Queue(nil,
-    procedure
-    begin
-      OnCompletedItem(Data);
-    end);
-=======
 procedure TPerformer.DoCopyAttachmentFiles(const aData: PResultData);
 var
   Attachment  : PAttachment;
@@ -476,9 +446,9 @@ var
 begin
   for var item in FSorterPathList do
     for var attHash in aData^.Attachments do
-      if TGeneral.AttachmentList.TryGetValue(attHash, Attachment) and
-         TFile.Exists(Attachment.FileName) and
-         MatchesMask(Attachment.FileName, item.Mask) then
+      if TGeneral.AttachmentList.TryGetValue(attHash, Attachment) then
+        if TFile.Exists(Attachment.FileName) and
+           MatchesMask(Attachment.FileName, item.Mask) then
           try
             NewFileName := TPath.Combine(item.Path, TPath.GetFileName(Attachment.FileName));
             if not TFile.Exists(NewFileName) then
@@ -523,6 +493,7 @@ var
   Data        : PResultData;
   Hash        : string;
   MailMessage : TclMailMessage;
+  Tasks       : array of ITask;
 begin
   Hash := TFileUtils.GetHash(aFileName);
   if not TGeneral.EmailList.ContainsKey(Hash) then
@@ -566,39 +537,37 @@ begin
           LogWriter.Write(ddError, Self, 'ParseFile', E.Message + sLineBreak + Data^.FileName);
       end;
 
+      SetLength(Tasks, 2);
+      Tasks[0] := TTask.Create(
+        procedure()
+        begin
+          TThread.NameThreadForDebugging('TPerformer.ParserHTML');
+          if not Data^.Body.IsEmpty then
+            try
+              Data^.ParsedText := THtmlDom.GetText(Data^.Body);
+            except
+              on E: Exception do
+                LogWriter.Write(ddError, Self,
+                                         'TPerformer.ParserHTML',
+                                         E.Message + sLineBreak +
+                                         'Email name - ' + Data^.FileName);
+            end;
+        end).Start;
+
+      Tasks[1] := TTask.Create(
+        procedure()
+        begin
+          TThread.NameThreadForDebugging('TPerformer.DoParseAttachmentFiles');
+          DoParseAttachmentFiles(Data);
+        end).Start;
+
+      TTask.WaitForAll(Tasks);
+{$IFDEF DETAILED_LOG}
+      LogWriter.Write(ddText, Self, 'ParseFile', 'Email file name - ' + Data^.FileName);
+{$ENDIF DETAILED_LOG}
       TTask.Create(
         procedure()
-        var
-          Tasks: array of ITask;
         begin
-          SetLength(Tasks, 2);
-          Tasks[0] := TTask.Create(
-            procedure()
-            begin
-              TThread.NameThreadForDebugging('TPerformer.ParserHTML');
-              if not Data^.Body.IsEmpty then
-                try
-                  Data^.ParsedText := THtmlDom.GetText(Data^.Body);
-                except
-                  on E: Exception do
-                    LogWriter.Write(ddError, Self,
-                                             'TPerformer.ParserHTML',
-                                             E.Message + sLineBreak +
-                                             'Email name - ' + Data^.FileName);
-                end;
-            end).Start;
-
-          Tasks[1] := TTask.Create(
-            procedure()
-            begin
-              TThread.NameThreadForDebugging('TPerformer.DoParseAttachmentFiles');
-              DoParseAttachmentFiles(Data);
-            end).Start;
-
-          TTask.WaitForAll(Tasks);
-{$IFDEF DETAILED_LOG}
-          LogWriter.Write(ddText, Self, 'ParseFile', 'Email file name - ' + Data^.FileName);
-{$ENDIF DETAILED_LOG}
           for var i := 0 to FRegExpList.Count - 1 do
             if FRegExpList[i].UseRawText then
               Data^.Matches[i] := GetRegExpCollection(Data^.Subject + sLineBreak + Data^.Body, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex)
@@ -636,13 +605,25 @@ begin
     for var i := 0 to FRegExpList.Count - 1 do
       if FRegExpList[i].UseRawText then
       begin
+{$IFDEF DETAILED_LOG}
+        LogWriter.Write(ddText, Self, 'DoParseResultData', 'GetBodyAsRawText Before');
+{$ENDIF DETAILED_LOG}
         TextRaw := aData^.Subject + sLineBreak + TDaMod.GetBodyAsRawText(aData^.Hash);
+{$IFDEF DETAILED_LOG}
+        LogWriter.Write(ddText, Self, 'DoParseResultData', 'GetBodyAsRawText After');
+{$ENDIF DETAILED_LOG}
         Break;
       end;
     for var i := 0 to FRegExpList.Count - 1 do
       if not FRegExpList[i].UseRawText then
       begin
+{$IFDEF DETAILED_LOG}
+        LogWriter.Write(ddText, Self, 'DoParseResultData', 'GetBodyAsParsedText Before');
+{$ENDIF DETAILED_LOG}
         TextPlan := aData^.Subject + sLineBreak + TDaMod.GetBodyAsParsedText(aData^.Hash);
+{$IFDEF DETAILED_LOG}
+        LogWriter.Write(ddText, Self, 'DoParseResultData', 'GetBodyAsParsedText After');
+{$ENDIF DETAILED_LOG}
         Break;
       end;
 
@@ -652,7 +633,7 @@ begin
       begin
         TThread.NameThreadForDebugging('TPerformer.DoParseResultData');
 {$IFDEF DETAILED_LOG}
-        LogWriter.Write(ddText, Self, 'DoParseResultData', 'Email file name - ' + aData^.ShortName);
+        LogWriter.Write(ddText, Self, 'DoParseResultData', 'TTask0 Email file name - ' + aData^.ShortName);
 {$ENDIF DETAILED_LOG}
         for var i := 0 to FRegExpList.Count - 1 do
           if FRegExpList[i].UseRawText then
@@ -672,7 +653,7 @@ begin
             if Attachment^.ParsedText.IsEmpty then
               Attachment^.ParsedText := TDaMod.GetAttachmentAsRawText(Attachment^.Hash);
 {$IFDEF DETAILED_LOG}
-            LogWriter.Write(ddText, Self, 'DoParseResultData', ' Attachment file name - ' + Attachment^.ShortName);
+            LogWriter.Write(ddText, Self, 'DoParseResultData', 'TTask1 Attachment file name - ' + Attachment^.ShortName);
 {$ENDIF DETAILED_LOG}
             for var j := 0 to Attachment^.Matches.Count - 1 do
               Attachment^.Matches[j] := GetRegExpCollection(Attachment^.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
@@ -690,12 +671,23 @@ var
   Attachment : PAttachment;
   Ext        : string;
   i          : Integer;
+
+  function ClearUrlData(AValue: string): string;
+  var
+    RegEx: TRegEx;
+  begin
+    RegEx := TRegEx.Create('(\(@"|url\(data)(.*?)\)', [roIgnoreCase, roSingleLine]);
+    Result := RegEx.Replace(AValue, 'url()');
+  end;
+
 begin
+{$IFDEF DETAILED_LOG}
+  LogWriter.Write(ddEnterMethod, Self, 'DoParseAttachmentFiles');
+{$ENDIF DETAILED_LOG}
   i := 0;
   while (i <= High(aData.Attachments.Items)) do
   begin
-    if TGeneral.AttachmentList.TryGetValue(aData.Attachments[i], Attachment) and
-       TFile.Exists(Attachment.FileName) then
+    if TGeneral.AttachmentList.TryGetValue(aData.Attachments[i], Attachment) then
       try
         Attachment.Matches.Count := FRegExpList.Count;
         Ext := TPath.GetExtension(Attachment.FileName).ToLower;
@@ -732,11 +724,11 @@ begin
             end;
           fsZip:
             begin
-              if Ext.Contains('.xlsx') then
+              if Ext.Contains('.xlsx') or Ext.Contains('.xlsm') then
               begin
                 Attachment.ContentType := 'application/excel';
                 Attachment.ImageIndex  := TExtIcon.eiXls.ToByte;
-                Attachment.ParsedText  := '';
+                Attachment.ParsedText  := GetXlsxSheetList(Attachment.FileName, aData);
               end
               else if Ext.Contains('.docx') then
               begin
@@ -755,7 +747,7 @@ begin
             begin
               Attachment.ContentType := 'application/rar';
               Attachment.ImageIndex  := TExtIcon.eiRar.ToByte;
-              Attachment.ParsedText  := '';
+              Attachment.ParsedText  := GetRarFileList(Attachment.FileName, aData);
             end;
           fsOffice:
             begin
@@ -800,9 +792,10 @@ begin
               if Ext.Contains('.txt') or
                  Ext.Contains('.opt') or
                  Ext.Contains('.ini') or
+                 Ext.Contains('.csv') or
                  Ext.Contains('.cfg') then
               begin
-                Attachment.ParsedText  := TFile.ReadAllText(Attachment.FileName);
+                Attachment.ParsedText  := ClearUrlData(TFile.ReadAllText(Attachment.FileName));
                 Attachment.ContentType := 'text/plain';
                 Attachment.ImageIndex  := TExtIcon.eiTxt.ToByte;
               end
@@ -817,9 +810,7 @@ begin
                 Attachment.ParsedText  := TFile.ReadAllText(Attachment.FileName);
                 Attachment.ContentType := 'text/html';
                 Attachment.ImageIndex  := TExtIcon.eiHtml.ToByte;
-              end
-              else
-                Attachment.ParsedText := '';
+              end;
             end;
         end;
 {$IFDEF DETAILED_LOG}
@@ -842,6 +833,9 @@ begin
       end;
     Inc(i);
   end;
+{$IFDEF DETAILED_LOG}
+  LogWriter.Write(ddExitMethod, Self, 'DoParseAttachmentFiles');
+{$ENDIF DETAILED_LOG}
 end;
 
 procedure TPerformer.DoFillAttachments(const aData: PResultData; const aMailMessage: TclMailMessage);
@@ -974,7 +968,7 @@ var
   ZipFile  : TZipFile;
 begin
   Result := '';
-  Path := TPath.Combine(TPath.GetDirectoryName(aFileName), TPath.GetFileNameWithoutExtension(aFileName));
+  Path := TPath.Combine(TPath.GetDirectoryName(aFileName), TPath.GetFileNameWithoutExtension(aFileName)).Trim;
   if not TDirectory.Exists(Path) then
     try
       TDirectory.CreateDirectory(Path);
@@ -1022,6 +1016,53 @@ begin
   end;
 end;
 
+function TPerformer.GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
+var
+  Attachment : PAttachment;
+  FileName   : string;
+  WorkBook   : TZWorkBook;
+  ParsedText : string;
+begin
+  Result := '';
+  WorkBook := TZWorkBook.Create(nil);
+  try
+    try
+      WorkBook.LoadFromFile(aFileName);
+      for var i := 0 to WorkBook.Sheets.Count - 1 do
+        if (WorkBook.Sheets[i].ColCount > 0) and (WorkBook.Sheets[i].RowCount > 0) then
+        begin
+          ParsedText := '';
+          for var row := 0 to WorkBook.Sheets[i].RowCount - 1 do
+          begin
+            for var col := 0 to WorkBook.Sheets[i].ColCount - 1 do
+              ParsedText := Concat(ParsedText, '"', WorkBook.Sheets[i].Cell[col, row].AsString.Replace('"', '""'), '";');
+            ParsedText := Concat(ParsedText, sLineBreak);
+          end;
+          FileName := Concat(TPath.GetFileNameWithoutExtension(aFileName), '\', WorkBook.Sheets[i].Title);
+          New(Attachment);
+          Attachment^.ParsedText    := ParsedText;
+          Attachment^.FileName      := aFileName;
+          Attachment^.ShortName     := FileName;
+          Attachment^.Hash          := THashSHA1.GetHashString(ParsedText);
+          Attachment^.ParentHash    := aData^.Hash;
+          Attachment^.ParentName    := aData^.ShortName;
+          Attachment^.Matches.Count := FRegExpList.Count;
+          Attachment^.FromZip       := True;
+          Attachment^.ContentType   := 'text/sheet';
+          Attachment^.ImageIndex    := TExtIcon.eiXls.ToByte;
+          TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+          aData^.Attachments.AddUnique(Attachment^.Hash);
+          Result := Concat(Result, (i + 1).ToString, '. ', WorkBook.Sheets[i].Title, '<br>');
+        end;
+    except
+      on E: Exception do
+        LogWriter.Write(ddError, Self, 'GetXlsxSheetList', E.Message + sLineBreak + aFileName);
+    end;
+  finally
+    FreeAndNil(WorkBook);
+  end;
+end;
+
 function TPerformer.GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
 var
   Attachment : PAttachment;
@@ -1031,7 +1072,7 @@ var
 begin
   ZipFile := TZipFile.Create;
   try
-    Path := TPath.Combine(GetAttchmentPath(aData.FileName), TPath.GetFileNameWithoutExtension(aData.FileName));
+    Path := TPath.Combine(GetAttchmentPath(aData.FileName), TPath.GetFileNameWithoutExtension(aFileName));
     if not TDirectory.Exists(Path) then
       try
         TDirectory.CreateDirectory(Path);
@@ -1077,6 +1118,99 @@ begin
   end;
 end;
 
+function TPerformer.GetRarFileList(const aFileName: TFileName; const aData: PResultData): string;
+var
+  Attachment     : PAttachment;
+  FileList       : TArray<string>;
+  FileName       : string;
+  IsNeedPassword : Boolean;
+  Path           : string;
+  RarFile        : TUnRAR;
+  Pwd            : string;
+begin
+  RarFile := TUnRAR.Create(aFileName);
+  try
+    Path := TPath.Combine(GetAttchmentPath(aData.FileName), TPath.GetFileNameWithoutExtension(aFileName));
+    if not TDirectory.Exists(Path) then
+      try
+        TDirectory.CreateDirectory(Path);
+      except
+        on E: Exception do
+        begin
+          LogWriter.Write(ddError, Self, 'GetRarFileList', E.Message + sLineBreak + 'Directory - ' + Path);
+          Exit;
+        end;
+      end;
+    FileList := RarFile.GetFileList;
+    IsNeedPassword := RarFile.ArcInfo.IsNeedPassword;
+    if IsNeedPassword then
+    begin
+      if TGeneral.PasswordList.ContainsKey(aData^.Hash) then
+        Pwd := TGeneral.PasswordList.Items[aData^.Hash].Password
+      else
+      begin
+        var Password: PPassword;
+        New(Password);
+        Password.FileName  := aFileName;
+        Password.Hash      := aData^.Hash;
+        Password.IsDeleted := False;
+        TThread.Queue(nil,
+          procedure
+          begin
+            TGeneral.PasswordList.Add(aData^.Hash, Password);
+          end);
+        Pwd := '';
+      end;
+    end;
+
+    if (RarFile.LastError <> 0) then
+    begin
+      LogWriter.Write(ddError, Self, 'GetRarFileList', RarFile.GetErrorText(RarFile.LastError));
+      Exit;
+    end;
+  finally
+    FreeAndNil(RarFile);
+  end;
+
+  try
+    for var i := Low(FileList) to High(FileList) do
+      if not TFileUtils.IsForbidden(FileList[i]) then
+      begin
+        RarFile := TUnRAR.Create(aFileName);
+        try
+          RarFile.DestPath := Path;
+          if IsNeedPassword then
+            RarFile.Password := Pwd;
+          RarFile.Extract(FileList[i]);
+          if (RarFile.LastError = 0) then
+          begin
+            FileName := Concat('[', aData^.ShortName, '] ', TFileUtils.GetCorrectFileName(FileList[i]));
+            SetLength(FileName, Min(Length(FileName), 255));
+            if not RenameFile(TPath.Combine(Path, FileList[i]), TPath.Combine(Path, FileName)) then
+              DeleteFile(TPath.Combine(Path, FileList[i]));
+
+            New(Attachment);
+            Attachment^.FileName      := TPath.Combine(Path, FileName);
+            Attachment^.Hash          := TFileUtils.GetHash(Attachment^.FileName);
+            Attachment^.ShortName     := FileName;
+            Attachment^.ParentHash    := aData^.Hash;
+            Attachment^.ParentName    := aData^.ShortName;
+            Attachment^.Matches.Count := FRegExpList.Count;
+            Attachment^.FromZip       := True;
+            TGeneral.AttachmentList.TryAdd(Attachment^.Hash, Attachment);
+            aData^.Attachments.AddUnique(Attachment^.Hash);
+            Result := Concat(Result, (i + 1).ToString, '. ', FileName, '<br>');
+          end;
+        finally
+          FreeAndNil(RarFile);
+        end;
+      end;
+  except
+    on E: Exception do
+      LogWriter.Write(ddError, Self, 'GetRarFileList', E.Message + sLineBreak + aFileName);
+  end;
+end;
+
 function TPerformer.GetRegExpCollection(const aText, aPattern: string; const aGroupIndex: Integer): TStringArray;
 var
   GroupIndex : Integer;
@@ -1090,26 +1224,26 @@ begin
     Exit;
 
 {$IFDEF DETAILED_LOG}
-  LogWriter.Write(ddText, Self, 'GetRegExpCollection', aPattern);
+  LogWriter.Write(ddEnterMethod, Self, 'GetRegExpCollection', aPattern);
 {$ENDIF DETAILED_LOG}
 
   RegExpr := TRegEx.Create(aPattern);
-  if RegExpr.IsMatch(aText) then
+  Matches := RegExpr.Matches(aText, aPattern);
+  Result.Count := Matches.Count;
+  for var i := 0 to Matches.Count - 1 do
   begin
-    Matches := RegExpr.Matches(aText, aPattern);
-    Result.Count := Matches.Count;
-    for var i := 0 to Matches.Count - 1 do
-    begin
-      if (aGroupIndex <= 0) then
-        GroupIndex := 0
-      else if (aGroupIndex > Matches.Item[i].Groups.Count - 1) then
-        GroupIndex := Matches.Item[i].Groups.Count - 1
-      else
-        GroupIndex := aGroupIndex;
-      Result[i] := Matches.Item[i].Groups[GroupIndex].Value;
-    end;
+    if (aGroupIndex <= 0) then
+      GroupIndex := 0
+    else if (aGroupIndex > Matches.Item[i].Groups.Count - 1) then
+      GroupIndex := Matches.Item[i].Groups.Count - 1
+    else
+      GroupIndex := aGroupIndex;
+    Result[i] := Matches.Item[i].Groups[GroupIndex].Value;
   end;
->>>>>>> Development
+
+{$IFDEF DETAILED_LOG}
+  LogWriter.Write(ddExitMethod, Self, 'GetRegExpCollection');
+{$ENDIF DETAILED_LOG}
 end;
 
 function GetStringFromMatches(const aText, aPattern: string; const aGroupIndex: Integer): string;
@@ -1120,19 +1254,17 @@ var
 begin
   Result := '';
   RegExpr := TRegEx.Create(aPattern);
-  if RegExpr.IsMatch(aText) then
+
+  Matches := RegExpr.Matches(aText, aPattern);
+  for var i := 0 to Matches.Count - 1 do
   begin
-    Matches := RegExpr.Matches(aText, aPattern);
-    for var i := 0 to Matches.Count - 1 do
-    begin
-      if (aGroupIndex <= 0) then
-        GroupIndex := 0
-      else if (aGroupIndex > Matches.Item[i].Groups.Count - 1) then
-        GroupIndex := Matches.Item[i].Groups.Count - 1
-      else
-        GroupIndex := aGroupIndex;
-      Result := Concat(Result, Matches.Item[i].Groups[GroupIndex].Value, '; ');
-    end;
+    if (aGroupIndex <= 0) then
+      GroupIndex := 0
+    else if (aGroupIndex > Matches.Item[i].Groups.Count - 1) then
+      GroupIndex := Matches.Item[i].Groups.Count - 1
+    else
+      GroupIndex := aGroupIndex;
+    Result := Concat(Result, Matches.Item[i].Groups[GroupIndex].Value, '; ');
   end;
 end;
 

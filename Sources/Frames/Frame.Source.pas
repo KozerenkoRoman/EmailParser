@@ -39,6 +39,7 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeHeaderDragged(Sender: TVTHeader; Column: TColumnIndex; OldPosition: Integer);
     procedure vstTreeMeasureItem(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; var NodeHeight: Integer);
+    procedure aExportToExcelUpdate(Sender: TObject);
   private const
     C_IDENTITY_NAME = 'frameSource';
   protected
@@ -63,7 +64,7 @@ implementation
 constructor TframeSource.Create(AOwner: TComponent);
 begin
   inherited;
-  TVirtualTree.Initialize(vstTree);
+
 end;
 
 destructor TframeSource.Destroy;
@@ -75,6 +76,7 @@ end;
 procedure TframeSource.Initialize;
 begin
   inherited;
+  TVirtualTree.Initialize(vstTree);
   LoadFromXML;
   tbMain.ButtonHeight := C_ICON_SIZE;
   tbMain.ButtonWidth  := C_ICON_SIZE;
@@ -198,6 +200,12 @@ begin
   finally
     Screen.Cursor := crDefault;
   end;
+end;
+
+procedure TframeSource.aExportToExcelUpdate(Sender: TObject);
+begin
+  inherited;
+  TAction(Sender).Enabled := not vstTree.IsEmpty;
 end;
 
 procedure TframeSource.aExportToHTMLExecute(Sender: TObject);

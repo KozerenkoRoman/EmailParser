@@ -55,8 +55,6 @@
 /Translate/__recovery/
 /Translate/__history/
 /dcu/
-<<<<<<< HEAD
-=======
 /CleverInternetSuite/__history/
 /Sources/Frames/__history/
 /Sources/Frames/__recovery/
@@ -67,4 +65,8 @@
 /Sources/Common/__recovery/
 /Sources/HTMLParse/__history/
 /binn/
->>>>>>> Development
+/Sources/Translate/__recovery/
+/Sources/UnRAR/__history/
+/arch.bat
+/arch.txt
+/Sources/Excel4Delphi/__history/

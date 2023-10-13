@@ -11,26 +11,24 @@ uses
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExp, Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.Settings, Global.Types, Vcl.Samples.Gauges,
   Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule, Frame.Sorter, Frame.DuplicateFiles,
-  Files.Utils;
+  Files.Utils, Vcl.CheckLst, ArrayHelper, System.Types, Frame.MatchesFilter, Frame.BruteForce;
 {$ENDREGION}
 
 type
-  TfrmMain = class(TCommonForm, IProgress, ITranslate)
-    aEditCommonParameters   : TAction;
-    aEditRegExpParameters   : TAction;
+  TfrmMain = class(TCommonForm, IProgress, IConfig)
     alSettings              : TActionList;
-    aPathsFindFiles         : TAction;
     ApplicationEvents       : TApplicationEvents;
-    aSearch                 : TAction;
-    aSearchDuplicateFiles   : TAction;
     aToggleSplitPanel       : TAction;
     catMenuItems            : TCategoryButtons;
+    crdBruteForce           : TCard;
     crdCommonParams         : TCard;
     crdPathsToFindScripts   : TCard;
     crdRegExpParameters     : TCard;
     crdResultView           : TCard;
     crdSearchDuplicateFiles : TCard;
+    frameBruteForce         : TframeBruteForce;
     frameDuplicateFiles     : TframeDuplicateFiles;
+    frameMatchesFilter      : TframeMatchesFilter;
     framePathes             : TframePathes;
     frameRegExp             : TframeRegExp;
     frameResultView         : TframeResultView;
@@ -41,34 +39,34 @@ type
     imgMenu                 : TImage;
     lblTitle                : TLabel;
     pnlCard                 : TCardPanel;
+    pnlExtendedFilter       : TGroupBox;
     pnlLeft                 : TPanel;
     pnlSrchBox              : TPanel;
     pnlTop                  : TPanel;
     sbMain                  : TStatusBar;
+    splExtendedFilter       : TSplitter;
     splPath                 : TSplitter;
     splView                 : TSplitView;
     srchBox                 : TSearchBox;
-    aOpenLogFile: TAction;
-    procedure aEditCommonParametersExecute(Sender: TObject);
-    procedure aEditRegExpParametersExecute(Sender: TObject);
-    procedure aPathsFindFilesExecute(Sender: TObject);
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
-    procedure aSearchDuplicateFilesExecute(Sender: TObject);
-    procedure aSearchExecute(Sender: TObject);
     procedure aToggleSplitPanelExecute(Sender: TObject);
+    procedure catMenuItemsSelectedItemChange(Sender: TObject; const Button: TButtonItem);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure splViewClosed(Sender: TObject);
+    procedure splViewOpened(Sender: TObject);
     procedure srchBoxInvokeSearch(Sender: TObject);
-    procedure aOpenLogFileExecute(Sender: TObject);
   private const
     C_IDENTITY_NAME = 'MainForm';
   private
     FProgressBar: TGauge;
     procedure CreateProgressBar;
 
-    //ITranslate
-    procedure ITranslate.LanguageChange = Translate;
+    //IConfig
+    procedure IConfig.UpdateLanguage = Translate;
+    procedure UpdateRegExp;
+    procedure UpdateFilter(const aOperation: TFilterOperation);
 
     //IProgress
     procedure ClearTree;
@@ -99,7 +97,7 @@ begin
   inherited;
   CreateProgressBar;
   TPublishers.ProgressPublisher.Subscribe(Self);
-  TPublishers.TranslatePublisher.Subscribe(Self);
+  TPublishers.ConfigPublisher.Subscribe(Self);
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -108,13 +106,15 @@ begin
   FreeAndNil(FProgressBar);
   Deinitialize;
   TPublishers.ProgressPublisher.Unsubscribe(Self);
-  TPublishers.TranslatePublisher.Unsubscribe(Self);
+  TPublishers.ConfigPublisher.Unsubscribe(Self);
 end;
 
 procedure TfrmMain.Initialize;
 begin
   inherited;
-  TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
+  Randomize;
+  TLang.Lang.Language      := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
+  pnlExtendedFilter.Height := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'ExtendedFilterHeight', 250);
   DaMod.Initialize;
   frameRegExp.Initialize;
   framePathes.Initialize;
@@ -122,6 +122,8 @@ begin
   frameSorter.Initialize;
   frameSettings.Initialize;
   frameDuplicateFiles.Initialize;
+  frameMatchesFilter.Initialize;
+  frameBruteForce.Initialize;
 
   pnlTop.Color                := C_TOP_COLOR;
   catMenuItems.HotButtonColor := C_TOP_COLOR;
@@ -131,27 +133,35 @@ end;
 
 procedure TfrmMain.Deinitialize;
 begin
-  inherited;
   frameRegExp.Deinitialize;
   framePathes.Deinitialize;
   frameSorter.Deinitialize;
   frameResultView.Deinitialize;
   frameSettings.Deinitialize;
   frameDuplicateFiles.Deinitialize;
+  frameMatchesFilter.Deinitialize;
+  frameBruteForce.Deinitialize;
   DaMod.Deinitialize;
-  LogWriter.Active := False;
+  LogWriter.Finish;
+  TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'ExtendedFilterHeight', pnlExtendedFilter.Height);
+  TGeneral.XMLParams.Save;
+  inherited;
 end;
 
 procedure TfrmMain.Translate;
 begin
   inherited;
-  aEditCommonParameters.Caption := TLang.Lang.Translate('EditCommonParameters');
-  aEditRegExpParameters.Caption := TLang.Lang.Translate('EditRegExpParameters');
-  aOpenLogFile.Caption          := TLang.Lang.Translate('OpenLogFile');
-  aPathsFindFiles.Caption       := TLang.Lang.Translate('PathsToFindSaveFiles');
-  aSearch.Caption               := TLang.Lang.Translate('Search');
-  aSearchDuplicateFiles.Caption := TLang.Lang.Translate('SearchDuplicateFiles');
+  catMenuItems.Categories[0].Caption := TLang.Lang.Translate('Main');
+  catMenuItems.Categories[1].Caption := TLang.Lang.Translate('Utilities');
+  catMenuItems.Categories[0].Items[0].Caption := TLang.Lang.Translate('PathsToFindSaveFiles');
+  catMenuItems.Categories[0].Items[1].Caption := TLang.Lang.Translate('EditRegExpParameters');
+  catMenuItems.Categories[0].Items[2].Caption := TLang.Lang.Translate('EditCommonParameters');
+  catMenuItems.Categories[0].Items[3].Caption := TLang.Lang.Translate('Search');
+  catMenuItems.Categories[1].Items[0].Caption := TLang.Lang.Translate('SearchDuplicateFiles');
+  catMenuItems.Categories[1].Items[1].Caption := TLang.Lang.Translate('BruteForce');
+  catMenuItems.Categories[1].Items[2].Caption := TLang.Lang.Translate('OpenLogFile');
 
+  crdBruteForce.Caption           := TLang.Lang.Translate('BruteForce');
   crdCommonParams.Caption         := TLang.Lang.Translate('EditCommonParameters');
   crdPathsToFindScripts.Caption   := TLang.Lang.Translate('PathsToFindFiles');
   crdRegExpParameters.Caption     := TLang.Lang.Translate('EditRegExpParameters');
@@ -159,11 +169,8 @@ begin
   crdSearchDuplicateFiles.Caption := TLang.Lang.Translate('SearchDuplicateFiles');
   gbPathes.Caption                := TLang.Lang.Translate('PathsToFindFiles');
   gbSorter.Caption                := TLang.Lang.Translate('PathsToSaveFiles');
-
-  catMenuItems.Categories[0].Caption := TLang.Lang.Translate('Main');
-  catMenuItems.Categories[1].Caption := TLang.Lang.Translate('Utilities');
-
-  lblTitle.Caption := pnlCard.ActiveCard.Caption;
+  pnlExtendedFilter.Caption       := TLang.Lang.Translate('ExtendedFilter');
+  lblTitle.Caption                := pnlCard.ActiveCard.Caption;
 end;
 
 function TfrmMain.GetIdentityName: string;
@@ -179,19 +186,10 @@ begin
       FProgressBar.Width := sbMain.Width - 20;
 end;
 
-procedure TfrmMain.aToggleSplitPanelExecute(Sender: TObject);
-begin
-  inherited;
-  if splView.Opened then
-    splView.Close
-  else
-    splView.Open;
-end;
-
 procedure TfrmMain.CreateProgressBar;
 begin
   FProgressBar := TGauge.Create(nil);
-  FProgressBar.Parent := sbMain;
+  FProgressBar.Parent      := sbMain;
   FProgressBar.ForeColor   := C_TOP_COLOR;
   FProgressBar.BackColor   := clBtnFace;
   FProgressBar.BorderStyle := bsNone;
@@ -203,39 +201,36 @@ begin
   FProgressBar.Visible     := False;
 end;
 
-procedure TfrmMain.aEditCommonParametersExecute(Sender: TObject);
+procedure TfrmMain.catMenuItemsSelectedItemChange(Sender: TObject; const Button: TButtonItem);
 begin
   inherited;
-  lblTitle.Caption := TAction(Sender).Caption;
-  pnlCard.ActiveCard := crdCommonParams;
+  if (Button.Category.Id = 0) then
+    case Button.Id of
+      0: pnlCard.ActiveCard := crdPathsToFindScripts;
+      1: pnlCard.ActiveCard := crdRegExpParameters;
+      2: pnlCard.ActiveCard := crdCommonParams;
+      3: pnlCard.ActiveCard := crdResultView;
+    end
+  else if (Button.Category.Id = 1) then
+    case Button.Id of
+      0: pnlCard.ActiveCard := crdSearchDuplicateFiles;
+      1: pnlCard.ActiveCard := crdBruteForce;
+      2: if FileExists(LogWriter.LogFileName) then
+          TFileUtils.ShellOpen(LogWriter.LogFileName);
+    end;
+  lblTitle.Caption := Button.Caption;
+
+  pnlExtendedFilter.Visible := (pnlCard.ActiveCard = crdResultView);
+  splExtendedFilter.Visible := (pnlCard.ActiveCard = crdResultView);
 end;
 
-procedure TfrmMain.aEditRegExpParametersExecute(Sender: TObject);
+procedure TfrmMain.aToggleSplitPanelExecute(Sender: TObject);
 begin
   inherited;
-  lblTitle.Caption := TAction(Sender).Caption;
-  pnlCard.ActiveCard := crdRegExpParameters;
-end;
-
-procedure TfrmMain.aOpenLogFileExecute(Sender: TObject);
-begin
-  inherited;
-  if FileExists(LogWriter.LogFileName) then
-    TFileUtils.ShellOpen(LogWriter.LogFileName);
-end;
-
-procedure TfrmMain.aPathsFindFilesExecute(Sender: TObject);
-begin
-  inherited;
-  lblTitle.Caption := TAction(Sender).Caption;
-  pnlCard.ActiveCard := crdPathsToFindScripts;
-end;
-
-procedure TfrmMain.aSearchDuplicateFilesExecute(Sender: TObject);
-begin
-  inherited;
-  lblTitle.Caption := TAction(Sender).Caption;
-  pnlCard.ActiveCard := crdSearchDuplicateFiles;
+  if splView.Opened then
+    splView.Close
+  else
+    splView.Open;
 end;
 
 procedure TfrmMain.ApplicationEventsException(Sender: TObject; E: Exception);
@@ -249,11 +244,18 @@ begin
     TMessageDialog.ShowError(E.Message, StackTrace);
 end;
 
-procedure TfrmMain.aSearchExecute(Sender: TObject);
+procedure TfrmMain.splViewClosed(Sender: TObject);
 begin
   inherited;
-  lblTitle.Caption := TAction(Sender).Caption;
-  pnlCard.ActiveCard := crdResultView;
+  catMenuItems.ButtonOptions := catMenuItems.ButtonOptions - [boShowCaptions];
+  catMenuItems.Width         := splView.CompactWidth;
+end;
+
+procedure TfrmMain.splViewOpened(Sender: TObject);
+begin
+  inherited;
+  catMenuItems.ButtonOptions := catMenuItems.ButtonOptions + [boShowCaptions];
+  catMenuItems.Width         := splView.OpenedWidth;
 end;
 
 procedure TfrmMain.srchBoxInvokeSearch(Sender: TObject);
@@ -267,17 +269,27 @@ end;
 
 procedure TfrmMain.ClearTree;
 begin
-  //nothing
+  // nothing
 end;
 
 procedure TfrmMain.CompletedAttach(const aAttachment: PAttachment);
 begin
-  //nothing
+  // nothing
 end;
 
 procedure TfrmMain.CompletedItem(const aResultData: PResultData);
 begin
-  //nothing
+  // nothing
+end;
+
+procedure TfrmMain.UpdateFilter(const aOperation: TFilterOperation);
+begin
+  // nothing
+end;
+
+procedure TfrmMain.UpdateRegExp;
+begin
+  // nothing
 end;
 
 procedure TfrmMain.EndProgress;
@@ -289,8 +301,8 @@ end;
 procedure TfrmMain.Progress;
 begin
   if (FProgressBar.Progress >= FProgressBar.MaxValue) then
-    FProgressBar.MaxValue := FProgressBar.MaxValue + 1;
-  FProgressBar.Progress := FProgressBar.Progress + 1;
+    FProgressBar.MaxValue := FProgressBar.MaxValue + C_PROGRESS_STEP;
+  FProgressBar.Progress := FProgressBar.Progress + C_PROGRESS_STEP;
   FProgressBar.Refresh;
   Application.ProcessMessages;
 end;

@@ -95,28 +95,8 @@ begin
 end;
 
 class function TFileUtils.GetHash(const aFileName: string): string;
-var
-  Buffer: array [0 .. 16383] of Byte;
-  FileStream : TFileStream;
-  HashSHA1   : THashSHA1;
-  ReadSize   : Integer;
 begin
-  try
-    FileStream := TFileStream.Create(aFileName, fmOpenRead or fmShareDenyWrite);
-    try
-      HashSHA1 := THashSHA1.Create;
-      repeat
-        ReadSize := FileStream.Read(Buffer, SizeOf(Buffer));
-        HashSHA1.Update(Buffer, ReadSize);
-      until ReadSize <> SizeOf(Buffer);
-      Result := HashSHA1.HashAsString;
-    finally
-      FreeAndNil(FileStream)
-    end;
-  except
-    on E: Exception do
-      Result := '';
-  end;
+  Result := THashSHA1.GetHashStringFromFile(aFileName);
 end;
 
 class procedure TFileUtils.ShellOpen(const aUrl: string; const aParams: string = '');
@@ -130,19 +110,22 @@ var
   FileStream    : TFileStream;
 begin
   Result := fsUnknown;
-  FileStream := TFile.OpenRead(aFileName);
-  try
-    SetLength(FileSignature, LENGTH_SIGNATURE);
-    if (FileStream.Read(FileSignature, SizeOf(FileSignature)) > 0) then
-      for var item in ArraySignatures do
-        if (item.TypeSignature <> fsUnknown) then
-        begin
-          var Signature := Copy(FileSignature, 0, Length(item.Signature));
-          if CompareMem(Signature, item.Signature, Length(item.Signature)) then
-            Exit(item.TypeSignature);
-        end;
-  finally
-    FreeAndNil(FileStream);
+  if TFile.Exists(aFileName) then
+  begin
+    FileStream := TFile.OpenRead(aFileName);
+    try
+      SetLength(FileSignature, LENGTH_SIGNATURE);
+      if (FileStream.Read(FileSignature, SizeOf(FileSignature)) > 0) then
+        for var item in ArraySignatures do
+          if (item.TypeSignature <> fsUnknown) then
+          begin
+            var Signature := Copy(FileSignature, 0, Length(item.Signature));
+            if CompareMem(Signature, item.Signature, Length(item.Signature)) then
+              Exit(item.TypeSignature);
+          end;
+    finally
+      FreeAndNil(FileStream);
+    end;
   end;
 end;
 

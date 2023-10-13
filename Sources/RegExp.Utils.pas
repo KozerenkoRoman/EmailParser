@@ -8,7 +8,7 @@ uses
   Vcl.Forms, Vcl.Buttons, Vcl.DBGrids, Vcl.Mask, System.UITypes, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF}
   VirtualTrees, DebugWriter, Html.Lib, Column.Types, Global.Types, CommonForms, VirtualTrees.Helper, System.Types,
   DaImages, XmlFiles, Common.Types, System.Generics.Collections, System.Generics.Defaults, Winapi.msxml,
-  Translate.Lang, Global.Resources, Vcl.ToolWin, Vcl.ComCtrls, ArrayHelper;
+  Translate.Lang, Global.Resources, Vcl.ToolWin, Vcl.ComCtrls, ArrayHelper, Html.Consts;
 {$ENDREGION}
 
 type
@@ -40,6 +40,7 @@ begin
         Data^.RegExpTemplate := aXmlFile.Attributes.GetAttributeValue('RegExpTemplate', '');
         Data^.GroupIndex     := aXmlFile.Attributes.GetAttributeValue('GroupIndex', 0);
         Data^.UseRawText     := aXmlFile.Attributes.GetAttributeValue('UseRawText', False);
+        Data^.Color          := aXmlFile.Attributes.GetAttributeValue('Color', arrWebColors[Random(High(arrWebColors))].Color);
         aTree.CheckType[Node] := ctCheckBox;
         if Data^.UseRawText then
           Node.CheckState := csCheckedNormal
@@ -70,6 +71,7 @@ class function TRegExpUtils.SaveSetOfTemplate(const aTree: TVirtualStringTree; c
         Attributes.SetAttributeValue('RegExpTemplate', Data^.RegExpTemplate);
         Attributes.SetAttributeValue('GroupIndex', Data^.GroupIndex);
         Attributes.SetAttributeValue('UseRawText', Data^.UseRawText);
+        Attributes.SetAttributeValue('Color', Data^.Color);
         WriteAttributes;
       end;
     end;

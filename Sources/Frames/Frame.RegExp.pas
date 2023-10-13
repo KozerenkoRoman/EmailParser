@@ -1,4 +1,4 @@
-unit Frame.RegExp;
+﻿unit Frame.RegExp;
 
 interface
 
@@ -57,6 +57,7 @@ type
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
+    procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
   private const
     COL_PARAM_NAME      = 0;
     COL_REGEXP_TEMPLATE = 1;
@@ -65,6 +66,7 @@ type
 
     C_IDENTITY_NAME = 'frameRegExp';
   private
+    procedure UpdateRegExpColumns;
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
     function GetIdentityName: string; override;
@@ -112,9 +114,9 @@ begin
   tbSettings.Height       := C_ICON_SIZE + 2;
 
   LoadFromXML;
+  UpdateRegExpColumns;
   Translate;
-  vstTree.FullExpand;
-  btnSave.Left := btnSaveSetAs.Left;
+  TPublishers.ConfigPublisher.UpdateRegExp;
 end;
 
 procedure TframeRegExp.Deinitialize;
@@ -127,9 +129,11 @@ procedure TframeRegExp.Translate;
 begin
   inherited;
   aDeleteSet.Hint           := TLang.Lang.Translate('Delete');
+  aDown.Hint                := TLang.Lang.Translate('Down');
   aImportFromXML.Hint       := TLang.Lang.Translate('Import');
   aSave.Hint                := TLang.Lang.Translate('Save');
   aSaveAs.Hint              := TLang.Lang.Translate('SaveAs');
+  aUp.Hint                  := TLang.Lang.Translate('Up');
   lblSetOfTemplates.Caption := TLang.Lang.Translate('SetOfTemplates');
   vstTree.Header.Columns[COL_PARAM_NAME].Text      := TLang.Lang.Translate('TemplateName');
   vstTree.Header.Columns[COL_REGEXP_TEMPLATE].Text := TLang.Lang.Translate('RegExpTemplate');
@@ -205,6 +209,7 @@ procedure TframeRegExp.SaveToXML;
     TGeneral.XMLParams.Attributes.SetAttributeValue('RegExpTemplate', Data.RegExpTemplate);
     TGeneral.XMLParams.Attributes.SetAttributeValue('GroupIndex', Data.GroupIndex);
     TGeneral.XMLParams.Attributes.SetAttributeValue('UseRawText', Data.UseRawText);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('Color', Data.Color);
     TGeneral.XMLParams.WriteAttributes;
   end;
 
@@ -231,12 +236,15 @@ end;
 procedure TframeRegExp.aAddExecute(Sender: TObject);
 var
   NewNode: PVirtualNode;
+  Data: PRegExpData;
 begin
   inherited;
   vstTree.ClearSelection;
   NewNode := vstTree.AddChild(nil);
   vstTree.CheckType[NewNode] := ctCheckBox;
-  vstTree.Selected[NewNode] := True;
+  vstTree.Selected[NewNode]  := True;
+  Data := NewNode^.GetData;
+  Data^.Color := arrWebColors[Random(High(arrWebColors))].Color;
 end;
 
 procedure TframeRegExp.aAddUpdate(Sender: TObject);
@@ -261,18 +269,17 @@ end;
 procedure TframeRegExp.aEditExecute(Sender: TObject);
 var
   Data: PRegExpData;
-  PatternResult: TArray<string>;
 begin
   inherited;
   if Assigned(vstTree.FocusedNode) then
   begin
     Data := vstTree.FocusedNode.GetData;
-    PatternResult := TfrmRegExpEditor.GetPattern(Data^.RegExpTemplate, Data^.ParameterName, Data^.GroupIndex);
-    if (Length(PatternResult) >= 3) then
+    if (TfrmRegExpEditor.GetPattern(Data^) = mrOk) then
     begin
-      Data^.RegExpTemplate := PatternResult[0];
-      Data^.ParameterName  := PatternResult[1];
-      Data^.GroupIndex     := String.ToInteger(PatternResult[2]);
+      if Data^.UseRawText then
+        vstTree.FocusedNode.CheckState := csCheckedNormal
+      else
+        vstTree.FocusedNode.CheckState := csUnCheckedNormal;
     end;
   end;
 end;
@@ -288,6 +295,18 @@ procedure TframeRegExp.aRefreshExecute(Sender: TObject);
 begin
   inherited;
   LoadFromXML;
+end;
+
+procedure TframeRegExp.vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+var
+  Data: PRegExpData;
+begin
+  Data := Node^.GetData;
+  if (Column = COL_REGEXP_TEMPLATE) then
+  begin
+    TargetCanvas.Brush.Color := Data.Color;
+    TargetCanvas.FillRect(CellRect);
+  end;
 end;
 
 procedure TframeRegExp.vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -399,7 +418,35 @@ begin
   end;
 end;
 
+procedure TframeRegExp.UpdateRegExpColumns;
+var
+  arrParams: TArrayRecord<TRegExpData>;
+begin
+  arrParams := TGeneral.GetRegExpParametersList;
+  SetLength(TGeneral.RegExpColumns, arrParams.Count);
+  for var i := 0 to arrParams.Count - 1 do
+  begin
+    TGeneral.RegExpColumns[i].Color := arrParams[i].Color;
+    TGeneral.RegExpColumns[i].IsSelected := True;
+  end;
+end;
+
 procedure TframeRegExp.aSaveExecute(Sender: TObject);
+
+  procedure UpdateMatches;
+  var
+    arrParams: TArrayRecord<TRegExpData>;
+  begin
+    arrParams := TGeneral.GetRegExpParametersList;
+    for var item in TGeneral.EmailList.Values do
+      if Assigned(item) then
+        item^.Matches.Count := arrParams.Count;
+
+    for var att in TGeneral.AttachmentList.Values do
+      if Assigned(att) then
+        att^.Matches.Count := arrParams.Count;
+  end;
+
 var
   str: TStringObject;
 begin
@@ -410,7 +457,9 @@ begin
     TRegExpUtils.SaveSetOfTemplate(vstTree, str.StringValue, cbSetOfTemplates.Text);
   end;
   SaveToXML;
-  TPublishers.UpdateXMLPublisher.UpdateXML;
+  UpdateMatches;
+  UpdateRegExpColumns;
+  TPublishers.ConfigPublisher.UpdateRegExp;
 end;
 
 procedure TframeRegExp.aSaveAsExecute(Sender: TObject);
@@ -471,44 +520,26 @@ end;
 procedure TframeRegExp.aUpUpdate(Sender: TObject);
 begin
   inherited;
-  TAction(Sender).Enabled := False;
   if Assigned(vstTree.FocusedNode) then
-    TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.FirstChild;
+    TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.FirstChild
+  else
+    TAction(Sender).Enabled := False;
 end;
 
 procedure TframeRegExp.aDownUpdate(Sender: TObject);
 begin
   inherited;
-  TAction(Sender).Enabled := False;
   if Assigned(vstTree.FocusedNode) then
-    TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.LastChild;
+    TAction(Sender).Enabled := vstTree.FocusedNode <> vstTree.RootNode.LastChild
+  else
+    TAction(Sender).Enabled := False;
 end;
 
 procedure TframeRegExp.cbSetOfTemplatesChange(Sender: TObject);
-
-  procedure UpdateXML;
-  var
-    RegExpCount: Integer;
-  begin
-    RegExpCount := TGeneral.GetRegExpCount;
-    for var item in TGeneral.EmailList.Values do
-      if Assigned(item) then
-        item^.Matches.Count := RegExpCount;
-
-    for var att in TGeneral.AttachmentList.Values do
-      if Assigned(att) then
-        att^.Matches.Count := RegExpCount;
-  end;
-
 begin
   inherited;
   if Showing and (cbSetOfTemplates.ItemIndex > -1) then
-  begin
     TRegExpUtils.RestoreSetOfTemplate(TGeneral.XMLParams, vstTree, TStringObject(cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex]).StringValue);
-    SaveToXML;
-    TPublishers.UpdateXMLPublisher.UpdateXML;
-    UpdateXML;
-  end;
 end;
 
 procedure TframeRegExp.aDeleteSetExecute(Sender: TObject);

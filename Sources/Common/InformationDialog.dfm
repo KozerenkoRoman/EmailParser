@@ -17,14 +17,15 @@ object InformationDialog: TInformationDialog
     Width = 474
     Height = 477
     Align = alClient
+    BevelOuter = bvNone
     TabOrder = 0
     ExplicitWidth = 470
     ExplicitHeight = 476
     object wbMessage: TWebBrowser
-      Left = 1
-      Top = 1
-      Width = 472
-      Height = 433
+      Left = 0
+      Top = 0
+      Width = 474
+      Height = 435
       Margins.Left = 0
       Margins.Top = 0
       Margins.Right = 0
@@ -35,29 +36,31 @@ object InformationDialog: TInformationDialog
       ShowHint = False
       TabOrder = 0
       OnBeforeNavigate2 = wbMessageBeforeNavigate2
+      ExplicitWidth = 470
+      ExplicitHeight = 434
       ControlData = {
-        4C000000C8300000C02C00000000000000000000000000000000000000000000
+        4C000000FD300000F52C00000000000000000000000000000000000000000000
         000000004C000000000000000000000001000000E0D057007335CF11AE690800
-        2B2E126209000000000000004C0000000114020000000000C000000000000046
+        2B2E12620B000000000000004C0000000114020000000000C000000000000046
         8000000000000000000000000000000000000000000000000000000000000000
         00000000000000000100000000000000000000000000000000000000}
     end
     object pnlBottom: TPanel
-      Left = 1
-      Top = 434
-      Width = 472
+      Left = 0
+      Top = 435
+      Width = 474
       Height = 42
       Align = alBottom
       BevelOuter = bvNone
       ParentBackground = False
       TabOrder = 1
-      ExplicitTop = 433
-      ExplicitWidth = 468
+      ExplicitTop = 434
+      ExplicitWidth = 470
       DesignSize = (
-        472
+        474
         42)
       object btnSave: TBitBtn
-        Left = 241
+        Left = 243
         Top = 1
         Width = 110
         Height = 40
@@ -73,10 +76,10 @@ object InformationDialog: TInformationDialog
         Images = DMImage.vil32
         ParentFont = False
         TabOrder = 0
-        ExplicitLeft = 237
+        ExplicitLeft = 239
       end
       object btnOk: TBitBtn
-        Left = 354
+        Left = 356
         Top = 1
         Width = 110
         Height = 40
@@ -91,7 +94,7 @@ object InformationDialog: TInformationDialog
         Images = DMImage.vil32
         ParentFont = False
         TabOrder = 1
-        ExplicitLeft = 350
+        ExplicitLeft = 352
       end
     end
   end
@@ -101,14 +104,14 @@ object InformationDialog: TInformationDialog
     Top = 160
     object aOk: TAction
       Caption = 'Ok'
-      ImageIndex = 46
+      ImageIndex = 44
       ImageName = 'tick'
       ShortCut = 27
       OnExecute = aOkExecute
     end
     object aSave: TAction
       Caption = 'Save'
-      ImageIndex = 10
+      ImageIndex = 9
       ImageName = 'Save_32x32'
       OnExecute = aSaveExecute
     end
