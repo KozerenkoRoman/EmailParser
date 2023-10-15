@@ -51,9 +51,11 @@ type
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
   private const
-    COL_FILE_NAME   = 0;
-    COL_PASSWORD    = 1;
-    COL_INFO        = 2;
+    COL_SHORT_NAME = 0;
+    COL_FILE_NAME  = 1;
+    COL_PASSWORD   = 2;
+    COL_INFO       = 3;
+    COL_HASH       = 4;
 
     C_IDENTITY_NAME = 'frameBruteForce';
   private
@@ -125,24 +127,19 @@ begin
   aUp.Hint    := TLang.Lang.Translate('Up');
   lblPasswordList.Caption := TLang.Lang.Translate('PasswordList');
 
-  vstTree.Header.Columns[COL_FILE_NAME].Text := TLang.Lang.Translate('FileName');
-  vstTree.Header.Columns[COL_PASSWORD].Text  := TLang.Lang.Translate('Password');
-  vstTree.Header.Columns[COL_INFO].Text      := TLang.Lang.Translate('Info');
+  vstTree.Header.Columns[COL_PASSWORD].Text   := TLang.Lang.Translate('Password');
+  vstTree.Header.Columns[COL_INFO].Text       := TLang.Lang.Translate('Info');
+  vstTree.Header.Columns[COL_SHORT_NAME].Text := TLang.Lang.Translate('FileName');
+  vstTree.Header.Columns[COL_FILE_NAME].Text  := TLang.Lang.Translate('Path');
+  vstTree.Header.Columns[COL_HASH].Text       := TLang.Lang.Translate('Hash');
 end;
 
 procedure TframeBruteForce.LoadFromXML;
 
   procedure LoadNode;
-  var
-    arrPassword : TPasswordArray;
   begin
-    inherited;
-    arrPassword := TGeneral.GetPasswordList;
-    for var arrData in arrPassword do
-      if not arrData.Hash.IsEmpty then
-        TGeneral.PasswordList.TryAdd(arrData.Hash, arrData)
-      else
-        Dispose(arrData);
+    for var Data in TGeneral.PasswordList.Values do
+      OnPasswordListChange(Self, Data, cnAdded);
   end;
 
 begin
@@ -206,7 +203,6 @@ var
   Node: PVirtualNode;
 begin
   inherited;
-  TGeneral.XMLParams.Open;
   try
     TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'PasswordList', edtFileName.Text, lblPasswordList.Caption);
     TGeneral.XMLParams.EraseSection('Passwords');
@@ -317,7 +313,7 @@ var
 begin
   inherited;
   Data := TGeneral.PasswordList.GetItem(PPasswordData(Node^.GetData).Hash);
-  if Assigned(Data) and Data.IsDeleted and (Column in [COL_FILE_NAME]) then
+  if Assigned(Data) and Data.IsDeleted and (Column in [COL_FILE_NAME, COL_SHORT_NAME]) then
   begin
     TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsStrikeOut];
     TargetCanvas.Font.Color := clRed;
@@ -345,6 +341,10 @@ begin
         CellText := Data^.Password;
       COL_INFO:
         CellText := TLang.Lang.Translate(Data^.Info);
+      COL_SHORT_NAME:
+        CellText := Data^.ShortName;
+      COL_HASH:
+        CellText := Data^.Hash;
     end;
 end;
 

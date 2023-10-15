@@ -44,6 +44,7 @@ type
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
+    procedure vstTreeDblClick(Sender: TObject);
   private const
     COL_SHORT_NAME = 0;
     COL_FILE_NAME  = 1;
@@ -173,6 +174,24 @@ begin
       Result := CompareText(Data1^.Hash, Data2^.Hash);
     COL_DATE:
       Result := CompareValue(Data1^.Date, Data2^.Date);
+  end;
+end;
+
+procedure TframeDuplicateFiles.vstTreeDblClick(Sender: TObject);
+var
+  Data: PFileData;
+begin
+  inherited;
+  if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
+  begin
+    Data := vstTree.FocusedNode^.GetData;
+    if Assigned(Data) then
+    begin
+      if TFile.Exists(Data^.FileName) then
+        TFileUtils.ShellOpen(Data^.FileName)
+      else
+        TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.ShortName]));
+    end;
   end;
 end;
 

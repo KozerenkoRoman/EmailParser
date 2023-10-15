@@ -24,7 +24,6 @@ uses
   ExecConsoleProgram in 'Sources\Common\ExecConsoleProgram.pas',
   EXIF.Dialog in 'Sources\Common\EXIF.Dialog.pas' {EXIFDialog},
   Files.Utils in 'Sources\Common\Files.Utils.pas',
-  FireDAC.Phys.SQLiteIniFile in 'Sources\DataModules\FireDAC.Phys.SQLiteIniFile.pas',
   Frame.AllAttachments in 'Sources\Frames\Frame.AllAttachments.pas' {frameAllAttachments: TFrame},
   Frame.Attachments in 'Sources\Frames\Frame.Attachments.pas' {frameAttachments: TFrame},
   Frame.BruteForce in 'Sources\Frames\Frame.BruteForce.pas' {frameBruteForce: TFrame},

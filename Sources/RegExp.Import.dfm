@@ -3,8 +3,8 @@ object frmImportFromXML: TfrmImportFromXML
   Top = 0
   Anchors = [akLeft, akTop, akRight]
   Caption = 'Import From XML'
-  ClientHeight = 544
-  ClientWidth = 753
+  ClientHeight = 542
+  ClientWidth = 745
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,19 +18,19 @@ object frmImportFromXML: TfrmImportFromXML
   TextHeight = 13
   object pnlBottom: TPanel
     Left = 0
-    Top = 502
-    Width = 753
+    Top = 500
+    Width = 745
     Height = 42
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = 501
-    ExplicitWidth = 749
+    ExplicitTop = 499
+    ExplicitWidth = 741
     DesignSize = (
-      753
+      745
       42)
     object btnOk: TBitBtn
-      Left = 631
+      Left = 615
       Top = 1
       Width = 108
       Height = 40
@@ -47,14 +47,14 @@ object frmImportFromXML: TfrmImportFromXML
       ModalResult = 1
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 627
+      ExplicitLeft = 611
     end
   end
   object vstTree: TVirtualStringTree
     Left = 0
     Top = 69
-    Width = 753
-    Height = 433
+    Width = 745
+    Height = 431
     Margins.Left = 5
     Margins.Top = 5
     Margins.Right = 5
@@ -127,7 +127,7 @@ object frmImportFromXML: TfrmImportFromXML
   object tbSettings: TToolBar
     Left = 0
     Top = 28
-    Width = 753
+    Width = 745
     Height = 41
     ButtonHeight = 39
     ButtonWidth = 39
@@ -136,7 +136,7 @@ object frmImportFromXML: TfrmImportFromXML
     Images = DMImage.vil32
     TabOrder = 2
     Transparent = False
-    ExplicitWidth = 749
+    ExplicitWidth = 741
     object pnlSettings: TPanel
       Left = 0
       Top = 0
@@ -183,12 +183,12 @@ object frmImportFromXML: TfrmImportFromXML
   object pnlTop: TPanel
     Left = 0
     Top = 0
-    Width = 753
+    Width = 745
     Height = 28
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 3
-    ExplicitWidth = 749
+    ExplicitWidth = 741
     object lblPathToFile: TLabel
       AlignWithMargins = True
       Left = 3

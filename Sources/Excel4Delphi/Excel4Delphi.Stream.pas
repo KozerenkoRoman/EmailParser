@@ -8504,7 +8504,7 @@ begin
     FWorkBook.Sheets.Count := FWorkBook.Sheets.Count + 1;
     currentRow := 0;
     currentSheet := FWorkBook.Sheets[ASheetIndex];
-    // currentSheet.Title := SheetName;
+//     currentSheet.Title := SheetName;
     while Xml.ReadTag() do
     begin
       if Xml.IsTagStartByName('sheetData') then

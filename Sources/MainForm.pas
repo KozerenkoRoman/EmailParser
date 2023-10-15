@@ -115,6 +115,7 @@ begin
   Randomize;
   TLang.Lang.Language      := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
   pnlExtendedFilter.Height := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'ExtendedFilterHeight', 250);
+  TGeneral.Initialize;
   DaMod.Initialize;
   frameRegExp.Initialize;
   framePathes.Initialize;

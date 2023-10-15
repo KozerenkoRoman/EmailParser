@@ -45,7 +45,7 @@ var
 begin
   for Key := Low(Next) to High(Next) do
     if Assigned(Next[Key]) then
-      Next[Key].Free;
+      FreeAndNil(Next[Key]);
   FreeAndNil(Output);
   inherited;
 end;

@@ -66,9 +66,6 @@ type
     COL_TYPE_PATTERN    = 4;
 
     C_IDENTITY_NAME = 'frameRegExp';
-  private
-    procedure UpdateRegExpColumns;
-    procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
     function GetIdentityName: string; override;
     procedure SaveToXML; override;
@@ -79,7 +76,6 @@ type
     procedure Initialize; override;
     procedure Deinitialize; override;
     procedure Translate; override;
-    procedure SearchText(const aText: string); override;
   end;
 
 implementation
@@ -91,7 +87,7 @@ implementation
 constructor TframeRegExp.Create(AOwner: TComponent);
 begin
   inherited;
-  vstTree.NodeDataSize := SizeOf(TRegExpData);
+  vstTree.NodeDataSize := SizeOf(TPatternData);
 end;
 
 destructor TframeRegExp.Destroy;
@@ -115,7 +111,6 @@ begin
   tbSettings.Height       := C_ICON_SIZE + 2;
 
   LoadFromXML;
-  UpdateRegExpColumns;
   Translate;
   TPublishers.ConfigPublisher.UpdateRegExp;
 end;
@@ -147,22 +142,19 @@ procedure TframeRegExp.LoadFromXML;
 
   procedure LoadNode;
   var
-    arrParams : TArrayRecord<TRegExpData>;
-    Data      : PRegExpData;
-    NewNode   : PVirtualNode;
+    Node: PVirtualNode;
+    Data: PPatternData;
   begin
-    inherited;
-    arrParams := TGeneral.GetRegExpParametersList;
-    for var Param in arrParams do
+    for var Item in TGeneral.PatternList do
     begin
-      NewNode := vstTree.AddChild(nil);
-      Data    := NewNode.GetData;
-      Data^   := Param;
-      vstTree.CheckType[NewNode] := ctCheckBox;
-      if Param.UseRawText then
-        NewNode.CheckState := csCheckedNormal
+      Node := vstTree.AddChild(nil);
+      Data := Node^.GetData;
+      Data^.Assign(Item^);
+      vstTree.CheckType[Node] := ctCheckBox;
+      if Item^.UseRawText then
+        Node.CheckState := csCheckedNormal
       else
-        NewNode.CheckState := csUnCheckedNormal;
+        Node.CheckState := csUnCheckedNormal;
     end;
   end;
 
@@ -185,7 +177,6 @@ procedure TframeRegExp.LoadFromXML;
 
 begin
   inherited;
-  TGeneral.XMLParams.Open;
   LoadSetsOfTemplate;
   vstTree.BeginUpdate;
   try
@@ -203,16 +194,16 @@ procedure TframeRegExp.SaveToXML;
 
   procedure SaveNode(const aNode: PVirtualNode);
   var
-    Data: PRegExpData;
+    Data: PPatternData;
   begin
     Data := aNode^.GetData;
     TGeneral.XMLParams.Attributes.AddNode;
-    TGeneral.XMLParams.Attributes.SetAttributeValue('TypePattern', Data.TypePattern);
-    TGeneral.XMLParams.Attributes.SetAttributeValue('ParameterName', Data.ParameterName);
-    TGeneral.XMLParams.Attributes.SetAttributeValue('RegExpTemplate', Data.RegExpTemplate);
-    TGeneral.XMLParams.Attributes.SetAttributeValue('GroupIndex', Data.GroupIndex);
-    TGeneral.XMLParams.Attributes.SetAttributeValue('UseRawText', Data.UseRawText);
-    TGeneral.XMLParams.Attributes.SetAttributeValue('Color', Data.Color);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('TypePattern', Data^.TypePattern);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('ParameterName', Data^.ParameterName);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('RegExpTemplate', Data^.Pattern);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('GroupIndex', Data^.GroupIndex);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('UseRawText', Data^.UseRawText);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('Color', Data^.Color);
     TGeneral.XMLParams.WriteAttributes;
   end;
 
@@ -220,10 +211,9 @@ var
   Node: PVirtualNode;
 begin
   inherited;
-  TGeneral.XMLParams.Open;
+  TGeneral.XMLParams.EraseSection(C_SECTION_REGEXP);
+  TGeneral.XMLParams.CurrentSection := C_SECTION_REGEXP;
   try
-    TGeneral.XMLParams.EraseSection(C_SECTION_REGEXP);
-    TGeneral.XMLParams.CurrentSection := C_SECTION_REGEXP;
     Node := vstTree.GetFirst;
     while Assigned(Node) do
     begin
@@ -238,15 +228,15 @@ end;
 
 procedure TframeRegExp.aAddExecute(Sender: TObject);
 var
-  NewNode: PVirtualNode;
-  Data: PRegExpData;
+  Node: PVirtualNode;
+  Data: PPatternData;
 begin
   inherited;
   vstTree.ClearSelection;
-  NewNode := vstTree.AddChild(nil);
-  vstTree.CheckType[NewNode] := ctCheckBox;
-  vstTree.Selected[NewNode]  := True;
-  Data := NewNode^.GetData;
+  Node := vstTree.AddChild(nil);
+  vstTree.CheckType[Node] := ctCheckBox;
+  vstTree.Selected[Node]  := True;
+  Data := Node^.GetData;
   Data^.Color := arrWebColors[Random(High(arrWebColors))].Color;
 end;
 
@@ -271,13 +261,13 @@ end;
 
 procedure TframeRegExp.aEditExecute(Sender: TObject);
 var
-  Data: PRegExpData;
+  Data: PPatternData;
 begin
   inherited;
   if Assigned(vstTree.FocusedNode) then
   begin
     Data := vstTree.FocusedNode.GetData;
-    if (TfrmRegExpEditor.GetPattern(Data^) = mrOk) then
+    if (TfrmRegExpEditor.GetPattern(Data) = mrOk) then
     begin
       if Data^.UseRawText then
         vstTree.FocusedNode.CheckState := csCheckedNormal
@@ -302,28 +292,28 @@ end;
 
 procedure TframeRegExp.vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
 var
-  Data: PRegExpData;
+  Data: PPatternData;
 begin
   Data := Node^.GetData;
   if (Column = COL_REGEXP_TEMPLATE) then
   begin
-    TargetCanvas.Brush.Color := Data.Color;
+    TargetCanvas.Brush.Color := Data^.Color;
     TargetCanvas.FillRect(CellRect);
   end;
 end;
 
 procedure TframeRegExp.vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
-  Data: PRegExpData;
+  Data: PPatternData;
 begin
   inherited;
   Data := Node.GetData;
-  Data.UseRawText := Node.CheckState = csCheckedNormal;
+  Data^.UseRawText := Node.CheckState = csCheckedNormal;
 end;
 
 procedure TframeRegExp.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
 var
-  Data1, Data2: PRegExpData;
+  Data1, Data2: PPatternData;
 begin
   inherited;
   Exit;
@@ -333,7 +323,7 @@ begin
     COL_PARAM_NAME:
       Result := CompareText(Data1^.ParameterName, Data2^.ParameterName);
     COL_REGEXP_TEMPLATE:
-      Result := CompareText(Data1^.RegExpTemplate, Data2^.RegExpTemplate);
+      Result := CompareText(Data1^.Pattern, Data2^.Pattern);
     COL_GROUP_INDEX:
       Result := CompareValue(Data1^.GroupIndex, Data2^.GroupIndex);
     COL_TYPE_PATTERN:
@@ -349,7 +339,7 @@ end;
 
 procedure TframeRegExp.vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
 var
-  Data: PRegExpData;
+  Data: PPatternData;
 begin
   inherited;
   Data := Node^.GetData;
@@ -357,7 +347,7 @@ begin
     COL_PARAM_NAME:
       Data^.ParameterName := NewText;
     COL_REGEXP_TEMPLATE:
-      Data^.RegExpTemplate := NewText;
+      Data^.Pattern := NewText;
     COL_GROUP_INDEX:
       Data^.GroupIndex := StrToIntDef(NewText, 0);
   end;
@@ -371,7 +361,7 @@ end;
 
 procedure TframeRegExp.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
-  Data: PRegExpData;
+  Data: PPatternData;
 begin
   inherited;
   Data := Node^.GetData;
@@ -381,7 +371,7 @@ end;
 
 procedure TframeRegExp.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
-  Data: PRegExpData;
+  Data: PPatternData;
 begin
   inherited;
   CellText := '';
@@ -390,7 +380,7 @@ begin
     COL_PARAM_NAME:
       CellText := Data^.ParameterName;
     COL_REGEXP_TEMPLATE:
-      CellText := Data^.RegExpTemplate;
+      CellText := Data^.Pattern;
     COL_GROUP_INDEX:
       CellText := Data^.GroupIndex.ToString;
     COL_TYPE_PATTERN:
@@ -398,75 +388,24 @@ begin
   end;
 end;
 
-procedure TframeRegExp.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
-var
-  CellText: string;
-begin
-  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
-  Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
-end;
-
-procedure TframeRegExp.SearchText(const aText: string);
-var
-  Node: PVirtualNode;
-begin
-  inherited;
-  vstTree.BeginUpdate;
-  vstTree.FullExpand(nil);
-  try
-    Node := vstTree.IterateSubtree(nil, SearchForText, Pointer(aText));
-    if Assigned(Node) then
-    begin
-      vstTree.FocusedNode := Node;
-      vstTree.Selected[Node] := True;
-    end;
-  finally
-    vstTree.EndUpdate;
-  end;
-end;
-
-procedure TframeRegExp.UpdateRegExpColumns;
-var
-  arrParams: TArrayRecord<TRegExpData>;
-begin
-  arrParams := TGeneral.GetRegExpParametersList;
-  SetLength(TGeneral.RegExpColumns, arrParams.Count);
-  for var i := 0 to arrParams.Count - 1 do
-  begin
-    TGeneral.RegExpColumns[i].Color := arrParams[i].Color;
-    TGeneral.RegExpColumns[i].IsSelected := True;
-  end;
-end;
-
 procedure TframeRegExp.aSaveExecute(Sender: TObject);
-
-  procedure UpdateMatches;
-  var
-    arrParams: TArrayRecord<TRegExpData>;
-  begin
-    arrParams := TGeneral.GetRegExpParametersList;
-    for var item in TGeneral.EmailList.Values do
-      if Assigned(item) then
-        item^.Matches.Count := arrParams.Count;
-
-    for var att in TGeneral.AttachmentList.Values do
-      if Assigned(att) then
-        att^.Matches.Count := arrParams.Count;
-  end;
-
 var
   str: TStringObject;
 begin
   inherited;
-  if (cbSetOfTemplates.ItemIndex > -1) then
-  begin
-    str := TStringObject(cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex]);
-    TRegExpUtils.SaveSetOfTemplate(vstTree, str.StringValue, cbSetOfTemplates.Text);
+  Screen.Cursor := crHourGlass;
+  try
+    if (cbSetOfTemplates.ItemIndex > -1) then
+    begin
+      str := TStringObject(cbSetOfTemplates.Items.Objects[cbSetOfTemplates.ItemIndex]);
+      TRegExpUtils.SaveSetOfTemplate(vstTree, str.StringValue, cbSetOfTemplates.Text);
+    end;
+    SaveToXML;
+    TGeneral.PatternList.LoadData;
+    TPublishers.ConfigPublisher.UpdateRegExp;
+  finally
+    Screen.Cursor := crDefault;
   end;
-  SaveToXML;
-  UpdateMatches;
-  UpdateRegExpColumns;
-  TPublishers.ConfigPublisher.UpdateRegExp;
 end;
 
 procedure TframeRegExp.aSaveAsExecute(Sender: TObject);

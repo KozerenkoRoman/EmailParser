@@ -22,7 +22,7 @@ implementation
 
 class procedure TRegExpUtils.RestoreSetOfTemplate(const aXmlFile: TXmlFile; const aTree: TVirtualStringTree; const aSection: string);
 var
-  Data: PRegExpData;
+  Data: PPatternData;
   Node: PVirtualNode;
 begin
   aXmlFile.Open;
@@ -36,12 +36,12 @@ begin
       begin
         Node := aTree.AddChild(nil);
         Data := Node.GetData;
-        Data^.TypePattern    := aXmlFile.Attributes.GetAttributeValue('TypePattern', TTypePattern.tpRegularExpression);
-        Data^.ParameterName  := aXmlFile.Attributes.GetAttributeValue('ParameterName', '');
-        Data^.RegExpTemplate := aXmlFile.Attributes.GetAttributeValue('RegExpTemplate', '');
-        Data^.GroupIndex     := aXmlFile.Attributes.GetAttributeValue('GroupIndex', 0);
-        Data^.UseRawText     := aXmlFile.Attributes.GetAttributeValue('UseRawText', False);
-        Data^.Color          := aXmlFile.Attributes.GetAttributeValue('Color', arrWebColors[Random(High(arrWebColors))].Color);
+        Data^.TypePattern   := aXmlFile.Attributes.GetAttributeValue('TypePattern', TTypePattern.tpRegularExpression);
+        Data^.ParameterName := aXmlFile.Attributes.GetAttributeValue('ParameterName', '');
+        Data^.Pattern       := aXmlFile.Attributes.GetAttributeValue('RegExpTemplate', '');
+        Data^.GroupIndex    := aXmlFile.Attributes.GetAttributeValue('GroupIndex', 0);
+        Data^.UseRawText    := aXmlFile.Attributes.GetAttributeValue('UseRawText', False);
+        Data^.Color         := aXmlFile.Attributes.GetAttributeValue('Color', arrWebColors[Random(High(arrWebColors))].Color);
         aTree.CheckType[Node] := ctCheckBox;
         if Data^.UseRawText then
           Node.CheckState := csCheckedNormal
@@ -60,7 +60,7 @@ class function TRegExpUtils.SaveSetOfTemplate(const aTree: TVirtualStringTree; c
 
  procedure SaveNode(const aXmlNode: IXMLDOMNode; const aTreeNode: PVirtualNode);
   var
-    Data: PRegExpData;
+    Data: PPatternData;
   begin
     if Assigned(aXmlNode) and Assigned(aTreeNode) then
     begin
@@ -70,7 +70,7 @@ class function TRegExpUtils.SaveSetOfTemplate(const aTree: TVirtualStringTree; c
         Attributes.Node := aXmlNode;
         Attributes.SetAttributeValue('TypePattern', Data^.TypePattern);
         Attributes.SetAttributeValue('ParameterName', Data^.ParameterName);
-        Attributes.SetAttributeValue('RegExpTemplate', Data^.RegExpTemplate);
+        Attributes.SetAttributeValue('RegExpTemplate', Data^.Pattern);
         Attributes.SetAttributeValue('GroupIndex', Data^.GroupIndex);
         Attributes.SetAttributeValue('UseRawText', Data^.UseRawText);
         Attributes.SetAttributeValue('Color', Data^.Color);
@@ -90,8 +90,6 @@ begin
   else
     NewSet := aSection;
   Result := NewSet;
-
-  TGeneral.XMLParams.Open;
   try
     iSetNode := TGeneral.XMLParams.GetNode(TGeneral.XMLParams.GetXPath(C_SECTION_TEMPLATE_SETS, NewSet));
     if aSection.IsEmpty then

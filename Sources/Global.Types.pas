@@ -5,7 +5,7 @@ interface
 {$REGION 'Region uses'}
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
-  System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} XmlFiles,
+  System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} XmlFiles, AhoCorasick,
   System.IOUtils, Vcl.Forms, ArrayHelper, Data.DB, System.Win.Registry, Common.Types, Translate.Lang,
   System.IniFiles, VirtualTrees, System.RegularExpressions, System.Math, Vcl.Graphics, Html.Consts,
   Files.Utils, System.Generics.Defaults;
@@ -15,23 +15,6 @@ type
   TTypePattern = (tpRegularExpression, tpAhoCorasick);
   TTypePatternHelper = record helper for TTypePattern
     function ToString: string;
-  end;
-
-  PRegExpData = ^TRegExpData;
-  TRegExpData = record
-    TypePattern    : TTypePattern;
-    ParameterName  : string;
-    RegExpTemplate : string;
-    GroupIndex     : Integer;
-    UseRawText     : Boolean;
-    Color          : TColor;
-    procedure Clear;
-  end;
-  TRegExpArray = TArrayRecord<TRegExpData>;
-
-  TRegExp = record
-    Color: TColor;
-    IsSelected: Boolean;
   end;
 
   PParamPath = ^TParamPath;
@@ -119,11 +102,12 @@ type
 
   PPassword = ^TPassword;
   TPassword = record
-    Hash     : string;
-    FileName : string;
-    Password : string;
-    IsDeleted: Boolean;
-    Info     : string;
+    Hash      : string;
+    FileName  : string;
+    ShortName : string;
+    Password  : string;
+    IsDeleted : Boolean;
+    Info      : string;
   end;
   TPasswordArray = TArrayRecord<PPassword>;
 
@@ -132,11 +116,38 @@ type
     Hash: string;
   end;
 
+  PPatternData = ^TPatternData;
+  TPatternData = record
+    TypePattern    : TTypePattern;
+    ParameterName  : string;
+    Pattern        : string;
+    GroupIndex     : Integer;
+    UseRawText     : Boolean;
+    Color          : TColor;
+    AhoCorasickObj : TAhoCorasick;
+    procedure Assign(Source: TPatternData);
+    procedure Clear;
+  end;
+
+  TRegExp = record
+    Color: TColor;
+    IsSelected: Boolean;
+  end;
+
   TPasswordList = class(TObjectDictionary<string, PPassword>)
   public
     constructor Create;
     destructor Destroy; override;
     function GetItem(const aKey: string): PPassword;
+    procedure LoadData;
+    procedure ClearData;
+  end;
+
+  TPatternList = class(TList<PPatternData>)
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure LoadData;
     procedure ClearData;
   end;
 
@@ -147,7 +158,8 @@ type
     function GetItem(const aKey: string): PResultData;
     procedure ClearData;
     procedure ClearParentNodePointer;
-    procedure SetCapacity(aValue: Integer);
+    procedure SetCapacity(const aValue: Integer);
+    procedure UpdateMatches(const aCount: Integer);
   end;
 
   TAttachmentList = class(TObjectDictionary<string, PAttachment>)
@@ -157,24 +169,24 @@ type
     function GetItem(const aKey: string): PAttachment;
     procedure ClearData;
     procedure ClearParentNodePointer;
-    procedure SetCapacity(aValue: Integer);
+    procedure SetCapacity(const aValue: Integer);
+    procedure UpdateMatches(const aCount: Integer);
   end;
 
   TGeneral = record
   public
     class function GetCounterValue: Integer; static;
     class function GetPathList: TParamPathArray; static;
-    class function GetRegExpCount: Integer; static;
-    class function GetRegExpParametersList: TRegExpArray; static;
-    class function GetSorterPathList: TSorterPathArray;  static;
-    class function GetPasswordList: TPasswordArray;  static;
+    class function GetSorterPathList: TSorterPathArray; static;
     class function XMLFile: TXMLFile; static;
     class function XMLParams: TXMLFile; static;
     class procedure NoHibernate; static;
+    class procedure Initialize; static;
     class var
       AttachmentList : TAttachmentList;
       EmailList      : TEmailList;
       PasswordList   : TPasswordList;
+      PatternList    : TPatternList;
       RegExpColumns  : TArray<TRegExp>;
   end;
 
@@ -231,79 +243,6 @@ begin
   Result := FXMLParams;
 end;
 
-class function TGeneral.GetRegExpParametersList: TRegExpArray;
-var
-  Data: TRegExpData;
-  i: Integer;
-begin
-  XMLParams.Open;
-  XMLParams.CurrentSection := C_SECTION_REGEXP;
-  try
-    i := 0;
-    Result.Count := XMLParams.ChildCount;
-    while not XMLParams.IsLastKey do
-    begin
-      if XMLParams.ReadAttributes then
-      begin
-        Data.TypePattern    := XMLParams.Attributes.GetAttributeValue('TypePattern', TTypePattern.tpRegularExpression);
-        Data.ParameterName  := XMLParams.Attributes.GetAttributeValue('ParameterName', '');
-        Data.RegExpTemplate := XMLParams.Attributes.GetAttributeValue('RegExpTemplate', '');
-        Data.GroupIndex     := XMLParams.Attributes.GetAttributeValue('GroupIndex', 0);
-        Data.UseRawText     := XMLParams.Attributes.GetAttributeValue('UseRawText', False);
-        Data.Color          := XMLParams.Attributes.GetAttributeValue('Color', clRed  {arrWebColors[Random(High(arrWebColors))].Color});
-        Result[i] := Data;
-        Inc(i);
-      end;
-      XMLParams.NextKey;
-    end;
-  finally
-    XMLParams.CurrentSection := '';
-  end;
-end;
-
-class function TGeneral.GetRegExpCount: Integer;
-begin
-  XMLParams.Open;
-  XMLParams.CurrentSection := C_SECTION_REGEXP;
-  try
-    Result := XMLParams.ChildCount;
-  finally
-    XMLParams.CurrentSection := '';
-  end;
-end;
-
-class function TGeneral.GetPasswordList: TPasswordArray;
-var
-  Data: PPassword;
-  i: Integer;
-begin
-  XMLParams.Open;
-  XMLParams.CurrentSection := 'Passwords';
-  try
-    i := 0;
-    Result.Count := XMLParams.ChildCount;
-    while not XMLParams.IsLastKey do
-    begin
-      if XMLParams.ReadAttributes then
-      begin
-        New(Data);
-        Data.FileName := XMLParams.Attributes.GetAttributeValue('FileName', '');
-        Data.Password := XMLParams.Attributes.GetAttributeValue('Password', '');
-        Data.Hash     := XMLParams.Attributes.GetAttributeValue('Hash', '');
-        Data.Info     := XMLParams.Attributes.GetAttributeValue('Info', '');
-        Data.IsDeleted := not TFile.Exists(Data.FileName);
-        if Data.Hash.IsEmpty and not Data.IsDeleted then
-          Data.Hash := TFileUtils.GetHash(Data.FileName);
-        Result[i] := Data;
-        Inc(i);
-      end;
-      XMLParams.NextKey;
-    end;
-  finally
-    XMLParams.CurrentSection := '';
-  end;
-end;
-
 class function TGeneral.GetPathList: TParamPathArray;
 var
   Data: TParamPath;
@@ -358,6 +297,13 @@ begin
   end;
 end;
 
+class procedure TGeneral.Initialize;
+begin
+  XMLParams.Open;
+  PasswordList.LoadData;
+  PatternList.LoadData;
+end;
+
 class function TGeneral.GetCounterValue: Integer;
 begin
   Result := XMLParams.ReadInteger(C_SECTION_MAIN, 'Counter', 0);
@@ -370,13 +316,6 @@ end;
 procedure TParamPath.Clear;
 begin
   Self := Default(TParamPath);
-end;
-
-{TRegExpData}
-
-procedure TRegExpData.Clear;
-begin
-  Self := Default(TRegExpData);
 end;
 
 { TResultData }
@@ -475,10 +414,17 @@ begin
     Result := Self.Items[aKey];
 end;
 
-procedure TEmailList.SetCapacity(aValue: Integer);
+procedure TEmailList.SetCapacity(const aValue: Integer);
 begin
   if (aValue > Self.Count) and (aValue > Self.Capacity) then
     Self.Capacity := aValue * 2;
+end;
+
+procedure TEmailList.UpdateMatches(const aCount: Integer);
+begin
+  for var item in Self.Values do
+    if Assigned(item) then
+      item^.Matches.Count := aCount;
 end;
 
 procedure TEmailList.ClearData;
@@ -515,7 +461,7 @@ begin
     Result := Self.Items[aKey];
 end;
 
-procedure TAttachmentList.SetCapacity(aValue: Integer);
+procedure TAttachmentList.SetCapacity(const aValue: Integer);
 begin
   if (aValue > Self.Count) and (aValue > Self.Capacity) then
     Self.Capacity := aValue * 2;
@@ -532,6 +478,13 @@ procedure TAttachmentList.ClearParentNodePointer;
 begin
   for var item in Self.Values do
     item.OwnerNode := nil;
+end;
+
+procedure TAttachmentList.UpdateMatches(const aCount: Integer);
+begin
+  for var item in Self.Values do
+    if Assigned(item) then
+      item^.Matches.Count := aCount;
 end;
 
 { TSorterPath }
@@ -569,6 +522,37 @@ begin
     Result := Self.Items[aKey];
 end;
 
+procedure TPasswordList.LoadData;
+var
+  Data: PPassword;
+begin
+  TGeneral.XMLParams.CurrentSection := 'Passwords';
+  try
+    while not TGeneral.XMLParams.IsLastKey do
+    begin
+      if TGeneral.XMLParams.ReadAttributes then
+      begin
+        New(Data);
+        Data^.FileName  := TGeneral.XMLParams.Attributes.GetAttributeValue('FileName', '');
+        Data^.ShortName := TPath.GetFileName(Data^.FileName);
+        Data^.Password  := TGeneral.XMLParams.Attributes.GetAttributeValue('Password', '');
+        Data^.Hash      := TGeneral.XMLParams.Attributes.GetAttributeValue('Hash', '');
+        Data^.Info      := TGeneral.XMLParams.Attributes.GetAttributeValue('Info', '');
+        Data^.IsDeleted := not TFile.Exists(Data^.FileName);
+        if Data^.Hash.IsEmpty and not Data^.IsDeleted then
+          Data^.Hash := TFileUtils.GetHash(Data^.FileName);
+        if not Data^.Hash.IsEmpty then
+          Self.Add(Data^.Hash, Data)
+        else
+          Dispose(Data);
+      end;
+      TGeneral.XMLParams.NextKey;
+    end;
+  finally
+    TGeneral.XMLParams.CurrentSection := '';
+  end;
+end;
+
 { TTypePatternHelper }
 
 function TTypePatternHelper.ToString: string;
@@ -581,10 +565,104 @@ begin
   end;
 end;
 
+{ TPatternList }
+
+constructor TPatternList.Create;
+begin
+  inherited Create;
+
+end;
+
+destructor TPatternList.Destroy;
+begin
+  ClearData;
+  inherited;
+end;
+
+procedure TPatternList.ClearData;
+begin
+  for var item in Self do
+  begin
+//    if Assigned(item.AhoCorasickObj) then
+//      FreeAndNil(item.AhoCorasickObj);
+    Dispose(item);
+  end;
+  Self.Clear;
+end;
+
+procedure TPatternList.LoadData;
+var
+  Data: PPatternData;
+begin
+  ClearData;
+  TGeneral.XMLParams.CurrentSection := C_SECTION_REGEXP;
+  try
+    while not TGeneral.XMLParams.IsLastKey do
+    begin
+      if TGeneral.XMLParams.ReadAttributes then
+      begin
+        New(Data);
+        Data^.TypePattern   := TGeneral.XMLParams.Attributes.GetAttributeValue('TypePattern', TTypePattern.tpRegularExpression);
+        Data^.ParameterName := TGeneral.XMLParams.Attributes.GetAttributeValue('ParameterName', '');
+        Data^.Pattern       := TGeneral.XMLParams.Attributes.GetAttributeValue('RegExpTemplate', '');
+        Data^.GroupIndex    := TGeneral.XMLParams.Attributes.GetAttributeValue('GroupIndex', 0);
+        Data^.UseRawText    := TGeneral.XMLParams.Attributes.GetAttributeValue('UseRawText', False);
+        Data^.Color         := TGeneral.XMLParams.Attributes.GetAttributeValue('Color', clRed  {arrWebColors[Random(High(arrWebColors))].Color});
+
+        if (Data^.TypePattern = TTypePattern.tpAhoCorasick) then
+        begin
+          Data^.AhoCorasickObj := TAhoCorasick.Create;
+          var arrKeyWords := Data^.Pattern.Split([#10]);
+          for var j := Low(arrKeyWords) to High(arrKeyWords) do
+            if not arrKeyWords[j].Trim.IsEmpty then
+              Data^.AhoCorasickObj.AddPattern(arrKeyWords[j].Trim);
+          Data^.AhoCorasickObj.Build;
+        end
+        else
+          Data^.AhoCorasickObj := nil;
+        Self.Add(Data);
+      end;
+      TGeneral.XMLParams.NextKey;
+    end;
+  finally
+    TGeneral.XMLParams.CurrentSection := '';
+  end;
+
+  SetLength(TGeneral.RegExpColumns, Self.Count);
+  for var i := 0 to Self.Count - 1 do
+  begin
+    TGeneral.RegExpColumns[i].Color      := Self[i].Color;
+    TGeneral.RegExpColumns[i].IsSelected := True;
+  end;
+  TGeneral.EmailList.UpdateMatches(Self.Count);
+  TGeneral.AttachmentList.UpdateMatches(Self.Count);
+end;
+
+{ TPatternData }
+
+procedure TPatternData.Assign(Source: TPatternData);
+begin
+  Self.TypePattern    := Source.TypePattern;
+  Self.ParameterName  := Source.ParameterName;
+  Self.Pattern        := Source.Pattern;
+  Self.GroupIndex     := Source.GroupIndex;
+  Self.UseRawText     := Source.UseRawText;
+  Self.Color          := Source.Color;
+  Self.AhoCorasickObj := nil;
+end;
+
+procedure TPatternData.Clear;
+begin
+  if Assigned(Self.AhoCorasickObj) then
+    FreeAndNil(Self.AhoCorasickObj);
+  Self := Default(TPatternData);
+end;
+
 initialization
-  TGeneral.EmailList      := TEmailList.Create;
   TGeneral.AttachmentList := TAttachmentList.Create;
+  TGeneral.EmailList      := TEmailList.Create;
   TGeneral.PasswordList   := TPasswordList.Create;
+  TGeneral.PatternList    := TPatternList.Create;
 
 finalization
   if Assigned(FXMLFile) then
@@ -592,11 +670,14 @@ finalization
     FXMLFile.Save;
     FreeAndNil(FXMLFile);
   end;
-  if Assigned(TGeneral.EmailList) then
-    FreeAndNil(TGeneral.EmailList);
+
   if Assigned(TGeneral.AttachmentList) then
     FreeAndNil(TGeneral.AttachmentList);
+  if Assigned(TGeneral.EmailList) then
+    FreeAndNil(TGeneral.EmailList);
   if Assigned(TGeneral.PasswordList) then
     FreeAndNil(TGeneral.PasswordList);
+  if Assigned(TGeneral.PatternList) then
+    FreeAndNil(TGeneral.PatternList);
 
 end.

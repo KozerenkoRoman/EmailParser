@@ -77,13 +77,20 @@ inherited frameBruteForce: TframeBruteForce
         CaptionAlignment = taCenter
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 0
+        Text = 'Short name'
+        Width = 200
+      end
+      item
+        CaptionAlignment = taCenter
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 1
         Text = 'File name'
-        Width = 150
+        Width = 200
       end
       item
         CaptionAlignment = taCenter
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
-        Position = 1
+        Position = 2
         Text = 'Password'
         Width = 257
       end
@@ -92,9 +99,16 @@ inherited frameBruteForce: TframeBruteForce
         MaxWidth = 1000
         MinWidth = 50
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coStyleColor]
-        Position = 2
+        Position = 3
         Text = 'Info'
         Width = 100
+      end
+      item
+        CaptionAlignment = taCenter
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 4
+        Text = 'Hash'
+        Width = 250
       end>
     DefaultText = ''
   end

@@ -33,13 +33,15 @@ type
     procedure aExpandAllExecute(Sender: TObject);
     procedure aExportToCSVExecute(Sender: TObject);
     procedure aExportToExcelExecute(Sender: TObject);
+    procedure aExportToExcelUpdate(Sender: TObject);
     procedure aExportToHTMLExecute(Sender: TObject);
     procedure aPrintExecute(Sender: TObject);
+    procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
     procedure vstTreeColumnResize(Sender: TVTHeader; Column: TColumnIndex);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure vstTreeHeaderDragged(Sender: TVTHeader; Column: TColumnIndex; OldPosition: Integer);
     procedure vstTreeMeasureItem(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; var NodeHeight: Integer);
-    procedure aExportToExcelUpdate(Sender: TObject);
   private const
     C_IDENTITY_NAME = 'frameSource';
   protected
@@ -49,7 +51,7 @@ type
     procedure Translate; override;
     procedure SaveToXML; override;
     procedure LoadFromXML; override;
-    procedure SearchText(const aText: string); virtual; abstract;
+    procedure SearchText(const aText: string); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -124,6 +126,33 @@ begin
   inherited;
 end;
 
+procedure TframeSource.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
+var
+  CellText: string;
+begin
+  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
+  Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
+end;
+
+procedure TframeSource.SearchText(const aText: string);
+var
+  Node: PVirtualNode;
+begin
+  inherited;
+  vstTree.BeginUpdate;
+  vstTree.FullExpand(nil);
+  try
+    Node := vstTree.IterateSubtree(nil, SearchForText, Pointer(aText));
+    if Assigned(Node) then
+    begin
+      vstTree.FocusedNode := Node;
+      vstTree.Selected[Node] := True;
+    end;
+  finally
+    vstTree.EndUpdate;
+  end;
+end;
+
 procedure TframeSource.vstTreeColumnResize(Sender: TVTHeader; Column: TColumnIndex);
 begin
   inherited;
@@ -133,6 +162,12 @@ end;
 procedure TframeSource.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 begin
 //
+end;
+
+procedure TframeSource.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+begin
+  inherited;
+  CellText := '';
 end;
 
 procedure TframeSource.vstTreeHeaderDragged(Sender: TVTHeader; Column: TColumnIndex; OldPosition: Integer);

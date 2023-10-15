@@ -602,25 +602,23 @@ var
   Node       : PVirtualNode;
   CurrNode   : PVirtualNode;
   Data       : PAttachData;
-  RegExpList : TArrayRecord<TRegExpData>;
 begin
   vstTree.BeginUpdate;
   while (C_FIXED_COLUMNS < vstTree.Header.Columns.Count) do
     vstTree.Header.Columns.Delete(C_FIXED_COLUMNS);
 
-  RegExpList := TGeneral.GetRegExpParametersList;
   Node := vstTree.RootNode.FirstChild;
   while Assigned(Node) do
   begin
     Data := Node^.GetData;
-    Data^.Matches.Count := RegExpList.Count;
+    Data^.Matches.Count := TGeneral.PatternList.Count;
     if (Node.ChildCount > 0) then
     begin
       CurrNode := Node.FirstChild;
       while Assigned(CurrNode) do
       begin
         Data := CurrNode^.GetData;
-        Data^.Matches.Count := RegExpList.Count;
+        Data^.Matches.Count := TGeneral.PatternList.Count;
         CurrNode := CurrNode.NextSibling;
       end;
     end;
@@ -628,10 +626,10 @@ begin
   end;
 
   try
-    for var item in RegExpList do
+    for var item in TGeneral.PatternList do
     begin
       Column := vstTree.Header.Columns.Add;
-      Column.Text             := item.ParameterName;
+      Column.Text             := item^.ParameterName;
       Column.CaptionAlignment := taCenter;
       Column.Alignment        := taLeftJustify;
       Column.Width            := 100;

@@ -77,7 +77,7 @@ end;
 procedure TfrmImportFromXML.FormCreate(Sender: TObject);
 begin
   inherited;
-  vstTree.NodeDataSize := SizeOf(TRegExpData);
+  vstTree.NodeDataSize := SizeOf(TPatternData);
 end;
 
 procedure TfrmImportFromXML.Initialize;
@@ -117,7 +117,7 @@ end;
 
 procedure TfrmImportFromXML.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
-  Data: PRegExpData;
+  Data: PPatternData;
 begin
   inherited;
   Data := Node^.GetData;
@@ -127,7 +127,7 @@ end;
 
 procedure TfrmImportFromXML.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
-  Data: PRegExpData;
+  Data: PPatternData;
 begin
   inherited;
   CellText := '';
@@ -136,7 +136,7 @@ begin
     COL_PARAM_NAME:
       CellText := Data^.ParameterName;
     COL_REGEXP_TEMPLATE:
-      CellText := Data^.RegExpTemplate;
+      CellText := Data^.Pattern;
     COL_GROUP_INDEX:
       CellText := Data^.GroupIndex.ToString;
     COL_TYPE_PATTERN:
@@ -146,11 +146,11 @@ end;
 
 procedure TfrmImportFromXML.vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
-  Data: PRegExpData;
+  Data: PPatternData;
 begin
   inherited;
   Data := Node.GetData;
-  Data.UseRawText := Node.CheckState = csCheckedNormal;
+  Data^.UseRawText := Node.CheckState = csCheckedNormal;
 end;
 
 procedure TfrmImportFromXML.edtPathRightButtonClick(Sender: TObject);
@@ -197,9 +197,9 @@ procedure TfrmImportFromXML.LoadFromXML(const aFileName: TFileName);
 var
   XmlFile: TXmlFile;
 
-  function GetRegExpParametersList: TRegExpArray;
+  function GetPatternArray: TArrayRecord<TPatternData>;
   var
-    Data: TRegExpData;
+    Data: TPatternData;
     i: Integer;
   begin
     XmlFile.CurrentSection := 'RegExpParameters';
@@ -210,11 +210,11 @@ var
       begin
         if XmlFile.ReadAttributes then
         begin
-          Data.TypePattern    := XmlFile.Attributes.GetAttributeValue('TypePattern', TTypePattern.tpRegularExpression);
-          Data.ParameterName  := XmlFile.Attributes.GetAttributeValue('ParameterName', '');
-          Data.RegExpTemplate := XmlFile.Attributes.GetAttributeValue('RegExpTemplate', '');
-          Data.GroupIndex     := XmlFile.Attributes.GetAttributeValue('GroupIndex', 0);
-          Data.UseRawText     := XmlFile.Attributes.GetAttributeValue('UseRawText', False);
+          Data.TypePattern   := XmlFile.Attributes.GetAttributeValue('TypePattern', TTypePattern.tpRegularExpression);
+          Data.ParameterName := XmlFile.Attributes.GetAttributeValue('ParameterName', '');
+          Data.Pattern       := XmlFile.Attributes.GetAttributeValue('RegExpTemplate', '');
+          Data.GroupIndex    := XmlFile.Attributes.GetAttributeValue('GroupIndex', 0);
+          Data.UseRawText    := XmlFile.Attributes.GetAttributeValue('UseRawText', False);
           Result[i] := Data;
           Inc(i);
         end;
@@ -227,16 +227,16 @@ var
 
   procedure LoadNode;
   var
-    arrParams : TArrayRecord<TRegExpData>;
-    Data      : PRegExpData;
+    arrParams : TArrayRecord<TPatternData>;
+    Data      : PPatternData;
     NewNode   : PVirtualNode;
   begin
-    arrParams := GetRegExpParametersList;
+    arrParams := GetPatternArray;
     for var Param in arrParams do
     begin
       NewNode := vstTree.AddChild(nil);
       Data    := NewNode.GetData;
-      Data^   := Param;
+      Data^.Assign(Param);
       vstTree.CheckType[NewNode] := ctCheckBox;
       if Param.UseRawText then
         NewNode.CheckState := csCheckedNormal
