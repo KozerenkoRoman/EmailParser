@@ -6,7 +6,7 @@ inherited framePathes: TframePathes
   PixelsPerInch = 144
   inherited tbMain: TToolBar
     Width = 843
-    ExplicitWidth = 710
+    ExplicitWidth = 843
   end
   inherited vstTree: TVirtualStringTree
     Width = 843
@@ -23,7 +23,7 @@ inherited framePathes: TframePathes
     OnGetText = vstTreeGetText
     OnGetImageIndex = vstTreeGetImageIndex
     OnNewText = vstTreeNewText
-    ExplicitWidth = 710
+    ExplicitWidth = 843
     ExplicitHeight = 422
     Columns = <
       item

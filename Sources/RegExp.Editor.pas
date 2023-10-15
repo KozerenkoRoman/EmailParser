@@ -93,7 +93,7 @@ type
   protected
     function GetIdentityName: string; override;
   public
-    class function GetPattern(var aData: TRegExpData): TModalResult;
+    class function GetPattern(const aData: PPatternData): TModalResult;
 
     procedure Initialize; override;
     procedure Deinitialize; override;
@@ -104,28 +104,28 @@ implementation
 
 {$R *.dfm}
 
-class function TfrmRegExpEditor.GetPattern(var aData: TRegExpData): TModalResult;
+class function TfrmRegExpEditor.GetPattern(const aData: PPatternData): TModalResult;
 begin
   Result := mrCancel;
   with TfrmRegExpEditor.Create(nil) do
     try
       Initialize;
-      GroupIndex    := aData.GroupIndex;
-      Pattern       := aData.RegExpTemplate;
-      SelectedColor := aData.Color;
-      TemplateName  := aData.ParameterName;
-      TypePattern   := aData.TypePattern;
-      UseRawText    := aData.UseRawText;
+      GroupIndex    := aData^.GroupIndex;
+      Pattern       := aData^.Pattern;
+      SelectedColor := aData^.Color;
+      TemplateName  := aData^.ParameterName;
+      TypePattern   := aData^.TypePattern;
+      UseRawText    := aData^.UseRawText;
       cbTypePatternChange(nil);
 
       if (ShowModal = mrOk) then
       begin
-        aData.Color          := SelectedColor;
-        aData.GroupIndex     := GroupIndex;
-        aData.ParameterName  := TemplateName;
-        aData.RegExpTemplate := Pattern;
-        aData.TypePattern    := TypePattern;
-        aData.UseRawText     := UseRawText;
+        aData^.Color         := SelectedColor;
+        aData^.GroupIndex    := GroupIndex;
+        aData^.ParameterName := TemplateName;
+        aData^.Pattern       := Pattern;
+        aData^.TypePattern   := TypePattern;
+        aData^.UseRawText    := UseRawText;
         Result := mrOk;
       end;
       Deinitialize;
@@ -348,7 +348,7 @@ procedure TfrmRegExpEditor.SetPattern(const Value: string);
 var
   arrValue: TArray<string>;
 begin
-  arrValue := Value.Split([#10]);
+  arrValue := Value.Replace(#13#10, #10).Split([#10]);
   edRegEx.Lines.AddStrings(arrValue);
   edAhoCorasick.Lines.AddStrings(arrValue);
 end;

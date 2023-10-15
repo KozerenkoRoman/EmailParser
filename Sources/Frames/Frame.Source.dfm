@@ -5,7 +5,6 @@ inherited frameSource: TframeSource
   ExplicitHeight = 284
   inherited tbMain: TToolBar
     Width = 551
-    Images = DMImage.vil32
     ExplicitWidth = 551
     object btnExportToExcel: TToolButton
       Left = 211
@@ -94,6 +93,7 @@ inherited frameSource: TframeSource
     TreeOptions.SelectionOptions = [toExtendedFocus, toAlwaysSelectNode]
     OnColumnResize = vstTreeColumnResize
     OnFreeNode = vstTreeFreeNode
+    OnGetText = vstTreeGetText
     OnHeaderDragged = vstTreeHeaderDragged
     OnMeasureItem = vstTreeMeasureItem
     Touch.InteractiveGestures = [igPan, igPressAndTap]
@@ -102,7 +102,6 @@ inherited frameSource: TframeSource
     DefaultText = ''
   end
   inherited alFrame: TActionList
-    Images = DMImage.vil32
     Left = 104
     Top = 168
     object aExportToExcel: TAction
@@ -148,7 +147,6 @@ inherited frameSource: TframeSource
     end
   end
   inherited pmFrame: TPopupMenu
-    Images = DMImage.vil16
     object miExpandAll: TMenuItem
       Action = aExpandAll
       ImageName = 'ShowDetail_16x16'

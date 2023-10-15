@@ -55,7 +55,6 @@ implementation
 
 procedure TFrameCustom.Initialize;
 begin
-  TGeneral.XMLParams.Open;
   TPublishers.ConfigPublisher.Subscribe(Self);
 end;
 

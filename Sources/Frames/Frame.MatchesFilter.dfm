@@ -121,7 +121,7 @@ inherited frameMatchesFilter: TframeMatchesFilter
     OnGetText = vstTreeGetText
     ExplicitTop = 22
     ExplicitWidth = 606
-    ExplicitHeight = 267
+    ExplicitHeight = 243
     Columns = <
       item
         CaptionAlignment = taCenter

@@ -1,7 +1,5 @@
 ﻿unit Excel4Delphi;
-
 interface
-
 uses
   System.Classes, System.SysUtils,
   {$IFDEF FMX}
@@ -14,80 +12,64 @@ uses
   {$ENDIF}
   System.UITypes, System.Math, RegularExpressions, System.Generics.Collections,
   System.Generics.Defaults, Excel4Delphi.Xml;
-
 var
   ZE_XLSX_APPLICATION: string;
-
 // 1 (topographical point) = 0.3528 mm
 const
   _PointToMM: Real = 0.3528;
-
 {$IFDEF FMX}
   DEFAULT_CHARSET = 1;
 {$ENDIF}
-
 type
   TObjectList = TObjectList<TObject>;
-
 type
   /// <summary>
   /// Data type of cell
   /// </summary>
   TZCellType = (ZENumber, ZEDateTime, ZEBoolean, ZEString, ZEError, ZEGeneral);
-
   /// <summary>
   /// Style lines of the cell border
   /// </summary>
   TZBorderType = (ZENone, ZEContinuous, ZEHair, ZEDot, ZEDash, ZEDashDot, ZEDashDotDot, ZESlantDashDot, ZEDouble);
-
   /// <summary>
   /// Horizontal alignment
   /// </summary>
   TZHorizontalAlignment = (ZHAutomatic, ZHLeft, ZHCenter, ZHRight, ZHFill, ZHJustify, ZHCenterAcrossSelection,
     ZHDistributed, ZHJustifyDistributed);
-
   /// <summary>
   /// Vertical alignment
   /// </summary>
   TZVerticalAlignment = (ZVAutomatic, ZVTop, ZVBottom, ZVCenter, ZVJustify, ZVDistributed, ZVJustifyDistributed);
-
   /// <summary>
   /// Fill pattern of the cell
   /// </summary>
   TZCellPattern = (ZPNone, ZPSolid, ZPGray75, ZPGray50, ZPGray25, ZPGray125, ZPGray0625, ZPHorzStripe, ZPVertStripe,
     ZPReverseDiagStripe, ZPDiagStripe, ZPDiagCross, ZPThickDiagCross, ZPThinHorzStripe, ZPThinVertStripe,
     ZPThinReverseDiagStripe, ZPThinDiagStripe, ZPThinHorzCross, ZPThinDiagCross);
-
   /// <summary>
   /// Borders position.
   /// </summary>
   TZBordersPos = (bpLeft, bpTop, bpRight, bpBottom, bpDiagonalLeft, bpDiagonalRight);
-
   /// <summary>
   /// Vertical/horizontal split/freeze mode.
   /// </summary>
   TZSplitMode = (ZSplitNone, ZSplitFrozen, ZSplitSplit);
-
   /// <summary>
   /// View mode.
   /// </summary>
   TZViewMode = (zvmNormal, zvmPageBreakPreview);
-
   /// <summary>
   /// An angle of the rotation (direction) for a text within a cell.
   /// Nominative range is -90 .. +90, extended is -180 .. +180 (in degrees)
   /// </summary>
   TZCellTextRotate = -180 .. +359;
-
   TMediaRec = record
     FileName: string;
     Content: TBytes;
   end;
-
   TZSheet = class;
   TZStyle = class;
   TZFont = class;
-
   TZExcelColor = record
     RGB: TColor; // rgb
     Indexed: Byte; // 0 - not exists (deprecated but used)
@@ -97,7 +79,6 @@ type
     class operator Equal(const ALeft, ARight: TZExcelColor): Boolean;
     class operator NotEqual(const ALeft, ARight: TZExcelColor): Boolean;
   end;
-
   TRichString = class(TPersistent)
   private
     FText: string;
@@ -106,13 +87,11 @@ type
   public
     property Text: string read FText write FText;
     property Font: TZFont read FFont write FFont;
-
     destructor Destroy(); override;
     procedure Assign(Source: TPersistent); override;
     function GetHashCode(): Integer; override;
     function Equals(Obj: TObject): Boolean; override;
   end;
-
   TRichText = class(TPersistent)
   private
     FList: TList<TRichString>;
@@ -126,13 +105,11 @@ type
     // function ToHtml(): string;
     // function ToString(): string; override;
   end;
-
   TRichTextComparer = class(TInterfacedObject, IEqualityComparer<TRichText>)
   public
     function Equals(const left, right: TRichText): Boolean; reintroduce;
     function GetHashCode(const Value: TRichText): Integer; reintroduce;
   end;
-
   /// <summary>
   /// Cell of spreadsheet.
   /// </summary>
@@ -315,7 +292,6 @@ type
     property NumberFormat: string read GetNumberFormat write SetNumberFormat;
     procedure SetBorderAround(borderWidth: Byte; BorderColor: TColor = TColorRec.Black; BorderStyle: TZBorderType = TZBorderType.ZEContinuous);
   end;
-
   /// <summary>
   /// Border's style.
   /// </summary>
@@ -352,7 +328,6 @@ type
     /// </summary>
     property ExcelColor: TZExcelColor read FColor write FColor;
   end;
-
   /// <summary>
   /// Borders of cell.
   /// </summary>
@@ -398,7 +373,6 @@ type
     /// </summary>
     property DiagonalRight: TZBorderStyle index bpDiagonalRight read GetBorder write SetBorder;
   end;
-
   /// <summary>
   /// Specifies how text is aligned within the cell.
   /// </summary>
@@ -454,7 +428,6 @@ type
     /// </summary>
     property WrapText: Boolean read FWrapText write SetWrapText default false;
   end;
-
   /// <summary>
   /// Excel Font - https://docs.microsoft.com/ru-ru/office/vba/api/excel.font(object)
   /// </summary>
@@ -481,7 +454,6 @@ type
     property Style: TFontStyles read FStyle write FStyle;
     property ExcelColor: TZExcelColor read FColor write FColor;
   end;
-
   /// <summary>
   /// Cell style.
   /// </summary>
@@ -568,7 +540,6 @@ type
     property NumberFormat: string read FNumberFormat write SetNumberFormat;
     property NumberFormatId: Integer read FNumberFormatId write FNumberFormatId default -1;
   end;
-
   /// <summary>
   /// Contains styles of the document.
   /// </summary>
@@ -633,12 +604,10 @@ type
     /// </summary>
     property DefaultStyle: TZStyle read FDefaultStyle write SetDefaultStyle;
   end;
-
   TZMergeArea = record
     left, Top, right, Bottom: Integer;
     constructor Create(ALeft, ATop, ARight, ABottom: Integer);
   end;
-
   /// <summary>
   /// Merged cells
   /// </summary>
@@ -699,11 +668,8 @@ type
     /// </summary>
     property Items[num: Integer]: TZMergeArea read GetItem write SetItem; default;
   end;
-
   TZCellColumn = array of TZCell;
-
   TZWorkBook = class;
-
   /// <summary>
   /// Common options for columns and rows. Ancestor for TZColOptions and TZRowOptions.
   /// </summary>
@@ -740,10 +706,8 @@ type
     /// Page break after column or row. <br />False (no break) by default.
     /// </summary>
     property Breaked: Boolean read FBreaked write FBreaked default false;
-
     property OutlineLevel: Integer read FOutlineLevel write FOutlineLevel;
   end;
-
   /// <summary>
   /// Column options.
   /// </summary>
@@ -770,7 +734,6 @@ type
     /// </summary>
     property WidthPix: Integer read GetSizePix write SetSizePix;
   end;
-
   /// <summary>
   /// Row options.
   /// </summary>
@@ -797,7 +760,6 @@ type
     /// </summary>
     property HeightPix: Integer read GetSizePix write SetSizePix;
   end;
-
   /// <summary>
   /// Repeating columns or rows when printing the sheet
   /// </summary>
@@ -821,7 +783,6 @@ type
     property Till: word read FTill write SetTill;
     property Active: Boolean read FActive write SetActive;
   end;
-
   /// <summary>
   /// Footer or header margins.
   /// </summary>
@@ -859,7 +820,6 @@ type
     /// </summary>
     property UseAutoFitHeight: Boolean read FUseAutoFitHeight write FUseAutoFitHeight default true;
   end;
-
   /// <summary>
   /// Inherited from TPersistent. Sheet options.
   /// </summary>
@@ -879,27 +839,21 @@ type
     FStartPageNumber: Integer;
     FDifferentOddEven: Boolean;
     FDifferentFirst: Boolean;
-
     FHeader: string; // Header for all pages. When IsEvenFooterEqual = false - only for odd pages.
     FFooter: string; // Footer for all pages. When IsEvenFooterEqual = false - only for odd pages.
     FEvenHeader: string; // Header for even pages. Used only if IsEvenFooterEqual = false
     FEvenFooter: string; // Footer for even pages. Used only if IsEvenFooterEqual = false
     FFirstPageHeader: string;
     FFirstPageFooter: string;
-
     FHeaderBGColor: TColor;
     FFooterBGColor: TColor;
-
     FScaleToPercent: Integer; // Document must be scaled to percentage value (100 - no scale)
     FScaleToPages: Integer; // Document scaled to fit a number of pages (1 - no scale)
-
     FPaperSize: Byte;
     FPaperWidth: Integer;
     FPaperHeight: Integer;
-
     FFitToHeight: Integer; // Number of vertical pages to fit on
     FFitToWidth: Integer; // Number of horizontal pages to fit on
-
     FSplitVerticalMode: TZSplitMode;
     FSplitHorizontalMode: TZSplitMode;
     FSplitVerticalValue: Integer; // Вроде можно вводить отрицательные
@@ -1041,7 +995,6 @@ type
     /// </summary>
     property SplitHorizontalValue: Integer read FSplitHorizontalValue write FSplitHorizontalValue;
   end;
-
   /// <summary>
   /// Conditions
   /// </summary>
@@ -1050,7 +1003,6 @@ type
     ZCFBeginsWithText, ZCFEndsWithText, ZCFCellIsEmpty, ZCFDuplicate, ZCFUnique, ZCFAboveAverage, ZCFBellowAverage,
     ZCFAboveEqualAverage, ZCFBelowEqualAverage, ZCFTopElements, ZCFBottomElements, ZCFTopPercent, ZCFBottomPercent,
     ZCFIsError, ZCFIsNoError);
-
   // Оператор для условного форматирования
   TZConditionalOperator = (ZCFOpGT, // > (Greater Than)
     ZCFOpLT, // < (Less Than)
@@ -1059,7 +1011,6 @@ type
     ZCFOpEqual, // = (Equal)
     ZCFOpNotEqual // <> (Not Equal)
     );
-
   /// <summary>
   /// Conditional formatting
   /// </summary>
@@ -1070,7 +1021,6 @@ type
     FValue1: String;
     FValue2: String;
     FApplyStyleID: Integer; // номер применяемого стиля
-
                                                 // Базовая ячейка (только для формул):
     FBaseCellPageIndex: Integer; // Номер страницы для адреса базовой ячейки
                                                 // -1 - текущая страница
@@ -1090,7 +1040,6 @@ type
     property Value1: String read FValue1 write FValue1;
     property Value2: String read FValue2 write FValue2;
   end;
-
   /// <summary>
   /// Conditional formatting area
   /// </summary>
@@ -1114,7 +1063,6 @@ type
     property Width: Integer read FWidth write SetWidth;
     property Height: Integer read FHeight write SetHeight;
   end;
-
   // Области для применения условного форматирования
   TZConditionalAreas = class(TPersistent)
   private
@@ -1135,7 +1083,6 @@ type
     property Count: Integer read FCount write SetCount;
     property Items[num: Integer]: TZConditionalAreaItem read GetItem write SetItem; default;
   end;
-
   // Условное форматирование: список условий
   TZConditionalStyle = class(TPersistent)
   private
@@ -1161,7 +1108,6 @@ type
     property Count: Integer read FCount write SetCount;
     property Items[num: Integer]: TZConditionalStyleItem read GetItem write SetItem; default;
   end;
-
   TZConditionalFormatting = class(TPersistent)
   private
     FStyles: array of TZConditionalStyle;
@@ -1182,7 +1128,6 @@ type
     property Count: Integer read FCount write SetCount;
     property Items[num: Integer]: TZConditionalStyle read GetItem write SetItem; default;
   end;
-
   // Transformations that can applied to a chart/image.
   TZETransform = class(TPersistent)
   private
@@ -1207,7 +1152,6 @@ type
     property TranslateX: Double read FTranslateX write FTranslateX;
     property TranslateY: Double read FTranslateY write FTranslateY;
   end;
-
   // Common frame ancestor for Charts and Images
   TZECommonFrameAncestor = class(TPersistent)
   private
@@ -1234,27 +1178,22 @@ type
     property Height: Integer read FHeight write SetHeight default 10;
     property Transform: TZETransform read FTransform write SetTransform;
   end;
-
   // Possible chart types
   TZEChartType = (ZEChartTypeArea, ZEChartTypeBar, ZEChartTypeBubble, ZEChartTypeCircle, ZEChartTypeGantt,
     ZEChartTypeLine, ZEChartTypeRadar, ZEChartTypeRing, ZEChartTypeScatter, ZEChartTypeStock, ZEChartTypeSurface);
-
   // Specifies the rendering of bars for 3D bar charts
   TZEChartSolidType = (ZEChartSolidTypeCone, ZEChartSolidTypeCuboid, ZEChartSolidTypeCylinder, ZEChartSolidTypePyramid);
-
   // Type of symbols for a data point in a chart
   TZEChartSymbolType = (ZEChartSymbolTypeNone, // No symbol should be used
     ZEChartSymbolTypeAutomatic, // Auto select from TZEChartSymbol
     ZEChartSymbolTypeNamedSymbol // Use selected from TZEChartSymbol
     // ZEChartSymbolTypeImage          //not for now
     );
-
   // Symbol to be used for a data point in a chart, used only for chart type = ZEChartSymbolTypeNamedSymbol
   TZEChartSymbol = (ZEChartSymbolArrowDown, ZEChartSymbolArrowUp, ZEChartSymbolArrowRight, ZEChartSymbolArrowLeft,
     ZEChartSymbolAsterisk, ZEChartSymbolCircle, ZEChartSymbolBowTie, ZEChartSymbolDiamond, ZEChartSymbolHorizontalBar,
     ZEChartSymbolHourglass, ZEChartSymbolPlus, ZEChartSymbolStar, ZEChartSymbolSquare, ZEChartSymbolX,
     ZEChartSymbolVerticalBar);
-
   // Position of Legend in chart
   TZEChartLegendPosition = (ZELegendBottom, // Legend below the plot area
     ZELegendEnd, // Legend on the right side of the plot area
@@ -1265,13 +1204,11 @@ type
     ZELegendTopEnd, // Legend in the top right corner
     ZELegendTopStart // Legend in the top left corner
     );
-
   // Alignment of a legend
   TZELegendAlign = (ZELegengAlignStart, // Legend aligned at the beginning of a plot area (left or top)
     ZELegendAlignCenter, // Legend aligned at the center of a plot area
     ZELegendAlignEnd // Legend aligned at the end of a plot area (right or bottom)
     );
-
   // Range item
   TZEChartRangeItem = class(TPersistent)
   private
@@ -1292,7 +1229,6 @@ type
     property Width: Integer read FWidth write FWidth;
     property Height: Integer read FHeight write FHeight;
   end;
-
   // Store for Range items
   TZEChartRange = class(TPersistent)
   private
@@ -1313,7 +1249,6 @@ type
     property Items[num: Integer]: TZEChartRangeItem read GetItem write SetItem; default;
     property Count: Integer read FCount;
   end;
-
   // Title or Subtitle for chart, axis etc
   TZEChartTitleItem = class(TPersistent)
   private
@@ -1333,7 +1268,6 @@ type
     property RotationAngle: Integer read FRotationAngle write FRotationAngle default 0;
     property IsDisplay: Boolean read FIsDisplay write FIsDisplay default true;
   end;
-
   // Chart legend
   TZEChartLegend = class(TZEChartTitleItem)
   private
@@ -1346,7 +1280,6 @@ type
     property Position: TZEChartLegendPosition read FPosition write FPosition;
     property Align: TZELegendAlign read FAlign write FAlign;
   end;
-
   // Chart axis
   TZEChartAxis = class(TZEChartTitleItem)
   private
@@ -1367,7 +1300,6 @@ type
     property AutoScaleMin: Boolean read FAutoScaleMin write FAutoScaleMin;
     property AutoScaleMax: Boolean read FAutoScaleMax write FAutoScaleMax;
   end;
-
   // Chart/series settings
   TZEChartSettings = class(TPersistent)
   private
@@ -1380,7 +1312,6 @@ type
     property JapanCandle: Boolean read FJapanCandle write FJapanCandle;
     // True - japanese candle. Used only for ZEChartTypeStock chart type.
   end;
-
   // Chart series
   TZEChartSeries = class(TPersistent)
   private
@@ -1397,19 +1328,16 @@ type
     function IsEqual(const Source: TPersistent): Boolean; virtual;
                                     // For each series it's own ChartType
     property ChartType: TZEChartType read FChartType write FChartType;
-
                                     // If (SeriesNameRow >= 0) and (SeriesNameCol >= 0) then
                                     // text for Series label will be from cell[SeriesNameCol, SeriesNameRow] and
                                     // from property SeriesName otherwise.
     property SeriesName: string read FSeriesName write FSeriesName;
-
                                     // If SeriesNameSheet < 0 then uses current sheet for Series label
     property SeriesNameSheet: Integer read FSeriesNameSheet write FSeriesNameSheet;
     property SeriesNameRow: Integer read FSeriesNameRow write FSeriesNameRow;
     property SeriesNameCol: Integer read FSeriesNameCol write FSeriesNameCol;
     property Ranges: TZEChartRange read FRanges;
   end;
-
   // Chart item
   TZEChart = class(TZECommonFrameAncestor)
   private
@@ -1458,7 +1386,6 @@ type
     property View3D: Boolean read FView3D write FView3D;
     property ViewDeep: Boolean read FViewDeep write FViewDeep;
   end;
-
   // Store for charts on a sheet
   TZEChartStore = class(TPersistent)
   private
@@ -1479,24 +1406,19 @@ type
     property Items[num: Integer]: TZEChart read GetItem write SetItem; default;
     property Count: Integer read FCount;
   end;
-
   TZCellAnchor = (ZACell, ZAAbsolute);
-
   // Picture item
   TZEPicture = class(TZECommonFrameAncestor)
   private
     FId: Integer;
     FRelId: Integer;
-
     FFileName: string;
     FTitle: string;
     FDescription: string;
     FCellAnchor: TZCellAnchor;
-
     FRow: Integer;
     FCol: Integer;
     // FHidden: Boolean;
-
     FFromCol: Integer;
     FFromColOff: Integer;
     FFromRow: Integer;
@@ -1509,7 +1431,6 @@ type
     FFrmOffY: Integer;
     FFrmExtCX: Integer;
     FFrmExtCY: Integer;
-
     FSheet: TZSheet;
     function GetImage: TBytes;
     procedure SetImage(const Value: TBytes);
@@ -1530,7 +1451,6 @@ type
     property Row: Integer read FRow write FRow;
     property Col: Integer read FCol write FCol;
     property CellAnchor: TZCellAnchor read FCellAnchor write FCellAnchor;
-
     property FromCol: Integer read FFromCol write FFromCol;
     property FromColOff: Integer read FFromColOff write FFromColOff;
     property FromRow: Integer read FFromRow write FFromRow;
@@ -1543,10 +1463,8 @@ type
     property FrmOffY: Integer read FFrmOffY write FFrmOffY;
     property FrmExtCX: Integer read FFrmExtCX write FFrmExtCX;
     property FrmExtCY: Integer read FFrmExtCY write FFrmExtCY;
-
     property Image: TBytes read GetImage write SetImage;
   end;
-
   { Store pictures for worksheet }
   TZEDrawing = class(TPersistent)
   private
@@ -1561,87 +1479,82 @@ type
     constructor Create(ASheet: TZSheet);
     destructor Destroy(); override;
     procedure Assign(Source: TPersistent); override;
-
     function Add(): TZEPicture; overload;
     function Add(ARow, ACol: Integer; APicture: TBytes): TZEPicture; overload;
-
     procedure Delete(idx: Integer);
     procedure Clear();
-
     property Count: Integer read GetCount;
     property Id: Integer read FId write FId;
     property IsEmpty: Boolean read GetIsEmpty;
     property Items[idx: Integer]: TZEPicture read GetItem write SetItem; default;
   end;
-
   TZRange = class;
   IZRange = interface;
-
   /// <summary>
   /// Inherited from TPersistent. Contains a sheet of the document.
   /// </summary>
   TZSheet = class(TPersistent)
   private
-    FStore: TZWorkBook;
-    FCells: array of TZCellColumn;
-    FRows: array of TZRowOptions;
-    FColumns: array of TZColOptions;
+    FApplyStyles: Boolean;
     FAutoFilter: string;
-    FTitle: string;
-    FRowCount: Integer;
+    FCells: array of TZCellColumn;
+    FCharts: TZEChartStore;
+    FColBreaks: TArray<Integer>;
     FColCount: Integer;
-    FTabColor: TColor; // цвет закладки
-    FFitToPage: Boolean;
-    FDefaultRowHeight: Real;
+    FColumns: array of TZColOptions;
+    FConditionalFormatting: TZConditionalFormatting;
     FDefaultColWidth: Real;
+    FDefaultRowHeight: Real;
+    FDrawing: TZEDrawing;
+    FDrawingRid: Integer;
+    FFitToPage: Boolean;
     FMergeCells: TZMergeCells;
+    FOutlineLevelCol: Integer;
+    FOutlineLevelRow: Integer;
+    FPrintRows, FPrintCols: TZSheetPrintTitles;
     FProtect: Boolean;
     FRightToLeft: Boolean;
-    FSheetOptions: TZSheetOptions;
+    FRowBreaks: TArray<Integer>;
+    FRowCount: Integer;
+    FRows: array of TZRowOptions;
     FSelected: Boolean;
-    FPrintRows, FPrintCols: TZSheetPrintTitles;
-    FCharts: TZEChartStore;
-    FDrawing: TZEDrawing;
-    FViewMode: TZViewMode;
+    FSheetOptions: TZSheetOptions;
+    FStore: TZWorkBook;
     FSummaryBelow: Boolean;
     FSummaryRight: Boolean;
-    FApplyStyles: Boolean;
-    FDrawingRid: Integer;
-    FOutlineLevelRow: Integer;
-    FOutlineLevelCol: Integer;
-    FRowBreaks: TArray<Integer>;
-    FColBreaks: TArray<Integer>;
-    FConditionalFormatting: TZConditionalFormatting;
-    procedure SetConditionalFormatting(Value: TZConditionalFormatting);
-    procedure SetCharts(const Value: TZEChartStore);
-    procedure SetColumn(num: Integer; const Value: TZColOptions);
+    FTabColor: TColor; // цвет закладки
+    FTitle: string;
+    FViewMode: TZViewMode;
     function GetColumn(num: Integer): TZColOptions;
-    procedure SetRow(num: Integer; const Value: TZRowOptions);
     function GetRow(num: Integer): TZRowOptions;
     function GetSheetOptions(): TZSheetOptions;
-    procedure SetSheetOptions(Value: TZSheetOptions);
+    procedure SetCharts(const Value: TZEChartStore);
+    procedure SetColumn(num: Integer; const Value: TZColOptions);
+    procedure SetConditionalFormatting(Value: TZConditionalFormatting);
     procedure SetPrintCols(const Value: TZSheetPrintTitles);
     procedure SetPrintRows(const Value: TZSheetPrintTitles);
+    procedure SetRow(num: Integer; const Value: TZRowOptions);
+    procedure SetSheetOptions(Value: TZSheetOptions);
   protected
-    procedure SetColWidth(num: Integer; const Value: Real); virtual;
+    // procedure SetRange(AC1,AR1,AC2,AR2: integer; const Value: TZRange); virtual;
+    // procedure SetRangeRef(AFrom, ATo: string; const Value: TZRange); virtual;
+    function GetCell(ACol, ARow: Integer): TZCell; virtual;
+    function GetCellRef(ACol: string; ARow: Integer): TZCell; virtual;
+    function GetColCount: Integer; virtual;
     function GetColWidth(num: Integer): Real; virtual;
-    procedure SetRowHeight(num: Integer; const Value: Real); virtual;
+    function GetRange(AC1, AR1, AC2, AR2: Integer): IZRange; virtual;
+    function GetRangeRef(AFromCol: string; AFromRow: Integer; AToCol: string; AToRow: Integer): IZRange; virtual;
+    function GetRowCount: Integer; virtual;
     function GetRowHeight(num: Integer): Real; virtual;
+    function GetSheetIndex(): Integer;
+    procedure SetCell(ACol, ARow: Integer; const Value: TZCell); virtual;
+    procedure SetCellRef(ACol: string; ARow: Integer; const Value: TZCell); virtual;
+    procedure SetColCount(const Value: Integer); virtual;
+    procedure SetColWidth(num: Integer; const Value: Real); virtual;
     procedure SetDefaultColWidth(const Value: Real); virtual;
     procedure SetDefaultRowHeight(const Value: Real); virtual;
-    function GetCell(ACol, ARow: Integer): TZCell; virtual;
-    procedure SetCell(ACol, ARow: Integer; const Value: TZCell); virtual;
-    function GetCellRef(ACol: string; ARow: Integer): TZCell; virtual;
-    procedure SetCellRef(ACol: string; ARow: Integer; const Value: TZCell); virtual;
-    function GetRowCount: Integer; virtual;
     procedure SetRowCount(const Value: Integer); virtual;
-    function GetColCount: Integer; virtual;
-    procedure SetColCount(const Value: Integer); virtual;
-    function GetRange(AC1, AR1, AC2, AR2: Integer): IZRange; virtual;
-    // procedure SetRange(AC1,AR1,AC2,AR2: integer; const Value: TZRange); virtual;
-    function GetRangeRef(AFromCol: string; AFromRow: Integer; AToCol: string; AToRow: Integer): IZRange; virtual;
-    // procedure SetRangeRef(AFrom, ATo: string; const Value: TZRange); virtual;
-    function GetSheetIndex(): Integer;
+    procedure SetRowHeight(num: Integer; const Value: Real); virtual;
   public
     constructor Create(AStore: TZWorkBook); virtual;
     destructor Destroy(); override;
@@ -1650,10 +1563,8 @@ type
     procedure InsertRows(ARow, ACount: Integer);
     procedure CopyRows(ARowDst, ARowSrc, ACount: Integer);
     procedure SetCorrectTitle(const Value: string);
-
     function ColsWidth(AFrom, ATo: Integer): Real;
     function RowsHeight(AFrom, ATo: Integer): Real;
-
     /// <summary>
     /// Get or set the width (in points) of column num in the sheet.
     /// </summary>
@@ -1673,8 +1584,7 @@ type
     /// <summary>
     /// Specifies various properties of the Cells range.
     /// </summary>
-    property RangeRef[AFromCol: string; AFromRow: Integer; AToCol: string; AToRow: Integer]: IZRange
-      read GetRangeRef { write SetRangeRef };
+    property RangeRef[AFromCol: string; AFromRow: Integer; AToCol: string; AToRow: Integer]: IZRange read GetRangeRef { write SetRangeRef };
     /// <summary>
     /// Get or set the height (in points) of row num in the sheet.
     /// </summary>
@@ -1702,15 +1612,12 @@ type
     property Protect: Boolean read FProtect write FProtect default false;
     property TabColor: TColor read FTabColor write FTabColor default TColorRec.cWINDOW;
     property FitToPage: Boolean read FFitToPage write FFitToPage default false;
-
     property SummaryBelow: Boolean read FSummaryBelow write FSummaryBelow;
     property SummaryRight: Boolean read FSummaryRight write FSummaryRight;
     property ApplyStyles: Boolean read FApplyStyles write FApplyStyles;
     property DrawingRid: Integer read FDrawingRid write FDrawingRid;
-
     property OutlineLevelRow: Integer read FOutlineLevelRow write FOutlineLevelRow;
     property OutlineLevelCol: Integer read FOutlineLevelCol write FOutlineLevelCol;
-
     /// <summary>
     /// Sheet title.
     /// </summary>
@@ -1756,7 +1663,6 @@ type
     property RowBreaks: TArray<Integer> read FRowBreaks write FRowBreaks;
     property ColBreaks: TArray<Integer> read FColBreaks write FColBreaks;
   end;
-
   /// <summary>
   /// Document sheets.
   /// </summary>
@@ -1785,7 +1691,6 @@ type
     /// </summary>
     function Add(const ATitle: string = ''): TZSheet;
   end;
-
   IZRange = interface(IInterface)
     function HasStyle: Boolean;
     procedure ApplyStyleValue(proc: TProc<TZStyle>);
@@ -1842,12 +1747,10 @@ type
     procedure Merge();
     procedure Clear();
   end;
-
   TZRange = class(TInterfacedObject, IZRange)
   private
     FSheet: TZSheet;
     FLeft, FTop, FRight, FBottom: Integer;
-
     function HasStyle: Boolean;
     procedure ApplyStyleValue(proc: TProc<TZStyle>);
     function GetVerticalAlignment(): TZVerticalAlignment;
@@ -1907,7 +1810,6 @@ type
     procedure Merge();
     procedure Clear();
   end;
-
   /// <summary>
   /// Document properties
   /// </summary>
@@ -1960,13 +1862,11 @@ type
     property WindowTopX: Integer read FWindowTopX write FWindowTopX default 150;
     property WindowTopY: Integer read FWindowTopY write FWindowTopY default 150;
   end;
-
   TDefinedName = record
     LocalSheetId: Integer;
     Name: string;
     Body: string;
   end;
-
   /// <summary>
   /// Contains spreadsheet document
   /// </summary>
@@ -2002,93 +1902,73 @@ type
     property HorPixelSize: Real read FHorPixelSize write SetHorPixelSize; // размер пикселя по горизонтали
     property VertPixelSize: Real read FVertPixelSize write SetVertPixelSize; // размер пикселя по вертикали
   end;
-
 /// <summary>
 /// Convert TColor to Hex RGB
 /// </summary>
 function ColorToHTMLHex(Color: TColor): string;
-
 /// <summary>
 /// Convert Hex RGB (string) to TColor
 /// </summary>
 function HTMLHexToColor(Value: string): TColor;
-
 /// <summary>
 /// Convert ARGB (string) to TColor
 /// </summary>
 function ARGBToColor(Value: string): TColor;
-
 /// <summary>
 /// Convert pixels to point
 /// </summary>
 function PixelToPoint(inPixel: Integer; PixelSizeMM: Real = 0.265): Real;
-
 /// <summary>
 /// Convert typographical point to pixels.
 /// </summary>
 function PointToPixel(inPoint: Real; PixelSizeMM: Real = 0.265): Integer;
-
 /// <summary>
 /// Convert typographical point to mm.
 /// </summary>
 function PointToMM(inPoint: Real): Real;
-
 /// <summary>
 /// Convert mm to typographical point.
 /// </summary>
 function MMToPoint(inMM: Real): Real;
-
 /// <summary>
 /// Checks is Font1 equal Font2
 /// </summary>
 function ZEIsFontsEquals(const Font1, Font2: TZFont): Boolean; overload;
-
 /// <summary>
 /// Checks is Font1 equal Font2
 /// </summary>
 function ZEIsFontsEquals(const Font1, Font2: TFont): Boolean; overload;
-
 /// <summary>
 /// Convert datetime value to string (YYYY-MM-DDTHH:MM:SS[.mmm]).
 /// </summary>
 function ZEDateTimeToStr(ATime: TDateTime; Addmms: Boolean = false): string;
-
 /// <summary>
 /// Try convert string (YYYY-MM-DDTHH:MM:SS[.mmm]) to datetime
 /// </summary>
 function TryZEStrToDateTime(const AStrDateTime: string; out retDateTime: TDateTime): Boolean;
-
 /// <summary>
 /// Convert the number to string min count NullCount
 /// </summary>
 function IntToStrN(Value: Integer; NullCount: Integer): string;
-
 function IsIdenticalByteArray(Src, Dst: TBytes): Boolean;
-
 implementation
-
 uses
   Excel4Delphi.Formula;
-
 var
   invariantFormatSertting: TFormatSettings;
-
 function IsIdenticalByteArray(Src, Dst: TBytes): Boolean;
 var
   i: Integer;
 begin
   if Length(Src) <> Length(Dst) then
     exit(false);
-
   for i := Low(Src) to High(Src) do
   begin
     if Src[i] <> Dst[i] then
       exit(false);
   end;
-
   Result := true;
 end;
-
 function IntToStrN(Value: Integer; NullCount: Integer): string;
 var
   t, k: Integer;
@@ -2106,7 +1986,6 @@ begin
   for t := 1 to (NullCount - k) do
     Result := '0' + Result;
 end;
-
 function ZEDateTimeToStr(ATime: TDateTime; Addmms: Boolean = false): string;
 var
   HH, MM, SS, MS: word;
@@ -2118,7 +1997,6 @@ begin
   if (Addmms) then
     Result := Result + '.' + IntToStrN(MS, 3);
 end;
-
 function TryZEStrToDateTime(const AStrDateTime: string; out retDateTime: TDateTime): Boolean;
 var
   a: array [0 .. 10] of word;
@@ -2136,7 +2014,6 @@ var
   tzindex: Integer;
   timezonemul: Integer;
   _ms: word;
-
   function TryAddToArray(const ST: string): Boolean;
   begin
     if (Count > 10) then
@@ -2151,7 +2028,6 @@ var
       Inc(Count);
     end
   end;
-
   procedure _CheckDigits();
   var
     _l: Integer;
@@ -2217,27 +2093,22 @@ var
       Result := false;
     s := '';
   end;
-
   procedure _processDigit();
   begin
     s := s + ch;
   end;
-
   procedure _processTimeSign();
   begin
     istimesign := true;
     if (Count > 0) then
       lastdateindex := Count;
-
     _CheckDigits();
   end;
-
   procedure _processTimeDelimiter();
   begin
     _CheckDigits();
     Inc(timedelimeters)
   end;
-
   procedure _processDateDelimiter();
   begin
     _CheckDigits();
@@ -2250,26 +2121,22 @@ var
     else
       Inc(datedelimeters);
   end;
-
   procedure _processMSDelimiter();
   begin
     _CheckDigits();
     msindex := Count;
   end;
-
   procedure _processTimeZoneSign();
   begin
     _CheckDigits();
     istimezone := true;
   end;
-
   procedure _processTimeZonePlus();
   begin
     _CheckDigits();
     istimezone := true;
     timezonemul := -1;
   end;
-
   function _TryGetDateTime(): Boolean;
   var
     _time, _date: TDateTime;
@@ -2290,7 +2157,6 @@ var
     else
       Result := TryEncodeTime(a[lastdateindex + 1], a[lastdateindex + 2], a[lastdateindex + 3], _ms, retDateTime);
   end;
-
   function _TryGetDate(): Boolean;
   begin
     if (datedelimeters = 0) and (timedelimeters >= 2) then
@@ -2304,7 +2170,6 @@ var
     else
       Result := false;
   end;
-
 begin
   Result := true;
   datedelimeters := 0;
@@ -2317,7 +2182,6 @@ begin
   timezonemul := 0;
   _ms := 0;
   FillChar(a, sizeof(a), 0);
-
   l := Length(AStrDateTime);
   s := '';
   Count := 0;
@@ -2343,10 +2207,8 @@ begin
     if (not Result) then
       break
   end;
-
   if (Result and (s <> '')) then
     _CheckDigits();
-
   if (Result) then
   begin
     if (istimesign) then
@@ -2355,7 +2217,6 @@ begin
       Result := _TryGetDate();
   end;
 end; // TryZEStrToDateTime
-
 function ZEIsFontsEquals(const Font1, Font2: TZFont): Boolean;
 begin
   Result := Assigned(Font1) and (Assigned(Font2));
@@ -2364,20 +2225,15 @@ begin
     Result := false;
     if (Font1.Color <> Font2.Color) then
       exit;
-
     if (Font1.Name <> Font2.Name) then
       exit;
-
     if (Font1.Size <> Font2.Size) then
       exit;
-
     if (Font1.Style <> Font2.Style) then
       exit;
-
     Result := true;
   end;
 end;
-
 function ZEIsFontsEquals(const Font1, Font2: TFont): Boolean;
 begin
   Result := Assigned(Font1) and (Assigned(Font2));
@@ -2387,25 +2243,19 @@ begin
     {$IFDEF FMX}
     if (Font1.Family <> Font2.Family) then
       exit;
-
     {$ELSE}
     if (Font1.Color <> Font2.Color) then
       exit;
-
     if (Font1.Name <> Font2.Name) then
       exit;
     {$ENDIF}
-
     if (Font1.Size <> Font2.Size) then
       exit;
-
     if (Font1.Style <> Font2.Style) then
       exit;
-
     Result := true;
   end;
 end;
-
 function ColorToHTMLHex(Color: TColor): string;
 var
   _RGB: Integer;
@@ -2414,7 +2264,6 @@ begin
   // result := IntToHex(GetRValue(_RGB), 2) + IntToHex(GetGValue(_RGB), 2) + IntToHex(GetBValue(_RGB), 2);
   Result := IntToHex(Byte(_RGB), 2) + IntToHex(Byte(_RGB shr 8), 2) + IntToHex(Byte(_RGB shr 16), 2);
 end;
-
 function HTMLHexToColor(Value: string): TColor;
 var
   a: array [0 .. 2] of Integer;
@@ -2450,7 +2299,6 @@ begin
     Result := a[2] shl 16 or a[1] shl 8 or a[0];
   end;
 end;
-
 function ARGBToColor(Value: string): TColor;
 var
   a: array [0 .. 2] of Integer;
@@ -2485,31 +2333,25 @@ begin
     Result := a[2] shl 16 or a[1] shl 8 or a[0];
   end;
 end;
-
 function PixelToPoint(inPixel: Integer; PixelSizeMM: Real = 0.265): Real;
 begin
   Result := inPixel * PixelSizeMM / _PointToMM;
   // и оставим 2 знака после запятой ^_^
   Result := round(Result * 100) / 100;
 end;
-
 function PointToPixel(inPoint: Real; PixelSizeMM: Real = 0.265): Integer;
 begin
   Result := round(inPoint * _PointToMM / PixelSizeMM);
 end;
-
 function PointToMM(inPoint: Real): Real;
 begin
   Result := round(inPoint * _PointToMM * 100) / 100;
 end;
-
 function MMToPoint(inMM: Real): Real;
 begin
   Result := round(inMM / _PointToMM * 100) / 100;
 end;
-
 /// /::::::::::::: TZBorderStyle :::::::::::::::::////
-
 constructor TZBorderStyle.Create();
 begin
   FWeight := 0;
@@ -2519,7 +2361,6 @@ begin
   FColor.Tint := 0;
   FLineStyle := ZENone;
 end;
-
 procedure TZBorderStyle.Assign(Source: TPersistent);
 begin
   if Source is TZBorderStyle then
@@ -2531,7 +2372,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
 function TZBorderStyle.IsEqual(Source: TPersistent): Boolean;
 var
   zSource: TZBorderStyle;
@@ -2540,34 +2380,26 @@ begin
   if not(Source is TZBorderStyle) then
     exit;
   zSource := Source as TZBorderStyle;
-
   if Self.LineStyle <> zSource.LineStyle then
     exit;
-
   if (Self.FColor <> zSource.FColor) then
     exit;
-
   if Self.Weight <> zSource.Weight then
     exit;
-
   Result := true;
 end;
-
 procedure TZBorderStyle.SetLineStyle(const Value: TZBorderType);
 begin
   FLineStyle := Value;
 end;
-
 procedure TZBorderStyle.SetWeight(const Value: Byte);
 begin
   FWeight := min(3, Value);
 end;
-
 function TZBorderStyle.GetColor: TColor;
 begin
   Result := FColor.RGB;
 end;
-
 procedure TZBorderStyle.SetColor(const Value: TColor);
 begin
   if FColor.RGB <> Value then
@@ -2578,9 +2410,7 @@ begin
     FColor.Tint := 0;
   end;
 end;
-
 /// /::::::::::::: TZBorder :::::::::::::::::////
-
 constructor TZBorder.Create();
 var
   i: Integer;
@@ -2588,7 +2418,6 @@ begin
   for i := 0 to 5 do
     FBorder[i] := TZBorderStyle.Create();
 end;
-
 destructor TZBorder.Destroy();
 var
   i: Integer;
@@ -2597,7 +2426,6 @@ begin
     FreeAndNil(FBorder[i]);
   inherited Destroy;
 end;
-
 procedure TZBorder.Assign(Source: TPersistent);
 var
   zSource: TZBorder;
@@ -2612,7 +2440,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
 function TZBorder.IsEqual(Source: TPersistent): Boolean;
 var
   zSource: TZBorder;
@@ -2627,13 +2454,11 @@ begin
       exit;
   Result := true;
 end;
-
 procedure TZBorder.SetBorder(num: TZBordersPos; Const Value: TZBorderStyle);
 begin
   if (num >= bpLeft) and (num <= bpDiagonalRight) then
     Border[num].Assign(Value);
 end;
-
 function TZBorder.GetBorder(num: TZBordersPos): TZBorderStyle;
 begin
   if (num >= bpLeft) and (num <= bpDiagonalRight) then
@@ -2641,9 +2466,7 @@ begin
   else
     Result := nil;
 end;
-
 /// /::::::::::::: TZAlignment :::::::::::::::::////
-
 constructor TZAlignment.Create();
 begin
   FIndent := 0;
@@ -2654,7 +2477,6 @@ begin
   FVerticalText := false;
   FWrapText := false;
 end;
-
 procedure TZAlignment.Assign(Source: TPersistent);
 var
   zSource: TZAlignment;
@@ -2673,7 +2495,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
 function TZAlignment.IsEqual(Source: TPersistent): Boolean;
 var
   zSource: TZAlignment;
@@ -2700,44 +2521,35 @@ begin
   else
     Result := false;
 end;
-
 procedure TZAlignment.SetHorizontal(const Value: TZHorizontalAlignment);
 begin
   FHorizontal := Value;
 end;
-
 procedure TZAlignment.SetIndent(const Value: Integer);
 begin
   FIndent := Value;
 end;
-
 procedure TZAlignment.SetRotate(const Value: TZCellTextRotate);
 begin
   FRotate := Value;
 end;
-
 procedure TZAlignment.SetShrinkToFit(const Value: Boolean);
 begin
   FShrinkToFit := Value;
 end;
-
 procedure TZAlignment.SetVertical(const Value: TZVerticalAlignment);
 begin
   FVertical := Value;
 end;
-
 procedure TZAlignment.SetVerticalText(const Value: Boolean);
 begin
   FVerticalText := Value;
 end;
-
 procedure TZAlignment.SetWrapText(const Value: Boolean);
 begin
   FWrapText := Value;
 end;
-
 /// /::::::::::::: TZFont :::::::::::::::::////
-
 constructor TZFont.Create;
 begin
   inherited;
@@ -2750,17 +2562,14 @@ begin
   FName := 'MS Sans Serif';
   FStyle := [];
 end;
-
 destructor TZFont.Destroy;
 begin
   inherited;
 end;
-
 function TZFont.GetColor: TColor;
 begin
   Result := FColor.RGB;
 end;
-
 procedure TZFont.SetColor(const Value: TColor);
 begin
   if Value <> FColor.RGB then
@@ -2771,7 +2580,6 @@ begin
     FColor.Tint := 0;
   end;
 end;
-
 function TZFont.GetHashCode: Integer;
 var
   ST: Integer;
@@ -2785,7 +2593,6 @@ begin
     Inc(ST, 4);
   if TFontStyle.fsStrikeOut in FStyle then
     Inc(ST, 8);
-
   Result := 17;
   Result := Result * 23 + Integer(FColor.RGB);
   Result := Result * 23 + Integer(FColor.Indexed);
@@ -2796,7 +2603,6 @@ begin
   Result := Result * 23 + string(FName).GetHashCode();
   Result := Result * 23 + ST;
 end;
-
 procedure TZFont.Assign(Source: TPersistent);
 var
   zSource: TZFont;
@@ -2830,7 +2636,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
 procedure TZFont.AssignTo(Dest: TPersistent);
 var
   dstFont: TFont;
@@ -2856,7 +2661,6 @@ begin
   else
     inherited AssignTo(Dest);
 end;
-
 /// /::::::::::::: TZStyle :::::::::::::::::////
 // about default font in Excel - http://support.microsoft.com/kb/214123
 constructor TZStyle.Create();
@@ -2877,7 +2681,6 @@ begin
   FSuperscript := false;
   FSubscript := false;
 end;
-
 destructor TZStyle.Destroy();
 begin
   FreeAndNil(FFont);
@@ -2885,7 +2688,6 @@ begin
   FreeAndNil(FAlignment);
   inherited Destroy();
 end;
-
 procedure TZStyle.Assign(Source: TPersistent);
 var
   zSource: TZStyle;
@@ -2909,7 +2711,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
 function TZStyle.IsEqual(Source: TPersistent): Boolean;
 var
   zSource: TZStyle;
@@ -2918,7 +2719,6 @@ begin
   if not(Source is TZStyle) then
     exit;
   zSource := Source as TZStyle;
-
   if not Border.IsEqual(zSource.Border) then
     exit;
   if not Self.Alignment.IsEqual(zSource.Alignment) then
@@ -2943,27 +2743,22 @@ begin
     exit;
   Result := ZEIsFontsEquals(FFont, zSource.Font);
 end;
-
 procedure TZStyle.SetFont(const Value: TZFont);
 begin
   FFont.Assign(Value);
 end;
-
 procedure TZStyle.SetBorder(const Value: TZBorder);
 begin
   FBorder.Assign(Value);
 end;
-
 procedure TZStyle.SetAlignment(const Value: TZAlignment);
 begin
   FAlignment.Assign(Value);
 end;
-
 function TZStyle.GetBgColor: TColor;
 begin
   Result := FBGColor.RGB;
 end;
-
 procedure TZStyle.SetBgColor(const Value: TColor);
 begin
   if FBGColor.RGB <> Value then
@@ -2974,17 +2769,14 @@ begin
     FBGColor.Tint := 0;
   end;
 end;
-
 procedure TZStyle.SetPatternColor(const Value: TColor);
 begin
   FPatternColor := Value;
 end;
-
 procedure TZStyle.SetCellPattern(const Value: TZCellPattern);
 begin
   FCellPattern := Value;
 end;
-
 procedure TZStyle.SetSuperscript(const Value: Boolean);
 begin
   if FSuperscript <> Value then
@@ -2994,7 +2786,6 @@ begin
       FSubscript := false;
   end;
 end;
-
 procedure TZStyle.SetSubscript(const Value: Boolean);
 begin
   if FSubscript <> Value then
@@ -3004,21 +2795,17 @@ begin
       FSuperscript := false;
   end;
 end;
-
 procedure TZStyle.SetNumberFormat(const Value: string);
 begin
   FNumberFormat := Value;
   FNumberFormatId := -1;
 end;
-
 /// /::::::::::::: TZStyles :::::::::::::::::////
-
 constructor TZStyles.Create();
 begin
   FDefaultStyle := TZStyle.Create();
   FCount := 0;
 end;
-
 destructor TZStyles.Destroy();
 var
   i: Integer;
@@ -3030,7 +2817,6 @@ begin
   FStyles := nil;
   inherited Destroy();
 end;
-
 function TZStyles.Find(const Style: TZStyle): Integer;
 var
   i: Integer;
@@ -3038,14 +2824,12 @@ begin
   Result := -2;
   if DefaultStyle.IsEqual(Style) then
     exit(-1);
-
   for i := 0 to Count - 1 do
     if Items[i].IsEqual(Style) then
     begin
       exit(i);
     end;
 end;
-
 function TZStyles.Add(const Style: TZStyle; CheckMatch: Boolean = false): Integer;
 begin
   Result := -2;
@@ -3058,7 +2842,6 @@ begin
     Result := Count - 1;
   end;
 end;
-
 procedure TZStyles.Assign(Source: TPersistent);
 var
   srcStyles: TZStyles;
@@ -3075,13 +2858,11 @@ begin
   else
     inherited Assign(Source);
 end;
-
 procedure TZStyles.SetDefaultStyle(const Value: TZStyle);
 begin
   if Assigned(Value) then
     FDefaultStyle.Assign(Value);
 end;
-
 procedure TZStyles.SetCount(const Value: Integer);
 var
   i: Integer;
@@ -3103,7 +2884,6 @@ begin
   end;
   FCount := Value;
 end;
-
 function TZStyles.GetStyle(num: Integer): TZStyle;
 begin
   if (num >= 0) and (num < Count) then
@@ -3111,7 +2891,6 @@ begin
   else
     Result := DefaultStyle;
 end;
-
 procedure TZStyles.SetStyle(num: Integer; const Value: TZStyle);
 begin
   if (num >= 0) and (num < Count) then
@@ -3119,7 +2898,6 @@ begin
   else if num = -1 then
     DefaultStyle.Assign(Value);
 end;
-
 function TZStyles.DeleteStyle(num: Integer): Integer;
 begin
   if (num >= 0) and (num < Count) then
@@ -3135,7 +2913,6 @@ begin
   else
     Result := -1;
 end;
-
 procedure TZStyles.Clear();
 var
   i: Integer;
@@ -3145,9 +2922,7 @@ begin
   SetLength(FStyles, 0);
   FCount := 0;
 end;
-
 /// /::::::::::::: TZCell :::::::::::::::::////
-
 constructor TZCell.Create(ASheet: TZSheet);
 begin
   FSheet := ASheet;
@@ -3163,13 +2938,11 @@ begin
   FShowComment := false;
   FRichText := TRichText.Create();
 end;
-
 destructor TZCell.Destroy;
 begin
   FRichText.Free();
   inherited;
 end;
-
 procedure TZCell.Assign(Source: TPersistent);
 var
   zSource: TZCell;
@@ -3191,7 +2964,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
 procedure TZCell.Clear();
 begin
   FFormula := '';
@@ -3205,7 +2977,6 @@ begin
   FAlwaysShowComment := false;
   FShowComment := false;
 end;
-
 procedure TZCell.ApplyStyleValue(proc: TProc<TZStyle>);
 var
   Style: TZStyle;
@@ -3219,7 +2990,6 @@ begin
     Style.Free();
   end;
 end;
-
 procedure TZCell.SetBorderAround(borderWidth: Byte; BorderColor: TColor; BorderStyle: TZBorderType);
 var
   Style: TZStyle;
@@ -3239,7 +3009,6 @@ begin
     Style.Free();
   end;
 end;
-
 function TZCell.GetStyle: TZStyle;
 begin
   Result := nil;
@@ -3248,98 +3017,84 @@ begin
   else if FSheet.FStore.FStyles.Count > 0 then
     Result := FSheet.FStore.FStyles[0];
 end;
-
 function TZCell.GetBgColor: TColor;
 begin
   Result := 0;
   if FCellStyle > -1 then
     Result := Style.BgColor;
 end;
-
 function TZCell.GetBorderColor(num: TZBordersPos): TColor;
 begin
   Result := 0;
   if FCellStyle > -1 then
     Result := Style.Border[num].Color;
 end;
-
 function TZCell.GetBorderStyle(num: TZBordersPos): TZBorderType;
 begin
   Result := TZBorderType.ZENone;
   if FCellStyle > -1 then
     Result := Style.Border[num].LineStyle;
 end;
-
 function TZCell.GetBorderWidht(num: TZBordersPos): Byte;
 begin
   Result := 0;
   if FCellStyle > -1 then
     Result := Style.Border[num].Weight;
 end;
-
 function TZCell.GetFontColor: TColor;
 begin
   Result := 0;
   if FCellStyle > -1 then
     Result := Style.Font.Color;
 end;
-
 function TZCell.GetFontSize: Double;
 begin
   Result := 0;
   if FCellStyle > -1 then
     Result := Style.Font.Size;
 end;
-
 function TZCell.GetFontStyle: TFontStyles;
 begin
   Result := [];
   if FCellStyle > -1 then
     Result := Style.Font.Style;
 end;
-
 function TZCell.GetHorizontalAlignment: TZHorizontalAlignment;
 begin
   Result := TZHorizontalAlignment.ZHAutomatic;
   if FCellStyle > -1 then
     Result := Style.Alignment.Horizontal;
 end;
-
 function TZCell.GetNumberFormat: string;
 begin
   Result := '';
   if FCellStyle > -1 then
     Result := Style.NumberFormat;
 end;
-
 function TZCell.GetRotate: TZCellTextRotate;
 begin
   Result := 0;
   if FCellStyle > -1 then
     Result := Style.Alignment.Rotate;
 end;
-
 function TZCell.GetVerticalAlignment: TZVerticalAlignment;
 begin
   Result := TZVerticalAlignment.ZVAutomatic;
   if FCellStyle > -1 then
     Result := Style.Alignment.Vertical;
 end;
-
 function TZCell.GetVerticalText: Boolean;
 begin
   Result := false;
   if FCellStyle > -1 then
     Result := Style.Alignment.VerticalText;
 end;
-
 function TZCell.GetWrapText: Boolean;
 begin
   Result := false;
   if FCellStyle > -1 then
     Result := Style.Alignment.WrapText;
 end;
-
 procedure TZCell.SetFontColor(const Value: TColor);
 begin
   ApplyStyleValue(
@@ -3348,7 +3103,6 @@ begin
       Style.Font.Color := Value;
     end);
 end;
-
 procedure TZCell.SetFontSize(const Value: Double);
 begin
   ApplyStyleValue(
@@ -3357,7 +3111,6 @@ begin
       Style.Font.Size := Value;
     end);
 end;
-
 procedure TZCell.SetFontStyle(const Value: TFontStyles);
 begin
   ApplyStyleValue(
@@ -3366,7 +3119,6 @@ begin
       Style.Font.Style := Value;
     end);
 end;
-
 procedure TZCell.SetBgColor(const Value: TColor);
 begin
   ApplyStyleValue(
@@ -3375,7 +3127,6 @@ begin
       Style.BgColor := Value;
     end);
 end;
-
 procedure TZCell.SetBorderColor(num: TZBordersPos; const Value: TColor);
 begin
   ApplyStyleValue(
@@ -3384,7 +3135,6 @@ begin
       Style.Border[num].Color := Value;
     end);
 end;
-
 procedure TZCell.SetBorderStyle(num: TZBordersPos; const Value: TZBorderType);
 begin
   ApplyStyleValue(
@@ -3393,7 +3143,6 @@ begin
       Style.Border[num].LineStyle := Value;
     end);
 end;
-
 procedure TZCell.SetBorderWidht(num: TZBordersPos; const Value: Byte);
 begin
   ApplyStyleValue(
@@ -3402,7 +3151,6 @@ begin
       Style.Border[num].Weight := Value;
     end);
 end;
-
 procedure TZCell.SetHorizontalAlignment(const Value: TZHorizontalAlignment);
 begin
   ApplyStyleValue(
@@ -3411,7 +3159,6 @@ begin
       Style.Alignment.Horizontal := Value;
     end);
 end;
-
 procedure TZCell.SetNumberFormat(const Value: string);
 begin
   ApplyStyleValue(
@@ -3420,7 +3167,6 @@ begin
       Style.NumberFormat := Value;
     end);
 end;
-
 procedure TZCell.SetRotate(const Value: TZCellTextRotate);
 begin
   ApplyStyleValue(
@@ -3429,7 +3175,6 @@ begin
       Style.Alignment.Rotate := Value;
     end);
 end;
-
 procedure TZCell.SetVerticalAlignment(const Value: TZVerticalAlignment);
 begin
   ApplyStyleValue(
@@ -3438,7 +3183,6 @@ begin
       Style.Alignment.Vertical := Value;
     end);
 end;
-
 procedure TZCell.SetVerticalText(const Value: Boolean);
 begin
   ApplyStyleValue(
@@ -3447,7 +3191,6 @@ begin
       Style.Alignment.VerticalText := Value;
     end);
 end;
-
 procedure TZCell.SetWrapText(const Value: Boolean);
 begin
   ApplyStyleValue(
@@ -3456,19 +3199,16 @@ begin
       Style.Alignment.WrapText := Value;
     end);
 end;
-
 function TZCell.GetDataAsInteger: Integer;
 begin
   Result := StrToInt(Data);
 end;
-
 procedure TZCell.SetDataAsDateTime(const Value: TDateTime);
 begin
   FCellType := ZEDateTime;
   // FData := ZEDateTimeToStr(Value, true);
   FData := FloatToStr(Value).Replace(',', '.');
 end;
-
 function TZCell.GetDataAsDouble: Double;
 var
   err: Integer;
@@ -3482,14 +3222,12 @@ begin
     // If datetime ...
     if CellType = ZEDateTime then
       b := not TryZEStrToDateTime(FData, _dt);
-
     if b then
       Raise EConvertError.Create('ZxCell: Cannot cast data to number')
     else
       Result := _dt;
   end;
 end;
-
 function TZCell.GetDataAsDateTime(): TDateTime;
 var
   b: Boolean;
@@ -3508,7 +3246,6 @@ begin
   if (b) then
     Raise EConvertError.Create('ZxCell: Cannot cast data to DateTime');;
 end;
-
 procedure TZCell.SetDataAsInteger(const Value: Integer);
 begin
   Data := Trim(IntToStr(Value));
@@ -3516,39 +3253,32 @@ begin
 // Val adds the prepending space, maybe some I2S implementation would adds too
 // and Excel dislikes it. Better safe than sorry.
 end;
-
 procedure TZCell.SetDataAsDouble(const Value: Double);
 begin
   CellType := ZENumber;
   FData := FloatToStr(Value, invariantFormatSertting).ToUpper;
 end;
-
 procedure TZCell.SetDataAsString(const Value: string);
 begin
   FData := Value;
   CellType := ZEString;
 end;
-
 /// /::::::::::::: TZMergeCells :::::::::::::::::////
-
 constructor TZMergeCells.Create(ASheet: TZSheet);
 begin
   FSheet := ASheet;
   FCount := 0;
 end;
-
 destructor TZMergeCells.Destroy();
 begin
   Clear();
   inherited Destroy();
 end;
-
 procedure TZMergeCells.Clear();
 begin
   SetLength(FMergeArea, 0);
   FCount := 0;
 end;
-
 function TZMergeCells.GetItem(num: Integer): TZMergeArea;
 begin
   if (num >= 0) and (num < Count) then
@@ -3561,12 +3291,10 @@ begin
     Result.Bottom := 0;
   end;
 end;
-
 procedure TZMergeCells.SetItem(num: Integer; const rect: TZMergeArea);
 begin
   FMergeArea[num] := rect;
 end;
-
 function TZMergeCells.AddRect(Rct: TZMergeArea): Byte;
 var
   i: Integer;
@@ -3577,7 +3305,6 @@ var
       (((rct1.Top >= rct2.Top) and (rct1.Top <= rct2.Bottom)) or
       ((rct1.Bottom >= rct2.Top) and (rct1.Bottom <= rct2.Bottom)));
   end;
-
 begin
   if Rct.left > Rct.right then
   begin
@@ -3585,33 +3312,28 @@ begin
     Rct.left := Rct.right;
     Rct.right := i;
   end;
-
   if Rct.Top > Rct.Bottom then
   begin
     i := Rct.Top;
     Rct.Top := Rct.Bottom;
     Rct.Bottom := i;
   end;
-
   if (Rct.left < 0) or (Rct.Top < 0) then
   begin
     Result := 1;
     exit;
   end;
-
   if (Rct.right - Rct.left = 0) and (Rct.Bottom - Rct.Top = 0) then
   begin
     Result := 3;
     exit;
   end;
-
   for i := 0 to Count - 1 do
     if IsCross(FMergeArea[i], Rct) or IsCross(Rct, FMergeArea[i]) then
     begin
       Result := 2;
       exit;
     end;
-
   // если надо, увеличиваем кол-во строк/столбцов в хранилище
   if Assigned(FSheet) then
   begin
@@ -3620,13 +3342,11 @@ begin
     if Rct.Bottom > FSheet.RowCount - 1 then
       FSheet.RowCount := Rct.Bottom { + 1 };
   end;
-
   Inc(FCount);
   SetLength(FMergeArea, FCount);
   FMergeArea[FCount - 1] := Rct;
   Result := 0;
 end;
-
 function TZMergeCells.InLeftTopCorner(ACol, ARow: Integer): Integer;
 var
   i: Integer;
@@ -3639,7 +3359,6 @@ begin
       break;
     end;
 end;
-
 function TZMergeCells.InMergeRange(ACol, ARow: Integer): Integer;
 var
   i: Integer;
@@ -3653,7 +3372,6 @@ begin
       break;
     end;
 end;
-
 function TZMergeCells.IsCrossWithArea(AID, AC1, AR1, AC2, AR2: Integer): Boolean;
 begin
   Result := (((Items[AID].left >= AC1) and (Items[AID].left <= AC2)) or
@@ -3661,7 +3379,6 @@ begin
     (((Items[AID].Top >= AR1) and (Items[AID].Top <= AR2)) or ((Items[AID].Bottom >= AR1) and
     (Items[AID].Bottom <= AR2)));
 end;
-
 function TZMergeCells.MergedCols(ACol, ARow: Integer): Integer;
 var
   i: Integer;
@@ -3677,7 +3394,6 @@ begin
     end;
   end;
 end;
-
 function TZMergeCells.MergedRows(ACol, ARow: Integer): Integer;
 var
   i: Integer;
@@ -3693,7 +3409,6 @@ begin
     end;
   end;
 end;
-
 function TZMergeCells.DeleteItem(num: Integer): Boolean;
 var
   i: Integer;
@@ -3703,15 +3418,12 @@ begin
     Result := false;
     exit;
   end;
-
   for i := num to Count - 2 do
     FMergeArea[i] := FMergeArea[i + 1];
-
   Dec(FCount);
   SetLength(FMergeArea, FCount);
   Result := true;
 end;
-
 function TZMergeCells.AddRectXY(left, Top, right, Bottom: Integer): Byte;
 var
   Rct: TZMergeArea;
@@ -3722,9 +3434,7 @@ begin
   Rct.Bottom := Bottom;
   Result := AddRect(Rct);
 end;
-
 /// /::::::::::::: TZRowColOptions :::::::::::::::::////
-
 constructor TZRowColOptions.Create(ASheet: TZSheet);
 begin
   inherited Create();
@@ -3735,7 +3445,6 @@ begin
   FBreaked := false;
   FOutlineLevel := 0;
 end;
-
 procedure TZRowColOptions.Assign(Source: TPersistent);
 begin
   if Source is TZRowColOptions then
@@ -3750,46 +3459,37 @@ begin
   else
     inherited Assign(Source);
 end;
-
 function TZRowColOptions.GetAuto(): Boolean;
 begin
   Result := FAuto;
 end;
-
 procedure TZRowColOptions.SetAuto(Value: Boolean);
 begin
   FAuto := Value;
 end;
-
 function TZRowColOptions.GetSizePoint(): Real;
 begin
   Result := FSize;
 end;
-
 procedure TZRowColOptions.SetSizePoint(Value: Real);
 begin
   if Value >= 0 then
     FSize := Value;
 end;
-
 function TZRowColOptions.GetSizeMM(): Real;
 begin
   Result := PointToMM(FSize);
 end;
-
 procedure TZRowColOptions.SetSizeMM(Value: Real);
 begin
   FSize := MMToPoint(Value);
 end;
-
 /// /::::::::::::: TZRowOptions :::::::::::::::::////
-
 constructor TZRowOptions.Create(ASheet: TZSheet);
 begin
   inherited Create(ASheet);
   FSize := 48;
 end;
-
 function TZRowOptions.GetSizePix(): Integer;
 var
   t: Real;
@@ -3799,7 +3499,6 @@ begin
     t := FSheet.FStore.HorPixelSize;
   Result := PointToPixel(FSize, t);
 end;
-
 procedure TZRowOptions.SetSizePix(Value: Integer);
 var
   t: Real;
@@ -3811,15 +3510,12 @@ begin
     t := FSheet.FStore.HorPixelSize;
   FSize := PixelToPoint(Value, t);
 end;
-
 /// /::::::::::::: TZColOptions :::::::::::::::::////
-
 constructor TZColOptions.Create(ASheet: TZSheet);
 begin
   inherited Create(ASheet);
   FSize := 12.75;
 end;
-
 function TZColOptions.GetSizePix(): Integer;
 var
   t: Real;
@@ -3829,7 +3525,6 @@ begin
     t := FSheet.FStore.VertPixelSize;
   Result := PointToPixel(FSize, t);
 end;
-
 procedure TZColOptions.SetSizePix(Value: Integer);
 var
   t: Real;
@@ -3841,9 +3536,7 @@ begin
     t := FSheet.FStore.VertPixelSize;
   FSize := PixelToPoint(Value, t);
 end;
-
 /// /::::::::::::: TZHeaderFooterMargins :::::::::::::::::////
-
 constructor TZHeaderFooterMargins.Create();
 begin
   FMarginTopBottom := 13;
@@ -3852,7 +3545,6 @@ begin
   FHeight := 7;
   FUseAutoFitHeight := true;
 end;
-
 procedure TZHeaderFooterMargins.Assign(Source: TPersistent);
 var
   t: TZHeaderFooterMargins;
@@ -3869,7 +3561,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
 function TZHeaderFooterMargins.IsEqual(Source: TPersistent): Boolean;
 var
   t: TZHeaderFooterMargins;
@@ -3882,9 +3573,7 @@ begin
       and (FHeight = t.FHeight) and (FUseAutoFitHeight = t.UseAutoFitHeight);
   end;
 end;
-
 /// /::::::::::::: TZSheetOptions :::::::::::::::::////
-
 constructor TZSheetOptions.Create();
 begin
   inherited;
@@ -3924,34 +3613,28 @@ begin
   FScaleToPercent := 100;
   FScaleToPages := 1;
 end;
-
 destructor TZSheetOptions.Destroy();
 begin
   FreeAndNil(FHeaderMargins);
   FreeAndNil(FFooterMargins);
   inherited;
 end;
-
 function TZSheetOptions.GetHeaderMargin(): word;
 begin
   Result := FHeaderMargins.Height;
 end;
-
 procedure TZSheetOptions.SetHeaderMargin(Value: word);
 begin
   FHeaderMargins.Height := Value;
 end;
-
 function TZSheetOptions.GetFooterMargin(): word;
 begin
   Result := FFooterMargins.Height;
 end;
-
 procedure TZSheetOptions.SetFooterMargin(Value: word);
 begin
   FFooterMargins.Height := Value;
 end;
-
 procedure TZSheetOptions.Assign(Source: TPersistent);
 var
   t: TZSheetOptions;
@@ -3994,9 +3677,7 @@ begin
   else
     inherited Assign(Source);
 end;
-
 /// /::::::::::::: TZSheet :::::::::::::::::////
-
 constructor TZSheet.Create(AStore: TZWorkBook);
 var
   i, j: Integer;
@@ -4020,7 +3701,6 @@ begin
   FDrawingRid := 0;
   SetLength(FRows, FRowCount);
   SetLength(FColumns, FColCount);
-
   for i := 0 to FColCount - 1 do
   begin
     SetLength(FCells[i], FRowCount);
@@ -4029,24 +3709,20 @@ begin
     FColumns[i] := TZColOptions.Create(Self);
     FColumns[i].Width := DefaultColWidth;
   end;
-
   for i := 0 to FRowCount - 1 do
   begin
     FRows[i] := TZRowOptions.Create(Self);
     FRows[i].Height := DefaultRowHeight;
   end;
-
   FSheetOptions := TZSheetOptions.Create();
   if Assigned(FStore) and Assigned(FStore.DefaultSheetOptions) then
     FSheetOptions.Assign(FStore.DefaultSheetOptions);
-
   FPrintRows := TZSheetPrintTitles.Create(Self, false);
   FPrintCols := TZSheetPrintTitles.Create(Self, true);
   FConditionalFormatting := TZConditionalFormatting.Create();
   FCharts := TZEChartStore.Create();
   FDrawing := TZEDrawing.Create(Self);
 end;
-
 destructor TZSheet.Destroy();
 begin
   try
@@ -4065,7 +3741,6 @@ begin
     inherited Destroy();
   end;
 end;
-
 procedure TZSheet.Assign(Source: TPersistent);
 var
   zSource: TZSheet;
@@ -4088,30 +3763,24 @@ begin
     FRowBreaks := zSource.FRowBreaks;
     FColBreaks := zSource.FColBreaks;
     FDrawingRid := zSource.FDrawingRid;
-
     FSummaryBelow := zSource.FSummaryBelow;
     FSummaryRight := zSource.FSummaryRight;
     FApplyStyles := zSource.FApplyStyles;
     FOutlineLevelRow := zSource.FOutlineLevelRow;
     FOutlineLevelCol := zSource.FOutlineLevelCol;
-
     for i := 0 to RowCount - 1 do
       Rows[i] := zSource.Rows[i];
-
     for i := 0 to ColCount - 1 do
     begin
       Columns[i] := zSource.Columns[i];
       for j := 0 to RowCount - 1 do
         Cell[i, j] := zSource.Cell[i, j];
     end;
-
     FSelected := zSource.Selected;
     SheetOptions.Assign(zSource.SheetOptions);
-
     MergeCells.Clear();
     for i := 0 to zSource.MergeCells.Count - 1 do
       MergeCells.AddRect(zSource.MergeCells.GetItem(i));
-
     ConditionalFormatting.Assign(zSource.ConditionalFormatting);
     // На этой строке перезаписывается указатель на объект TZEDrawing,
     // но старый объект не удаляется, т.е. происходит утечка памяти.
@@ -4123,19 +3792,16 @@ begin
   else
     inherited Assign(Source);
 end;
-
 procedure TZSheet.SetConditionalFormatting(Value: TZConditionalFormatting);
 begin
   if Assigned(Value) then
     FConditionalFormatting.Assign(Value);
 end;
-
 procedure TZSheet.SetCharts(const Value: TZEChartStore);
 begin
   if Assigned(Value) then
     FCharts.Assign(Value);
 end;
-
 function TZSheet.GetSheetIndex: Integer;
 var
   i: Integer;
@@ -4145,19 +3811,16 @@ begin
     if WorkBook.FSheets[i] = Self then
       exit(i);
 end;
-
 function TZSheet.GetSheetOptions(): TZSheetOptions;
 begin
   Result := FSheetOptions;
 end;
-
 procedure TZSheet.InsertRows(ARow, ACount: Integer);
 var
   r, c: Integer;
 begin
   // resize
   SetRowCount(FRowCount + ACount);
-
   // append and reloc cells
   for r := Length(FRows) - 1 downto ARow do
   begin
@@ -4171,7 +3834,6 @@ begin
     begin
       FRows[r] := FRows[r - ACount];
     end;
-
     // reloc cells
     for c := 0 to ColCount - 1 do
     begin
@@ -4185,7 +3847,6 @@ begin
       end;
     end;
   end;
-
   // reloc merged areas
   for r := 0 to MergeCells.Count - 1 do
   begin
@@ -4196,7 +3857,6 @@ begin
     end;
   end;
 end;
-
 function TZSheet.ColsWidth(AFrom, ATo: Integer): Real;
 begin
   Result := 0;
@@ -4206,7 +3866,6 @@ begin
     Inc(AFrom);
   end;
 end;
-
 function TZSheet.RowsHeight(AFrom, ATo: Integer): Real;
 begin
   Result := 0;
@@ -4216,7 +3875,6 @@ begin
     Inc(AFrom);
   end;
 end;
-
 procedure TZSheet.CopyRows(ARowDst, ARowSrc, ACount: Integer);
 var
   r, c, delta: Integer;
@@ -4230,9 +3888,7 @@ begin
       FCells[c][ARowDst + r].Assign(FCells[c][ARowSrc + r]);
     end;
   end;
-
   delta := ARowDst - ARowSrc;
-
   // reloc merged areas
   for r := 0 to MergeCells.Count - 1 do
   begin
@@ -4243,13 +3899,11 @@ begin
     end;
   end;
 end;
-
 procedure TZSheet.SetSheetOptions(Value: TZSheetOptions);
 begin
   if Assigned(Value) then
     FSheetOptions.Assign(Value);
 end;
-
 procedure TZSheet.SetCorrectTitle(const Value: string);
 var
   i: Integer;
@@ -4264,7 +3918,6 @@ begin
   newTitle := regEx.Replace(newTitle, ' ');
   if newTitle.Trim.IsEmpty then
     newTitle := 'Лист1';
-
   if Assigned(WorkBook) then
   begin
     sheetNames := TDictionary<string, string>.Create;
@@ -4288,13 +3941,11 @@ begin
   end;
   Self.FTitle := newTitle;
 end;
-
 procedure TZSheet.SetColumn(num: Integer; const Value: TZColOptions);
 begin
   if (num >= 0) and (num < FColCount) then
     FColumns[num].Assign(Value);
 end;
-
 function TZSheet.GetColumn(num: Integer): TZColOptions;
 begin
   if (num >= 0) and (num < FColCount) then
@@ -4302,24 +3953,18 @@ begin
   else
     Result := nil;
 end;
-
 {
 procedure TZSheet.SetRange(AC1,AR1,AC2,AR2: integer; const Value: TZRange);
 begin
-
 end;
-
 procedure TZSheet.SetRangeRef(AFrom, ATo: string; const Value: TZRange);
 begin
-
 end;
 }
-
 function TZSheet.GetRange(AC1, AR1, AC2, AR2: Integer): IZRange;
 begin
   Result := TZRange.Create(Self, AC1, AR1, AC2, AR2);
 end;
-
 function TZSheet.GetRangeRef(AFromCol: string; AFromRow: Integer; AToCol: string; AToRow: Integer): IZRange;
 var
   AC1, AR1, AC2, AR2: Integer;
@@ -4330,13 +3975,11 @@ begin
   AR2 := AToRow;
   Result := TZRange.Create(Self, AC1, AR1, AC2, AR2);
 end;
-
 procedure TZSheet.SetRow(num: Integer; const Value: TZRowOptions);
 begin
   if (num >= 0) and (num < FRowCount) then
     FRows[num].Assign(Value);
 end;
-
 function TZSheet.GetRow(num: Integer): TZRowOptions;
 begin
   if (num >= 0) and (num < FRowCount) then
@@ -4344,14 +3987,12 @@ begin
   else
     Result := nil;
 end;
-
 procedure TZSheet.SetColWidth(num: Integer; const Value: Real);
 begin
   if (num < ColCount) and (num >= 0) and (Value >= 0) then
     if FColumns[num] <> nil then
       FColumns[num].Width := Value;
 end;
-
 function TZSheet.GetColWidth(num: Integer): Real;
 begin
   Result := 0;
@@ -4359,14 +4000,12 @@ begin
     if Assigned(FColumns[num]) then
       Result := FColumns[num].Width
 end;
-
 procedure TZSheet.SetRowHeight(num: Integer; const Value: Real);
 begin
   if (num < RowCount) and (num >= 0) and (Value >= 0) then
     if Assigned(FRows[num]) then
       FRows[num].Height := Value;
 end;
-
 function TZSheet.GetRowHeight(num: Integer): Real;
 begin
   Result := 0;
@@ -4374,29 +4013,24 @@ begin
     if Assigned(FRows[num]) then
       Result := FRows[num].Height
 end;
-
 procedure TZSheet.SetDefaultColWidth(const Value: Real);
 begin
   if Value >= 0 then
     FDefaultColWidth := round(Value * 100) / 100;
 end;
-
 procedure TZSheet.SetDefaultRowHeight(const Value: Real);
 begin
   if Value >= 0 then
     FDefaultRowHeight := round(Value * 100) / 100;
 end;
-
 procedure TZSheet.SetPrintCols(const Value: TZSheetPrintTitles);
 begin
   FPrintCols.Assign(Value);
 end;
-
 procedure TZSheet.SetPrintRows(const Value: TZSheetPrintTitles);
 begin
   FPrintRows.Assign(Value);
 end;
-
 procedure TZSheet.Clear();
 var
   i, j: Integer;
@@ -4409,47 +4043,39 @@ begin
     FColumns[i].Free;
     FCells[i] := nil;
   end;
-
   for i := 0 to FRowCount - 1 do
     FRows[i].Free;
-
   SetLength(FCells, 0);
   FRowCount := 0;
   FColCount := 0;
   SetLength(FRows, 0);
   SetLength(FColumns, 0);
 end;
-
 procedure TZSheet.SetCell(ACol, ARow: Integer; const Value: TZCell);
 begin
   if (ACol >= 0) and (ACol < FColCount) and (ARow >= 0) and (ARow < FRowCount) then
     FCells[ACol, ARow].Assign(Value);
 end;
-
 procedure TZSheet.SetCellRef(ACol: string; ARow: Integer; const Value: TZCell);
 begin
   SetCell(ZEGetColByA1(ACol), ARow, Value);
 end;
-
 function TZSheet.GetCell(ACol, ARow: Integer): TZCell;
 begin
   Result := nil;
   if (ACol >= 0) and (ACol < FColCount) and (ARow >= 0) and (ARow < FRowCount) then
     Result := FCells[ACol, ARow];
 end;
-
 function TZSheet.GetCellRef(ACol: string; ARow: Integer): TZCell;
 begin
   Result := GetCell(ZEGetColByA1(ACol), ARow);
 end;
-
 procedure TZSheet.SetColCount(const Value: Integer);
 var
   i, j: Integer;
 begin
   if Value < 0 then
     exit;
-
   if FColCount > Value then
   begin // todo Repeatable columns may be affected
     for i := Value to FColCount - 1 do
@@ -4459,7 +4085,6 @@ begin
       SetLength(FCells[i], 0);
       FreeAndNil(FColumns[i]);
     end;
-
     SetLength(FCells, Value);
     SetLength(FColumns, Value);
   end
@@ -4467,7 +4092,6 @@ begin
   begin
     SetLength(FCells, Value);
     SetLength(FColumns, Value);
-
     for i := FColCount to Value - 1 do
     begin
       SetLength(FCells[i], FRowCount);
@@ -4479,19 +4103,16 @@ begin
   end;
   FColCount := Value;
 end;
-
 function TZSheet.GetColCount: Integer;
 begin
   Result := FColCount;
 end;
-
 procedure TZSheet.SetRowCount(const Value: Integer);
 var
   i, j: Integer;
 begin
   if Value < 0 then
     exit;
-
   if FRowCount > Value then
   begin // todo Repeatable rows may be affected
     for i := 0 to FColCount - 1 do
@@ -4500,7 +4121,6 @@ begin
         FreeAndNil(FCells[i][j]);
       SetLength(FCells[i], Value);
     end;
-
     for i := Value to FRowCount - 1 do
       FreeAndNil(FRows[i]);
     SetLength(FRows, Value);
@@ -4513,7 +4133,6 @@ begin
       for j := FRowCount to Value - 1 do
         FCells[i][j] := TZCell.Create(Self);
     end;
-
     SetLength(FRows, Value);
     for i := FRowCount to Value - 1 do
     begin
@@ -4523,12 +4142,10 @@ begin
   end;
   FRowCount := Value;
 end;
-
 function TZSheet.GetRowCount: Integer;
 begin
   Result := FRowCount;
 end;
-
 /// /::::::::::::: TZSheets :::::::::::::::::////
 constructor TZSheets.Create(AStore: TZWorkBook);
 begin
@@ -4536,7 +4153,6 @@ begin
   FCount := 0;
   SetLength(FSheets, 0);
 end;
-
 destructor TZSheets.Destroy();
 var
   i: Integer;
@@ -4548,7 +4164,6 @@ begin
   FStore := nil;
   inherited Destroy();
 end;
-
 function TZSheets.Add(const ATitle: string = ''): TZSheet;
 begin
   Result := TZSheet.Create(FStore);
@@ -4557,7 +4172,6 @@ begin
   FSheets[High(FSheets)] := Result;
   Inc(FCount);
 end;
-
 procedure TZSheets.Assign(Source: TPersistent);
 var
   t: TZSheets;
@@ -4573,7 +4187,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
 procedure TZSheets.SetSheetCount(const Value: Integer);
 var
   i: Integer;
@@ -4592,13 +4205,11 @@ begin
   end;
   FCount := Value;
 end;
-
 procedure TZSheets.SetSheet(num: Integer; Const Value: TZSheet);
 begin
   if (num < Count) and (num >= 0) then
     FSheets[num].Assign(Value);
 end;
-
 function TZSheets.GetSheet(num: Integer): TZSheet;
 begin
   if (num < Count) and (num >= 0) then
@@ -4606,9 +4217,7 @@ begin
   else
     Result := nil;
 end;
-
 /// /::::::::::::: TZEXMLDocumentProperties :::::::::::::::::////
-
 constructor TZEXMLDocumentProperties.Create();
 begin
   FAuthor := 'none';
@@ -4622,27 +4231,22 @@ begin
   FWindowTopY := 150;
   FModeR1C1 := false;
 end;
-
 procedure TZEXMLDocumentProperties.SetAuthor(const Value: string);
 begin
   FAuthor := Value;
 end;
-
 procedure TZEXMLDocumentProperties.SetLastAuthor(const Value: string);
 begin
   FLastAuthor := Value;
 end;
-
 procedure TZEXMLDocumentProperties.SetCompany(const Value: string);
 begin
   FCompany := Value;
 end;
-
 procedure TZEXMLDocumentProperties.SetVersion(const Value: string);
 begin
   FVersion := Value;
 end;
-
 procedure TZEXMLDocumentProperties.Assign(Source: TPersistent);
 var
   props: TZEXMLDocumentProperties;
@@ -4664,9 +4268,7 @@ begin
   else
     inherited Assign(Source);
 end;
-
 /// /::::::::::::: TZWorkBook :::::::::::::::::////
-
 constructor TZWorkBook.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -4677,7 +4279,6 @@ begin
   FVertPixelSize := 0.265;
   FDefaultSheetOptions := TZSheetOptions.Create();
 end;
-
 destructor TZWorkBook.Destroy();
 begin
   FreeAndNil(FDefaultSheetOptions);
@@ -4686,7 +4287,6 @@ begin
   FreeAndNil(FSheets);
   inherited Destroy();
 end;
-
 function TZWorkBook.AddMediaContent(AFileName: string; AContent: TBytes; ACheckByName: Boolean): Integer;
 var
   i: Integer;
@@ -4707,13 +4307,11 @@ begin
         exit(i);
     end;
   end;
-
   SetLength(FMediaList, Length(FMediaList) + 1);
   FMediaList[High(FMediaList)].FileName := AFileName;
   FMediaList[High(FMediaList)].Content := AContent;
   Result := High(FMediaList);
 end;
-
 procedure TZWorkBook.Assign(Source: TPersistent);
 var
   t: TZWorkBook;
@@ -4733,19 +4331,16 @@ begin
   else
     inherited Assign(Source);
 end;
-
 procedure TZWorkBook.SetHorPixelSize(Value: Real);
 begin
   if Value > 0 then
     FHorPixelSize := Value;
 end;
-
 procedure TZWorkBook.SetVertPixelSize(Value: Real);
 begin
   if Value > 0 then
     FVertPixelSize := Value;
 end;
-
 {$IFNDEF FMX}
 procedure TZWorkBook.GetPixelSize(hdc: THandle);
 begin
@@ -4755,18 +4350,15 @@ begin
   VertPixelSize := GetDeviceCaps(hdc, VERTSIZE) / GetDeviceCaps(hdc, VERTRES);
 end;
 {$ENDIF}
-
 function TZWorkBook.GetDefaultSheetOptions(): TZSheetOptions;
 begin
   Result := FDefaultSheetOptions;
 end;
-
 procedure TZWorkBook.SetDefaultSheetOptions(Value: TZSheetOptions);
 begin
   if Assigned(Value) then
     FDefaultSheetOptions.Assign(Value);
 end;
-
 function TZWorkBook.GetDrawing(num: Integer): TZEDrawing;
 var
   i, n: Integer;
@@ -4786,7 +4378,6 @@ begin
     end;
   end;
 end;
-
 function TZWorkBook.GetDrawingSheetNum(Value: TZEDrawing): Integer;
 var
   i: Integer;
@@ -4801,9 +4392,7 @@ begin
     end;
   end;
 end;
-
 { TZSheetPrintTitles }
-
 procedure TZSheetPrintTitles.Assign(Source: TPersistent);
 var
   f, t: word;
@@ -4814,10 +4403,8 @@ begin
     f := TZSheetPrintTitles(Source).From;
     t := TZSheetPrintTitles(Source).Till;
     a := TZSheetPrintTitles(Source).Active;
-
     if a then
       RequireValid(f, t);
-
     FFrom := f;
     FTill := t;
     FActive := a;
@@ -4825,7 +4412,6 @@ begin
   else
     inherited;
 end;
-
 constructor TZSheetPrintTitles.Create(const owner: TZSheet; const ForColumns: Boolean);
 begin
   if nil = owner then
@@ -4833,28 +4419,24 @@ begin
   Self.FOwner := owner;
   Self.FColumns := ForColumns;
 end;
-
 procedure TZSheetPrintTitles.SetActive(const Value: Boolean);
 begin
   if Value then
     RequireValid(FFrom, FTill);
   FActive := Value
 end;
-
 procedure TZSheetPrintTitles.SetFrom(const Value: word);
 begin
   if Active then
     RequireValid(Value, FTill);
   FFrom := Value;
 end;
-
 procedure TZSheetPrintTitles.SetTill(const Value: word);
 begin
   if Active then
     RequireValid(FFrom, Value);
   FTill := Value;
 end;
-
 function TZSheetPrintTitles.ToString: string;
 var
   c: char;
@@ -4870,13 +4452,11 @@ begin
   else
     Result := '';
 end;
-
 procedure TZSheetPrintTitles.RequireValid(const AFrom, ATill: word);
 begin
   if not Valid(AFrom, ATill) then
     raise Exception.Create('Invalid printable titles for the worksheet.');
 end;
-
 function TZSheetPrintTitles.Valid(const AFrom, ATill: word): Boolean;
 var
   UpperLimit: word;
@@ -4884,25 +4464,19 @@ begin
   Result := false;
   if AFrom > ATill then
     exit;
-
   if FColumns then
     UpperLimit := FOwner.ColCount
   else
     UpperLimit := FOwner.RowCount;
-
   if ATill >= UpperLimit then
     exit;
-
   Result := true;
 end;
-
 /// /::::::::::::: TZConditionalStyleItem :::::::::::::::::////
-
 constructor TZConditionalStyleItem.Create();
 begin
   Clear();
 end;
-
 procedure TZConditionalStyleItem.Clear();
 begin
   FCondition := ZCFCellContentOperator;
@@ -4914,7 +4488,6 @@ begin
   FBaseCellRowIndex := 0;
   FBaseCellColumnIndex := 0;
 end;
-
 procedure TZConditionalStyleItem.Assign(Source: TPersistent);
 var
   t: TZConditionalStyleItem;
@@ -4934,7 +4507,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
 function TZConditionalStyleItem.IsEqual(Source: TPersistent): Boolean;
 var
   t: TZConditionalStyleItem;
@@ -4962,9 +4534,7 @@ begin
     Result := true;
   end;
 end;
-
 /// /::::::::::::: TZConditionalStyle :::::::::::::::::////
-
 constructor TZConditionalStyle.Create();
 var
   i: Integer;
@@ -4976,7 +4546,6 @@ begin
     FConditions[i] := TZConditionalStyleItem.Create();
   FAreas := TZConditionalAreas.Create();
 end;
-
 destructor TZConditionalStyle.Destroy();
 var
   i: Integer;
@@ -4989,7 +4558,6 @@ begin
   FreeAndNil(FAreas);
   inherited;
 end;
-
 procedure TZConditionalStyle.Assign(Source: TPersistent);
 var
   t: TZConditionalStyle;
@@ -5006,7 +4574,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
 function TZConditionalStyle.IsEqual(Source: TPersistent): Boolean;
 var
   t: TZConditionalStyle;
@@ -5024,20 +4591,17 @@ begin
     Result := true;
   end;
 end;
-
 function TZConditionalStyle.GetItem(num: Integer): TZConditionalStyleItem;
 begin
   Result := nil;
   if (num >= 0) and (num < Count) then
     Result := FConditions[num];
 end;
-
 procedure TZConditionalStyle.SetItem(num: Integer; Value: TZConditionalStyleItem);
 begin
   if (num >= 0) and (num < Count) then
     FConditions[num].Assign(Value);
 end;
-
 procedure TZConditionalStyle.SetCount(Value: Integer);
 var
   i: Integer;
@@ -5060,26 +4624,22 @@ begin
     FCount := Value;
   end;
 end;
-
 procedure TZConditionalStyle.SetAreas(Value: TZConditionalAreas);
 begin
   if (Assigned(Value)) then
     FAreas.Assign(Value);
 end;
-
 function TZConditionalStyle.Add(): TZConditionalStyleItem;
 begin
   Count := Count + 1;
   Result := FConditions[Count - 1];
 end;
-
 function TZConditionalStyle.Add(StyleItem: TZConditionalStyleItem): TZConditionalStyleItem;
 begin
   Result := Add();
   if (Assigned(StyleItem)) then
     Result.Assign(StyleItem);
 end;
-
 procedure TZConditionalStyle.Delete(num: Integer);
 var
   i: Integer;
@@ -5095,12 +4655,10 @@ begin
     Count := Count - 1;
   end;
 end;
-
 procedure TZConditionalStyle.Insert(num: Integer);
 begin
   Insert(num, nil);
 end;
-
 procedure TZConditionalStyle.Insert(num: Integer; StyleItem: TZConditionalStyleItem);
 var
   i: Integer;
@@ -5117,14 +4675,11 @@ begin
       FConditions[num].Assign(StyleItem);
   end;
 end;
-
 /// /::::::::::::: TZConditionalAreaItem :::::::::::::::::////
-
 constructor TZConditionalAreaItem.Create();
 begin
   Create(0, 0, 1, 1);
 end;
-
 constructor TZConditionalAreaItem.Create(ColumnNum, RowNum, AreaWidth, AreaHeight: Integer);
 begin
   Row := RowNum;
@@ -5132,31 +4687,26 @@ begin
   Width := AreaWidth;
   Height := AreaHeight;
 end;
-
 procedure TZConditionalAreaItem.SetRow(Value: Integer);
 begin
   if Value >= 0 then
     FRow := Value;
 end;
-
 procedure TZConditionalAreaItem.SetColumn(Value: Integer);
 begin
   if Value >= 0 then
     FColumn := Value;
 end;
-
 procedure TZConditionalAreaItem.SetWidth(Value: Integer);
 begin
   if Value >= 0 then
     FWidth := Value;
 end;
-
 procedure TZConditionalAreaItem.SetHeight(Value: Integer);
 begin
   if Value >= 0 then
     FHeight := Value;
 end;
-
 procedure TZConditionalAreaItem.Assign(Source: TPersistent);
 var
   t: TZConditionalAreaItem;
@@ -5172,7 +4722,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
 function TZConditionalAreaItem.IsEqual(Source: TPersistent): Boolean;
 var
   t: TZConditionalAreaItem;
@@ -5192,16 +4741,13 @@ begin
     Result := true;
   end;
 end;
-
 /// /::::::::::::: TZConditionalAreas :::::::::::::::::////
-
 constructor TZConditionalAreas.Create();
 begin
   FCount := 1;
   SetLength(FItems, FCount);
   FItems[0] := TZConditionalAreaItem.Create();
 end;
-
 destructor TZConditionalAreas.Destroy();
 var
   i: Integer;
@@ -5213,7 +4759,6 @@ begin
   FItems := nil;
   inherited;
 end;
-
 procedure TZConditionalAreas.SetCount(Value: Integer);
 var
   i: Integer;
@@ -5236,27 +4781,23 @@ begin
     FCount := Value;
   end;
 end;
-
 function TZConditionalAreas.GetItem(num: Integer): TZConditionalAreaItem;
 begin
   Result := nil;
   if ((num >= 0) and (num < FCount)) then
     Result := FItems[num];
 end;
-
 procedure TZConditionalAreas.SetItem(num: Integer; Value: TZConditionalAreaItem);
 begin
   if ((num >= 0) and (num < Count)) then
     if (Assigned(Value)) then
       FItems[num].Assign(Value);
 end;
-
 function TZConditionalAreas.Add(): TZConditionalAreaItem;
 begin
   SetCount(FCount + 1);
   Result := FItems[FCount - 1];
 end;
-
 function TZConditionalAreas.Add(ColumnNum, RowNum, AreaWidth, AreaHeight: Integer): TZConditionalAreaItem;
 begin
   Result := Add();
@@ -5265,7 +4806,6 @@ begin
   Result.Width := AreaWidth;
   Result.Height := AreaHeight;
 end;
-
 procedure TZConditionalAreas.Assign(Source: TPersistent);
 var
   t: TZConditionalAreas;
@@ -5281,7 +4821,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
 procedure TZConditionalAreas.Delete(num: Integer);
 var
   t: TZConditionalAreaItem;
@@ -5296,7 +4835,6 @@ begin
     Count := Count - 1;
   end;
 end;
-
 // Определяет, находится ли ячейка в области
 // INPUT
 // ColumnNum: integer  - номер столбца ячейки
@@ -5321,7 +4859,6 @@ begin
     end;
   end;
 end;
-
 function TZConditionalAreas.IsEqual(Source: TPersistent): Boolean;
 var
   t: TZConditionalAreas;
@@ -5339,15 +4876,12 @@ begin
     Result := true;
   end;
 end;
-
 /// /::::::::::::: TConditionalFormatting :::::::::::::::::////
-
 constructor TZConditionalFormatting.Create();
 begin
   FCount := 0;
   SetLength(FStyles, 0);
 end;
-
 destructor TZConditionalFormatting.Destroy();
 var
   i: Integer;
@@ -5359,7 +4893,6 @@ begin
   FStyles := nil;
   inherited;
 end;
-
 procedure TZConditionalFormatting.SetCount(Value: Integer);
 var
   i: Integer;
@@ -5381,26 +4914,22 @@ begin
     FCount := Value;
   end;
 end;
-
 function TZConditionalFormatting.Add(): TZConditionalStyle;
 begin
   Result := Add(nil);
 end;
-
 function TZConditionalFormatting.GetItem(num: Integer): TZConditionalStyle;
 begin
   Result := nil;
   if (num >= 0) and (num < Count) then
     Result := FStyles[num];
 end;
-
 procedure TZConditionalFormatting.SetItem(num: Integer; Value: TZConditionalStyle);
 begin
   if (num >= 0) and (num < Count) then
     if Assigned(Value) then
       FStyles[num].Assign(Value);
 end;
-
 function TZConditionalFormatting.Add(Style: TZConditionalStyle): TZConditionalStyle;
 begin
   Count := Count + 1;
@@ -5408,7 +4937,6 @@ begin
   if Assigned(Style) then
     Result.Assign(Style);
 end;
-
 // Добавить условное форматирование с областью
 // INPUT
 // ColumnNum: integer  - номер колонки
@@ -5428,12 +4956,10 @@ begin
   t.Width := AreaWidth;
   t.Height := AreaHeight;
 end;
-
 procedure TZConditionalFormatting.Clear();
 begin
   SetCount(0);
 end;
-
 // Delete condition formatting item
 // INPUT
 // num: integer - number of CF item
@@ -5452,7 +4978,6 @@ begin
     Dec(FCount);
   end;
 end;
-
 procedure TZConditionalFormatting.Assign(Source: TPersistent);
 var
   t: TZConditionalFormatting;
@@ -5468,7 +4993,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
 function TZConditionalFormatting.IsEqual(Source: TPersistent): Boolean;
 var
   t: TZConditionalFormatting;
@@ -5486,9 +5010,7 @@ begin
     Result := true;
   end;
 end;
-
 /// /::::::::::::: TZECommonFrameAncestor :::::::::::::::::////
-
 constructor TZECommonFrameAncestor.Create();
 begin
   FX := 0;
@@ -5497,7 +5019,6 @@ begin
   FHeight := 10;
   FTransform := TZETransform.Create();
 end;
-
 constructor TZECommonFrameAncestor.Create(AX, AY, AWidth, AHeight: Integer);
 begin
   FX := AX;
@@ -5506,13 +5027,11 @@ begin
   FHeight := AHeight;
   FTransform := TZETransform.Create();
 end;
-
 destructor TZECommonFrameAncestor.Destroy();
 begin
   FreeAndNil(FTransform);
   inherited;
 end;
-
 function TZECommonFrameAncestor.IsEqual(const Source: TPersistent): Boolean;
 var
   tmp: TZECommonFrameAncestor;
@@ -5526,7 +5045,6 @@ begin
       Result := FTransform.IsEqual(tmp.Transform);
   end;
 end;
-
 procedure TZECommonFrameAncestor.Assign(Source: TPersistent);
 var
   b: Boolean;
@@ -5535,7 +5053,6 @@ begin
   b := Assigned(Source);
   if b then
     b := Source is TZECommonFrameAncestor;
-
   if b then
   begin
     tmp := Source as TZECommonFrameAncestor;
@@ -5548,40 +5065,32 @@ begin
   else
     inherited Assign(Source);
 end;
-
 procedure TZECommonFrameAncestor.SetHeight(Value: Integer);
 begin
   FHeight := Value;
 end;
-
 procedure TZECommonFrameAncestor.SetTransform(const Value: TZETransform);
 begin
   if Assigned(Value) then
     FTransform.Assign(Value);
 end;
-
 procedure TZECommonFrameAncestor.SetWidth(Value: Integer);
 begin
   FWidth := Value;
 end;
-
 procedure TZECommonFrameAncestor.SetX(Value: Integer);
 begin
   FX := Value;
 end;
-
 procedure TZECommonFrameAncestor.SetY(Value: Integer);
 begin
   FY := Value;
 end;
-
 /// /::::::::::::: TZETransform :::::::::::::::::////
-
 constructor TZETransform.Create();
 begin
   Clear();
 end;
-
 procedure TZETransform.Assign(Source: TPersistent);
 var
   b: Boolean;
@@ -5590,7 +5099,6 @@ begin
   b := Assigned(Source);
   if b then
     b := Source is TZETransform;
-
   if b then
   begin
     tmp := Source as TZETransform;
@@ -5605,7 +5113,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
 procedure TZETransform.Clear();
 begin
   FRotate := 0;
@@ -5616,7 +5123,6 @@ begin
   FTranslateX := 0;
   FTranslateY := 0;
 end;
-
 function TZETransform.IsEqual(const Source: TPersistent): Boolean;
 var
   tmp: TZETransform;
@@ -5624,7 +5130,6 @@ begin
   Result := Assigned(Source);
   if (Result) then
     Result := Source is TZETransform;
-
   if (Result) then
   begin
     tmp := Source as TZETransform;
@@ -5632,9 +5137,7 @@ begin
       (FSkewY = tmp.SkewY) and (FTranslateX = tmp.TranslateX) and (FTranslateY = tmp.TranslateY);
   end;
 end;
-
 /// /::::::::::::: TZEChartRangeItem :::::::::::::::::////
-
 constructor TZEChartRangeItem.Create();
 begin
   FSheetNum := -1;
@@ -5643,7 +5146,6 @@ begin
   FWidth := 1;
   FHeight := 1;
 end;
-
 constructor TZEChartRangeItem.Create(ASheetNum: Integer; ACol, ARow, AWidth, AHeight: Integer);
 begin
   FSheetNum := ASheetNum;
@@ -5652,7 +5154,6 @@ begin
   FWidth := AWidth;
   FHeight := AHeight;
 end;
-
 procedure TZEChartRangeItem.Assign(Source: TPersistent);
 var
   tmp: TZEChartRangeItem;
@@ -5672,11 +5173,9 @@ begin
       FHeight := tmp.Height;
     end;
   end;
-
   if not b then
     inherited Assign(Source);
 end;
-
 function TZEChartRangeItem.IsEqual(const Source: TPersistent): Boolean;
 var
   tmp: TZEChartRangeItem;
@@ -5693,33 +5192,27 @@ begin
     end;
   end;
 end;
-
 /// /::::::::::::: TZEChartRange :::::::::::::::::////
-
 constructor TZEChartRange.Create();
 begin
   FCount := 0;
 end;
-
 destructor TZEChartRange.Destroy();
 begin
   Clear();
   inherited;
 end;
-
 function TZEChartRange.GetItem(num: Integer): TZEChartRangeItem;
 begin
   Result := nil;
   if (num >= 0) and (num < FCount) then
     Result := FItems[num];
 end;
-
 procedure TZEChartRange.SetItem(num: Integer; const Value: TZEChartRangeItem);
 begin
   if (num >= 0) and (num < FCount) then
     FItems[num].Assign(Value);
 end;
-
 function TZEChartRange.Add(): TZEChartRangeItem;
 begin
   SetLength(FItems, FCount + 1);
@@ -5727,14 +5220,12 @@ begin
   FItems[FCount] := Result;
   Inc(FCount);
 end;
-
 function TZEChartRange.Add(const ItemForClone: TZEChartRangeItem): TZEChartRangeItem;
 begin
   Result := Add();
   if Assigned(ItemForClone) then
     Result.Assign(ItemForClone);
 end;
-
 function TZEChartRange.Delete(num: Integer): Boolean;
 var
   i: Integer;
@@ -5749,7 +5240,6 @@ begin
     SetLength(FItems, FCount);
   end;
 end;
-
 procedure TZEChartRange.Clear();
 var
   i: Integer;
@@ -5759,7 +5249,6 @@ begin
   FCount := 0;
   SetLength(FItems, 0);
 end;
-
 procedure TZEChartRange.Assign(Source: TPersistent);
 var
   tmp: TZEChartRange;
@@ -5788,16 +5277,13 @@ begin
         FCount := tmp.Count;
         SetLength(FItems, FCount);
       end;
-
       for i := 0 to FCount - 1 do
         FItems[i].Assign(tmp.Items[i]);
     end;
   end;
-
   if not b then
     inherited Assign(Source);
 end;
-
 function TZEChartRange.IsEqual(const Source: TPersistent): Boolean;
 var
   tmp: TZEChartRange;
@@ -5821,9 +5307,7 @@ begin
     end;
   end;
 end;
-
 /// /::::::::::::: TZEChartTitleItem :::::::::::::::::////
-
 constructor TZEChartTitleItem.Create();
 begin
   FFont := TZFont.Create();
@@ -5831,13 +5315,11 @@ begin
   FRotationAngle := 0;
   FIsDisplay := true;
 end;
-
 destructor TZEChartTitleItem.Destroy();
 begin
   FreeAndNil(FFont);
   inherited;
 end;
-
 procedure TZEChartTitleItem.Assign(Source: TPersistent);
 var
   tmp: TZEChartTitleItem;
@@ -5850,18 +5332,15 @@ begin
     if (b) then
     begin
       tmp := Source as TZEChartTitleItem;
-
       FFont.Assign(tmp.Font);
       FText := tmp.Text;
       FRotationAngle := tmp.RotationAngle;
       FIsDisplay := tmp.IsDisplay;
     end;
   end;
-
   if (not b) then
     inherited Assign(Source);
 end;
-
 function TZEChartTitleItem.IsEqual(const Source: TPersistent): Boolean;
 var
   tmp: TZEChartTitleItem;
@@ -5881,28 +5360,23 @@ begin
     end;
   end;
 end;
-
 procedure TZEChartTitleItem.SetFont(const Value: TZFont);
 begin
   if (Assigned(Value)) then
     FFont.Assign(Value);
 end;
-
 /// /::::::::::::: TZEChartLegend :::::::::::::::::////
-
 constructor TZEChartLegend.Create();
 begin
   inherited;
   FPosition := ZELegendStart;
   FAlign := ZELegendAlignCenter;
 end;
-
 procedure TZEChartLegend.Assign(Source: TPersistent);
 var
   tmp: TZEChartLegend;
 begin
   inherited Assign(Source);
-
   if Assigned(Source) and (Source is TZEChartLegend) then
   begin
     tmp := Source as TZEChartLegend;
@@ -5910,7 +5384,6 @@ begin
     FPosition := tmp.Position;
   end;
 end;
-
 function TZEChartLegend.IsEqual(const Source: TPersistent): Boolean;
 var
   tmp: TZEChartLegend;
@@ -5926,9 +5399,7 @@ begin
     end;
   end;
 end;
-
 /// /::::::::::::: TZEChartAxis :::::::::::::::::////
-
 constructor TZEChartAxis.Create();
 begin
   inherited;
@@ -5939,7 +5410,6 @@ begin
   FAutoScaleMin := true;
   FAutoScaleMax := true;
 end;
-
 procedure TZEChartAxis.Assign(Source: TPersistent);
 var
   tmp: TZEChartAxis;
@@ -5956,7 +5426,6 @@ begin
     FAutoScaleMax := tmp.AutoScaleMax;
   end
 end;
-
 function TZEChartAxis.IsEqual(const Source: TPersistent): Boolean;
 var
   tmp: TZEChartAxis;
@@ -5981,19 +5450,15 @@ begin
     end;
   end;
 end;
-
 /// /::::::::::::: TZEChartSettings :::::::::::::::::////
-
 constructor TZEChartSettings.Create();
 begin
   FJapanCandle := true;
 end;
-
 destructor TZEChartSettings.Destroy();
 begin
   inherited;
 end;
-
 procedure TZEChartSettings.Assign(Source: TPersistent);
 var
   tmp: TZEChartSettings;
@@ -6012,7 +5477,6 @@ begin
   if (not b) then
     inherited Assign(Source);
 end;
-
 function TZEChartSettings.IsEqual(const Source: TPersistent): Boolean;
 var
   tmp: TZEChartSettings;
@@ -6028,9 +5492,7 @@ begin
     end;
   end;
 end;
-
 /// /::::::::::::: TZEChartSeries :::::::::::::::::////
-
 constructor TZEChartSeries.Create();
 begin
   FChartType := ZEChartTypeBar;
@@ -6040,20 +5502,17 @@ begin
   FSeriesNameCol := -1;
   FRanges := TZEChartRange.Create();
 end;
-
 destructor TZEChartSeries.Destroy();
 begin
   FreeAndNil(FRanges);
   inherited;
 end;
-
 procedure TZEChartSeries.Assign(Source: TPersistent);
 var
   tmp: TZEChartSeries;
   b: Boolean;
 begin
   b := Assigned(Source);
-
   if (b) then
   begin
     b := Source is TZEChartSeries;
@@ -6068,11 +5527,9 @@ begin
       FRanges.Assign(tmp.Ranges);
     end;
   end;
-
   if (not b) then
     inherited Assign(Source);
 end;
-
 function TZEChartSeries.IsEqual(const Source: TPersistent): Boolean;
 var
   tmp: TZEChartSeries;
@@ -6095,9 +5552,7 @@ begin
       Result := FRanges.IsEqual(tmp.Ranges);
   end;
 end;
-
 /// /::::::::::::: TZEChart :::::::::::::::::////
-
 procedure TZEChart.CommonInit();
 begin
   FTitle := TZEChartTitleItem.Create();
@@ -6114,7 +5569,6 @@ begin
   FView3D := false;
   FViewDeep := false;
 end;
-
 constructor TZEChart.Create(AX, AY, AWidth, AHeight: Integer);
 begin
   inherited;
@@ -6124,13 +5578,11 @@ begin
   Width := AWidth;
   Height := AHeight;
 end;
-
 constructor TZEChart.Create();
 begin
   inherited;
   CommonInit();
 end;
-
 destructor TZEChart.Destroy();
 begin
   FreeAndNil(FSubtitle);
@@ -6143,10 +5595,8 @@ begin
   FreeAndNil(FSecondaryAxisX);
   FreeAndNil(FSecondaryAxisY);
   FreeAndNil(FSecondaryAxisZ);
-
   inherited;
 end;
-
 function TZEChart.IsEqual(const Source: TPersistent): Boolean;
 var
   tmp: TZEChart;
@@ -6156,7 +5606,6 @@ begin
   begin
     tmp := Source as TZEChart;
     Result := inherited IsEqual(Source);
-
     if (Result) then
       Result := FSubtitle.IsEqual(tmp.Subtitle) and FTitle.IsEqual(tmp.Title) and FLegend.IsEqual(tmp.Legend) and
         FAxisX.IsEqual(tmp.AxisX) and FAxisY.IsEqual(tmp.AxisY) and FAxisZ.IsEqual(tmp.AxisZ) and
@@ -6164,67 +5613,56 @@ begin
         FSecondaryAxisZ.IsEqual(tmp.SecondaryAxisZ) and (FView3D = tmp.View3D) and (FViewDeep = tmp.ViewDeep);
   end;
 end;
-
 procedure TZEChart.SetAxisX(const Value: TZEChartAxis);
 begin
   if (Assigned(Value)) then
     FAxisX.Assign(Value);
 end;
-
 procedure TZEChart.SetAxisY(const Value: TZEChartAxis);
 begin
   if (Assigned(Value)) then
     FAxisY.Assign(Value);
 end;
-
 procedure TZEChart.SetAxisZ(const Value: TZEChartAxis);
 begin
   if (Assigned(Value)) then
     FAxisZ.Assign(Value);
 end;
-
 procedure TZEChart.SetSecondaryAxisX(const Value: TZEChartAxis);
 begin
   if (Assigned(Value)) then
     FSecondaryAxisX.Assign(Value);
 end;
-
 procedure TZEChart.SetSecondaryAxisY(const Value: TZEChartAxis);
 begin
   if (Assigned(Value)) then
     FSecondaryAxisY.Assign(Value);
 end;
-
 procedure TZEChart.SetSecondaryAxisZ(const Value: TZEChartAxis);
 begin
   if (Assigned(Value)) then
     FSecondaryAxisZ.Assign(Value);
 end;
-
 procedure TZEChart.SetFooter(const Value: TZEChartTitleItem);
 begin
   if (Assigned(Value)) then
     FFooter.Assign(Value);
 end;
-
 procedure TZEChart.SetLegend(const Value: TZEChartLegend);
 begin
   if (Assigned(Value)) then
     FLegend.Assign(Value);
 end;
-
 procedure TZEChart.SetSubtitle(const Value: TZEChartTitleItem);
 begin
   if (Assigned(Value)) then
     FSubtitle.Assign(Value);
 end;
-
 procedure TZEChart.SetTitle(const Value: TZEChartTitleItem);
 begin
   if (Assigned(Value)) then
     FTitle.Assign(Value);
 end;
-
 procedure TZEChart.Assign(Source: TPersistent);
 var
   tmp: TZEChart;
@@ -6246,21 +5684,17 @@ begin
     FViewDeep := tmp.ViewDeep;
   end;
 end;
-
 /// /::::::::::::: TZEChartStore :::::::::::::::::////
-
 constructor TZEChartStore.Create();
 begin
   FCount := 0;
   SetLength(FItems, 0);
 end;
-
 destructor TZEChartStore.Destroy();
 begin
   Clear();
   inherited;
 end;
-
 function TZEChartStore.Add(): TZEChart;
 begin
   Result := TZEChart.Create();
@@ -6268,13 +5702,11 @@ begin
   FItems[FCount] := Result;
   Inc(FCount);
 end;
-
 function TZEChartStore.Add(const ItemForClone: TZEChart): TZEChart;
 begin
   Result := Add();
   Result.Assign(ItemForClone);
 end;
-
 procedure TZEChartStore.Assign(Source: TPersistent);
 var
   tmp: TZEChartStore;
@@ -6288,7 +5720,6 @@ begin
     if (b) then
     begin
       tmp := Source as TZEChartStore;
-
       if (FCount > tmp.Count) then
       begin
         for i := tmp.Count to FCount - 1 do
@@ -6302,16 +5733,13 @@ begin
           FItems[i] := TZEChart.Create();
       end;
       FCount := tmp.Count;
-
       for i := 0 to FCount - 1 do
         FItems[i].Assign(tmp[i]);
     end;
   end;
-
   if (not b) then
     inherited Assign(Source);
 end;
-
 function TZEChartStore.Delete(num: Integer): Boolean;
 var
   i: Integer;
@@ -6326,7 +5754,6 @@ begin
     SetLength(FItems, FCount);
   end;
 end;
-
 procedure TZEChartStore.Clear();
 var
   i: Integer;
@@ -6336,20 +5763,17 @@ begin
   FCount := 0;
   SetLength(FItems, 0);
 end;
-
 function TZEChartStore.GetItem(num: Integer): TZEChart;
 begin
   Result := nil;
   if ((num >= 0) and (num < FCount)) then
     Result := FItems[num];
 end;
-
 procedure TZEChartStore.SetItem(num: Integer; const Value: TZEChart);
 begin
   if ((num >= 0) and (num < FCount)) then
     FItems[num].Assign(Value);
 end;
-
 function TZEChartStore.IsEqual(const Source: TPersistent): Boolean;
 var
   tmp: TZEChartStore;
@@ -6373,9 +5797,7 @@ begin
     end;
   end;
 end;
-
 /// /::::::::::::: TZEPicture :::::::::::::::::////
-
 procedure TZEPicture.Assign(Source: TPersistent);
 var
   tmp: TZEPicture;
@@ -6384,7 +5806,6 @@ begin
   if Assigned(Source) and (Source is TZEPicture) then
   begin
     tmp := Source as TZEPicture;
-
     FId := tmp.FId;
     FRelId := tmp.FRelId;
     FTitle := tmp.Title;
@@ -6408,7 +5829,6 @@ begin
     FSheet := tmp.FSheet;
   end;
 end;
-
 procedure TZEPicture.CommonInit();
 begin
   FId := 0;
@@ -6419,30 +5839,25 @@ begin
   FCol := 0;
   FCellAnchor := ZACell;
 end;
-
 constructor TZEPicture.Create(ASheet: TZSheet);
 begin
   inherited Create;
   FSheet := ASheet;
   CommonInit();
 end;
-
 destructor TZEPicture.Destroy;
 begin
   FSheet := nil;
   inherited;
 end;
-
 function TZEPicture.GetImage: TBytes;
 begin
   Result := FSheet.WorkBook.MediaList[Self.RelId - 1].Content;
 end;
-
 procedure TZEPicture.SetImage(const Value: TBytes);
 begin
   // FSheet.WorkBook.MediaList
 end;
-
 function TZEPicture.IsEqual(const Source: TPersistent): Boolean;
 var
   tmp: TZEPicture;
@@ -6456,33 +5871,27 @@ begin
           // TODO: compare filename/streams
   end;
 end;
-
 { TZEDrawing }
-
 procedure TZEDrawing.Clear;
 begin
   FItems.Clear();
 end;
-
 constructor TZEDrawing.Create(ASheet: TZSheet);
 begin
   inherited Create;
   FItems := TObjectList.Create(true);
   FSheet := ASheet;
 end;
-
 procedure TZEDrawing.Delete(idx: Integer);
 begin
   FItems.Delete(idx);
 end;
-
 destructor TZEDrawing.Destroy();
 begin
   FItems.Clear();
   FItems.Free();
   inherited;
 end;
-
 procedure TZEDrawing.Assign(Source: TPersistent);
 var
   tmp: TZEDrawing;
@@ -6501,11 +5910,9 @@ begin
         Add.Assign(TZEPicture(tmp.FItems[i]));
     end;
   end;
-
   if not b then
     inherited Assign(Source);
 end;
-
 function TZEDrawing.Add(ARow, ACol: Integer; APicture: TBytes): TZEPicture;
 begin
   Result := TZEPicture.Create(FSheet);
@@ -6516,34 +5923,28 @@ begin
   Result.Col := ACol;
   Result.CellAnchor := ZACell;
 end;
-
 function TZEDrawing.Add: TZEPicture;
 begin
   Result := TZEPicture.Create(FSheet);
   Result.CellAnchor := ZACell;
   FItems.Add(Result);
 end;
-
 function TZEDrawing.GetCount: Integer;
 begin
   Result := FItems.Count;
 end;
-
 function TZEDrawing.GetIsEmpty(): Boolean;
 begin
   Result := FItems.Count = 0;
 end;
-
 function TZEDrawing.GetItem(idx: Integer): TZEPicture;
 begin
   Result := TZEPicture(FItems[idx]);
 end;
-
 procedure TZEDrawing.SetItem(idx: Integer; const Value: TZEPicture);
 begin
   TZEPicture(FItems[idx]).Assign(Value);
 end;
-
 { TZRange }
 procedure TZRange.Assign(Source: TZRange);
 var
@@ -6556,14 +5957,11 @@ begin
   if Source is TZRange then
   begin
     Src := TZRange(Source);
-
     // resize columns or rows if need
     if FSheet.RowCount <= Max(Src.FBottom, FBottom) then
       FSheet.RowCount := Max(Src.FBottom, FBottom);
-
     if FSheet.ColCount <= Max(Src.FRight, FRight) then
       FSheet.ColCount := Max(Src.FRight, FRight);
-
     Style := TZStyle.Create();
     try
       // copy cells and styles
@@ -6585,7 +5983,6 @@ begin
     finally
       Style.Free();
     end;
-
     // remove cross merges
     for Id := FSheet.MergeCells.Count - 1 downto 0 do
     begin
@@ -6593,7 +5990,6 @@ begin
         FTop + (Src.FBottom - Src.FTop)) then
         FSheet.MergeCells.DeleteItem(Id);
     end;
-
     // copy and reloc merges
     for Id := 0 to Src.FSheet.MergeCells.Count - 1 do
     begin
@@ -6606,7 +6002,6 @@ begin
     end;
   end;
 end;
-
 constructor TZRange.Create(ASheet: TZSheet; ALeft, ATop, ARight, ABottom: Integer);
 begin
   FSheet := ASheet;
@@ -6615,7 +6010,6 @@ begin
   FRight := ARight;
   FBottom := ABottom;
 end;
-
 destructor TZRange.Destroy;
 begin
   FSheet := nil;
@@ -6625,12 +6019,10 @@ begin
   FBottom := 0;
   inherited;
 end;
-
 function TZRange.HasStyle: Boolean;
 begin
   Result := FSheet.Cell[FLeft, FTop].FCellStyle > -1;
 end;
-
 procedure TZRange.Merge();
 var
   i: Integer;
@@ -6642,7 +6034,6 @@ begin
   end;
   FSheet.MergeCells.AddRectXY(FLeft, FTop, FRight, FBottom);
 end;
-
 procedure TZRange.SetBorderAround(borderWidth: Byte; BorderColor: TColor = TColorRec.Black; BorderStyle: TZBorderType = TZBorderType.ZEContinuous);
 var
   Row, Col: Integer;
@@ -6689,7 +6080,6 @@ begin
     end;
   end;
 end;
-
 procedure TZRange.ApplyStyleValue(proc: TProc<TZStyle>);
 var
   Col, Row, Id: Integer;
@@ -6706,9 +6096,7 @@ begin
           Style.Assign(FSheet.FStore.Styles[Id])
         else if (FSheet.FStore.Styles.Count > 0) then
           Style.Assign(FSheet.FStore.Styles[0]);
-
         proc(Style);
-
         Id := FSheet.FStore.Styles.Add(Style, true);
         FSheet.Cell[Col, Row].CellStyle := Id;
       finally
@@ -6717,7 +6105,6 @@ begin
     end;
   end;
 end;
-
 procedure TZRange.Clear();
 var
   Col, Row: Integer;
@@ -6733,119 +6120,102 @@ begin
     end;
   end;
 end;
-
 function TZRange.GetBgColor(): TColor;
 begin
   Result := 0;
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].BgColor;
 end;
-
 function TZRange.GetBorderColor(num: TZBordersPos): TColor;
 begin
   Result := 0;
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].Border[num].Color;
 end;
-
 function TZRange.GetBordersStyle(): TZBorderType;
 begin
   Result := TZBorderType.ZENone;
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].Border[bpLeft].LineStyle;
 end;
-
 function TZRange.GetBordersWidht(): Byte;
 begin
   Result := 0;
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].Border[bpLeft].Weight;
 end;
-
 function TZRange.GetBordersColor(): TColor;
 begin
   Result := 0;
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].Border[bpLeft].Color;
 end;
-
 function TZRange.GetBorderStyle(num: TZBordersPos): TZBorderType;
 begin
   Result := TZBorderType.ZENone;
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].Border[num].LineStyle;
 end;
-
 function TZRange.GetBorderWidht(num: TZBordersPos): Byte;
 begin
   Result := 0;
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].Border[num].Weight;
 end;
-
 function TZRange.GetFontColor(): TColor;
 begin
   Result := 0;
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].Font.Color;
 end;
-
 function TZRange.GetFontSize(): Double;
 begin
   Result := 0;
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].Font.Size;
 end;
-
 function TZRange.GetFontStyle(): TFontStyles;
 begin
   Result := [];
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].Font.Style;
 end;
-
 function TZRange.GetHorizontalAlignment(): TZHorizontalAlignment;
 begin
   Result := TZHorizontalAlignment.ZHAutomatic;
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].Alignment.Horizontal;
 end;
-
 function TZRange.GetNumberFormat(): string;
 begin
   Result := '';
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].NumberFormat;
 end;
-
 function TZRange.GetRotate(): TZCellTextRotate;
 begin
   Result := 0;
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].Alignment.Rotate;
 end;
-
 function TZRange.GetVerticalAlignment(): TZVerticalAlignment;
 begin
   Result := TZVerticalAlignment.ZVAutomatic;
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].Alignment.Vertical;
 end;
-
 function TZRange.GetVerticalText(): Boolean;
 begin
   Result := false;
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].Alignment.VerticalText;
 end;
-
 function TZRange.GetWrapText(): Boolean;
 begin
   Result := false;
   if HasStyle then
     Result := FSheet.FStore.FStyles[FSheet.Cell[FLeft, FTop].FCellStyle].Alignment.WrapText;
 end;
-
 procedure TZRange.SetBgColor(const Value: TColor);
 begin
   ApplyStyleValue(
@@ -6854,7 +6224,6 @@ begin
       Style.BgColor := Value;
     end);
 end;
-
 procedure TZRange.SetBorderColor(num: TZBordersPos; const Value: TColor);
 begin
   ApplyStyleValue(
@@ -6863,7 +6232,6 @@ begin
       Style.Border[num].Color := Value;
     end);
 end;
-
 procedure TZRange.SetBorderStyle(num: TZBordersPos; const Value: TZBorderType);
 begin
   ApplyStyleValue(
@@ -6872,7 +6240,6 @@ begin
       Style.Border[num].LineStyle := Value;
     end);
 end;
-
 procedure TZRange.SetBorderWidht(num: TZBordersPos; const Value: Byte);
 begin
   ApplyStyleValue(
@@ -6881,7 +6248,6 @@ begin
       Style.Border[num].Weight := Value;
     end);
 end;
-
 procedure TZRange.SetBordersColor(const Value: TColor);
 var
   Style: TZStyle;
@@ -6905,7 +6271,6 @@ begin
     Style.Free();
   end;
 end;
-
 procedure TZRange.SetBordersStyle(const Value: TZBorderType);
 var
   Style: TZStyle;
@@ -6929,7 +6294,6 @@ begin
     Style.Free();
   end;
 end;
-
 procedure TZRange.SetBordersWidht(const Value: Byte);
 var
   Style: TZStyle;
@@ -6953,7 +6317,6 @@ begin
     Style.Free();
   end;
 end;
-
 procedure TZRange.SetFontColor(const Value: TColor);
 begin
   ApplyStyleValue(
@@ -6962,7 +6325,6 @@ begin
       Style.Font.Color := Value;
     end);
 end;
-
 procedure TZRange.SetFontSize(const Value: Double);
 begin
   ApplyStyleValue(
@@ -6971,7 +6333,6 @@ begin
       Style.Font.Size := Value;
     end);
 end;
-
 procedure TZRange.SetFontStyle(const Value: TFontStyles);
 begin
   ApplyStyleValue(
@@ -6980,7 +6341,6 @@ begin
       Style.Font.Style := Value;
     end);
 end;
-
 procedure TZRange.SetHorizontalAlignment(const Value: TZHorizontalAlignment);
 begin
   ApplyStyleValue(
@@ -6989,7 +6349,6 @@ begin
       Style.Alignment.Horizontal := Value;
     end);
 end;
-
 procedure TZRange.SetNumberFormat(const Value: string);
 begin
   ApplyStyleValue(
@@ -6998,7 +6357,6 @@ begin
       Style.NumberFormat := Value;
     end);
 end;
-
 procedure TZRange.SetRotate(const Value: TZCellTextRotate);
 begin
   ApplyStyleValue(
@@ -7007,7 +6365,6 @@ begin
       Style.Alignment.Rotate := Value;
     end);
 end;
-
 procedure TZRange.SetVerticalAlignment(const Value: TZVerticalAlignment);
 begin
   ApplyStyleValue(
@@ -7016,7 +6373,6 @@ begin
       Style.Alignment.Vertical := Value;
     end);
 end;
-
 procedure TZRange.SetVerticalText(const Value: Boolean);
 begin
   ApplyStyleValue(
@@ -7025,7 +6381,6 @@ begin
       Style.Alignment.VerticalText := Value;
     end);
 end;
-
 procedure TZRange.SetWrapText(const Value: Boolean);
 begin
   ApplyStyleValue(
@@ -7034,14 +6389,11 @@ begin
       Style.Alignment.WrapText := Value;
     end);
 end;
-
 { TRichText }
-
 constructor TRichText.Create();
 begin
   FList := TList<TRichString>.Create();
 end;
-
 destructor TRichText.Destroy();
 var
   i: Integer;
@@ -7051,7 +6403,6 @@ begin
   FList.Clear();
   FList.Free();
 end;
-
 function TRichText.Equals(Obj: TObject): Boolean;
 var
   i: Integer;
@@ -7060,14 +6411,12 @@ begin
   begin
     if Self.FList.Count <> ((Obj as TRichText).List.Count) then
       exit(false);
-
     for i := 0 to Self.FList.Count - 1 do
       if not Self.FList[i].Equals((Obj as TRichText).FList[i]) then
         exit(false);
   end;
   Result := true;
 end;
-
 procedure TRichText.Assign(Source: TPersistent);
 var
   i: Integer;
@@ -7079,25 +6428,20 @@ begin
       FList.Add(TRichText(Source).FList[i]);
   end;
 end;
-
 function TRichText.GetHashCode(): Integer;
 var
   i: Integer;
 begin
-
   Result := 17;
   for i := 0 to FList.Count - 1 do
     Result := Result * 23 + FList[i].GetHashCode();
 end;
-
 { TRichString }
-
 destructor TRichString.Destroy();
 begin
   if Assigned(FFont) then
     FFont.Free();
 end;
-
 function TRichString.Equals(Obj: TObject): Boolean;
 begin
   if Assigned(Obj) and (Obj is TRichString) then
@@ -7111,7 +6455,6 @@ begin
   end;
   Result := true;
 end;
-
 procedure TRichString.Assign(Source: TPersistent);
 begin
   if Source is TRichString then
@@ -7121,7 +6464,6 @@ begin
       FFont.Assign(TRichString(Source).FFont);
   end;
 end;
-
 function TRichString.GetHashCode(): Integer;
 begin
   Result := 17;
@@ -7129,27 +6471,21 @@ begin
   if Assigned(FFont) then
     Result := Result * 23 + FFont.GetHashCode();
 end;
-
 { TRichTextComparer }
-
 function TRichTextComparer.Equals(const left, right: TRichText): Boolean;
 begin
   Result := Assigned(left) and Assigned(right) and left.Equals(right);
 end;
-
 function TRichTextComparer.GetHashCode(const Value: TRichText): Integer;
 begin
   Result := Value.GetHashCode();
 end;
-
 { TZExcelColor }
-
 class operator TZExcelColor.Equal(const ALeft, ARight: TZExcelColor): Boolean;
 begin
   Result := (ALeft.RGB = ARight.RGB) and (ALeft.Indexed = ARight.Indexed) and (ALeft.Theme = ARight.Theme) and
     SameValue(ALeft.Tint, ARight.Tint);
 end;
-
 procedure TZExcelColor.Load(const ARgb, AIndexed, ATheme, ATint: string);
 begin
   Indexed := StrToIntDef(ARgb, 0);
@@ -7160,15 +6496,12 @@ begin
   else
     RGB := ARGBToColor(ARgb);
 end;
-
 class operator TZExcelColor.NotEqual(const ALeft, ARight: TZExcelColor): Boolean;
 begin
   Result := not((ALeft.RGB = ARight.RGB) and (ALeft.Indexed = ARight.Indexed) and (ALeft.Theme = ARight.Theme) and
     SameValue(ALeft.Tint, ARight.Tint));
 end;
-
 { TZMegeCell }
-
 constructor TZMergeArea.Create(ALeft, ATop, ARight, ABottom: Integer);
 begin
   Top := ATop;
@@ -7176,10 +6509,7 @@ begin
   right := ARight;
   Bottom := ABottom;
 end;
-
 initialization
-
 invariantFormatSertting := TFormatSettings.Create();
 invariantFormatSertting.DecimalSeparator := '.';
-
 end.

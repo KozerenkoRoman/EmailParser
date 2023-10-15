@@ -145,10 +145,9 @@ var
   Node: PVirtualNode;
 begin
   inherited;
-  TGeneral.XMLParams.Open;
+  TGeneral.XMLParams.EraseSection('Sorter');
+  TGeneral.XMLParams.CurrentSection := 'Sorter';
   try
-    TGeneral.XMLParams.EraseSection('Sorter');
-    TGeneral.XMLParams.CurrentSection := 'Sorter';
     Node := vstTree.GetFirst;
     while Assigned(Node) do
     begin

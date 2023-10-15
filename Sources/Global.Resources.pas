@@ -19,9 +19,8 @@ resourcestring
   C_SECTION_DEBUG     = 'Debug';
 
   //Files
-  C_SQLITE_DB_FILE        = 'EmailParser.db';
-  C_XML_PARAMS_FILE       = 'EmailParser.xml';
-
+  C_SQLITE_DB_FILE    = 'EmailParser.db';
+  C_XML_PARAMS_FILE   = 'EmailParser.xml';
 
 implementation
 

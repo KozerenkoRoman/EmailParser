@@ -155,27 +155,24 @@ var
   CurrNode   : PVirtualNode;
   Node       : PVirtualNode;
   DataEmail  : PEmail;
-  RegExpList : TArrayRecord<TRegExpData>;
 begin
   vstTree.BeginUpdate;
   try
     while (C_FIXED_COLUMNS < vstTree.Header.Columns.Count) do
       vstTree.Header.Columns.Delete(C_FIXED_COLUMNS);
 
-    RegExpList := TGeneral.GetRegExpParametersList;
-
     Node := vstTree.RootNode.FirstChild;
     while Assigned(Node) do
     begin
       DataEmail := Node^.GetData;
-      DataEmail^.Matches.Count := RegExpList.Count;
+      DataEmail^.Matches.Count := TGeneral.PatternList.Count;
       if (Node.ChildCount > 0) then
       begin
         CurrNode := Node.FirstChild;
         while Assigned(CurrNode) do
         begin
           DataEmail := CurrNode^.GetData;
-          DataEmail^.Matches.Count := RegExpList.Count;
+          DataEmail^.Matches.Count := TGeneral.PatternList.Count;
           CurrNode := CurrNode.NextSibling;
         end;
       end;
@@ -184,7 +181,7 @@ begin
 
     for var ResultData in TGeneral.EmailList.Values do
     begin
-      ResultData.Matches.Count := RegExpList.Count;
+      ResultData.Matches.Count := TGeneral.PatternList.Count;
       if Assigned(ResultData.OwnerNode) then
         if (ResultData.OwnerNode.ChildCount > 0) then
         begin
@@ -192,16 +189,16 @@ begin
           while Assigned(CurrNode) do
           begin
             DataEmail := CurrNode^.GetData;
-            DataEmail^.Matches.Count := RegExpList.Count;
+            DataEmail^.Matches.Count := TGeneral.PatternList.Count;
             CurrNode := CurrNode.NextSibling;
           end;
         end;
     end;
 
-    for var item in RegExpList do
+    for var item in TGeneral.PatternList do
     begin
       Column := vstTree.Header.Columns.Add;
-      Column.Text             := item.ParameterName;
+      Column.Text             := item^.ParameterName;
       Column.CaptionAlignment := taCenter;
       Column.Alignment        := taLeftJustify;
       Column.Width            := 100;

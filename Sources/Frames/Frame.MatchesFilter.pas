@@ -67,7 +67,7 @@ implementation
 constructor TframeMatchesFilter.Create(AOwner: TComponent);
 begin
   inherited;
-  vstTree.NodeDataSize := SizeOf(TRegExpData);
+  vstTree.NodeDataSize := SizeOf(TPatternData);
   TPublishers.ConfigPublisher.Subscribe(Self);
 end;
 
@@ -111,17 +111,14 @@ procedure TframeMatchesFilter.LoadFromXML;
 
   procedure LoadNode;
   var
-    arrParams : TArrayRecord<TRegExpData>;
-    Data      : PRegExpData;
-    NewNode   : PVirtualNode;
+    Data    : PPatternData;
+    NewNode : PVirtualNode;
   begin
-    inherited;
-    arrParams := TGeneral.GetRegExpParametersList;
-    for var Param in arrParams do
+    for var Item in TGeneral.PatternList do
     begin
       NewNode := vstTree.AddChild(nil);
       Data    := NewNode.GetData;
-      Data^   := Param;
+      Data^.Assign(Item^);
       vstTree.CheckType[NewNode] := ctCheckBox;
       NewNode.CheckState := csCheckedNormal
     end;
@@ -129,7 +126,6 @@ procedure TframeMatchesFilter.LoadFromXML;
 
 begin
   inherited;
-  TGeneral.XMLParams.Open;
   vstTree.BeginUpdate;
   try
     vstTree.Clear;
@@ -152,25 +148,25 @@ end;
 
 procedure TframeMatchesFilter.vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
 var
-  Data: PRegExpData;
+  Data: PPatternData;
 begin
   Data := Node^.GetData;
-  TargetCanvas.Brush.Color := Data.Color;
+  TargetCanvas.Brush.Color := Data^.Color;
   TargetCanvas.FillRect(CellRect);
 end;
 
 procedure TframeMatchesFilter.vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
-  Data: PRegExpData;
+  Data: PPatternData;
 begin
   inherited;
   Data := Node.GetData;
-  Data.UseRawText := Node.CheckState = csCheckedNormal;
+  Data^.UseRawText := Node.CheckState = csCheckedNormal;
 end;
 
 procedure TframeMatchesFilter.vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
-  Data: PRegExpData;
+  Data: PPatternData;
 begin
   inherited;
   Data := Node^.GetData;
@@ -180,11 +176,11 @@ end;
 
 procedure TframeMatchesFilter.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
-  Data: PRegExpData;
+  Data: PPatternData;
 begin
   inherited;
   CellText := '';
-  Data := Sender.GetNodeData(Node);
+  Data := Node^.GetData;
   case Column of
     COL_PARAM_NAME:
       CellText := Data^.ParameterName;

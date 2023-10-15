@@ -24,6 +24,7 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
     TreeOptions.AutoOptions = [toAutoSort, toAutoTristateTracking, toAutoChangeScale]
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowRoot, toShowTreeLines, toShowVertGridLines, toThemeAware, toUseBlendedSelection, toShowFilteredNodes]
     OnCompareNodes = vstTreeCompareNodes
+    OnDblClick = vstTreeDblClick
     OnGetText = vstTreeGetText
     OnPaintText = vstTreePaintText
     ExplicitTop = 78

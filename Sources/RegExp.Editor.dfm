@@ -64,6 +64,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       Align = alTop
       MultiLine = True
       TabOrder = 0
+      ExplicitWidth = 472
       object tsRegularExpression: TTabSheet
         Caption = 'Regular Expression'
         object pnlTemplateName: TPanel
@@ -74,6 +75,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 0
+          ExplicitWidth = 464
           DesignSize = (
             468
             27)
@@ -99,6 +101,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
             ParentColor = True
             TabOrder = 0
             OnCloseUp = cbSetOfTemplatesCloseUp
+            ExplicitWidth = 367
           end
         end
         object edRegEx: TMemo
@@ -113,6 +116,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
           PopupMenu = pmMemo
           ScrollBars = ssVertical
           TabOrder = 1
+          ExplicitWidth = 458
         end
       end
       object tsAhoCorasick: TTabSheet
@@ -147,7 +151,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       860
       42)
     object btnCancel: TBitBtn
-      Left = 629
+      Left = 625
       Top = 1
       Width = 110
       Height = 40
@@ -164,10 +168,10 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 2
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 625
+      ExplicitLeft = 621
     end
     object btnOk: TBitBtn
-      Left = 741
+      Left = 737
       Top = 1
       Width = 110
       Height = 40
@@ -184,7 +188,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 1
       ParentFont = False
       TabOrder = 1
-      ExplicitLeft = 737
+      ExplicitLeft = 733
     end
   end
   object tbPattern: TToolBar
@@ -245,6 +249,8 @@ inherited frmRegExpEditor: TfrmRegExpEditor
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitLeft = 484
+    ExplicitHeight = 529
     object gbOptions: TGroupBox
       AlignWithMargins = True
       Left = 3
@@ -331,6 +337,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       Align = alClient
       Caption = 'Results'
       TabOrder = 1
+      ExplicitHeight = 375
       object tvResults: TTreeView
         Left = 2
         Top = 19

@@ -26,12 +26,11 @@ type
     FIsBreak          : Boolean;
     FIsQuiet          : Boolean;
     FPathList         : TParamPathArray;
-    FRegExpList       : TRegExpArray;
     FSorterPathList   : TSorterPathArray;
     FUserDefinedDir   : string;
     function GetAttchmentPath(const aFileName: TFileName): string;
     function GetEXIFInfo(const aFileName: TFileName): string;
-    function GetRegExpCollection(const aText, aPattern: string; const aGroupIndex: Integer = 0): TStringArray;
+    function GetMatchCollection(const aText: string; const aPatternData: PPatternData): TStringArray;
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     function GetWordText(const aFileName: TFileName): string;
     function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
@@ -97,7 +96,6 @@ end;
 
 procedure TPerformer.FillStartParameters;
 begin
-  FRegExpList       := TGeneral.GetRegExpParametersList;
   FPathList         := TGeneral.GetPathList;
   FSorterPathList   := TGeneral.GetSorterPathList;
   FUserDefinedDir   := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
@@ -116,9 +114,9 @@ begin
   sb := TStringBuilder.Create;
   try
     sb.AppendLine('<b>RegExp list</b>');
-    for var item in FRegExpList.Items do
-      sb.AppendFormat('%s [%d]: %s', [item.ParameterName, item.GroupIndex, item.RegExpTemplate]).AppendLine;
-    if (FRegExpList.Count = 0) then
+    for var item in TGeneral.PatternList do
+      sb.AppendFormat('%s [%d]: %s', [item.ParameterName, item.GroupIndex, item.Pattern]).AppendLine;
+    if (TGeneral.PatternList.Count = 0) then
     begin
       Result := False;
       FailedText := TLang.Lang.Translate('RegExpIsEmpty') + sLineBreak;
@@ -145,7 +143,7 @@ begin
     sb.AppendLine('<b>Sorter list</b>');
     for var item in FSorterPathList.Items do
     begin
-      sb.Append(item.Path).AppendLine;
+      sb.Append(item.Mask).Append(': ').Append(item.Path).AppendLine;
       if not TDirectory.Exists(item.Path) then
       begin
         Result := False;
@@ -322,7 +320,7 @@ begin
             LogWriter.Write(ddWarning, Self, 'FileSearch', 'Duplicate file - ' + Attachment^.ShortName);
             Inc(FFromDBCount);
           end;
-          Attachment^.Matches.Count := FRegExpList.Count;
+          Attachment^.Matches.Count := TGeneral.PatternList.Count;
           Attachment^.Hash       := Hash;
           Attachment^.ParentHash := '';
           Attachment^.ParentName := '';
@@ -383,14 +381,14 @@ begin
         begin
           LogWriter.Write(ddText, Self, 'RefreshAttachment', 'Attachment name - ' + Attachment^.ShortName);
           Inc(FCount);
-          Attachment^.Matches.Count := FRegExpList.Count;
+          Attachment^.Matches.Count := TGeneral.PatternList.Count;
           if Attachment^.ParsedText.IsEmpty then
             Attachment^.ParsedText := TDaMod.GetAttachmentAsRawText(Attachment^.Hash);
 {$IFDEF DETAILED_LOG}
           LogWriter.Write(ddText, Self, 'RefreshAttachment', 'Attachment file name - ' + Attachment^.FileName);
 {$ENDIF DETAILED_LOG}
           for var j := 0 to Attachment^.Matches.Count - 1 do
-            Attachment^.Matches[j] := GetRegExpCollection(Attachment^.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
+            Attachment^.Matches[j] := GetMatchCollection(Attachment^.ParsedText, TGeneral.PatternList[j]);
           Attachment^.LengthAlignment;
           TPublishers.ProgressPublisher.CompletedAttach(Attachment);
           TPublishers.ProgressPublisher.Progress;
@@ -502,7 +500,7 @@ begin
     Data^.Hash          := Hash;
     Data^.ShortName     := TPath.GetFileNameWithoutExtension(aFileName);
     Data^.FileName      := aFileName;
-    Data^.Matches.Count := FRegExpList.Count;
+    Data^.Matches.Count := TGeneral.PatternList.Count;
     TGeneral.EmailList.AddOrSetValue(Hash, Data);
 
     MailMessage := TclMailMessage.Create(nil);
@@ -566,11 +564,11 @@ begin
       TTask.Create(
         procedure()
         begin
-          for var i := 0 to FRegExpList.Count - 1 do
-            if FRegExpList[i].UseRawText then
-              Data^.Matches[i] := GetRegExpCollection(Data^.Subject + sLineBreak + Data^.Body, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex)
+          for var i := 0 to TGeneral.PatternList.Count - 1 do
+            if TGeneral.PatternList[i].UseRawText then
+              Data^.Matches[i] := GetMatchCollection(Data^.Subject + sLineBreak + Data^.Body, TGeneral.PatternList[i])
             else
-              Data^.Matches[i] := GetRegExpCollection(Data^.Subject + sLineBreak + Data^.ParsedText, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex);
+              Data^.Matches[i] := GetMatchCollection(Data^.Subject + sLineBreak + Data^.ParsedText, TGeneral.PatternList[i]);
 
           DoCopyAttachmentFiles(Data);
           DoDeleteAttachmentFiles(Data);
@@ -599,9 +597,9 @@ begin
   if Assigned(aData) then
   begin
     LogWriter.Write(ddText, Self, 'DoParseResultData', aData^.ShortName);
-    aData^.Matches.Count := FRegExpList.Count;
-    for var i := 0 to FRegExpList.Count - 1 do
-      if FRegExpList[i].UseRawText then
+    aData^.Matches.Count := TGeneral.PatternList.Count;
+    for var i := 0 to TGeneral.PatternList.Count - 1 do
+      if TGeneral.PatternList[i].UseRawText then
       begin
 {$IFDEF DETAILED_LOG}
         LogWriter.Write(ddText, Self, 'DoParseResultData', 'GetBodyAsRawText Before');
@@ -612,8 +610,8 @@ begin
 {$ENDIF DETAILED_LOG}
         Break;
       end;
-    for var i := 0 to FRegExpList.Count - 1 do
-      if not FRegExpList[i].UseRawText then
+    for var i := 0 to TGeneral.PatternList.Count - 1 do
+      if not TGeneral.PatternList[i].UseRawText then
       begin
 {$IFDEF DETAILED_LOG}
         LogWriter.Write(ddText, Self, 'DoParseResultData', 'GetBodyAsParsedText Before');
@@ -633,11 +631,11 @@ begin
 {$IFDEF DETAILED_LOG}
         LogWriter.Write(ddText, Self, 'DoParseResultData', 'TTask0 Email file name - ' + aData^.ShortName);
 {$ENDIF DETAILED_LOG}
-        for var i := 0 to FRegExpList.Count - 1 do
-          if FRegExpList[i].UseRawText then
-            aData^.Matches[i] := GetRegExpCollection(TextRaw, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex)
+        for var i := 0 to TGeneral.PatternList.Count - 1 do
+          if TGeneral.PatternList[i].UseRawText then
+            aData^.Matches[i] := GetMatchCollection(TextRaw, TGeneral.PatternList[i])
           else
-            aData^.Matches[i] := GetRegExpCollection(TextPlan, FRegExpList[i].RegExpTemplate, FRegExpList[i].GroupIndex);
+            aData^.Matches[i] := GetMatchCollection(TextPlan, TGeneral.PatternList[i]);
       end).Start;
 
     Tasks[1] := TTask.Create(
@@ -647,14 +645,14 @@ begin
         for var i := 0 to aData^.Attachments.Count - 1 do
           if TGeneral.AttachmentList.TryGetValue(aData^.Attachments[i], Attachment) then
           begin
-            Attachment^.Matches.Count := FRegExpList.Count;
+            Attachment^.Matches.Count := TGeneral.PatternList.Count;
             if Attachment^.ParsedText.IsEmpty then
               Attachment^.ParsedText := TDaMod.GetAttachmentAsRawText(Attachment^.Hash);
 {$IFDEF DETAILED_LOG}
             LogWriter.Write(ddText, Self, 'DoParseResultData', 'TTask1 Attachment file name - ' + Attachment^.ShortName);
 {$ENDIF DETAILED_LOG}
             for var j := 0 to Attachment^.Matches.Count - 1 do
-              Attachment^.Matches[j] := GetRegExpCollection(Attachment^.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
+              Attachment^.Matches[j] := GetMatchCollection(Attachment^.ParsedText, TGeneral.PatternList[j]);
             Attachment^.LengthAlignment;
             TPublishers.ProgressPublisher.CompletedAttach(Attachment);
           end;
@@ -687,7 +685,7 @@ begin
   begin
     if TGeneral.AttachmentList.TryGetValue(aData.Attachments[i], Attachment) then
       try
-        Attachment.Matches.Count := FRegExpList.Count;
+        Attachment.Matches.Count := TGeneral.PatternList.Count;
         Ext := TPath.GetExtension(Attachment.FileName).ToLower;
         case TFileUtils.GetSignature(Attachment.FileName) of
           fsPDF:
@@ -815,8 +813,8 @@ begin
         LogWriter.Write(ddText, Self, 'DoParseAttachmentFiles', 'Attachment file name - ' + Attachment^.FileName);
 {$ENDIF DETAILED_LOG}
         if not Attachment.ParsedText.IsEmpty then
-          for var j := 0 to FRegExpList.Count - 1 do
-            Attachment.Matches[j] := GetRegExpCollection(Attachment.ParsedText, FRegExpList[j].RegExpTemplate, FRegExpList[j].GroupIndex);
+          for var j := 0 to TGeneral.PatternList.Count - 1 do
+            Attachment.Matches[j] := GetMatchCollection(Attachment.ParsedText, TGeneral.PatternList[j]);
         Attachment.LengthAlignment;
         TPublishers.ProgressPublisher.CompletedAttach(Attachment);
         if Assigned(aProgressProc) then
@@ -856,7 +854,7 @@ begin
       Attachment^.ParentName  := aData^.ShortName;
       Attachment^.ContentID   := Body.ContentID;
       Attachment^.ContentType := Body.ContentType;
-      Attachment^.Matches.Count := FRegExpList.Count;
+      Attachment^.Matches.Count := TGeneral.PatternList.Count;
       TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
       aData^.Attachments.AddUnique(Attachment^.Hash);
     end;
@@ -995,7 +993,11 @@ begin
   if TFile.Exists(TPath.Combine(Path, 'document.xml')) then
   begin
     XmlText := TFile.ReadAllText(TPath.Combine(Path, 'document.xml'), TEncoding.UTF8);
-    resArray := GetRegExpCollection(XmlText, C_PATTERN, 1);
+    var PatternData: TPatternData;
+    PatternData.Pattern     := C_PATTERN;
+    PatternData.GroupIndex  := 1;
+    PatternData.TypePattern := TTypePattern.tpRegularExpression;
+    resArray := GetMatchCollection(XmlText, @PatternData);
     for var item in resArray do
       if item.Trim.Equals('w:p') then
         Result := Concat(Result, sLineBreak)
@@ -1016,10 +1018,12 @@ end;
 
 function TPerformer.GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
 var
-  Attachment : PAttachment;
-  FileName   : string;
-  WorkBook   : TZWorkBook;
-  ParsedText : string;
+  Attachment  : PAttachment;
+  FileName    : string;
+  WorkBook    : TZWorkBook;
+  ParsedText  : string;
+  RowText     : string;
+  RowNotEmpty : Boolean;
 begin
   Result := '';
   WorkBook := TZWorkBook.Create(nil);
@@ -1032,19 +1036,25 @@ begin
           ParsedText := '';
           for var row := 0 to WorkBook.Sheets[i].RowCount - 1 do
           begin
+            RowText := '';
+            RowNotEmpty := False;
             for var col := 0 to WorkBook.Sheets[i].ColCount - 1 do
-              ParsedText := Concat(ParsedText, '"', WorkBook.Sheets[i].Cell[col, row].AsString.Replace('"', '""'), '";');
-            ParsedText := Concat(ParsedText, sLineBreak);
+            begin
+              RowNotEmpty := RowNotEmpty or WorkBook.Sheets[i].Cell[col, row].AsString.IsEmpty;
+              RowText := Concat(RowText, '"', WorkBook.Sheets[i].Cell[col, row].AsString.Replace('"', '""'), '";');
+            end;
+            if RowNotEmpty then
+              ParsedText := Concat(ParsedText, RowText, sLineBreak);
           end;
           FileName := Concat(TPath.GetFileNameWithoutExtension(aFileName), '\', WorkBook.Sheets[i].Title);
           New(Attachment);
           Attachment^.ParsedText    := ParsedText;
-          Attachment^.FileName      := aFileName;
+          Attachment^.FileName      := FileName; //aFileName;
           Attachment^.ShortName     := FileName;
           Attachment^.Hash          := THashSHA1.GetHashString(ParsedText);
           Attachment^.ParentHash    := aData^.Hash;
           Attachment^.ParentName    := aData^.ShortName;
-          Attachment^.Matches.Count := FRegExpList.Count;
+          Attachment^.Matches.Count := TGeneral.PatternList.Count;
           Attachment^.FromZip       := True;
           Attachment^.ContentType   := 'text/sheet';
           Attachment^.ImageIndex    := TExtIcon.eiXls.ToByte;
@@ -1099,7 +1109,7 @@ begin
           Attachment^.ShortName     := FileName;
           Attachment^.ParentHash    := aData^.Hash;
           Attachment^.ParentName    := aData^.ShortName;
-          Attachment^.Matches.Count := FRegExpList.Count;
+          Attachment^.Matches.Count := TGeneral.PatternList.Count;
           Attachment^.FromZip       := True;
           TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
           aData^.Attachments.AddUnique(Attachment^.Hash);
@@ -1193,7 +1203,7 @@ begin
             Attachment^.ShortName     := FileName;
             Attachment^.ParentHash    := aData^.Hash;
             Attachment^.ParentName    := aData^.ShortName;
-            Attachment^.Matches.Count := FRegExpList.Count;
+            Attachment^.Matches.Count := TGeneral.PatternList.Count;
             Attachment^.FromZip       := True;
             TGeneral.AttachmentList.TryAdd(Attachment^.Hash, Attachment);
             aData^.Attachments.AddUnique(Attachment^.Hash);
@@ -1209,34 +1219,68 @@ begin
   end;
 end;
 
-function TPerformer.GetRegExpCollection(const aText, aPattern: string; const aGroupIndex: Integer): TStringArray;
-var
-  GroupIndex : Integer;
-  Matches    : TMatchCollection;
-  RegExpr    : TRegEx;
+function TPerformer.GetMatchCollection(const aText: string; const aPatternData: PPatternData): TStringArray;
+
+  function GetRegExpCollection: TStringArray;
+  var
+    GroupIndex: Integer;
+    Matches: TMatchCollection;
+    RegExpr: TRegEx;
+  begin
+    RegExpr := TRegEx.Create(aPatternData.Pattern);
+    Matches := RegExpr.Matches(aText, aPatternData.Pattern);
+    Result.Count := Matches.Count;
+    for var i := 0 to Matches.Count - 1 do
+    begin
+      if (aPatternData.GroupIndex <= 0) then
+        GroupIndex := 0
+      else if (aPatternData.GroupIndex > Matches.item[i].Groups.Count - 1) then
+        GroupIndex := Matches.item[i].Groups.Count - 1
+      else
+        GroupIndex := aPatternData.GroupIndex;
+      Result[i] := Matches.item[i].Groups[GroupIndex].Value;
+    end;
+  end;
+
+  function GetAhoCorasickCollection: TStringArray;
+  var
+    ResList: TStringList;
+  begin
+    if not Assigned(aPatternData.AhoCorasickObj) then
+    begin
+      aPatternData.AhoCorasickObj := TAhoCorasick.Create;
+      var arrValue := aPatternData.Pattern.Split([#13#10]);
+      for var i := Low(arrValue) to High(arrValue) do
+        if not arrValue[i].Trim.IsEmpty then
+          aPatternData.AhoCorasickObj.AddPattern(arrValue[i].Trim);
+      aPatternData.AhoCorasickObj.Build;
+    end;
+
+    ResList := aPatternData.AhoCorasickObj.Search(aText);
+    try
+      Result.Count := ResList.Count;
+      for var i := 0 to ResList.Count - 1 do
+        Result[i] := ResList[i];
+    finally
+      FreeAndNil(ResList);
+    end;
+  end;
+
 begin
+{$IFDEF DETAILED_LOG}
+  LogWriter.Write(ddEnterMethod, Self, 'GetRegExpCollection', aPatternData.Pattern);
+{$ENDIF DETAILED_LOG}
   Result := TStringArray.Create(0);
   if aText.IsEmpty then
     Exit;
-  if aPattern.IsEmpty then
+  if aPatternData.Pattern.IsEmpty then
     Exit;
 
-{$IFDEF DETAILED_LOG}
-  LogWriter.Write(ddEnterMethod, Self, 'GetRegExpCollection', aPattern);
-{$ENDIF DETAILED_LOG}
-
-  RegExpr := TRegEx.Create(aPattern);
-  Matches := RegExpr.Matches(aText, aPattern);
-  Result.Count := Matches.Count;
-  for var i := 0 to Matches.Count - 1 do
-  begin
-    if (aGroupIndex <= 0) then
-      GroupIndex := 0
-    else if (aGroupIndex > Matches.Item[i].Groups.Count - 1) then
-      GroupIndex := Matches.Item[i].Groups.Count - 1
-    else
-      GroupIndex := aGroupIndex;
-    Result[i] := Matches.Item[i].Groups[GroupIndex].Value;
+  case aPatternData.TypePattern of
+    tpRegularExpression:
+      Result := GetRegExpCollection;
+    tpAhoCorasick:
+      Result := GetAhoCorasickCollection;
   end;
 
 {$IFDEF DETAILED_LOG}

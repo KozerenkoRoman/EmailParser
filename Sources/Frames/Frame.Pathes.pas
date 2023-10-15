@@ -116,10 +116,9 @@ var
   Node: PVirtualNode;
 begin
   inherited;
-  TGeneral.XMLParams.Open;
+  TGeneral.XMLParams.EraseSection('Path');
+  TGeneral.XMLParams.CurrentSection := 'Path';
   try
-    TGeneral.XMLParams.EraseSection('Path');
-    TGeneral.XMLParams.CurrentSection := 'Path';
     Node := vstTree.GetFirst;
     while Assigned(Node) do
     begin

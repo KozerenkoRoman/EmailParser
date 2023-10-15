@@ -281,7 +281,7 @@ inherited frmMain: TfrmMain
         end
         inherited tbSettings: TToolBar
           Width = 734
-          ExplicitWidth = 734
+          ExplicitWidth = 372
         end
       end
     end
@@ -325,7 +325,7 @@ inherited frmMain: TfrmMain
           ExplicitHeight = 291
           inherited tbMain: TToolBar
             Width = 724
-            ExplicitWidth = 724
+            ExplicitWidth = 720
           end
           inherited vstTree: TVirtualStringTree
             Width = 724
@@ -357,7 +357,7 @@ inherited frmMain: TfrmMain
           ExplicitHeight = 212
           inherited tbMain: TToolBar
             Width = 730
-            ExplicitWidth = 730
+            ExplicitWidth = 726
           end
           inherited vstTree: TVirtualStringTree
             Width = 730
@@ -479,8 +479,8 @@ inherited frmMain: TfrmMain
               Control = frameSettings.edtNumberOfDays
               Row = 8
             end>
-          ExplicitWidth = 730
-          ExplicitHeight = 510
+          ExplicitWidth = 372
+          ExplicitHeight = 339
           inherited edtMaxSize: TNumberBox
             ExplicitTop = 251
           end
@@ -609,7 +609,7 @@ inherited frmMain: TfrmMain
         end
         inherited tbFileSearch: TToolBar
           Width = 734
-          ExplicitWidth = 734
+          ExplicitWidth = 372
           inherited btnFileSearch: TToolButton
             Wrap = True
           end
