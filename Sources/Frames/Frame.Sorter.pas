@@ -37,8 +37,6 @@ type
     COL_INFO        = 3;
 
     C_IDENTITY_NAME = 'frameSorter';
-  private
-    procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
     function GetIdentityName: string; override;
     procedure SaveToXML; override;
@@ -49,7 +47,6 @@ type
     procedure Translate; override;
     procedure Initialize; override;
     procedure Deinitialize; override;
-    procedure SearchText(const aText: string); override;
   end;
 
 implementation
@@ -300,33 +297,6 @@ begin
       Data^.Info := NewText;
     COL_MASK:
       Data^.Mask := NewText;
-  end;
-end;
-
-procedure TframeSorter.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
-var
-  CellText: string;
-begin
-//  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
-  Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
-end;
-
-procedure TframeSorter.SearchText(const aText: string);
-var
-  Node: PVirtualNode;
-begin
-  inherited;
-  vstTree.BeginUpdate;
-  vstTree.FullExpand(nil);
-  try
-    Node := vstTree.IterateSubtree(nil, SearchForText, Pointer(aText));
-    if Assigned(Node) then
-    begin
-      vstTree.FocusedNode := Node;
-      vstTree.Selected[Node] := True;
-    end;
-  finally
-    vstTree.EndUpdate;
   end;
 end;
 

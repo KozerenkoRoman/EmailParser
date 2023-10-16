@@ -183,6 +183,7 @@ type
     class procedure NoHibernate; static;
     class procedure Initialize; static;
     class var
+      ActiveFrame    : TFrame;
       AttachmentList : TAttachmentList;
       EmailList      : TEmailList;
       PasswordList   : TPasswordList;

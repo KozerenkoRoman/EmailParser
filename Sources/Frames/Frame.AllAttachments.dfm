@@ -56,7 +56,6 @@ inherited frameAllAttachments: TframeAllAttachments
     OnBeforeCellPaint = vstTreeBeforeCellPaint
     OnCompareNodes = vstTreeCompareNodes
     OnDblClick = aOpenParsedTextExecute
-    OnGetText = vstTreeGetText
     OnPaintText = vstTreePaintText
     OnGetImageIndex = vstTreeGetImageIndex
     ExplicitTop = 78

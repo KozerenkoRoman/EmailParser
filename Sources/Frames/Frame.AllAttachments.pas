@@ -85,10 +85,8 @@ type
     procedure CompletedAttach(const aAttachment: PAttachment);
 
     procedure UpdateColumns;
-    procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
     function GetIdentityName: string; override;
-    procedure SearchText(const aText: string); override;
     procedure SaveToXML; override;
     procedure LoadFromXML; override;
   public
@@ -220,6 +218,14 @@ begin
     begin
       if TFile.Exists(Data^.FileName) then
         TFileUtils.ShellOpen(Data^.FileName)
+      else if Data^.FromZip then
+      begin
+        Data := TGeneral.AttachmentList.GetItem(Data^.ParentHash);
+        if Assigned(Data) and TFile.Exists(Data^.FileName) then
+          TFileUtils.ShellOpen(Data^.FileName)
+        else
+          TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+      end
       else
         TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
     end;
@@ -446,33 +452,6 @@ begin
         COL_PARSED_TEXT:
           CellText := Data^.ParsedText;
       end;
-  end;
-end;
-
-procedure TframeAllAttachments.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
-var
-  CellText: string;
-begin
-  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
-  Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
-end;
-
-procedure TframeAllAttachments.SearchText(const aText: string);
-var
-  Node: PVirtualNode;
-begin
-  inherited;
-  vstTree.BeginUpdate;
-  vstTree.FullExpand(nil);
-  try
-    Node := vstTree.IterateSubtree(nil, SearchForText, Pointer(aText));
-    if Assigned(Node) then
-    begin
-      vstTree.FocusedNode    := Node;
-      vstTree.Selected[Node] := True;
-    end;
-  finally
-    vstTree.EndUpdate;
   end;
 end;
 

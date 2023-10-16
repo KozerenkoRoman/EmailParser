@@ -262,10 +262,8 @@ end;
 procedure TfrmMain.srchBoxInvokeSearch(Sender: TObject);
 begin
   inherited;
-//  if pnlCard.ActiveCard = crdPathsToFindScripts then
-//    framePathes.SearchText(srchBox.Text)
-//  else
-//    frameRegExpParameters.SearchText(srchBox.Text);
+  if Assigned(TGeneral.ActiveFrame) and (TGeneral.ActiveFrame is TframeSource) then
+    TframeSource(TGeneral.ActiveFrame).SearchText(srchBox.Text);
 end;
 
 procedure TfrmMain.ClearTree;

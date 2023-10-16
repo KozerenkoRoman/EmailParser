@@ -39,7 +39,6 @@ type
     C_IDENTITY_NAME = 'frameMatchesFilter';
   private
     procedure FillRegExpColumns;
-    procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
 
     //IConfig
     procedure IConfig.UpdateRegExp = LoadFromXML;
@@ -55,7 +54,6 @@ type
     procedure Initialize; override;
     procedure Deinitialize; override;
     procedure Translate; override;
-    procedure SearchText(const aText: string); override;
   end;
 
 implementation
@@ -184,33 +182,6 @@ begin
   case Column of
     COL_PARAM_NAME:
       CellText := Data^.ParameterName;
-  end;
-end;
-
-procedure TframeMatchesFilter.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
-var
-  CellText: string;
-begin
-  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
-  Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
-end;
-
-procedure TframeMatchesFilter.SearchText(const aText: string);
-var
-  Node: PVirtualNode;
-begin
-  inherited;
-  vstTree.BeginUpdate;
-  vstTree.FullExpand(nil);
-  try
-    Node := vstTree.IterateSubtree(nil, SearchForText, Pointer(aText));
-    if Assigned(Node) then
-    begin
-      vstTree.FocusedNode := Node;
-      vstTree.Selected[Node] := True;
-    end;
-  finally
-    vstTree.EndUpdate;
   end;
 end;
 

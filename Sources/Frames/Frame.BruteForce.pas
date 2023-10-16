@@ -63,7 +63,6 @@ type
     FBreak : Boolean;
     procedure BruteForceProcess(aData: PPassword);
     procedure OnPasswordListChange(Sender: TObject; const Item: PPassword; Action: TCollectionNotification);
-    procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
     function GetIdentityName: string; override;
     procedure SaveToXML; override;
@@ -74,7 +73,6 @@ type
     procedure Initialize; override;
     procedure Deinitialize; override;
     procedure Translate; override;
-    procedure SearchText(const aText: string); override;
   end;
 
 implementation
@@ -346,33 +344,6 @@ begin
       COL_HASH:
         CellText := Data^.Hash;
     end;
-end;
-
-procedure TframeBruteForce.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
-var
-  CellText: string;
-begin
-  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
-  Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
-end;
-
-procedure TframeBruteForce.SearchText(const aText: string);
-var
-  Node: PVirtualNode;
-begin
-  inherited;
-  vstTree.BeginUpdate;
-  vstTree.FullExpand(nil);
-  try
-    Node := vstTree.IterateSubtree(nil, SearchForText, Pointer(aText));
-    if Assigned(Node) then
-    begin
-      vstTree.FocusedNode := Node;
-      vstTree.Selected[Node] := True;
-    end;
-  finally
-    vstTree.EndUpdate;
-  end;
 end;
 
 procedure TframeBruteForce.aSaveExecute(Sender: TObject);

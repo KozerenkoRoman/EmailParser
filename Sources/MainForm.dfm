@@ -215,18 +215,18 @@ inherited frmMain: TfrmMain
       end
     end
     object pnlSrchBox: TPanel
-      Left = 798
+      Left = 689
       Top = 0
-      Width = 188
+      Width = 297
       Height = 41
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitLeft = 794
+      ExplicitLeft = 685
       object srchBox: TSearchBox
-        Left = 16
+        Left = 3
         Top = 8
-        Width = 162
+        Width = 286
         Height = 25
         AutoSize = False
         Ctl3D = True
@@ -270,18 +270,18 @@ inherited frmMain: TfrmMain
         ExplicitHeight = 550
         inherited tbMain: TToolBar
           Width = 734
-          ExplicitWidth = 738
+          ExplicitWidth = 734
         end
         inherited vstTree: TVirtualStringTree
           Width = 734
           Height = 468
-          ExplicitWidth = 738
-          ExplicitHeight = 469
+          ExplicitWidth = 734
+          ExplicitHeight = 468
           DefaultText = ''
         end
         inherited tbSettings: TToolBar
           Width = 734
-          ExplicitWidth = 372
+          ExplicitWidth = 734
         end
       end
     end
@@ -388,7 +388,7 @@ inherited frmMain: TfrmMain
         ExplicitHeight = 550
         inherited tbMain: TToolBar
           Width = 734
-          ExplicitWidth = 730
+          ExplicitWidth = 734
         end
         inherited grdCommonParams: TGridPanel
           Width = 734
@@ -479,8 +479,8 @@ inherited frmMain: TfrmMain
               Control = frameSettings.edtNumberOfDays
               Row = 8
             end>
-          ExplicitWidth = 372
-          ExplicitHeight = 339
+          ExplicitWidth = 734
+          ExplicitHeight = 511
           inherited edtMaxSize: TNumberBox
             ExplicitTop = 251
           end
@@ -534,11 +534,11 @@ inherited frmMain: TfrmMain
                 ExplicitWidth = 718
                 inherited wbBody: TWebBrowser
                   Width = 718
-                  ExplicitWidth = 722
+                  ExplicitWidth = 718
                   ControlData = {
                     4C000000354A0000D71900000000000000000000000000000000000000000000
                     000000004C000000000000000000000001000000E0D057007335CF11AE690800
-                    2B2E126202000000000000004C0000000114020000000000C000000000000046
+                    2B2E12620A000000000000004C0000000114020000000000C000000000000046
                     8000000000000000000000000000000000000000000000000000000000000000
                     00000000000000000100000000000000000000000000000000000000}
                 end
@@ -598,18 +598,18 @@ inherited frmMain: TfrmMain
         ExplicitHeight = 550
         inherited tbMain: TToolBar
           Width = 734
-          ExplicitWidth = 738
+          ExplicitWidth = 734
         end
         inherited vstTree: TVirtualStringTree
           Width = 734
           Height = 472
-          ExplicitWidth = 738
-          ExplicitHeight = 473
+          ExplicitWidth = 734
+          ExplicitHeight = 472
           DefaultText = ''
         end
         inherited tbFileSearch: TToolBar
           Width = 734
-          ExplicitWidth = 372
+          ExplicitWidth = 734
           inherited btnFileSearch: TToolButton
             Wrap = True
           end
@@ -665,18 +665,18 @@ inherited frmMain: TfrmMain
         ExplicitHeight = 550
         inherited tbMain: TToolBar
           Width = 734
-          ExplicitWidth = 738
+          ExplicitWidth = 734
         end
         inherited vstTree: TVirtualStringTree
           Width = 734
           Height = 468
-          ExplicitWidth = 738
-          ExplicitHeight = 469
+          ExplicitWidth = 734
+          ExplicitHeight = 468
           DefaultText = ''
         end
         inherited tbSettings: TToolBar
           Width = 734
-          ExplicitWidth = 738
+          ExplicitWidth = 734
         end
       end
     end

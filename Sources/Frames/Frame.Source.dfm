@@ -1,6 +1,7 @@
 inherited frameSource: TframeSource
   Width = 551
   Height = 284
+  OnEnter = FrameEnter
   ExplicitWidth = 551
   ExplicitHeight = 284
   inherited tbMain: TToolBar
@@ -98,6 +99,7 @@ inherited frameSource: TframeSource
     OnMeasureItem = vstTreeMeasureItem
     Touch.InteractiveGestures = [igPan, igPressAndTap]
     Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
+    ExplicitTop = 47
     Columns = <>
     DefaultText = ''
   end

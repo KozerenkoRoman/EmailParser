@@ -43,7 +43,7 @@ begin
   Sender.Header.MinHeight   := C_HEIGHT;
   Sender.Header.Font.Height := -13;
   Sender.Header.Options     := [hoColumnResize, hoDblClickResize, hoDrag, hoShowHint, hoShowImages, hoShowSortGlyphs, hoVisible, hoHeaderClickAutoSort];
-  Sender.TreeOptions.AutoOptions      := Sender.TreeOptions.AutoOptions + [toDisableAutoscrollOnFocus, toAutoDropExpand, toAutoTristateTracking, toAutoChangeScale];
+  Sender.TreeOptions.AutoOptions      := Sender.TreeOptions.AutoOptions + [{toDisableAutoscrollOnFocus, toAutoScroll,} toAutoDropExpand, toAutoTristateTracking, toAutoChangeScale];
   Sender.TreeOptions.MiscOptions      := Sender.TreeOptions.MiscOptions + [toAcceptOLEDrop, toCheckSupport, toGridExtensions, toInitOnSave, toToggleOnDblClick, toWheelPanning, toEditOnClick];
   Sender.TreeOptions.PaintOptions     := Sender.TreeOptions.PaintOptions + [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowTreeLines, toShowVertGridLines, toThemeAware, toShowBackground];
   Sender.TreeOptions.SelectionOptions := Sender.TreeOptions.SelectionOptions + [toExtendedFocus, toAlwaysSelectNode] - [toFullRowSelect];

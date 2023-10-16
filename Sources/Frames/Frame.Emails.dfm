@@ -65,7 +65,6 @@ inherited frameEmails: TframeEmails
     OnDblClick = aOpenEmailExecute
     OnEditing = vstTreeEditing
     OnFocusChanging = vstTreeFocusChanging
-    OnGetText = vstTreeGetText
     OnPaintText = vstTreePaintText
     ExplicitWidth = 752
     ExplicitHeight = 307

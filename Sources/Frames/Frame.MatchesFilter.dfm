@@ -118,7 +118,6 @@ inherited frameMatchesFilter: TframeMatchesFilter
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowTreeLines, toShowVertGridLines, toThemeAware, toFullVertGridLines, toUseBlendedSelection, toShowFilteredNodes]
     OnBeforeCellPaint = vstTreeBeforeCellPaint
     OnChecked = vstTreeChecked
-    OnGetText = vstTreeGetText
     ExplicitTop = 22
     ExplicitWidth = 606
     ExplicitHeight = 243
@@ -128,7 +127,7 @@ inherited frameMatchesFilter: TframeMatchesFilter
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 0
         Text = 'Name'
-        Width = 602
+        Width = 606
       end>
     DefaultText = ''
   end

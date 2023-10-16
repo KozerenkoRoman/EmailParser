@@ -6,7 +6,6 @@ inherited frameSorter: TframeSorter
     OnCompareNodes = vstTreeCompareNodes
     OnCreateEditor = vstTreeCreateEditor
     OnEditing = vstTreeEditing
-    OnGetText = vstTreeGetText
     OnGetImageIndex = vstTreeGetImageIndex
     OnNewText = vstTreeNewText
     Columns = <

@@ -66,7 +66,6 @@ inherited frameBruteForce: TframeBruteForce
     OnCompareNodes = vstTreeCompareNodes
     OnCreateEditor = vstTreeCreateEditor
     OnEditing = vstTreeEditing
-    OnGetText = vstTreeGetText
     OnPaintText = vstTreePaintText
     OnNewText = vstTreeNewText
     ExplicitTop = 82

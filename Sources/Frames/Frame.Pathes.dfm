@@ -20,7 +20,6 @@ inherited framePathes: TframePathes
     OnCompareNodes = vstTreeCompareNodes
     OnCreateEditor = vstTreeCreateEditor
     OnEditing = vstTreeEditing
-    OnGetText = vstTreeGetText
     OnGetImageIndex = vstTreeGetImageIndex
     OnNewText = vstTreeNewText
     ExplicitWidth = 843
