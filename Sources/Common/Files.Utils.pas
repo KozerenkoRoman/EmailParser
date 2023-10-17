@@ -24,6 +24,7 @@ type
     class function GetCmdLineValue(aCmdLine, aArg: string; aSwitch, aSeparator: Char): string;
     class function GetCorrectFileName(const aFileName: string): string; inline;
     class function GetHash(const aFileName: string): string;
+    class function GetHashString(const aParsedText: string): string;
     class function GetSignature(const aFileName: string): TFileSignature;
     class function IsForbidden(const aFileName: TFileName): Boolean; inline;
     class function ShellExecuteAndWait(const aFileName, aParams: string): Boolean; inline;
@@ -97,6 +98,11 @@ end;
 class function TFileUtils.GetHash(const aFileName: string): string;
 begin
   Result := THashSHA1.GetHashStringFromFile(aFileName);
+end;
+
+class function TFileUtils.GetHashString(const aParsedText: string): string;
+begin
+  Result := THashSHA1.GetHashString(aParsedText);
 end;
 
 class procedure TFileUtils.ShellOpen(const aUrl: string; const aParams: string = '');

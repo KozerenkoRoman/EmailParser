@@ -52,7 +52,6 @@ inherited frameRegExp: TframeRegExp
     OnCreateEditor = vstTreeCreateEditor
     OnDblClick = aEditExecute
     OnEditing = vstTreeEditing
-    OnGetText = vstTreeGetText
     OnNewText = vstTreeNewText
     ExplicitTop = 82
     ExplicitWidth = 749

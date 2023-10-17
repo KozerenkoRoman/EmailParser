@@ -41,7 +41,7 @@ type
     procedure vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
     procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
     procedure vstTreeFocusChanging(Sender: TBaseVirtualTree; OldNode, NewNode: PVirtualNode; OldColumn, NewColumn: TColumnIndex; var Allowed: Boolean);
-    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
   private const
     COL_POSITION      = 0;
@@ -231,8 +231,8 @@ var
 begin
   inherited;
   FilterValue := 0;
-  for var i := Low(TGeneral.RegExpColumns) to High(TGeneral.RegExpColumns) do
-    if TGeneral.RegExpColumns[i].IsSelected then
+  for var i := 0 to TGeneral.PatternList.Count - 1 do
+    if TGeneral.PatternList[i].IsSelected then
       Include(TFilterSet(FilterValue), i);
   if (FilterValue = 0) then
     FilterValue := MaxCardinal;
@@ -363,7 +363,7 @@ begin
       if Assigned(DataEmail) then
         if not DataEmail^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
         begin
-          TargetCanvas.Brush.Color := TGeneral.RegExpColumns[Column - C_FIXED_COLUMNS].Color;
+          TargetCanvas.Brush.Color := TGeneral.PatternList[Column - C_FIXED_COLUMNS].Color;
           TargetCanvas.FillRect(CellRect);
         end;
     end
@@ -373,7 +373,7 @@ begin
       if Assigned(Data) then
         if (Data^.Matches[Column - C_FIXED_COLUMNS].Count > 0) then
         begin
-          TargetCanvas.Brush.Color := TGeneral.RegExpColumns[Column - C_FIXED_COLUMNS].Color;
+          TargetCanvas.Brush.Color := TGeneral.PatternList[Column - C_FIXED_COLUMNS].Color;
           TargetCanvas.FillRect(CellRect);
         end;
     end

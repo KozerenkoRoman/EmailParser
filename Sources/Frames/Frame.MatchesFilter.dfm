@@ -127,7 +127,7 @@ inherited frameMatchesFilter: TframeMatchesFilter
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 0
         Text = 'Name'
-        Width = 606
+        Width = 602
       end>
     DefaultText = ''
   end

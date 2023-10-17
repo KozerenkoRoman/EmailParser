@@ -327,15 +327,13 @@ begin
           Attachment^.OwnerNode  := nil;
           TGeneral.AttachmentList.AddOrSetValue(Hash, Attachment);
           ResultData.Attachments.Add(Hash);
+          DoParseAttachmentFiles(@ResultData,
+            procedure()
+            begin
+              TPublishers.ProgressPublisher.Progress;
+            end);
           Inc(FCount);
         end;
-
-        DoParseAttachmentFiles(@ResultData,
-          procedure()
-          begin
-            TPublishers.ProgressPublisher.Progress;
-          end);
-
       finally
         TPublishers.ProgressPublisher.EndProgress;
         LogWriter.Write(ddExitMethod, Self, 'FileSearch');
@@ -1051,7 +1049,7 @@ begin
           Attachment^.ParsedText    := ParsedText;
           Attachment^.FileName      := FileName; //aFileName;
           Attachment^.ShortName     := FileName;
-          Attachment^.Hash          := THashSHA1.GetHashString(ParsedText);
+          Attachment^.Hash          := TFileUtils.GetHashString(ParsedText);
           Attachment^.ParentHash    := aData^.Hash;
           Attachment^.ParentName    := aData^.ShortName;
           Attachment^.Matches.Count := TGeneral.PatternList.Count;

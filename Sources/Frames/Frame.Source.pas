@@ -40,7 +40,7 @@ type
     procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
     procedure vstTreeColumnResize(Sender: TVTHeader; Column: TColumnIndex);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
-    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); virtual;
     procedure vstTreeHeaderDragged(Sender: TVTHeader; Column: TColumnIndex; OldPosition: Integer);
     procedure vstTreeMeasureItem(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; var NodeHeight: Integer);
   private const
@@ -55,7 +55,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SearchText(const aText: string); virtual;
+    procedure SearchText(const aText: string);
   end;
 
 implementation
@@ -170,7 +170,7 @@ end;
 procedure TframeSource.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 begin
   inherited;
-  CellText := '';
+//
 end;
 
 procedure TframeSource.vstTreeHeaderDragged(Sender: TVTHeader; Column: TColumnIndex; OldPosition: Integer);

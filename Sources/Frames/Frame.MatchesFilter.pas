@@ -32,7 +32,7 @@ type
     procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
-    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
   private const
     COL_PARAM_NAME = 0;
 
@@ -231,7 +231,7 @@ begin
   Node := vstTree.RootNode.FirstChild;
   while Assigned(Node) do
   begin
-    TGeneral.RegExpColumns[i].IsSelected := Node.CheckState = TCheckState.csCheckedNormal;
+    TGeneral.PatternList[i].IsSelected := Node.CheckState = TCheckState.csCheckedNormal;
     Node := vstTree.GetNextSibling(Node);
     Inc(i);
   end;

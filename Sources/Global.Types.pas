@@ -17,6 +17,14 @@ type
     function ToString: string;
   end;
 
+  PProject = ^TProject;
+  TProject = record
+    Current : Boolean;
+    Hash    : string;
+    Name    : string;
+    Info    : string;
+  end;
+
   PParamPath = ^TParamPath;
   TParamPath = record
     Path       : string;
@@ -125,13 +133,9 @@ type
     UseRawText     : Boolean;
     Color          : TColor;
     AhoCorasickObj : TAhoCorasick;
+    IsSelected     : Boolean;
     procedure Assign(Source: TPatternData);
     procedure Clear;
-  end;
-
-  TRegExp = record
-    Color: TColor;
-    IsSelected: Boolean;
   end;
 
   TPasswordList = class(TObjectDictionary<string, PPassword>)
@@ -185,10 +189,10 @@ type
     class var
       ActiveFrame    : TFrame;
       AttachmentList : TAttachmentList;
+      CurrentProject : TProject;
       EmailList      : TEmailList;
       PasswordList   : TPasswordList;
       PatternList    : TPatternList;
-      RegExpColumns  : TArray<TRegExp>;
   end;
 
   TAttachmentDir = (adAttachment, adSubAttachment, adUserDefined);
@@ -209,6 +213,12 @@ const
   C_TOP_COLOR = $001E4DFF;
   C_PROGRESS_STEP = 50;
   MaxCardinal: Cardinal = $FFFFFFFF;
+
+const
+  SC_SYS_INFO        = WM_USER + 150;
+  WM_AFTER_SHOW      = WM_USER + 151;
+  WM_AFTER_CREATE    = WM_USER + 152;
+  WM_CURRENT_PROJECT = WM_USER + 153;
 
 var
   General: TGeneral;
@@ -303,6 +313,8 @@ begin
   XMLParams.Open;
   PasswordList.LoadData;
   PatternList.LoadData;
+  ActiveFrame    := nil;
+  CurrentProject := Default(TProject);
 end;
 
 class function TGeneral.GetCounterValue: Integer;
@@ -583,11 +595,7 @@ end;
 procedure TPatternList.ClearData;
 begin
   for var item in Self do
-  begin
-//    if Assigned(item.AhoCorasickObj) then
-//      FreeAndNil(item.AhoCorasickObj);
     Dispose(item);
-  end;
   Self.Clear;
 end;
 
@@ -609,7 +617,7 @@ begin
         Data^.GroupIndex    := TGeneral.XMLParams.Attributes.GetAttributeValue('GroupIndex', 0);
         Data^.UseRawText    := TGeneral.XMLParams.Attributes.GetAttributeValue('UseRawText', False);
         Data^.Color         := TGeneral.XMLParams.Attributes.GetAttributeValue('Color', clRed  {arrWebColors[Random(High(arrWebColors))].Color});
-
+        Data^.IsSelected    := True;
         if (Data^.TypePattern = TTypePattern.tpAhoCorasick) then
         begin
           Data^.AhoCorasickObj := TAhoCorasick.Create;
@@ -629,12 +637,6 @@ begin
     TGeneral.XMLParams.CurrentSection := '';
   end;
 
-  SetLength(TGeneral.RegExpColumns, Self.Count);
-  for var i := 0 to Self.Count - 1 do
-  begin
-    TGeneral.RegExpColumns[i].Color      := Self[i].Color;
-    TGeneral.RegExpColumns[i].IsSelected := True;
-  end;
   TGeneral.EmailList.UpdateMatches(Self.Count);
   TGeneral.AttachmentList.UpdateMatches(Self.Count);
 end;
@@ -649,6 +651,7 @@ begin
   Self.GroupIndex     := Source.GroupIndex;
   Self.UseRawText     := Source.UseRawText;
   Self.Color          := Source.Color;
+  Self.IsSelected     := Source.IsSelected;
   Self.AhoCorasickObj := nil;
 end;
 

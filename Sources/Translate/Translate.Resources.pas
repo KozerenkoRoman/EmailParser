@@ -90,6 +90,7 @@ resourcestring
   en_MaxSizeLogFile       = 'Max Size Of Log File (Mb)';
   en_MessageId            = 'Message Id';
   en_ModuleName           = 'Module name';
+  en_Name                 = 'Name';
   en_NewNamePrompt        = 'Enter a name for the new template set';
   en_NewNameSet           = 'New template set';
   en_NoDataToDisplay      = 'No data to display';
@@ -113,7 +114,7 @@ resourcestring
   en_PathNotExists        = 'Paths "%s" not exists';
   en_PathsToFindFiles     = 'Paths to find files';
   en_PathsToFindNotExists = 'Paths to find files not exists';
-  en_PathsToFindSaveFiles = 'Paths for search and saving attachments';
+  en_PathsToFindSaveFiles = 'Paths';
   en_PathsToSaveFiles     = 'Paths for saving files';
   en_PlainText            = 'Plain Text';
   en_Position             = 'Position';
@@ -121,18 +122,19 @@ resourcestring
   en_ProgramShutdown      = 'Program shutdown';
   en_ProgramStopsWorking  = 'Application will be terminated!';
   en_ProgramVersion       = 'Version';
+  en_Project              = 'Project';
   en_Refresh              = 'Refresh';
   en_RegExpIsEmpty        = 'There are no regular expression patterns';
   en_RegExpTemplate       = 'RegExp Template';
   en_Results              = 'Results';
-  en_SampleText           = 'Sample Text';
+  en_SampleText           = 'Sample text';
   en_Save                 = 'Save';
   en_SaveAs               = 'Save as...';
   en_Script               = 'Script';
   en_Search               = 'Search';
   en_SearchComplete       = 'Search %d files complete';
   en_SearchDuplicateFiles = 'Search duplicate files';
-  en_SelectAll            = 'SelectAll';
+  en_SelectAll            = 'Select all';
   en_Server               = 'Server';
   en_SetOfTemplates       = 'Set of templates';
   en_ShowSearchBar        = 'Show search bar';
@@ -140,16 +142,17 @@ resourcestring
   en_StartSearch          = 'Start Search';
   en_Subject              = 'Subject';
   en_Successful           = 'Operation is successful';
-  en_SystemInfo           = 'System Information';
+  en_SystemInfo           = 'System information';
   en_TemplateName         = 'Template name';
   en_Text                 = 'Text';
   en_Time                 = 'Time';
+  en_TypePattern          = 'Type pattern';
   en_Up                   = 'Up';
   en_UseRawText           = 'Use raw text';
   en_Utilities            = 'Utilities';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
-  en_TypePattern          = 'Type Pattern';
+  en_SetCurrent           = 'Set current';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -221,6 +224,7 @@ resourcestring
   uk_MaxSizeLogFile       = 'Максимальний розмір лог-файлу (Mb)';
   uk_MessageId            = 'Id листа';
   uk_ModuleName           = 'Назва модуля';
+  uk_Name                 = 'Назва';
   uk_NewNamePrompt        = 'Введіть назву нового набору шаблонів';
   uk_NewNameSet           = 'Новий набір шаблонів';
   uk_NoDataToDisplay      = 'Немає даних для відображення';
@@ -244,7 +248,7 @@ resourcestring
   uk_PathNotExists        = 'Шлях "%s" не існує';
   uk_PathsToFindFiles     = 'Шляхи для пошуку файлів';
   uk_PathsToFindNotExists = 'Шляхи для пошуку файлів відсутні';
-  uk_PathsToFindSaveFiles = 'Шляхи для пошуку та збереження файлів';
+  uk_PathsToFindSaveFiles = 'Шляхи';
   uk_PathsToSaveFiles     = 'Шляхи для збереження файлів';
   uk_PlainText            = 'Простий текст';
   uk_Position             = 'Позиція';
@@ -252,6 +256,7 @@ resourcestring
   uk_ProgramShutdown      = 'Закриття програми';
   uk_ProgramStopsWorking  = 'Програму буде зупинено!';
   uk_ProgramVersion       = 'Версія';
+  uk_Project              = 'Проект';
   uk_Refresh              = 'Оновити';
   uk_RegExpIsEmpty        = 'Шаблони регулярних виразів відсутні';
   uk_RegExpTemplate       = 'Шаблон регулярного виразу';
@@ -275,15 +280,16 @@ resourcestring
   uk_TemplateName         = 'Назва шаблону';
   uk_Text                 = 'Текст';
   uk_Time                 = 'Час';
+  uk_TypePattern          = 'Тип шаблону';
   uk_Up                   = 'Вгору';
   uk_UseRawText           = 'Парсити сирий текст';
   uk_Utilities            = 'Утиліти';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
-  uk_TypePattern          = 'Тип шаблону';
+  uk_SetCurrent           = 'Встановити поточним';
 
 const
-   ArrayMessages: array[1 .. 127] of TMessageItem = (
+   ArrayMessages: array[1 .. 130] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AhoCorasick'          ; En: en_AhoCorasick;          Uk: uk_AhoCorasick),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
@@ -296,6 +302,7 @@ const
     (Key: 'BruteForce'           ; En: en_BruteForce;           Uk: uk_BruteForce),
     (Key: 'Cancel'               ; En: en_Cancel;               Uk: uk_Cancel),
     (Key: 'ClassName'            ; En: en_ClassName;            Uk: uk_ClassName),
+    (Key: 'SetCurrent'           ; En: en_SetCurrent;           Uk: uk_SetCurrent),
     (Key: 'CollapseAll'          ; En: en_CollapseAll;          Uk: uk_CollapseAll),
     (Key: 'Color'                ; En: en_Color;                Uk: uk_Color),
     (Key: 'ColumnSettings'       ; En: en_ColumnSettings;       Uk: uk_ColumnSettings),
@@ -353,6 +360,7 @@ const
     (Key: 'MaxSizeLogFile'       ; En: en_MaxSizeLogFile;       Uk: uk_MaxSizeLogFile),
     (Key: 'MessageId'            ; En: en_MessageId;            Uk: uk_MessageId),
     (Key: 'ModuleName'           ; En: en_ModuleName;           Uk: uk_ModuleName),
+    (Key: 'Name'                 ; En: en_Name;                 Uk: uk_Name),
     (Key: 'NewNamePrompt'        ; En: en_NewNamePrompt;        Uk: uk_NewNamePrompt),
     (Key: 'NewNameSet'           ; En: en_NewNameSet;           Uk: uk_NewNameSet),
     (Key: 'NoDataToDisplay'      ; En: en_NoDataToDisplay;      Uk: uk_NoDataToDisplay),
@@ -384,6 +392,7 @@ const
     (Key: 'ProgramShutdown'      ; En: en_ProgramShutdown;      Uk: uk_ProgramShutdown),
     (Key: 'ProgramStopsWorking'  ; En: en_ProgramStopsWorking;  Uk: uk_ProgramStopsWorking),
     (Key: 'ProgramVersion'       ; En: en_ProgramVersion;       Uk: uk_ProgramVersion),
+    (Key: 'Project'              ; En: en_Project;              Uk: uk_Project),
     (Key: 'Refresh'              ; En: en_Refresh;              Uk: uk_Refresh),
     (Key: 'RegExpIsEmpty'        ; En: en_RegExpIsEmpty;        Uk: uk_RegExpIsEmpty),
     (Key: 'RegExpTemplate'       ; En: en_RegExpTemplate;       Uk: uk_RegExpTemplate),

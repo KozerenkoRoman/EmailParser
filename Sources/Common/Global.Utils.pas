@@ -33,7 +33,7 @@ begin
     subArray := aMatches[i];
     if (subArray.Count > 0) then
       if aText.ToLower.Contains(subArray[0].ToLower) then
-        Exit(TGeneral.RegExpColumns[i].Color);
+        Exit(TGeneral.PatternList[i].Color);
   end;
 end;
 
@@ -49,7 +49,7 @@ begin
   for var i := Low(aMatches.Items) to High(aMatches.Items) do
   begin
     subArray := aMatches[i];
-    refRGB   := ColorToRGB(TGeneral.RegExpColumns[i].Color);
+    refRGB   := ColorToRGB(TGeneral.PatternList[i].Color);
     WebColor := Format('#%.2x%.2x%.2x', [GetRValue(refRGB), GetGValue(refRGB), GetBValue(refRGB)]);
     for var str in subArray do
       if not str.Trim.IsEmpty then

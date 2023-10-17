@@ -55,7 +55,7 @@ type
     procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
-    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
   private const
     COL_POSITION     = 0;
@@ -209,6 +209,7 @@ end;
 procedure TframeAllAttachments.aOpenAttachFileExecute(Sender: TObject);
 var
   Data: PAttachment;
+  FileName: string;
 begin
   inherited;
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
@@ -216,18 +217,24 @@ begin
     Data := TGeneral.AttachmentList.GetItem(PAttachData(vstTree.FocusedNode^.GetData).Hash);
     if Assigned(Data) then
     begin
-      if TFile.Exists(Data^.FileName) then
-        TFileUtils.ShellOpen(Data^.FileName)
+      FileName := Data^.FileName;
+      if TFile.Exists(FileName) then
+        TFileUtils.ShellOpen(FileName)
       else if Data^.FromZip then
       begin
         Data := TGeneral.AttachmentList.GetItem(Data^.ParentHash);
-        if Assigned(Data) and TFile.Exists(Data^.FileName) then
-          TFileUtils.ShellOpen(Data^.FileName)
+        if Assigned(Data) then
+        begin
+          if TFile.Exists(Data^.FileName) then
+            TFileUtils.ShellOpen(Data^.FileName)
+          else
+            TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+        end
         else
-          TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+          TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [FileName]));
       end
       else
-        TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+        TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [FileName]));
     end;
   end;
 end;
@@ -332,7 +339,7 @@ begin
     if Assigned(AttachData) and (Column >= C_FIXED_COLUMNS) then
       if not AttachData^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
       begin
-        TargetCanvas.Brush.Color := TGeneral.RegExpColumns[Column - C_FIXED_COLUMNS].Color;
+        TargetCanvas.Brush.Color := TGeneral.PatternList[Column - C_FIXED_COLUMNS].Color;
         TargetCanvas.FillRect(CellRect);
       end;
   end
@@ -350,7 +357,7 @@ begin
       end
       else if (Data^.Matches[Column - C_FIXED_COLUMNS].Count > 0) then
       begin
-        TargetCanvas.Brush.Color := TGeneral.RegExpColumns[Column - C_FIXED_COLUMNS].Color;
+        TargetCanvas.Brush.Color := TGeneral.PatternList[Column - C_FIXED_COLUMNS].Color;
         TargetCanvas.FillRect(CellRect);
       end;
   end;
@@ -631,8 +638,8 @@ var
 begin
   inherited;
   FilterValue := 0;
-  for var i := Low(TGeneral.RegExpColumns) to High(TGeneral.RegExpColumns) do
-    if TGeneral.RegExpColumns[i].IsSelected then
+  for var i := 0 to TGeneral.PatternList.Count - 1 do
+    if TGeneral.PatternList[i].IsSelected then
       Include(TFilterSet(FilterValue), i);
   if (FilterValue = 0) then
     FilterValue := MaxCardinal;
