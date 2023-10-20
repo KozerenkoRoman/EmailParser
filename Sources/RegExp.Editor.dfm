@@ -6,8 +6,8 @@ inherited frmRegExpEditor: TfrmRegExpEditor
   Font.Height = -13
   Font.Name = 'Segoe UI'
   ShowHint = True
-  ExplicitWidth = 872
-  ExplicitHeight = 661
+  ExplicitWidth = 876
+  ExplicitHeight = 662
   TextHeight = 17
   object splPattern: TSplitter
     Left = 482
@@ -101,7 +101,6 @@ inherited frmRegExpEditor: TfrmRegExpEditor
             ParentColor = True
             TabOrder = 0
             OnCloseUp = cbSetOfTemplatesCloseUp
-            ExplicitWidth = 367
           end
         end
         object edRegEx: TMemo

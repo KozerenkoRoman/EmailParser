@@ -126,14 +126,13 @@ type
 
   PPatternData = ^TPatternData;
   TPatternData = record
-    TypePattern    : TTypePattern;
-    ParameterName  : string;
-    Pattern        : string;
-    GroupIndex     : Integer;
-    UseRawText     : Boolean;
-    Color          : TColor;
-    AhoCorasickObj : TAhoCorasick;
-    IsSelected     : Boolean;
+    TypePattern   : TTypePattern;
+    ParameterName : string;
+    Pattern       : string;
+    GroupIndex    : Integer;
+    UseRawText    : Boolean;
+    Color         : TColor;
+    IsSelected    : Boolean;
     procedure Assign(Source: TPatternData);
     procedure Clear;
   end;
@@ -622,17 +621,6 @@ begin
         Data^.UseRawText    := TGeneral.XMLParams.Attributes.GetAttributeValue('UseRawText', False);
         Data^.Color         := TGeneral.XMLParams.Attributes.GetAttributeValue('Color', clRed  {arrWebColors[Random(High(arrWebColors))].Color});
         Data^.IsSelected    := True;
-        if (Data^.TypePattern = TTypePattern.tpAhoCorasick) then
-        begin
-          Data^.AhoCorasickObj := TAhoCorasick.Create;
-          var arrKeyWords := Data^.Pattern.Split([#10]);
-          for var j := Low(arrKeyWords) to High(arrKeyWords) do
-            if not arrKeyWords[j].Trim.IsEmpty then
-              Data^.AhoCorasickObj.AddPattern(arrKeyWords[j].Trim);
-          Data^.AhoCorasickObj.Build;
-        end
-        else
-          Data^.AhoCorasickObj := nil;
         Self.Add(Data);
       end;
       TGeneral.XMLParams.NextKey;
@@ -656,13 +644,10 @@ begin
   Self.UseRawText     := Source.UseRawText;
   Self.Color          := Source.Color;
   Self.IsSelected     := Source.IsSelected;
-  Self.AhoCorasickObj := nil;
 end;
 
 procedure TPatternData.Clear;
 begin
-  if Assigned(Self.AhoCorasickObj) then
-    FreeAndNil(Self.AhoCorasickObj);
   Self := Default(TPatternData);
 end;
 

@@ -1242,27 +1242,20 @@ function TPerformer.GetMatchCollection(const aText: string; const aPatternData: 
 
   function GetAhoCorasickCollection: TStringArray;
   var
-    ResList: TStringList;
+    AhoCorasickObj: TAhoCorasick;
   begin
-    if not Assigned(aPatternData^.AhoCorasickObj) then
-    begin
-      aPatternData^.AhoCorasickObj := TAhoCorasick.Create;
-      var arrValue := aPatternData^.Pattern.Split([#13#10]);
-      for var i := Low(arrValue) to High(arrValue) do
-        if not arrValue[i].Trim.IsEmpty then
-          aPatternData^.AhoCorasickObj.AddPattern(arrValue[i].Trim);
-      aPatternData^.AhoCorasickObj.Build;
-    end;
-
     FCriticalSection.Enter;
     try
-      ResList := aPatternData^.AhoCorasickObj.Search(aText);
+      AhoCorasickObj := TAhoCorasick.Create;
       try
-        Result.Count := ResList.Count;
-        for var i := 0 to ResList.Count - 1 do
-          Result[i] := ResList[i];
+        var arrPattern := aPatternData^.Pattern.Split([#10]);
+        for var i := Low(arrPattern) to High(arrPattern) do
+          if not arrPattern[i].Trim.IsEmpty then
+            AhoCorasickObj.AddPattern(arrPattern[i].Trim);
+        AhoCorasickObj.Build;
+        Result.AddRange(AhoCorasickObj.Search(aText));
       finally
-        FreeAndNil(ResList);
+        FreeAndNil(AhoCorasickObj);
       end;
     finally
       FCriticalSection.Leave;

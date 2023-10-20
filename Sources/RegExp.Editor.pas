@@ -10,7 +10,7 @@ uses
   Html.Lib, Vcl.WinXCtrls, Vcl.WinXPanels, System.Actions, Vcl.ActnList, DaImages, Vcl.Imaging.pngimage,
   Vcl.CategoryButtons, Vcl.ComCtrls, Vcl.Menus, Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, Global.Types,
   Publishers.Interfaces, Publishers, CommonForms, System.RegularExpressions, RegExp.Types, Vcl.NumberBox,
-  Vcl.Samples.Spin, Performer, Vcl.ActnMan, Vcl.ActnColorMaps, Html.Consts, AhoCorasick;
+  Vcl.Samples.Spin, Performer, Vcl.ActnMan, Vcl.ActnColorMaps, Html.Consts, AhoCorasick, ArrayHelper;
 {$ENDREGION}
 
 type
@@ -208,11 +208,10 @@ end;
 procedure TfrmRegExpEditor.aTestExecute(Sender: TObject);
 var
   AhoCorasick : TAhoCorasick;
-  arrValue    : TArray<string>;
   Match       : TMatch;
   Options     : TRegExOptions;
   RegExp      : TRegEx;
-  ResList     : TStringList;
+  ResList     : TStringArray;
 begin
   inherited;
   tvResults.Items.Clear;
@@ -232,21 +231,17 @@ begin
         begin
           AhoCorasick := TAhoCorasick.Create;
           try
-            arrValue := Pattern.Split([#13#10]);
-            for var i := Low(arrValue) to High(arrValue) do
-              if not arrValue[i].Trim.IsEmpty then
-                AhoCorasick.AddPattern(arrValue[i].Trim);
+            var arrPattern := Pattern.Split([#13#10]);
+            for var i := Low(arrPattern) to High(arrPattern) do
+              if not arrPattern[i].Trim.IsEmpty then
+                AhoCorasick.AddPattern(arrPattern[i].Trim);
             AhoCorasick.Build;
-            ResList := AhoCorasick.Search(edSample.Text);
-            try
-              if (ResList.Count = 0) then
-                TMessageDialog.ShowInfo(TLang.Lang.Translate('NoMatchFound'))
-              else
-                for var i := 0 to ResList.Count - 1 do
-                  AddMatchToTree(ResList[i]);
-            finally
-              FreeAndNil(ResList);
-            end;
+            ResList.AddRange(AhoCorasick.Search(edSample.Text));
+            if (ResList.Count = 0) then
+              TMessageDialog.ShowInfo(TLang.Lang.Translate('NoMatchFound'))
+            else
+              for var i := 0 to ResList.Count - 1 do
+                AddMatchToTree(ResList[i]);
           finally
             FreeAndNil(AhoCorasick);
           end;
