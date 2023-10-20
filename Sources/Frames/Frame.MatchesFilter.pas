@@ -9,7 +9,7 @@ uses
   Vcl.Forms, Vcl.Dialogs, VirtualTrees, Vcl.ExtCtrls, System.Generics.Collections, System.UITypes, DebugWriter,
   Global.Types, System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin,
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
-  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
+  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Publishers,
   VCLTee.TeCanvas, Global.Resources, Winapi.msxml, RegExp.Editor, Vcl.WinXPanels, Frame.Custom, RegExp.Import,
   RegExp.Utils, Publishers.Interfaces;
@@ -32,14 +32,13 @@ type
     procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
-    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
   private const
     COL_PARAM_NAME = 0;
 
     C_IDENTITY_NAME = 'frameMatchesFilter';
   private
     procedure FillRegExpColumns;
-    procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
 
     //IConfig
     procedure IConfig.UpdateRegExp = LoadFromXML;
@@ -55,7 +54,6 @@ type
     procedure Initialize; override;
     procedure Deinitialize; override;
     procedure Translate; override;
-    procedure SearchText(const aText: string); override;
   end;
 
 implementation
@@ -187,33 +185,6 @@ begin
   end;
 end;
 
-procedure TframeMatchesFilter.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
-var
-  CellText: string;
-begin
-  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
-  Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
-end;
-
-procedure TframeMatchesFilter.SearchText(const aText: string);
-var
-  Node: PVirtualNode;
-begin
-  inherited;
-  vstTree.BeginUpdate;
-  vstTree.FullExpand(nil);
-  try
-    Node := vstTree.IterateSubtree(nil, SearchForText, Pointer(aText));
-    if Assigned(Node) then
-    begin
-      vstTree.FocusedNode := Node;
-      vstTree.Selected[Node] := True;
-    end;
-  finally
-    vstTree.EndUpdate;
-  end;
-end;
-
 procedure TframeMatchesFilter.aAllCheckExecute(Sender: TObject);
 var
   Node: PVirtualNode;
@@ -260,7 +231,7 @@ begin
   Node := vstTree.RootNode.FirstChild;
   while Assigned(Node) do
   begin
-    TGeneral.RegExpColumns[i].IsSelected := Node.CheckState = TCheckState.csCheckedNormal;
+    TGeneral.PatternList[i].IsSelected := Node.CheckState = TCheckState.csCheckedNormal;
     Node := vstTree.GetNextSibling(Node);
     Inc(i);
   end;

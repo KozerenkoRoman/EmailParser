@@ -7,7 +7,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Frame.Source, Vcl.Menus, System.Actions, Vcl.ActnList, Vcl.ComCtrls,
   Vcl.ToolWin, VirtualTrees, Vcl.StdCtrls, Vcl.ExtCtrls, System.Generics.Defaults,Translate.Lang, System.Math,
-  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
+  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Common.Types, DaImages, System.RegularExpressions,
   System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Global.Types, Vcl.FileCtrl,
   Global.Resources, Vcl.WinXPanels, Frame.Custom, Publishers, Vcl.NumberBox;
 {$ENDREGION}
@@ -19,26 +19,24 @@ type
     aPathForAttachments    : TAction;
     cbDeleteAttachments    : TCheckBox;
     cbLanguage             : TComboBox;
-    cbLoadRecordsFromDB    : TCheckBox;
+    cbLogWriteActive       : TCheckBox;
     dlgAttachmments        : TFileOpenDialog;
     edtExtensions          : TEdit;
+    edtMaxSize             : TNumberBox;
+    edtNumberOfDays        : TNumberBox;
     edtPathForAttachments  : TButtonedEdit;
     grdCommonParams        : TGridPanel;
     lblDeleteAttachments   : TLabel;
     lblExtensions          : TLabel;
     lblLanguage            : TLabel;
-    lblLoadRecordsFromDB   : TLabel;
+    lblLogWriteActive      : TLabel;
+    lblMaxSize             : TLabel;
+    lblNumberOfDays        : TLabel;
     lblPathForAttachments  : TLabel;
     miAttachmentsMain      : TMenuItem;
     miAttachmentsSub       : TMenuItem;
     miPathForAttachments   : TMenuItem;
-    Shape1: TShape;
-    lblMaxSize: TLabel;
-    lblLogWriteActive: TLabel;
-    lblNumberOfDays: TLabel;
-    cbLogWriteActive: TCheckBox;
-    edtMaxSize: TNumberBox;
-    edtNumberOfDays: TNumberBox;
+    ShapeDividingLine      : TShape;
     procedure aAttachmentsMainExecute(Sender: TObject);
     procedure aAttachmentsSubExecute(Sender: TObject);
     procedure aPathForAttachmentsExecute(Sender: TObject);
@@ -91,7 +89,6 @@ begin
   lblDeleteAttachments.Caption  := TLang.Lang.Translate('DeleteAttachments');
   lblExtensions.Caption         := TLang.Lang.Translate('FileExtensions');
   lblLanguage.Caption           := TLang.Lang.Translate('Language');
-  lblLoadRecordsFromDB.Caption  := TLang.Lang.Translate('LoadRecordsFromDB');
   lblLogWriteActive.Caption     := TLang.Lang.Translate('IsLogginActive');
   lblMaxSize.Caption            := TLang.Lang.Translate('MaxSizeLogFile');
   lblNumberOfDays.Caption       := TLang.Lang.Translate('NumberOfDays');
@@ -111,7 +108,6 @@ begin
     cbLanguage.Items.Add(lang.ToString);
   cbDeleteAttachments.Checked := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
   cbLanguage.ItemIndex        := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0);
-  cbLoadRecordsFromDB.Checked := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'LoadRecordsFromDB', True);
   cbLogWriteActive.Checked    := TGeneral.XMLParams.ReadBool(C_SECTION_DEBUG, C_KEY_IS_ACTIVE, True);
   edtExtensions.Text          := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
   edtMaxSize.ValueInt         := TGeneral.XMLParams.ReadInteger(C_SECTION_DEBUG, C_KEY_MAX_SIZE, 1);
@@ -124,7 +120,6 @@ begin
   inherited;
   TGeneral.XMLParams.WriteBool(C_SECTION_DEBUG, C_KEY_IS_ACTIVE, cbLogWriteActive.Checked, lblLogWriteActive.Caption);
   TGeneral.XMLParams.WriteBool(C_SECTION_MAIN, 'DeleteAttachments', cbDeleteAttachments.Checked, lblDeleteAttachments.Caption);
-  TGeneral.XMLParams.WriteBool(C_SECTION_MAIN, 'LoadRecordsFromDB', cbLoadRecordsFromDB.Checked, lblLoadRecordsFromDB.Caption);
   TGeneral.XMLParams.WriteInteger(C_SECTION_DEBUG, C_KEY_MAX_SIZE, edtMaxSize.ValueInt, lblMaxSize.Caption);
   TGeneral.XMLParams.WriteInteger(C_SECTION_DEBUG, C_KEY_COUNT_OF_DAYS, edtNumberOfDays.ValueInt, lblNumberOfDays.Caption);
   TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'Language', cbLanguage.ItemIndex, cbLanguage.Text);

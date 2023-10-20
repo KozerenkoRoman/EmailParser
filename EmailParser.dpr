@@ -32,6 +32,7 @@ uses
   Frame.Emails in 'Sources\Frames\Frame.Emails.pas' {frameEmails: TFrame},
   Frame.MatchesFilter in 'Sources\Frames\Frame.MatchesFilter.pas' {frameMatchesFilter: TFrame},
   Frame.Pathes in 'Sources\Frames\Frame.Pathes.pas' {framePathes: TFrame},
+  Frame.Project in 'Sources\Frames\Frame.Project.pas' {frameProject: TFrame},
   Frame.RegExp in 'Sources\Frames\Frame.RegExp.pas' {frameRegExp: TFrame},
   Frame.ResultView in 'Sources\Frames\Frame.ResultView.pas' {frameResultView: TFrame},
   Frame.Settings in 'Sources\Frames\Frame.Settings.pas' {frameSettings: TFrame},
@@ -103,4 +104,5 @@ begin
         LogWriter.Write(ddError, E.Message);
     end;
   end;
+
 end.

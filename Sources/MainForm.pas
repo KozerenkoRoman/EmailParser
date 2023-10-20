@@ -11,7 +11,7 @@ uses
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExp, Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.Settings, Global.Types, Vcl.Samples.Gauges,
   Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule, Frame.Sorter, Frame.DuplicateFiles,
-  Files.Utils, Vcl.CheckLst, ArrayHelper, System.Types, Frame.MatchesFilter, Frame.BruteForce;
+  Files.Utils, Vcl.CheckLst, ArrayHelper, System.Types, Frame.MatchesFilter, Frame.BruteForce, Frame.Project;
 {$ENDREGION}
 
 type
@@ -23,6 +23,7 @@ type
     crdBruteForce           : TCard;
     crdCommonParams         : TCard;
     crdPathsToFindScripts   : TCard;
+    crdProject              : TCard;
     crdRegExpParameters     : TCard;
     crdResultView           : TCard;
     crdSearchDuplicateFiles : TCard;
@@ -30,6 +31,7 @@ type
     frameDuplicateFiles     : TframeDuplicateFiles;
     frameMatchesFilter      : TframeMatchesFilter;
     framePathes             : TframePathes;
+    frameProject            : TframeProject;
     frameRegExp             : TframeRegExp;
     frameResultView         : TframeResultView;
     frameSettings           : TframeSettings;
@@ -37,7 +39,7 @@ type
     gbPathes                : TGroupBox;
     gbSorter                : TGroupBox;
     imgMenu                 : TImage;
-    lblTitle                : TLabel;
+    lblProject              : TLabel;
     pnlCard                 : TCardPanel;
     pnlExtendedFilter       : TGroupBox;
     pnlLeft                 : TPanel;
@@ -48,6 +50,7 @@ type
     splPath                 : TSplitter;
     splView                 : TSplitView;
     srchBox                 : TSearchBox;
+    lblTitle: TLabel;
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
     procedure aToggleSplitPanelExecute(Sender: TObject);
     procedure catMenuItemsSelectedItemChange(Sender: TObject; const Button: TButtonItem);
@@ -67,6 +70,7 @@ type
     procedure IConfig.UpdateLanguage = Translate;
     procedure UpdateRegExp;
     procedure UpdateFilter(const aOperation: TFilterOperation);
+    procedure UpdateProject;
 
     //IProgress
     procedure ClearTree;
@@ -117,6 +121,7 @@ begin
   pnlExtendedFilter.Height := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'ExtendedFilterHeight', 250);
   TGeneral.Initialize;
   DaMod.Initialize;
+  frameProject.Initialize;
   frameRegExp.Initialize;
   framePathes.Initialize;
   frameResultView.Initialize;
@@ -134,6 +139,7 @@ end;
 
 procedure TfrmMain.Deinitialize;
 begin
+  frameProject.Deinitialize;
   frameRegExp.Deinitialize;
   framePathes.Deinitialize;
   frameSorter.Deinitialize;
@@ -154,10 +160,11 @@ begin
   inherited;
   catMenuItems.Categories[0].Caption := TLang.Lang.Translate('Main');
   catMenuItems.Categories[1].Caption := TLang.Lang.Translate('Utilities');
-  catMenuItems.Categories[0].Items[0].Caption := TLang.Lang.Translate('PathsToFindSaveFiles');
-  catMenuItems.Categories[0].Items[1].Caption := TLang.Lang.Translate('EditRegExpParameters');
-  catMenuItems.Categories[0].Items[2].Caption := TLang.Lang.Translate('EditCommonParameters');
-  catMenuItems.Categories[0].Items[3].Caption := TLang.Lang.Translate('Search');
+  catMenuItems.Categories[0].Items[0].Caption := TLang.Lang.Translate('Project');
+  catMenuItems.Categories[0].Items[1].Caption := TLang.Lang.Translate('PathsToFindSaveFiles');
+  catMenuItems.Categories[0].Items[2].Caption := TLang.Lang.Translate('EditRegExpParameters');
+  catMenuItems.Categories[0].Items[3].Caption := TLang.Lang.Translate('EditCommonParameters');
+  catMenuItems.Categories[0].Items[4].Caption := TLang.Lang.Translate('Search');
   catMenuItems.Categories[1].Items[0].Caption := TLang.Lang.Translate('SearchDuplicateFiles');
   catMenuItems.Categories[1].Items[1].Caption := TLang.Lang.Translate('BruteForce');
   catMenuItems.Categories[1].Items[2].Caption := TLang.Lang.Translate('OpenLogFile');
@@ -165,6 +172,7 @@ begin
   crdBruteForce.Caption           := TLang.Lang.Translate('BruteForce');
   crdCommonParams.Caption         := TLang.Lang.Translate('EditCommonParameters');
   crdPathsToFindScripts.Caption   := TLang.Lang.Translate('PathsToFindFiles');
+  crdProject.Caption              := TLang.Lang.Translate('Project');
   crdRegExpParameters.Caption     := TLang.Lang.Translate('EditRegExpParameters');
   crdResultView.Caption           := TLang.Lang.Translate('Search');
   crdSearchDuplicateFiles.Caption := TLang.Lang.Translate('SearchDuplicateFiles');
@@ -172,6 +180,7 @@ begin
   gbSorter.Caption                := TLang.Lang.Translate('PathsToSaveFiles');
   pnlExtendedFilter.Caption       := TLang.Lang.Translate('ExtendedFilter');
   lblTitle.Caption                := pnlCard.ActiveCard.Caption;
+  UpdateProject;
 end;
 
 function TfrmMain.GetIdentityName: string;
@@ -207,10 +216,11 @@ begin
   inherited;
   if (Button.Category.Id = 0) then
     case Button.Id of
-      0: pnlCard.ActiveCard := crdPathsToFindScripts;
-      1: pnlCard.ActiveCard := crdRegExpParameters;
-      2: pnlCard.ActiveCard := crdCommonParams;
-      3: pnlCard.ActiveCard := crdResultView;
+      0: pnlCard.ActiveCard := crdProject;
+      1: pnlCard.ActiveCard := crdPathsToFindScripts;
+      2: pnlCard.ActiveCard := crdRegExpParameters;
+      3: pnlCard.ActiveCard := crdCommonParams;
+      4: pnlCard.ActiveCard := crdResultView;
     end
   else if (Button.Category.Id = 1) then
     case Button.Id of
@@ -262,10 +272,8 @@ end;
 procedure TfrmMain.srchBoxInvokeSearch(Sender: TObject);
 begin
   inherited;
-//  if pnlCard.ActiveCard = crdPathsToFindScripts then
-//    framePathes.SearchText(srchBox.Text)
-//  else
-//    frameRegExpParameters.SearchText(srchBox.Text);
+  if Assigned(TGeneral.ActiveFrame) and (TGeneral.ActiveFrame is TframeSource) then
+    TframeSource(TGeneral.ActiveFrame).SearchText(srchBox.Text);
 end;
 
 procedure TfrmMain.ClearTree;
@@ -286,6 +294,12 @@ end;
 procedure TfrmMain.UpdateFilter(const aOperation: TFilterOperation);
 begin
   // nothing
+end;
+
+procedure TfrmMain.UpdateProject;
+begin
+  if not TGeneral.CurrentProject.Name.IsEmpty then
+    lblProject.Caption := TLang.Lang.Translate('Project') + ': ' + TGeneral.CurrentProject.Name;
 end;
 
 procedure TfrmMain.UpdateRegExp;

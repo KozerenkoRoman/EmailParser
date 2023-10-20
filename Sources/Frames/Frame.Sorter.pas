@@ -8,9 +8,8 @@ uses
   Vcl.Forms, Vcl.Dialogs, VirtualTrees, Vcl.ExtCtrls, System.Generics.Collections, System.UITypes, DebugWriter,
   Global.Types, System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin,
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
-  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
-  Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
-  Vcl.WinXPanels, Frame.Custom;
+  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Common.Types, DaImages, System.RegularExpressions, Frame.Source,
+  System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils, Frame.Custom;
 {$ENDREGION}
 
 type
@@ -28,7 +27,7 @@ type
     procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
-    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
   private const
     COL_MASK        = 0;
@@ -37,19 +36,17 @@ type
     COL_INFO        = 3;
 
     C_IDENTITY_NAME = 'frameSorter';
-  private
-    procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
     function GetIdentityName: string; override;
     procedure SaveToXML; override;
     procedure LoadFromXML; override;
+    procedure UpdateProject; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Translate; override;
     procedure Initialize; override;
     procedure Deinitialize; override;
-    procedure SearchText(const aText: string); override;
   end;
 
 implementation
@@ -90,6 +87,12 @@ begin
   vstTree.Header.Columns[COL_MASK].Text := TLang.Lang.Translate('Mask');
   vstTree.Header.Columns[COL_PATH].Text := TLang.Lang.Translate('Path');
   vstTree.Header.Columns[COL_INFO].Text := TLang.Lang.Translate('Info');
+end;
+
+procedure TframeSorter.UpdateProject;
+begin
+  inherited;
+  LoadFromXML;
 end;
 
 function TframeSorter.GetIdentityName: string;
@@ -143,10 +146,15 @@ procedure TframeSorter.SaveToXML;
 
 var
   Node: PVirtualNode;
+  Section: string;
 begin
   inherited;
-  TGeneral.XMLParams.EraseSection('Sorter');
-  TGeneral.XMLParams.CurrentSection := 'Sorter';
+  if not TGeneral.CurrentProject.Hash.IsEmpty then
+    Section := 'Sorter.' + TGeneral.CurrentProject.Hash
+  else
+    Section := 'Sorter';
+  TGeneral.XMLParams.EraseSection(Section);
+  TGeneral.XMLParams.CurrentSection := Section;
   try
     Node := vstTree.GetFirst;
     while Assigned(Node) do
@@ -300,33 +308,6 @@ begin
       Data^.Info := NewText;
     COL_MASK:
       Data^.Mask := NewText;
-  end;
-end;
-
-procedure TframeSorter.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
-var
-  CellText: string;
-begin
-//  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
-  Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
-end;
-
-procedure TframeSorter.SearchText(const aText: string);
-var
-  Node: PVirtualNode;
-begin
-  inherited;
-  vstTree.BeginUpdate;
-  vstTree.FullExpand(nil);
-  try
-    Node := vstTree.IterateSubtree(nil, SearchForText, Pointer(aText));
-    if Assigned(Node) then
-    begin
-      vstTree.FocusedNode := Node;
-      vstTree.Selected[Node] := True;
-    end;
-  finally
-    vstTree.EndUpdate;
   end;
 end;
 

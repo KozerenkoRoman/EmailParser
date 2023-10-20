@@ -41,7 +41,7 @@ type
     procedure vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
     procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
     procedure vstTreeFocusChanging(Sender: TBaseVirtualTree; OldNode, NewNode: PVirtualNode; OldColumn, NewColumn: TColumnIndex; var Allowed: Boolean);
-    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
   private const
     COL_POSITION      = 0;
@@ -74,7 +74,6 @@ type
     procedure CompletedAttach(const aAttachment: PAttachment);
 
     procedure UpdateColumns;
-    procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
     function GetIdentityName: string; override;
     procedure SaveToXML; override;
@@ -85,7 +84,6 @@ type
     procedure Initialize; override;
     procedure Deinitialize; override;
     procedure Translate; override;
-    procedure SearchText(const aText: string); override;
   end;
 
 implementation
@@ -233,8 +231,8 @@ var
 begin
   inherited;
   FilterValue := 0;
-  for var i := Low(TGeneral.RegExpColumns) to High(TGeneral.RegExpColumns) do
-    if TGeneral.RegExpColumns[i].IsSelected then
+  for var i := 0 to TGeneral.PatternList.Count - 1 do
+    if TGeneral.PatternList[i].IsSelected then
       Include(TFilterSet(FilterValue), i);
   if (FilterValue = 0) then
     FilterValue := MaxCardinal;
@@ -365,7 +363,7 @@ begin
       if Assigned(DataEmail) then
         if not DataEmail^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
         begin
-          TargetCanvas.Brush.Color := TGeneral.RegExpColumns[Column - C_FIXED_COLUMNS].Color;
+          TargetCanvas.Brush.Color := TGeneral.PatternList[Column - C_FIXED_COLUMNS].Color;
           TargetCanvas.FillRect(CellRect);
         end;
     end
@@ -375,7 +373,7 @@ begin
       if Assigned(Data) then
         if (Data^.Matches[Column - C_FIXED_COLUMNS].Count > 0) then
         begin
-          TargetCanvas.Brush.Color := TGeneral.RegExpColumns[Column - C_FIXED_COLUMNS].Color;
+          TargetCanvas.Brush.Color := TGeneral.PatternList[Column - C_FIXED_COLUMNS].Color;
           TargetCanvas.FillRect(CellRect);
         end;
     end
@@ -649,35 +647,7 @@ end;
 
 procedure TframeEmails.Progress;
 begin
-
+  // Nothing
 end;
-
-procedure TframeEmails.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
-var
-  CellText: string;
-begin
-  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
-  Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
-end;
-
-procedure TframeEmails.SearchText(const aText: string);
-var
-  Node: PVirtualNode;
-begin
-  inherited;
-  vstTree.BeginUpdate;
-  vstTree.FullExpand(nil);
-  try
-    Node := vstTree.IterateSubtree(nil, SearchForText, Pointer(aText));
-    if Assigned(Node) then
-    begin
-      vstTree.FocusedNode := Node;
-      vstTree.Selected[Node] := True;
-    end;
-  finally
-    vstTree.EndUpdate;
-  end;
-end;
-
 
 end.

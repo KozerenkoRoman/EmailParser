@@ -8,13 +8,17 @@ uses
 {$ENDREGION}
 
 type
-  TNode = class
+  TAppender<T> = class
+    class procedure AddItem(var Arr: TArray<T>; const Value: T);
+    class procedure AddRange(var Arr: TArray<T>; const Value: TArray<T>);
+  end;
+
+  PNode = ^TNode;
+  TNode = record
   public
-    Next: array [Char] of TNode;
-    Fail: TNode;
-    Output: TStringList;
-    constructor Create;
-    destructor Destroy; override;
+    Fail: PNode;
+    Next: array [AnsiChar] of PNode;
+    Output: TArray<string>;
   end;
 
   TAhoCorasick = class
@@ -23,73 +27,94 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function Search(const aText: string): TStringList;
+    function Search(const aText: string): TArray<string>;
     procedure AddPattern(const aPattern: string);
     procedure Build;
   end;
 
 implementation
 
-{ TNode }
+{ TAppender<T> }
 
-constructor TNode.Create;
+class procedure TAppender<T>.AddItem(var Arr: TArray<T>; const Value: T);
 begin
-  FillChar(Next, SizeOf(Next), 0);
-  Fail := nil;
-  Output := TStringList.Create;
+  SetLength(Arr, Length(Arr) + 1);
+  Arr[High(Arr)] := Value;
 end;
 
-destructor TNode.Destroy;
+class procedure TAppender<T>.AddRange(var Arr: TArray<T>; const Value: TArray<T>);
 var
-  Key: Char;
+  Index: Integer;
 begin
-  for Key := Low(Next) to High(Next) do
-    if Assigned(Next[Key]) then
-      FreeAndNil(Next[Key]);
-  FreeAndNil(Output);
-  inherited;
+  Index := Length(Arr);
+  SetLength(Arr, Length(Arr) + Length(Value));
+  for var i := Low(Value) to High(Value) do
+    Arr[Index + i] := Value[i];
 end;
 
 { TAhoCorasick }
 
 constructor TAhoCorasick.Create;
 begin
-  Root := TNode.Create;
+
 end;
 
 destructor TAhoCorasick.Destroy;
+var
+  Node: PNode;
+  Stack: TStack<PNode>;
 begin
-  FreeAndNil(Root);
-  inherited;
+  Stack := TStack<PNode>.Create;
+  try
+    Stack.Push(@Root);
+    while Stack.Count > 0 do
+    begin
+      Node := Stack.Pop;
+      for var i := Low(Node.Next) to High(Node.Next) do
+        if Assigned(Node.Next[i]) then
+          Stack.Push(Node.Next[i]);
+      if Assigned(Node) and (Node <> @Root) then
+        Dispose(Node);
+    end;
+  finally
+    FreeAndNil(Stack);
+  end;
+  inherited Destroy;
 end;
 
 procedure TAhoCorasick.AddPattern(const aPattern: string);
 var
-  Node: TNode;
-  i: Integer;
+  AnsiTextBuf: TBytes;
+  NextNode:PNode;
+  Node: PNode;
 begin
-  Node := Root;
-  for i := 1 to Length(aPattern) do
+  Node := @Root;
+  AnsiTextBuf := TEncoding.ASCII.GetBytes(aPattern);
+  for var i := Low(AnsiTextBuf) to High(AnsiTextBuf) do
   begin
-    if not Assigned(Node.Next[aPattern[i]]) then
-      Node.Next[aPattern[i]] := TNode.Create;
-    Node := Node.Next[aPattern[i]];
+    if not Assigned(Node.Next[AnsiChar(AnsiTextBuf[i])]) then
+    begin
+      New(NextNode);
+      FillChar(NextNode^.Next, SizeOf(NextNode^.Next), 0);
+      Node.Next[AnsiChar(AnsiTextBuf[i])] := NextNode;
+    end;
+    Node := Node.Next[AnsiChar(AnsiTextBuf[i])];
   end;
-  Node.Output.Add(aPattern);
+  TAppender<string>.AddItem(Node.Output, aPattern);
 end;
 
 procedure TAhoCorasick.Build;
 var
-  FailNode: TNode;
-  Key: Char;
-  NextNode: TNode;
-  Node: TNode;
-  Queue: TQueue<TNode>;
+  FailNode: PNode;
+  Key: AnsiChar;
+  NextNode: PNode;
+  Node: PNode;
+  Queue: TQueue<PNode>;
 begin
-  Queue := TQueue<TNode>.Create;
+  Queue := TQueue<PNode>.Create;
   try
-    Queue.Enqueue(Root);
-    while Queue.Count <> 0 do
+    Queue.Enqueue(@Root);
+    while (Queue.Count <> 0) do
     begin
       Node := Queue.Dequeue;
       for Key := Low(Node.Next) to High(Node.Next) do
@@ -98,14 +123,13 @@ begin
         FailNode := Node.Fail;
         while (Assigned(FailNode)) and (not Assigned(FailNode.Next[Key])) do
           FailNode := FailNode.Fail;
-
         if Assigned(NextNode) then
         begin
           if Assigned(FailNode) then
             NextNode.Fail := FailNode.Next[Key]
           else
-            NextNode.Fail := Root;
-          NextNode.Output.AddStrings(NextNode.Fail.Output);
+            NextNode.Fail := @Root;
+          TAppender<string>.AddRange(Node.Output, NextNode.Fail.Output);
           Queue.Enqueue(NextNode);
         end;
       end;
@@ -115,27 +139,27 @@ begin
   end;
 end;
 
-function TAhoCorasick.Search(const aText: string): TStringList;
+function TAhoCorasick.Search(const aText: string): TArray<string>;
 var
-  i: Integer;
-  NextNode: TNode;
-  Node: TNode;
+  AnsiTextBuf: TBytes;
+  NextNode: PNode;
+  Node: PNode;
 begin
-  Result := TStringList.Create(TDuplicates.dupIgnore, False, False);
-  Node := Root;
-  for i := 1 to Length(aText) do
+  Node := @Root;
+  AnsiTextBuf := TEncoding.ASCII.GetBytes(aText);
+  for var i := Low(AnsiTextBuf) to High(AnsiTextBuf) do
   begin
-    while (Assigned(Node)) and (not Assigned(Node.Next[aText[i]])) do
+    while (Assigned(Node)) and (not Assigned(Node.Next[AnsiChar(AnsiTextBuf[i])])) do
       Node := Node.Fail;
     if Assigned(Node) then
-      Node := Node.Next[aText[i]];
+      Node := Node.Next[AnsiChar(AnsiTextBuf[i])];
     if not Assigned(Node) then
-      Node := Root;
+      Node := @Root;
     NextNode := Node;
     while Assigned(NextNode) do
     begin
-      if (NextNode.Output.Count > 0) then
-        Result.AddStrings(NextNode.Output);
+      if (Length(NextNode.Output) > 0) then
+        TAppender<string>.AddRange(Result, NextNode.Output);
       NextNode := NextNode.Fail;
     end;
   end;

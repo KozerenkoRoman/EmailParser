@@ -38,6 +38,7 @@ type
     procedure UpdateRegExp;
     procedure UpdateFilter(const aOperation: TFilterOperation);
   protected
+    procedure UpdateProject; virtual;
     function GetIdentityName: string; virtual;
     procedure Deinitialize; virtual;
     procedure Initialize; virtual;
@@ -74,6 +75,11 @@ begin
 end;
 
 procedure TFrameCustom.UpdateFilter(const aOperation: TFilterOperation);
+begin
+  // nothing
+end;
+
+procedure TFrameCustom.UpdateProject;
 begin
   // nothing
 end;

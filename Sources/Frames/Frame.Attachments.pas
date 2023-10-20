@@ -29,7 +29,7 @@ type
     procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
-    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
   private const
     COL_POSITION     = 0;
@@ -41,7 +41,6 @@ type
 
     C_IDENTITY_NAME = 'frameAttachments';
   private
-    procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
     //IEmailChange
     procedure FocusChanged(const aData: PResultData);
 
@@ -51,7 +50,6 @@ type
     procedure UpdateColumns;
   protected
     function GetIdentityName: string; override;
-    procedure SearchText(const aText: string); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -164,6 +162,7 @@ end;
 procedure TframeAttachments.aOpenAttachFileExecute(Sender: TObject);
 var
   Data: PAttachment;
+  FileName: string;
 begin
   inherited;
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
@@ -171,10 +170,24 @@ begin
     Data := TGeneral.AttachmentList.GetItem(PAttachData(vstTree.FocusedNode^.GetData).Hash);
     if Assigned(Data) then
     begin
-      if TFile.Exists(Data^.FileName) then
-        TFileUtils.ShellOpen(Data^.FileName)
+      FileName := Data^.FileName;
+      if TFile.Exists(FileName) then
+        TFileUtils.ShellOpen(FileName)
+      else if Data^.FromZip then
+      begin
+        Data := TGeneral.AttachmentList.GetItem(Data^.ParentHash);
+        if Assigned(Data) then
+        begin
+          if TFile.Exists(Data^.FileName) then
+            TFileUtils.ShellOpen(Data^.FileName)
+          else
+            TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+        end
+        else
+          TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [FileName]));
+      end
       else
-        TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+        TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [FileName]));
     end;
   end;
 end;
@@ -240,7 +253,7 @@ begin
     if Assigned(AttachData) and (Column >= C_FIXED_COLUMNS) then
       if not AttachData^.Matches[Column - C_FIXED_COLUMNS].IsEmpty then
       begin
-        TargetCanvas.Brush.Color := TGeneral.RegExpColumns[Column - C_FIXED_COLUMNS].Color;
+        TargetCanvas.Brush.Color := TGeneral.PatternList[Column - C_FIXED_COLUMNS].Color;
         TargetCanvas.FillRect(CellRect);
       end;
   end
@@ -258,7 +271,7 @@ begin
       end
       else if (Data^.Matches[Column - C_FIXED_COLUMNS].Count > 0) then
       begin
-        TargetCanvas.Brush.Color := TGeneral.RegExpColumns[Column - C_FIXED_COLUMNS].Color;
+        TargetCanvas.Brush.Color := TGeneral.PatternList[Column - C_FIXED_COLUMNS].Color;
         TargetCanvas.FillRect(CellRect);
       end;
   end;
@@ -344,33 +357,6 @@ begin
   Data := TGeneral.AttachmentList.GetItem(PAttachData(Node^.GetData).Hash);
   if (Column in [COL_FILE_NAME, COL_SHORT_NAME]) and Data^.FromDB then
     TargetCanvas.Font.Color := clNavy;
-end;
-
-procedure TframeAttachments.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
-var
-  CellText: string;
-begin
-  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
-  Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
-end;
-
-procedure TframeAttachments.SearchText(const aText: string);
-var
-  Node: PVirtualNode;
-begin
-  inherited;
-  vstTree.BeginUpdate;
-  vstTree.FullExpand(nil);
-  try
-    Node := vstTree.IterateSubtree(nil, SearchForText, Pointer(aText));
-    if Assigned(Node) then
-    begin
-      vstTree.FocusedNode    := Node;
-      vstTree.Selected[Node] := True;
-    end;
-  finally
-    vstTree.EndUpdate;
-  end;
 end;
 
 procedure TframeAttachments.FocusChanged(const aData: PResultData);

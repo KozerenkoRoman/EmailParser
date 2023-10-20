@@ -8,7 +8,7 @@ uses
   Vcl.Forms, Vcl.Dialogs, VirtualTrees, Vcl.ExtCtrls, System.Generics.Collections, System.UITypes, DebugWriter,
   Global.Types, System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin,
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
-  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
+  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
   Vcl.WinXPanels, Frame.Custom;
 {$ENDREGION}
@@ -30,7 +30,7 @@ type
     procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
     procedure vstTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
-    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
   private const
     COL_PATH        = 0;
@@ -39,9 +39,8 @@ type
     COL_WITH_SUBDIR = 3;
 
     C_IDENTITY_NAME = 'framePathes';
-  private
-    procedure SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
   protected
+    procedure UpdateProject; override;
     function GetIdentityName: string; override;
     procedure SaveToXML; override;
     procedure LoadFromXML; override;
@@ -51,7 +50,6 @@ type
     procedure Translate; override;
     procedure Initialize; override;
     procedure Deinitialize; override;
-    procedure SearchText(const aText: string); override;
   end;
 
 implementation
@@ -72,17 +70,17 @@ begin
   inherited;
 end;
 
-function TframePathes.GetIdentityName: string;
-begin
-  Result := C_IDENTITY_NAME;
-end;
-
 procedure TframePathes.Initialize;
 begin
   inherited Initialize;
   LoadFromXML;
   vstTree.FullExpand;
   Translate;
+end;
+
+procedure TframePathes.Deinitialize;
+begin
+  inherited Deinitialize;
 end;
 
 procedure TframePathes.Translate;
@@ -93,9 +91,15 @@ begin
   vstTree.Header.Columns[COL_WITH_SUBDIR].Text := TLang.Lang.Translate('WithSubdir');
 end;
 
-procedure TframePathes.Deinitialize;
+procedure TframePathes.UpdateProject;
 begin
-  inherited Deinitialize;
+  inherited;
+  LoadFromXML;
+end;
+
+function TframePathes.GetIdentityName: string;
+begin
+  Result := C_IDENTITY_NAME;
 end;
 
 procedure TframePathes.SaveToXML;
@@ -114,10 +118,15 @@ procedure TframePathes.SaveToXML;
 
 var
   Node: PVirtualNode;
+  Section: string;
 begin
   inherited;
-  TGeneral.XMLParams.EraseSection('Path');
-  TGeneral.XMLParams.CurrentSection := 'Path';
+  if not TGeneral.CurrentProject.Hash.IsEmpty then
+    Section := 'Path.' + TGeneral.CurrentProject.Hash
+  else
+    Section := 'Path';
+  TGeneral.XMLParams.EraseSection(Section);
+  TGeneral.XMLParams.CurrentSection := Section;
   try
     Node := vstTree.GetFirst;
     while Assigned(Node) do
@@ -318,33 +327,6 @@ begin
     COL_INFO:
       CellText := Data^.Info;
   end
-end;
-
-procedure TframePathes.SearchForText(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
-var
-  CellText: string;
-begin
-  vstTreeGetText(Sender, Node, vstTree.FocusedColumn, ttNormal, CellText);
-  Abort := CellText.ToUpper.Contains(string(Data).ToUpper);
-end;
-
-procedure TframePathes.SearchText(const aText: string);
-var
-  Node: PVirtualNode;
-begin
-  inherited;
-  vstTree.BeginUpdate;
-  vstTree.FullExpand(nil);
-  try
-    Node := vstTree.IterateSubtree(nil, SearchForText, Pointer(aText));
-    if Assigned(Node) then
-    begin
-      vstTree.FocusedNode := Node;
-      vstTree.Selected[Node] := True;
-    end;
-  finally
-    vstTree.EndUpdate;
-  end;
 end;
 
 end.

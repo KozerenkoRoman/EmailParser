@@ -1,6 +1,7 @@
 inherited frameSource: TframeSource
   Width = 551
   Height = 284
+  OnEnter = FrameEnter
   ExplicitWidth = 551
   ExplicitHeight = 284
   inherited tbMain: TToolBar
@@ -87,7 +88,7 @@ inherited frameSource: TframeSource
     PopupMenu = pmFrame
     TabOrder = 1
     TextMargin = 3
-    TreeOptions.AutoOptions = [toAutoDropExpand, toAutoExpand, toAutoSort, toAutoTristateTracking, toAutoChangeScale]
+    TreeOptions.AutoOptions = [toAutoDropExpand, toAutoExpand, toAutoScroll, toAutoScrollOnExpand, toAutoSort, toAutoTristateTracking, toAutoChangeScale]
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toEditable, toFullRepaintOnResize, toGridExtensions, toInitOnSave, toWheelPanning, toEditOnClick, toEditOnDblClick]
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowTreeLines, toShowVertGridLines, toThemeAware, toUseBlendedSelection, toShowFilteredNodes]
     TreeOptions.SelectionOptions = [toExtendedFocus, toAlwaysSelectNode]

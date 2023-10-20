@@ -17,15 +17,22 @@ uses
 {$ENDREGION}
 
 type
-  TDaMod = class(TDataModule, IProgress)
+  TDaMod = class(TDataModule, IProgress, IConfig)
     Connection         : TFDConnection;
     FDSQLiteDriverLink : TFDPhysSQLiteDriverLink;
-    qAllEmails         : TFDQuery;
     qAttachments       : TFDQuery;
     qEmail             : TFDQuery;
     qEmailBodyAndText  : TFDQuery;
+    qInsProject: TFDQuery;
+    qEmails: TFDQuery;
   private
     FThreadEmails: TThreadEmails;
+
+    //IConfig
+    procedure UpdateRegExp;
+    procedure UpdateFilter(const aOperation: TFilterOperation);
+    procedure UpdateLanguage;
+    procedure UpdateProject;
 
     // IProgress
     procedure ClearTree;
@@ -36,11 +43,13 @@ type
     procedure CompletedAttach(const aAttachData: PAttachment);
 
     class function GetDecompressStr(const aSQLText, aHash: string): string;
-    procedure FillAllEmailsRecord(const aWithAttachments: Boolean = False);
+//    procedure FillAllEmailsRecord(const aWithAttachments: Boolean); overload;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetBodyAndText(const aHash: string): TArray<string>;
+    procedure FillAllEmailsRecord; overload;
+
     class function GetBodyAsRawText(const aHash: string): string;
     class function GetAttachmentAsRawText(const aHash: string): string;
     class function GetBodyAsParsedText(const aHash: string): string;
@@ -63,12 +72,14 @@ constructor TDaMod.Create(AOwner: TComponent);
 begin
   inherited;
   TPublishers.ProgressPublisher.Subscribe(Self);
+  TPublishers.ConfigPublisher.Subscribe(Self);
   FThreadEmails := TThreadEmails.Create;
 end;
 
 destructor TDaMod.Destroy;
 begin
   TPublishers.ProgressPublisher.Unsubscribe(Self);
+  TPublishers.ConfigPublisher.Unsubscribe(Self);
   FreeAndNil(FThreadEmails);
   inherited;
 end;
@@ -101,8 +112,6 @@ begin
     qEmail.Prepare;
     qEmailBodyAndText.Prepare;
     qAttachments.Prepare;
-    if TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'LoadRecordsFromDB', True) then
-      FillAllEmailsRecord(True);
   except
     on E: Exception do
       LogWriter.Write(ddError, Self, 'Initialize', E.Message);
@@ -195,93 +204,88 @@ begin
     FThreadEmails.ResultDataQueue.PushItem(aResultData);
 end;
 
-procedure TDaMod.CompletedAttach(const aAttachData: PAttachment);
-begin
-  // nothing
-end;
-
-procedure TDaMod.StartProgress(const aMaxPosition: Integer);
-begin
-  // nothing
-end;
-
-procedure TDaMod.ClearTree;
-begin
-  // nothing
-end;
-
-procedure TDaMod.Progress;
-begin
-  // nothing
-end;
-
-procedure TDaMod.EndProgress;
-begin
-  // nothing
-end;
-
-procedure TDaMod.FillAllEmailsRecord(const aWithAttachments: Boolean = False);
+procedure TDaMod.FillAllEmailsRecord;
 var
-  i: Integer;
-  ResultData: PResultData;
-  Attachment: PAttachment;
+  arrAttach  : TArray<string>;
+  Attachment : PAttachment;
+  ResultData : PResultData;
 begin
-  LogWriter.Write(ddEnterMethod, Self, 'FillAllEmailsRecord');
-  qAllEmails.Open;
-  try
-    qAllEmails.FetchAll;
-    TGeneral.EmailList.SetCapacity(qAllEmails.RecordCount);
-    while not qAllEmails.Eof do
-    begin
-      New(ResultData);
-      ResultData.Clear;
-      ResultData.Hash        := qAllEmails.FieldByName('HASH').AsString;
-      ResultData.FileName    := qAllEmails.FieldByName('FILE_NAME').AsString;
-      ResultData.ShortName   := qAllEmails.FieldByName('SHORT_NAME').AsString;
-      ResultData.MessageId   := qAllEmails.FieldByName('MESSAGE_ID').AsString;
-      ResultData.Subject     := qAllEmails.FieldByName('SUBJECT').AsString;
-      ResultData.From        := qAllEmails.FieldByName('ADDRESS_FROM').AsString;
-      ResultData.ContentType := qAllEmails.FieldByName('CONTENT_TYPE').AsString;
-      ResultData.TimeStamp   := qAllEmails.FieldByName('TIME_STAMP').AsDateTime;
+  if TGeneral.CurrentProject.Hash.IsEmpty then
+  begin
+    LogWriter.Write(ddWarning, Self, 'FillAllEmailsRecord', 'Current project is empty');
+    Exit;
+  end;
+  TGeneral.AttachmentList.ClearData;
+  TGeneral.EmailList.ClearData;
 
-      if aWithAttachments then
+  LogWriter.Write(ddEnterMethod, Self, 'FillAllEmailsRecord');
+  try
+    qEmails.ParamByName('PROJECT_ID').AsString := TGeneral.CurrentProject.Hash;
+    qEmails.Open;
+    qEmails.FetchAll;
+
+    qAttachments.ParamByName('PROJECT_ID').AsString := TGeneral.CurrentProject.Hash;
+    qAttachments.Open;
+    qAttachments.FetchAll;
+    TPublishers.ProgressPublisher.StartProgress(qEmails.RecordCount + qAttachments.RecordCount);
+
+    try
+      TGeneral.EmailList.SetCapacity(qEmails.RecordCount);
+      while not qEmails.Eof do
       begin
-        qAttachments.ParamByName('PARENT_HASH').AsString := ResultData.Hash;
-        try
-          qAttachments.Open;
-          qAttachments.FetchAll;
-          ResultData.Attachments.Count := qAttachments.RecordCount;
-          qAttachments.First;
-          i := 0;
-          while not qAttachments.Eof do
-          begin
-            New(Attachment);
-//            Attachment.ParsedText    := TZipPack.DecompressStr(qAttachments.FieldByName('PARSED_TEXT').AsBytes);
-            Attachment.ContentID     := qAttachments.FieldByName('CONTENT_ID').AsString;
-            Attachment.ContentType   := qAttachments.FieldByName('CONTENT_TYPE').AsString;
-            Attachment.FileName      := qAttachments.FieldByName('FILE_NAME').AsString;
-            Attachment.ShortName     := qAttachments.FieldByName('SHORT_NAME').AsString;
-            Attachment.FromZip       := qAttachments.FieldByName('FROM_ZIP').AsInteger.ToBoolean;
-            Attachment.Hash          := qAttachments.FieldByName('HASH').AsString;
-            Attachment.ImageIndex    := qAttachments.FieldByName('IMAGE_INDEX').AsInteger;
-            Attachment.Matches.Count := ResultData.Matches.Count;
-            Attachment.ParentHash    := ResultData.Hash;
-            Attachment.ParentName    := ResultData.ShortName;
-            Attachment.FromDB        := True;
-            TGeneral.AttachmentList.Add(Attachment.Hash, Attachment);
-            ResultData.Attachments[i] := Attachment.Hash;
-            qAttachments.Next;
-            Inc(i);
-          end;
-        finally
-          qAttachments.Close;
+        New(ResultData);
+        ResultData.Clear;
+        ResultData.Hash        := qEmails.FieldByName('HASH').AsString;
+        ResultData.FileName    := qEmails.FieldByName('FILE_NAME').AsString;
+        ResultData.ShortName   := qEmails.FieldByName('SHORT_NAME').AsString;
+        ResultData.MessageId   := qEmails.FieldByName('MESSAGE_ID').AsString;
+        ResultData.Subject     := qEmails.FieldByName('SUBJECT').AsString;
+        ResultData.From        := qEmails.FieldByName('ADDRESS_FROM').AsString;
+        ResultData.ContentType := qEmails.FieldByName('CONTENT_TYPE').AsString;
+        ResultData.TimeStamp   := qEmails.FieldByName('TIME_STAMP').AsDateTime;
+        ResultData.Matches.Count := TGeneral.PatternList.Count;
+
+        if not qEmails.FieldByName('ATTACH').AsString.IsEmpty then  //IsNull not work
+        begin
+          arrAttach := qEmails.FieldByName('ATTACH').AsString.Split([';']);
+          ResultData.Attachments.AddRange(arrAttach);
         end;
+        qEmails.Next;
+        TGeneral.EmailList.Add(ResultData.Hash, ResultData);
+        TPublishers.ProgressPublisher.CompletedItem(ResultData);
+        TPublishers.ProgressPublisher.Progress;
       end;
-      qAllEmails.Next;
-      TGeneral.EmailList.Add(ResultData.Hash, ResultData);
+    finally
+      qEmails.Close;
     end;
+
+    try
+      TGeneral.AttachmentList.SetCapacity(qAttachments.RecordCount);
+      while not qAttachments.Eof do
+      begin
+        New(Attachment);
+        Attachment.ContentID     := qAttachments.FieldByName('CONTENT_ID').AsString;
+        Attachment.ContentType   := qAttachments.FieldByName('CONTENT_TYPE').AsString;
+        Attachment.FileName      := qAttachments.FieldByName('FILE_NAME').AsString;
+        Attachment.ShortName     := qAttachments.FieldByName('SHORT_NAME').AsString;
+        Attachment.FromZip       := qAttachments.FieldByName('FROM_ZIP').AsInteger.ToBoolean;
+        Attachment.Hash          := qAttachments.FieldByName('HASH').AsString;
+        Attachment.ImageIndex    := qAttachments.FieldByName('IMAGE_INDEX').AsInteger;
+        Attachment.ParentHash    := qAttachments.FieldByName('PARENT_HASH').AsString;
+        Attachment.ParentName    := qAttachments.FieldByName('PARENT_NAME').AsString;
+        Attachment.FromDB        := True;
+        Attachment.Matches.Count := TGeneral.PatternList.Count;
+        TGeneral.AttachmentList.Add(Attachment.Hash, Attachment);
+        TPublishers.ProgressPublisher.CompletedAttach(Attachment);
+        TPublishers.ProgressPublisher.Progress;
+        qAttachments.Next;
+      end;
+    finally
+      qAttachments.Close;
+    end;
+
   finally
-    qAllEmails.Close;
+    TPublishers.ProgressPublisher.EndProgress;
     LogWriter.Write(ddExitMethod, Self, 'FillAllEmailsRecord');
   end;
 end;
@@ -303,6 +307,60 @@ begin
   finally
     qEmailBodyAndText.Close;
   end;
+end;
+
+procedure TDaMod.CompletedAttach(const aAttachData: PAttachment);
+begin
+  // nothing
+end;
+
+procedure TDaMod.StartProgress(const aMaxPosition: Integer);
+begin
+  // nothing
+end;
+
+procedure TDaMod.UpdateFilter(const aOperation: TFilterOperation);
+begin
+  // nothing
+end;
+
+procedure TDaMod.UpdateLanguage;
+begin
+  // nothing
+end;
+
+procedure TDaMod.UpdateProject;
+begin
+  if not TGeneral.CurrentProject.Hash.IsEmpty then
+    try
+      qInsProject.ParamByName('NAME').AsString := TGeneral.CurrentProject.Name;
+      qInsProject.ParamByName('HASH').AsString := TGeneral.CurrentProject.Hash;
+      qInsProject.ParamByName('INFO').AsString := TGeneral.CurrentProject.Info;
+      qInsProject.ExecSQL;
+    except
+      on E: Exception do
+        LogWriter.Write(ddError, Self, 'UpdateProject', E.Message);
+    end;
+end;
+
+procedure TDaMod.UpdateRegExp;
+begin
+  // nothing
+end;
+
+procedure TDaMod.ClearTree;
+begin
+  // nothing
+end;
+
+procedure TDaMod.Progress;
+begin
+  // nothing
+end;
+
+procedure TDaMod.EndProgress;
+begin
+  // nothing
 end;
 
 end.

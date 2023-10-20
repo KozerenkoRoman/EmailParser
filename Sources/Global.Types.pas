@@ -17,6 +17,14 @@ type
     function ToString: string;
   end;
 
+  PProject = ^TProject;
+  TProject = record
+    Current : Boolean;
+    Hash    : string;
+    Name    : string;
+    Info    : string;
+  end;
+
   PParamPath = ^TParamPath;
   TParamPath = record
     Path       : string;
@@ -118,20 +126,15 @@ type
 
   PPatternData = ^TPatternData;
   TPatternData = record
-    TypePattern    : TTypePattern;
-    ParameterName  : string;
-    Pattern        : string;
-    GroupIndex     : Integer;
-    UseRawText     : Boolean;
-    Color          : TColor;
-    AhoCorasickObj : TAhoCorasick;
+    TypePattern   : TTypePattern;
+    ParameterName : string;
+    Pattern       : string;
+    GroupIndex    : Integer;
+    UseRawText    : Boolean;
+    Color         : TColor;
+    IsSelected    : Boolean;
     procedure Assign(Source: TPatternData);
     procedure Clear;
-  end;
-
-  TRegExp = record
-    Color: TColor;
-    IsSelected: Boolean;
   end;
 
   TPasswordList = class(TObjectDictionary<string, PPassword>)
@@ -183,11 +186,12 @@ type
     class procedure NoHibernate; static;
     class procedure Initialize; static;
     class var
+      ActiveFrame    : TFrame;
       AttachmentList : TAttachmentList;
+      CurrentProject : TProject;
       EmailList      : TEmailList;
       PasswordList   : TPasswordList;
       PatternList    : TPatternList;
-      RegExpColumns  : TArray<TRegExp>;
   end;
 
   TAttachmentDir = (adAttachment, adSubAttachment, adUserDefined);
@@ -247,9 +251,14 @@ class function TGeneral.GetPathList: TParamPathArray;
 var
   Data: TParamPath;
   i: Integer;
+  Section: string;
 begin
+  if not CurrentProject.Hash.IsEmpty then
+    Section := 'Path.' + CurrentProject.Hash
+  else
+    Section := 'Path';
   XMLParams.Open;
-  XMLParams.CurrentSection := 'Path';
+  XMLParams.CurrentSection := Section;
   try
     i := 0;
     Result.Count := XMLParams.ChildCount;
@@ -274,9 +283,14 @@ class function TGeneral.GetSorterPathList: TSorterPathArray;
 var
   Data: TSorterPath;
   i: Integer;
+  Section: string;
 begin
+  if not CurrentProject.Hash.IsEmpty then
+    Section := 'Sorter.' + CurrentProject.Hash
+  else
+    Section := 'Sorter';
   XMLParams.Open;
-  XMLParams.CurrentSection := 'Sorter';
+  XMLParams.CurrentSection := Section;
   try
     i := 0;
     Result.Count := XMLParams.ChildCount;
@@ -302,6 +316,8 @@ begin
   XMLParams.Open;
   PasswordList.LoadData;
   PatternList.LoadData;
+  ActiveFrame    := nil;
+  CurrentProject := Default(TProject);
 end;
 
 class function TGeneral.GetCounterValue: Integer;
@@ -582,11 +598,7 @@ end;
 procedure TPatternList.ClearData;
 begin
   for var item in Self do
-  begin
-//    if Assigned(item.AhoCorasickObj) then
-//      FreeAndNil(item.AhoCorasickObj);
     Dispose(item);
-  end;
   Self.Clear;
 end;
 
@@ -608,18 +620,7 @@ begin
         Data^.GroupIndex    := TGeneral.XMLParams.Attributes.GetAttributeValue('GroupIndex', 0);
         Data^.UseRawText    := TGeneral.XMLParams.Attributes.GetAttributeValue('UseRawText', False);
         Data^.Color         := TGeneral.XMLParams.Attributes.GetAttributeValue('Color', clRed  {arrWebColors[Random(High(arrWebColors))].Color});
-
-        if (Data^.TypePattern = TTypePattern.tpAhoCorasick) then
-        begin
-          Data^.AhoCorasickObj := TAhoCorasick.Create;
-          var arrKeyWords := Data^.Pattern.Split([#10]);
-          for var j := Low(arrKeyWords) to High(arrKeyWords) do
-            if not arrKeyWords[j].Trim.IsEmpty then
-              Data^.AhoCorasickObj.AddPattern(arrKeyWords[j].Trim);
-          Data^.AhoCorasickObj.Build;
-        end
-        else
-          Data^.AhoCorasickObj := nil;
+        Data^.IsSelected    := True;
         Self.Add(Data);
       end;
       TGeneral.XMLParams.NextKey;
@@ -628,12 +629,6 @@ begin
     TGeneral.XMLParams.CurrentSection := '';
   end;
 
-  SetLength(TGeneral.RegExpColumns, Self.Count);
-  for var i := 0 to Self.Count - 1 do
-  begin
-    TGeneral.RegExpColumns[i].Color      := Self[i].Color;
-    TGeneral.RegExpColumns[i].IsSelected := True;
-  end;
   TGeneral.EmailList.UpdateMatches(Self.Count);
   TGeneral.AttachmentList.UpdateMatches(Self.Count);
 end;
@@ -648,13 +643,11 @@ begin
   Self.GroupIndex     := Source.GroupIndex;
   Self.UseRawText     := Source.UseRawText;
   Self.Color          := Source.Color;
-  Self.AhoCorasickObj := nil;
+  Self.IsSelected     := Source.IsSelected;
 end;
 
 procedure TPatternData.Clear;
 begin
-  if Assigned(Self.AhoCorasickObj) then
-    FreeAndNil(Self.AhoCorasickObj);
   Self := Default(TPatternData);
 end;
 
