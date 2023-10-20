@@ -64,6 +64,7 @@ inherited frameProject: TframeProject
     DefaultText = ''
   end
   inherited alFrame: TActionList
+    Left = 96
     inherited aAdd: TAction
       OnExecute = aAddExecute
     end
@@ -91,11 +92,14 @@ inherited frameProject: TframeProject
       ImageIndex = 83
       ImageName = 'page_white_star'
       OnExecute = aSetCurrentExecute
+      OnUpdate = aSetCurrentUpdate
     end
     object aLoadProject: TAction
       Hint = 'Load Project'
       ImageIndex = 43
       ImageName = 'database_lightning'
+      OnExecute = aLoadProjectExecute
+      OnUpdate = aLoadProjectUpdate
     end
   end
 end

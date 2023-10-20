@@ -23,6 +23,7 @@ resourcestring
                      '  MESSAGE_ID   text,'                                            + sLineBreak +
                      '  FILE_NAME    text,'                                            + sLineBreak +
                      '  SHORT_NAME   text,'                                            + sLineBreak +
+                     '  ATTACH       text,'                                            + sLineBreak +
                      '  SUBJECT      text,'                                            + sLineBreak +
                      '  BODY         blob,'                                            + sLineBreak +
                      '  PARSED_TEXT  blob,'                                            + sLineBreak +
@@ -45,11 +46,11 @@ resourcestring
                      'create unique index if not exists UI_HASH on ATTACHMENTS(HASH);' + sLineBreak +
                      'create index if not exists IDX_PARENT_HASH on ATTACHMENTS(PARENT_HASH ASC);';
 
-  rsSQLInsertEmail = 'insert or ignore into EMAILS(HASH, PROJECT_ID, MESSAGE_ID, FILE_NAME, SHORT_NAME, SUBJECT, BODY, PARSED_TEXT, ADDRESS_FROM, CONTENT_TYPE, TIME_STAMP) ' + sLineBreak +
-                     '                      values(:HASH, :PROJECT_ID, :MESSAGE_ID, :FILE_NAME, :SHORT_NAME, :SUBJECT, :BODY, :PARSED_TEXT, :ADDRESS_FROM, :CONTENT_TYPE, :TIME_STAMP)';
+  rsSQLInsertEmail = 'insert or ignore into EMAILS(HASH, PROJECT_ID, MESSAGE_ID, FILE_NAME, SHORT_NAME, ATTACH, SUBJECT, BODY, PARSED_TEXT, ADDRESS_FROM, CONTENT_TYPE, TIME_STAMP) ' + sLineBreak +
+                     '                      values(:HASH, :PROJECT_ID, :MESSAGE_ID, :FILE_NAME, :SHORT_NAME, :ATTACH, :SUBJECT, :BODY, :PARSED_TEXT, :ADDRESS_FROM, :CONTENT_TYPE, :TIME_STAMP)';
 
   rsSQLProjectEmail = 'insert or ignore into PROJECT(HASH, NAME, INFO) ' + sLineBreak +
-                     '                      values(:HASH, :NAME, :INFO,)';
+                     '                      values(:HASH, :NAME, :INFO)';
 
   rsSQLInsertAttachment = 'insert or ignore into ATTACHMENTS(HASH, PROJECT_ID, PARENT_HASH, CONTENT_ID, FILE_NAME, SHORT_NAME, CONTENT_TYPE, PARSED_TEXT, FROM_ZIP, IMAGE_INDEX) ' + sLineBreak +
                           '                           values(:HASH, :PROJECT_ID, :PARENT_HASH, :CONTENT_ID, :FILE_NAME, :SHORT_NAME, :CONTENT_TYPE, :PARSED_TEXT, :FROM_ZIP, :IMAGE_INDEX)';

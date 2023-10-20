@@ -8,7 +8,7 @@ uses
   Vcl.Forms, Vcl.Dialogs, VirtualTrees, Vcl.ExtCtrls, System.Generics.Collections, System.UITypes, DebugWriter,
   Global.Types, System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin,
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
-  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
+  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
   Vcl.WinXPanels, Frame.Custom;
 {$ENDREGION}
@@ -40,6 +40,7 @@ type
 
     C_IDENTITY_NAME = 'framePathes';
   protected
+    procedure UpdateProject; override;
     function GetIdentityName: string; override;
     procedure SaveToXML; override;
     procedure LoadFromXML; override;
@@ -69,17 +70,17 @@ begin
   inherited;
 end;
 
-function TframePathes.GetIdentityName: string;
-begin
-  Result := C_IDENTITY_NAME;
-end;
-
 procedure TframePathes.Initialize;
 begin
   inherited Initialize;
   LoadFromXML;
   vstTree.FullExpand;
   Translate;
+end;
+
+procedure TframePathes.Deinitialize;
+begin
+  inherited Deinitialize;
 end;
 
 procedure TframePathes.Translate;
@@ -90,9 +91,15 @@ begin
   vstTree.Header.Columns[COL_WITH_SUBDIR].Text := TLang.Lang.Translate('WithSubdir');
 end;
 
-procedure TframePathes.Deinitialize;
+procedure TframePathes.UpdateProject;
 begin
-  inherited Deinitialize;
+  inherited;
+  LoadFromXML;
+end;
+
+function TframePathes.GetIdentityName: string;
+begin
+  Result := C_IDENTITY_NAME;
 end;
 
 procedure TframePathes.SaveToXML;
@@ -111,10 +118,15 @@ procedure TframePathes.SaveToXML;
 
 var
   Node: PVirtualNode;
+  Section: string;
 begin
   inherited;
-  TGeneral.XMLParams.EraseSection('Path');
-  TGeneral.XMLParams.CurrentSection := 'Path';
+  if not TGeneral.CurrentProject.Hash.IsEmpty then
+    Section := 'Path.' + TGeneral.CurrentProject.Hash
+  else
+    Section := 'Path';
+  TGeneral.XMLParams.EraseSection(Section);
+  TGeneral.XMLParams.CurrentSection := Section;
   try
     Node := vstTree.GetFirst;
     while Assigned(Node) do

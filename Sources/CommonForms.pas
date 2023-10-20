@@ -22,6 +22,10 @@ type
     C_COMPONENT_MODULENAME      = 'ModuleName';
     C_COMPONENT_NAME            = 'CompName';
     C_SYS_SHOW_CLASS_INFO       = 'System Info';
+
+    SC_SYS_INFO     = WM_USER + 150;
+    WM_AFTER_SHOW   = WM_USER + 151;
+    WM_AFTER_CREATE = WM_USER + 152;
   protected const
     C_KEY_FORM_HEIGHT = 'Height';
     C_KEY_FORM_WIDTH  = 'Width';

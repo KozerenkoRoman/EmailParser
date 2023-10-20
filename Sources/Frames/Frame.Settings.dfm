@@ -68,17 +68,7 @@ inherited frameSettings: TframeSettings
       end
       item
         Column = 0
-        Control = lblLoadRecordsFromDB
-        Row = 4
-      end
-      item
-        Column = 1
-        Control = cbLoadRecordsFromDB
-        Row = 4
-      end
-      item
-        Column = 0
-        Control = Shape1
+        Control = ShapeDividingLine
         Row = 5
       end
       item
@@ -271,31 +261,7 @@ inherited frameSettings: TframeSettings
       Align = alLeft
       TabOrder = 3
     end
-    object lblLoadRecordsFromDB: TLabel
-      AlignWithMargins = True
-      Left = 3
-      Top = 143
-      Width = 314
-      Height = 29
-      Align = alClient
-      Alignment = taRightJustify
-      Caption = 'Load records from the database at startup'
-      Layout = tlCenter
-      ExplicitLeft = 97
-      ExplicitWidth = 220
-      ExplicitHeight = 15
-    end
-    object cbLoadRecordsFromDB: TCheckBox
-      AlignWithMargins = True
-      Left = 330
-      Top = 143
-      Width = 50
-      Height = 29
-      Margins.Left = 10
-      Align = alLeft
-      TabOrder = 4
-    end
-    object Shape1: TShape
+    object ShapeDividingLine: TShape
       Left = 1
       Top = 192
       Width = 317
@@ -354,7 +320,7 @@ inherited frameSettings: TframeSettings
       Height = 29
       Margins.Left = 10
       Align = alLeft
-      TabOrder = 5
+      TabOrder = 4
     end
     object edtMaxSize: TNumberBox
       AlignWithMargins = True
@@ -369,10 +335,9 @@ inherited frameSettings: TframeSettings
       Decimal = 0
       Mode = nbmCurrency
       MaxValue = 100.000000000000000000
-      TabOrder = 6
+      TabOrder = 5
       SpinButtonOptions.Placement = nbspCompact
       UseMouseWheel = True
-      ExplicitTop = 248
     end
     object edtNumberOfDays: TNumberBox
       AlignWithMargins = True
@@ -387,10 +352,9 @@ inherited frameSettings: TframeSettings
       Decimal = 0
       Mode = nbmCurrency
       MaxValue = 100.000000000000000000
-      TabOrder = 7
+      TabOrder = 6
       SpinButtonOptions.Placement = nbspCompact
       UseMouseWheel = True
-      ExplicitTop = 283
     end
   end
   inherited alFrame: TActionList

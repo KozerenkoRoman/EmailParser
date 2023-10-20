@@ -8,9 +8,8 @@ uses
   Vcl.Forms, Vcl.Dialogs, VirtualTrees, Vcl.ExtCtrls, System.Generics.Collections, System.UITypes, DebugWriter,
   Global.Types, System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin,
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
-  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
-  Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
-  Vcl.WinXPanels, Frame.Custom;
+  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Common.Types, DaImages, System.RegularExpressions, Frame.Source,
+  System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils, Frame.Custom;
 {$ENDREGION}
 
 type
@@ -41,6 +40,7 @@ type
     function GetIdentityName: string; override;
     procedure SaveToXML; override;
     procedure LoadFromXML; override;
+    procedure UpdateProject; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -87,6 +87,12 @@ begin
   vstTree.Header.Columns[COL_MASK].Text := TLang.Lang.Translate('Mask');
   vstTree.Header.Columns[COL_PATH].Text := TLang.Lang.Translate('Path');
   vstTree.Header.Columns[COL_INFO].Text := TLang.Lang.Translate('Info');
+end;
+
+procedure TframeSorter.UpdateProject;
+begin
+  inherited;
+  LoadFromXML;
 end;
 
 function TframeSorter.GetIdentityName: string;
@@ -140,10 +146,15 @@ procedure TframeSorter.SaveToXML;
 
 var
   Node: PVirtualNode;
+  Section: string;
 begin
   inherited;
-  TGeneral.XMLParams.EraseSection('Sorter');
-  TGeneral.XMLParams.CurrentSection := 'Sorter';
+  if not TGeneral.CurrentProject.Hash.IsEmpty then
+    Section := 'Sorter.' + TGeneral.CurrentProject.Hash
+  else
+    Section := 'Sorter';
+  TGeneral.XMLParams.EraseSection(Section);
+  TGeneral.XMLParams.CurrentSection := Section;
   try
     Node := vstTree.GetFirst;
     while Assigned(Node) do

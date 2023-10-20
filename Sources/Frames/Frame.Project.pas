@@ -8,9 +8,9 @@ uses
   Vcl.Forms, Vcl.Dialogs, VirtualTrees, Vcl.ExtCtrls, System.Generics.Collections, System.UITypes, DebugWriter,
   Global.Types, System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin,
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
-  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
+  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
-  Vcl.WinXPanels, Frame.Custom;
+  Vcl.WinXPanels, Frame.Custom, Publishers, DaModule, Performer;
 {$ENDREGION}
 
 type
@@ -34,6 +34,9 @@ type
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType);
+    procedure aSetCurrentUpdate(Sender: TObject);
+    procedure aLoadProjectUpdate(Sender: TObject);
+    procedure aLoadProjectExecute(Sender: TObject);
   private const
     COL_NAME = 0;
     COL_INFO = 1;
@@ -123,7 +126,7 @@ procedure TframeProject.LoadFromXML;
             if Data^.Current then
             begin
               TGeneral.CurrentProject := Data^;
-              PostMessage(Application.MainForm.Handle, WM_CURRENT_PROJECT, 0, 0);
+              TPublishers.ConfigPublisher.UpdateProject;
             end;
           end;
         end;
@@ -162,7 +165,7 @@ procedure TframeProject.SaveToXML;
     if Data^.Current then
     begin
       TGeneral.CurrentProject := Data^;
-      PostMessage(Application.MainForm.Handle, WM_CURRENT_PROJECT, 0, 0);
+      TPublishers.ConfigPublisher.UpdateProject;
     end;
   end;
 
@@ -209,9 +212,12 @@ begin
   begin
     Data := vstTree.FocusedNode^.GetData;
     if Data^.Current then
-      TGeneral.CurrentProject := Default (TProject);
+      TGeneral.CurrentProject := Default(TProject);
+    TGeneral.XMLParams.DeleteKey(TGeneral.XMLParams.GetXPath('Sorter.' + Data^.Hash));
+    TGeneral.XMLParams.DeleteKey(TGeneral.XMLParams.GetXPath('Path.' + Data^.Hash));
+    SaveToXML;
     vstTree.DeleteNode(vstTree.FocusedNode);
-    PostMessage(Application.MainForm.Handle, WM_CURRENT_PROJECT, 0, 0);
+    TPublishers.ConfigPublisher.UpdateProject;
   end;
 end;
 
@@ -219,6 +225,25 @@ procedure TframeProject.aDeleteUpdate(Sender: TObject);
 begin
   inherited;
   TAction(Sender).Enabled := not vstTree.IsEmpty;
+end;
+
+procedure TframeProject.aLoadProjectExecute(Sender: TObject);
+begin
+  inherited;
+  TPerformer.GetInstance.IsQuiet := True;
+  try
+    TPublishers.ProgressPublisher.ClearTree;
+    DaMod.FillAllEmailsRecord;
+  finally
+    TPerformer.GetInstance.IsQuiet := False;
+  end;
+end;
+
+procedure TframeProject.aLoadProjectUpdate(Sender: TObject);
+begin
+  inherited;
+  TAction(Sender).Enabled := not vstTree.IsEmpty and
+                             not TGeneral.CurrentProject.Hash.IsEmpty;
 end;
 
 procedure TframeProject.aRefreshExecute(Sender: TObject);
@@ -257,7 +282,14 @@ begin
     finally
       vstTree.EndUpdate;
     end;
+    SaveToXML;
   end;
+end;
+
+procedure TframeProject.aSetCurrentUpdate(Sender: TObject);
+begin
+  inherited;
+  TAction(Sender).Enabled := not vstTree.IsEmpty;
 end;
 
 procedure TframeProject.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
@@ -286,7 +318,7 @@ end;
 procedure TframeProject.vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
 begin
   inherited;
-  Allowed := (Column in [COL_NAME, COL_INFO]);
+  Allowed := (Column in [COL_NAME, COL_INFO, COL_HASH]);
 end;
 
 procedure TframeProject.vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UItypes.TImageIndex);
@@ -332,6 +364,8 @@ begin
       Data^.Info := NewText;
     COL_NAME:
       Data^.Name := NewText;
+    COL_HASH:
+      Data^.Hash := NewText;
   end;
 end;
 
@@ -341,7 +375,7 @@ var
 begin
   inherited;
   Data := Node^.GetData;
-  if (Column in [COL_NAME]) and Data^.Current then
+  if Data^.Current then
     TargetCanvas.Font.Color := clNavy;
 end;
 

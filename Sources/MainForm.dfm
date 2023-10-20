@@ -174,6 +174,7 @@ inherited frmMain: TfrmMain
     Color = 1986047
     ParentBackground = False
     TabOrder = 1
+    ExplicitWidth = 1093
     object lblProject: TLabel
       Left = 250
       Top = 0
@@ -490,17 +491,7 @@ inherited frmMain: TfrmMain
             end
             item
               Column = 0
-              Control = frameSettings.lblLoadRecordsFromDB
-              Row = 4
-            end
-            item
-              Column = 1
-              Control = frameSettings.cbLoadRecordsFromDB
-              Row = 4
-            end
-            item
-              Column = 0
-              Control = frameSettings.Shape1
+              Control = frameSettings.ShapeDividingLine
               Row = 5
             end
             item
@@ -535,12 +526,6 @@ inherited frmMain: TfrmMain
             end>
           ExplicitWidth = 845
           ExplicitHeight = 603
-          inherited edtMaxSize: TNumberBox
-            ExplicitTop = 251
-          end
-          inherited edtNumberOfDays: TNumberBox
-            ExplicitTop = 286
-          end
         end
       end
     end

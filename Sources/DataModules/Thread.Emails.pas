@@ -181,7 +181,7 @@ begin
     FQueryEmail.ParamByName('PARSED_TEXT').DataType := ftBlob;
     FQueryEmail.ParamByName('PARSED_TEXT').AsStream := TZipPack.GetCompressStr(aResultData^.ParsedText);
 
-    FQueryEmail.ParamByName('PROJECT_ID').AsString   := 'ffd122fc6850fa960843d000d3700f94';
+    FQueryEmail.ParamByName('PROJECT_ID').AsString   := TGeneral.CurrentProject.Hash;
     FQueryEmail.ParamByName('HASH').AsString         := aResultData^.Hash;
     FQueryEmail.ParamByName('MESSAGE_ID').AsString   := aResultData^.MessageId;
     FQueryEmail.ParamByName('FILE_NAME').AsString    := aResultData^.FileName;
@@ -190,6 +190,7 @@ begin
     FQueryEmail.ParamByName('ADDRESS_FROM').AsString := aResultData^.From;
     FQueryEmail.ParamByName('CONTENT_TYPE').AsString := aResultData^.ContentType;
     FQueryEmail.ParamByName('TIME_STAMP').AsDateTime := aResultData^.TimeStamp;
+    FQueryEmail.ParamByName('ATTACH').AsString       := string.Join(';', aResultData^.Attachments.Items);
     FQueryEmail.ExecSQL;
     if IsStartTransaction then
       Commit;
@@ -223,7 +224,7 @@ begin
       FQueryAttachment.ParamByName('PARSED_TEXT').DataType := ftBlob;
       FQueryAttachment.ParamByName('PARSED_TEXT').AsStream := TZipPack.GetCompressStr(aAttachment^.ParsedText);
 
-      FQueryAttachment.ParamByName('PROJECT_ID').AsString   := 'ffd122fc6850fa960843d000d3700f94';
+      FQueryAttachment.ParamByName('PROJECT_ID').AsString   := TGeneral.CurrentProject.Hash;
       FQueryAttachment.ParamByName('HASH').AsString         := aAttachment^.Hash;
       FQueryAttachment.ParamByName('PARENT_HASH').AsString  := aParentHash;
       FQueryAttachment.ParamByName('CONTENT_ID').AsString   := aAttachment^.ContentID;

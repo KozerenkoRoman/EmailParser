@@ -70,6 +70,7 @@ type
     procedure IConfig.UpdateLanguage = Translate;
     procedure UpdateRegExp;
     procedure UpdateFilter(const aOperation: TFilterOperation);
+    procedure UpdateProject;
 
     //IProgress
     procedure ClearTree;
@@ -78,8 +79,6 @@ type
     procedure Progress;
     procedure CompletedItem(const aResultData: PResultData);
     procedure CompletedAttach(const aAttachment: PAttachment);
-
-    procedure WMSetCurentProject(var Msg: TMessage); message WM_CURRENT_PROJECT;
   protected
     function GetIdentityName: string; override;
   public
@@ -181,7 +180,7 @@ begin
   gbSorter.Caption                := TLang.Lang.Translate('PathsToSaveFiles');
   pnlExtendedFilter.Caption       := TLang.Lang.Translate('ExtendedFilter');
   lblTitle.Caption                := pnlCard.ActiveCard.Caption;
-  PostMessage(Self.Handle, WM_CURRENT_PROJECT, 0, 0);
+  UpdateProject;
 end;
 
 function TfrmMain.GetIdentityName: string;
@@ -297,15 +296,15 @@ begin
   // nothing
 end;
 
-procedure TfrmMain.UpdateRegExp;
-begin
-  // nothing
-end;
-
-procedure TfrmMain.WMSetCurentProject(var Msg: TMessage);
+procedure TfrmMain.UpdateProject;
 begin
   if not TGeneral.CurrentProject.Name.IsEmpty then
     lblProject.Caption := TLang.Lang.Translate('Project') + ': ' + TGeneral.CurrentProject.Name;
+end;
+
+procedure TfrmMain.UpdateRegExp;
+begin
+  // nothing
 end;
 
 procedure TfrmMain.EndProgress;

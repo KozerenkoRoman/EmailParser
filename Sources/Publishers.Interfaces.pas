@@ -14,6 +14,7 @@ type
     procedure UpdateRegExp;
     procedure UpdateFilter(const aOperation: TFilterOperation);
     procedure UpdateLanguage;
+    procedure UpdateProject;
   end;
 
   IProgress = interface

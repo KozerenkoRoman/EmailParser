@@ -2110,7 +2110,7 @@ var
       // dfNum: integer - номер дифференцированного форматирования
       // RETURN
       // integer - номер применяемого стиля
-      function _getStyleIdxForDF(dfNum: Integer): Integer;
+      function _getStyleIdxForDF(dfNum: Integer): Integer; //
       var
         _df: TZXLSXDiffFormattingItem;
         _r, _c: Integer;
@@ -3381,11 +3381,13 @@ var
   var
     _df: TZXLSXDiffFormattingItem;
     _dfIndex: Integer;
+
     procedure _addFontStyle(fnts: TFontStyle);
     begin
       _df.FontStyles := _df.FontStyles + [fnts];
       _df.UseFontStyles := true;
     end;
+
     procedure _ReadDFFont();
     begin
       _df.UseFont := true;
@@ -8331,7 +8333,7 @@ var
         // and (dfNum < ReadHelper.DiffFormatting.Count))
           ) then
         begin
-          // _df := ReadHelper.DiffFormatting[dfNum];
+//           _df := ReadHelper.DiffFormatting[dfNum];
           _t := -1;
           if (_CF.Areas.Count > 0) then
           begin
@@ -8372,6 +8374,7 @@ var
           Result := FWorkBook.Styles.Add(_tmpStyle, true);
         end; // if
       end; // _getStyleIdxForDF
+
     begin
       _isOk := false;
       case (_CFCondition) of

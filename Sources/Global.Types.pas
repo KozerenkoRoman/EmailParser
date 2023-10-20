@@ -214,12 +214,6 @@ const
   C_PROGRESS_STEP = 50;
   MaxCardinal: Cardinal = $FFFFFFFF;
 
-const
-  SC_SYS_INFO        = WM_USER + 150;
-  WM_AFTER_SHOW      = WM_USER + 151;
-  WM_AFTER_CREATE    = WM_USER + 152;
-  WM_CURRENT_PROJECT = WM_USER + 153;
-
 var
   General: TGeneral;
 
@@ -258,9 +252,14 @@ class function TGeneral.GetPathList: TParamPathArray;
 var
   Data: TParamPath;
   i: Integer;
+  Section: string;
 begin
+  if not CurrentProject.Hash.IsEmpty then
+    Section := 'Path.' + CurrentProject.Hash
+  else
+    Section := 'Path';
   XMLParams.Open;
-  XMLParams.CurrentSection := 'Path';
+  XMLParams.CurrentSection := Section;
   try
     i := 0;
     Result.Count := XMLParams.ChildCount;
@@ -285,9 +284,14 @@ class function TGeneral.GetSorterPathList: TSorterPathArray;
 var
   Data: TSorterPath;
   i: Integer;
+  Section: string;
 begin
+  if not CurrentProject.Hash.IsEmpty then
+    Section := 'Sorter.' + CurrentProject.Hash
+  else
+    Section := 'Sorter';
   XMLParams.Open;
-  XMLParams.CurrentSection := 'Sorter';
+  XMLParams.CurrentSection := Section;
   try
     i := 0;
     Result.Count := XMLParams.ChildCount;

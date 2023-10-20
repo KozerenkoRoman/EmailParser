@@ -60,26 +60,55 @@ object DaMod: TDaMod
   object qAttachments: TFDQuery
     Connection = Connection
     SQL.Strings = (
-      'select HASH, '
-      '       CONTENT_ID, '
-      '       FILE_NAME, '
-      '       SHORT_NAME, '
-      '       CONTENT_TYPE, '
-      '       FROM_ZIP,'
-      '       IMAGE_INDEX'
-      'from attachments '
-      'where  PARENT_HASH = :PARENT_HASH')
-    Left = 312
-    Top = 16
+      'select a.HASH, '
+      '       a.PARENT_HASH, '
+      '       e.SHORT_NAME as PARENT_NAME,'
+      '       a.CONTENT_ID, '
+      '       a.FILE_NAME, '
+      '       a.SHORT_NAME, '
+      '       a.CONTENT_TYPE, '
+      '       a.FROM_ZIP,'
+      '       a.IMAGE_INDEX'
+      'from attachments a LEFT JOIN emails e on a.PARENT_HASH = e.HASH'
+      'where  a.PROJECT_ID = :PROJECT_ID')
+    Left = 320
+    Top = 88
     ParamData = <
       item
-        Name = 'PARENT_HASH'
+        Name = 'PROJECT_ID'
         DataType = ftString
         ParamType = ptInput
         Value = Null
       end>
   end
-  object qAllEmails: TFDQuery
+  object qInsProject: TFDQuery
+    Connection = Connection
+    SQL.Strings = (
+      'insert or ignore into PROJECT(HASH, NAME, INFO)'
+      '                       values(:HASH, :NAME, :INFO)')
+    Left = 320
+    Top = 160
+    ParamData = <
+      item
+        Name = 'HASH'
+        DataType = ftString
+        ParamType = ptInput
+        Value = Null
+      end
+      item
+        Name = 'NAME'
+        DataType = ftString
+        ParamType = ptInput
+        Value = Null
+      end
+      item
+        Name = 'INFO'
+        DataType = ftString
+        ParamType = ptInput
+        Value = Null
+      end>
+  end
+  object qEmails: TFDQuery
     Connection = Connection
     SQL.Strings = (
       'select HASH,'
@@ -87,11 +116,20 @@ object DaMod: TDaMod
       '       FILE_NAME,'
       '       SHORT_NAME,'
       '       SUBJECT, '
+      '       ATTACH,'
       '       ADDRESS_FROM, '
       '       CONTENT_TYPE, '
       '       TIME_STAMP'
-      'from emails')
-    Left = 208
-    Top = 152
+      'from EMAILS'
+      'where PROJECT_ID = :PROJECT_ID')
+    Left = 320
+    Top = 16
+    ParamData = <
+      item
+        Name = 'PROJECT_ID'
+        DataType = ftString
+        ParamType = ptInput
+        Value = Null
+      end>
   end
 end

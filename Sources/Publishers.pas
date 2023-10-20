@@ -24,6 +24,7 @@ type
     procedure UpdateRegExp;
     procedure UpdateFilter(const aOperation: TFilterOperation);
     procedure UpdateLanguage;
+    procedure UpdateProject;
   end;
 
   TProgressPublisher = class(TCustomPublisher)
@@ -123,6 +124,28 @@ begin
             begin
               if Supports(Item, IConfig, obj) then
                 obj.UpdateLanguage;
+            end);
+      finally
+        Self.UnlockList;
+      end;
+end;
+
+procedure TConfigPublisher.UpdateProject;
+var
+  Item: TObject;
+begin
+  if not Application.Terminated then
+    for var i := 0 to Self.Count - 1 do
+      try
+        Item := Self.LockList.Items[i];
+        if Assigned(Item) then
+          TThread.Queue(nil,
+            procedure
+            var
+              obj: IConfig;
+            begin
+              if Supports(Item, IConfig, obj) then
+                obj.UpdateProject;
             end);
       finally
         Self.UnlockList;

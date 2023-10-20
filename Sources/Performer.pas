@@ -213,11 +213,11 @@ end;
 
 procedure TPerformer.Stop;
 begin
-  System.TMonitor.Enter(Self);
+  FCriticalSection.Enter;
   try
     FIsBreak := True;
   finally
-    System.TMonitor.Exit(Self);
+    FCriticalSection.Leave;
   end;
 end;
 
@@ -243,12 +243,12 @@ begin
       FCount := Length(arrKeys);
       for var i := Low(arrKeys) to High(arrKeys) do
       begin
-        System.TMonitor.Enter(Self);
+        FCriticalSection.Enter;
         try
           if FIsBreak then
             Exit;
         finally
-          System.TMonitor.Exit(Self);
+          FCriticalSection.Leave;
         end;
 
         Data := TGeneral.EmailList.Items[arrKeys[i]];
@@ -295,12 +295,12 @@ begin
         FFromDBCount := 0;
         for var i := Low(FileList) to High(FileList) do
         begin
-          System.TMonitor.Enter(Self);
+          FCriticalSection.Enter;
           try
             if FIsBreak then
               Exit;
           finally
-            System.TMonitor.Exit(Self);
+            FCriticalSection.Leave;
           end;
 
           Hash := TFileUtils.GetHash(FileList[i]);
@@ -366,12 +366,12 @@ begin
       FCount := 0;
       for var i := Low(arrKeys) to High(arrKeys) do
       begin
-        System.TMonitor.Enter(Self);
+        FCriticalSection.Enter;
         try
           if FIsBreak then
             Exit;
         finally
-          System.TMonitor.Exit(Self);
+          FCriticalSection.Leave;
         end;
 
         Attachment := TGeneral.AttachmentList.Items[arrKeys[i]];
@@ -1021,7 +1021,7 @@ var
   WorkBook    : TZWorkBook;
   ParsedText  : string;
   RowText     : string;
-  RowNotEmpty : Boolean;
+  RowIsEmpty  : Boolean;
 begin
   Result := '';
   WorkBook := TZWorkBook.Create(nil);
@@ -1035,13 +1035,13 @@ begin
           for var row := 0 to WorkBook.Sheets[i].RowCount - 1 do
           begin
             RowText := '';
-            RowNotEmpty := False;
+            RowIsEmpty := False;
             for var col := 0 to WorkBook.Sheets[i].ColCount - 1 do
             begin
-              RowNotEmpty := RowNotEmpty or WorkBook.Sheets[i].Cell[col, row].AsString.IsEmpty;
+              RowIsEmpty := RowIsEmpty or WorkBook.Sheets[i].Cell[col, row].AsString.IsEmpty;
               RowText := Concat(RowText, '"', WorkBook.Sheets[i].Cell[col, row].AsString.Replace('"', '""'), '";');
             end;
-            if RowNotEmpty then
+            if not RowIsEmpty then
               ParsedText := Concat(ParsedText, RowText, sLineBreak);
           end;
           FileName := Concat(TPath.GetFileNameWithoutExtension(aFileName), '\', WorkBook.Sheets[i].Title);
@@ -1225,17 +1225,17 @@ function TPerformer.GetMatchCollection(const aText: string; const aPatternData: 
     Matches: TMatchCollection;
     RegExpr: TRegEx;
   begin
-    RegExpr := TRegEx.Create(aPatternData.Pattern);
-    Matches := RegExpr.Matches(aText, aPatternData.Pattern);
+    RegExpr := TRegEx.Create(aPatternData^.Pattern);
+    Matches := RegExpr.Matches(aText, aPatternData^.Pattern);
     Result.Count := Matches.Count;
     for var i := 0 to Matches.Count - 1 do
     begin
-      if (aPatternData.GroupIndex <= 0) then
+      if (aPatternData^.GroupIndex <= 0) then
         GroupIndex := 0
-      else if (aPatternData.GroupIndex > Matches.item[i].Groups.Count - 1) then
+      else if (aPatternData^.GroupIndex > Matches.item[i].Groups.Count - 1) then
         GroupIndex := Matches.item[i].Groups.Count - 1
       else
-        GroupIndex := aPatternData.GroupIndex;
+        GroupIndex := aPatternData^.GroupIndex;
       Result[i] := Matches.item[i].Groups[GroupIndex].Value;
     end;
   end;
@@ -1244,37 +1244,42 @@ function TPerformer.GetMatchCollection(const aText: string; const aPatternData: 
   var
     ResList: TStringList;
   begin
-    if not Assigned(aPatternData.AhoCorasickObj) then
+    if not Assigned(aPatternData^.AhoCorasickObj) then
     begin
-      aPatternData.AhoCorasickObj := TAhoCorasick.Create;
-      var arrValue := aPatternData.Pattern.Split([#13#10]);
+      aPatternData^.AhoCorasickObj := TAhoCorasick.Create;
+      var arrValue := aPatternData^.Pattern.Split([#13#10]);
       for var i := Low(arrValue) to High(arrValue) do
         if not arrValue[i].Trim.IsEmpty then
-          aPatternData.AhoCorasickObj.AddPattern(arrValue[i].Trim);
-      aPatternData.AhoCorasickObj.Build;
+          aPatternData^.AhoCorasickObj.AddPattern(arrValue[i].Trim);
+      aPatternData^.AhoCorasickObj.Build;
     end;
 
-    ResList := aPatternData.AhoCorasickObj.Search(aText);
+    FCriticalSection.Enter;
     try
-      Result.Count := ResList.Count;
-      for var i := 0 to ResList.Count - 1 do
-        Result[i] := ResList[i];
+      ResList := aPatternData^.AhoCorasickObj.Search(aText);
+      try
+        Result.Count := ResList.Count;
+        for var i := 0 to ResList.Count - 1 do
+          Result[i] := ResList[i];
+      finally
+        FreeAndNil(ResList);
+      end;
     finally
-      FreeAndNil(ResList);
+      FCriticalSection.Leave;
     end;
   end;
 
 begin
 {$IFDEF DETAILED_LOG}
-  LogWriter.Write(ddEnterMethod, Self, 'GetRegExpCollection', aPatternData.Pattern);
+  LogWriter.Write(ddEnterMethod, Self, 'GetRegExpCollection', aPatternData^.Pattern);
 {$ENDIF DETAILED_LOG}
   Result := TStringArray.Create(0);
   if aText.IsEmpty then
     Exit;
-  if aPatternData.Pattern.IsEmpty then
+  if aPatternData^.Pattern.IsEmpty then
     Exit;
 
-  case aPatternData.TypePattern of
+  case aPatternData^.TypePattern of
     tpRegularExpression:
       Result := GetRegExpCollection;
     tpAhoCorasick:

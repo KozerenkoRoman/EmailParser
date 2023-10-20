@@ -6,7 +6,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Imaging.pngimage,
-  XmlFiles, System.IOUtils, System.Threading, Utils.VerInfo, SplashScreen.Resources;
+   System.IOUtils, System.Threading, Utils.VerInfo, SplashScreen.Resources;
 {$ENDREGION}
 
 type
