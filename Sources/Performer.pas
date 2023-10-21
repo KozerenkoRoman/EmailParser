@@ -634,7 +634,7 @@ begin
             aData^.Matches[i] := GetMatchCollection(TextRaw, TGeneral.PatternList[i])
           else
             aData^.Matches[i] := GetMatchCollection(TextPlan, TGeneral.PatternList[i]);
-      end).Start;
+      end);
 
     Tasks[1] := TTask.Create(
       procedure()
@@ -654,7 +654,10 @@ begin
             Attachment^.LengthAlignment;
             TPublishers.ProgressPublisher.CompletedAttach(Attachment);
           end;
-      end).Start;
+      end);
+
+     for var Task in Tasks do
+       Task.ExecuteWork;
     TTask.WaitForAll(Tasks);
     TPublishers.ProgressPublisher.CompletedItem(aData);
   end;
@@ -1244,21 +1247,16 @@ function TPerformer.GetMatchCollection(const aText: string; const aPatternData: 
   var
     AhoCorasickObj: TAhoCorasick;
   begin
-    FCriticalSection.Enter;
+    AhoCorasickObj := TAhoCorasick.Create;
     try
-      AhoCorasickObj := TAhoCorasick.Create;
-      try
-        var arrPattern := aPatternData^.Pattern.Split([#10]);
-        for var i := Low(arrPattern) to High(arrPattern) do
-          if not arrPattern[i].Trim.IsEmpty then
-            AhoCorasickObj.AddPattern(arrPattern[i].Trim);
-        AhoCorasickObj.Build;
-        Result.AddRange(AhoCorasickObj.Search(aText));
-      finally
-        FreeAndNil(AhoCorasickObj);
-      end;
+      var arrPattern := aPatternData^.Pattern.Split([#10]);
+      for var i := Low(arrPattern) to High(arrPattern) do
+        if not arrPattern[i].Trim.IsEmpty then
+          AhoCorasickObj.AddPattern(arrPattern[i].Trim);
+      AhoCorasickObj.Build;
+      Result.AddRange(AhoCorasickObj.Search(aText));
     finally
-      FCriticalSection.Leave;
+      FreeAndNil(AhoCorasickObj);
     end;
   end;
 

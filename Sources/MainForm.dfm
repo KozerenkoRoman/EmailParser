@@ -709,4 +709,24 @@ inherited frmMain: TfrmMain
     Left = 153
     Top = 434
   end
+  object NotificationCenter: TNotificationCenter
+    Left = 531
+    Top = 218
+  end
+  object Taskbar: TTaskbar
+    TaskBarButtons = <
+      item
+      end
+      item
+      end
+      item
+      end
+      item
+      end
+      item
+      end>
+    TabProperties = [AppPeekWhenActive]
+    Left = 531
+    Top = 282
+  end
 end

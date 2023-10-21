@@ -1,81 +1,59 @@
 ﻿[Closed Files]
-File_0=TSourceModule,'D:\Work\EmailParser\Sources\Excel4Delphi\Excel4Delphi.Stream.pas',0,1,2107,11,2124,0,0,{{340,0}
-File_1=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.SyncObjs.pas',0,1,169,19,187,0,0,,
-File_2=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\win\Winapi.Windows.pas',0,1,3542,43,3560,0,0,,
-File_3=TSourceModule,'D:\Work\EmailParser\Sources\DataModules\DaModule.pas',0,1,182,1,206,0,0,,
-File_4=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Threading.pas',0,1,2077,39,2088,0,0,,
-File_5=TSourceModule,'D:\Work\EmailParser\Sources\Global.Types.pas',0,1,634,1,650,0,0,{{5,0}
-File_6=TSourceModule,'D:\Work\EmailParser\Sources\Publishers.pas',0,1,33,22,50,0,0,{{5,0}
-File_7=TSourceModule,'D:\Work\EmailParser\Sources\Publishers.Interfaces.pas',0,1,1,10,12,0,0,{{5,0}
-File_8=TSourceModule,'D:\Work\EmailParser\Sources\Common\ArrayHelper.pas',0,1,442,1,459,0,0,{{50,0}
-File_9=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Generics.Collections.pas',0,1,7245,1,7262,0,0,,
-File_10=TSourceModule,'D:\Work\EmailParser\Sources\Common\Files.Utils.pas',0,1,81,1,105,0,0,{{5,0}
-File_11=TSourceModule,'D:\Work\EmailParser\Sources\Translate\Translate.Resources.pas',0,1,282,82,305,0,0,,
-File_12=TSourceModule,'D:\Work\EmailParser\Sources\Virtual TreeView\VirtualTrees.Helper.pas',0,1,28,1,29,0,0,{{5,0}
+File_0=TSourceModule,'D:\Work\EmailParser\Sources\RegExp.Editor.pas',0,1,329,34,338,0,0,{{5,0}
+File_1=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.SyncObjs.pas',0,1,189,22,209,0,0,,
+File_2=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Threading.pas',0,1,967,1,981,0,0,,
+File_3=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\win\Winapi.Windows.pas',0,1,40988,1,41006,0,0,,
+File_4=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.pas',0,1,21170,1,21187,0,0,,
+File_5=TSourceModule,'D:\Work\EmailParser\Sources\Global.Types.pas',0,1,1,1,9,0,0,,
+File_6=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.SysUtils.pas',0,1,243,15,258,0,0,,
+File_7=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\+inc\deltics.rtl.inc',0,1,1,7,1,0,0,,
+File_8=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\+inc\deltics.inc',0,1,61,15,83,0,0,,
+File_9=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Strings.Encoding.pas',0,1,114,1,132,0,0,,
+File_10=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.SysUtils.pas',0,1,4718,1,4721,0,0,,
+File_11=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Windows.pas',0,1,22,1,40,0,0,,
+File_12=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Types.pas',0,1,22,1,40,0,0,,
+File_13=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.MultiCast.pas',0,1,48,1,66,0,0,,
+File_14=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Classes.pas',0,1,22,1,40,0,0,,
 
 [Modules]
-Module0=D:\Work\EmailParser\Sources\Performer.pas
-Module1=D:\Work\EmailParser\Sources\Frames\Frame.Sorter.pas
-Module2=D:\Work\EmailParser\Sources\Frames\Frame.Settings.pas
-Module3=D:\Work\EmailParser\Sources\Frames\Frame.ResultView.pas
-Module4=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
-Module5=D:\Work\EmailParser\Sources\Frames\Frame.Pathes.pas
-Module6=D:\Work\EmailParser\Sources\Frames\Frame.MatchesFilter.pas
-Module7=D:\Work\EmailParser\Sources\Common\AhoCorasick.pas
-Module8=D:\Work\EmailParser\Sources\Common\XmlFiles.pas
-Module9=D:\Work\EmailParser\Sources\Common\DebugWriter.pas
-Module10=D:\Work\EmailParser\Sources\DataModules\Thread.Emails.pas
-Module11=D:\Work\EmailParser\Sources\DataModules\DaModule.Resources.pas
-Module12=D:\Work\EmailParser\Sources\RegExp.Import.pas
-Module13=D:\Work\EmailParser\Sources\MainForm.pas
-Count=14
+Module0=D:\Work\EmailParser\Sources\Common\AhoCorasick.pas
+Module1=D:\Work\EmailParser\Sources\MainForm.pas
+Module2=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
+Module3=D:\Work\EmailParser\Sources\Performer.pas
+Module4=c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Win.TaskbarCore.pas
+Module5=c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Taskbar.pas
+Module6=D:\Work\EmailParser\Sources\UnRAR\UnRAR.Helper.pas
+Module7=D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Strings.pas
+Count=8
 EditWindowCount=1
 
-[D:\Work\EmailParser\Sources\Performer.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Frames\Frame.Sorter.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Frames\Frame.Settings.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Frames\Frame.ResultView.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Frames\Frame.Project.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Frames\Frame.Pathes.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Frames\Frame.MatchesFilter.pas]
-ModuleType=TSourceModule
-
 [D:\Work\EmailParser\Sources\Common\AhoCorasick.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Common\XmlFiles.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Common\DebugWriter.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\DataModules\Thread.Emails.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\DataModules\DaModule.Resources.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\RegExp.Import.pas]
 ModuleType=TSourceModule
 
 [D:\Work\EmailParser\Sources\MainForm.pas]
 ModuleType=TSourceModule
 
+[D:\Work\EmailParser\Sources\Frames\Frame.Project.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\Performer.pas]
+ModuleType=TSourceModule
+
+[c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Win.TaskbarCore.pas]
+ModuleType=TSourceModule
+
+[c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Taskbar.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\UnRAR\UnRAR.Helper.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Strings.pas]
+ModuleType=TSourceModule
+
 [EditWindow0]
-ViewCount=14
-CurrentEditView=D:\Work\EmailParser\Sources\Performer.pas
+ViewCount=8
+CurrentEditView=D:\Work\EmailParser\Sources\Common\AhoCorasick.pas
 View0=0
 View1=1
 View2=2
@@ -84,12 +62,6 @@ View4=4
 View5=5
 View6=6
 View7=7
-View8=8
-View9=9
-View10=10
-View11=11
-View12=12
-View13=13
 PercentageSizes=1
 Create=1
 Visible=1
@@ -123,69 +95,36 @@ BottomMiddelPanelData=0000080001020200000009000000446F636B5369746530100000004772
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\Performer.pas
 CursorX=1
-CursorY=1247
-TopLine=1236
+CursorY=661
+TopLine=633
 LeftCol=1
 Elisions=
-Bookmarks={1,107,1}{2,1270,1}
+Bookmarks=
 EditViewName=D:\Work\EmailParser\Sources\Performer.pas
 
 [View1]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Frames\Frame.MatchesFilter.pas
-CursorX=41
-CursorY=12
-TopLine=1
+Module=D:\Work\EmailParser\Sources\Common\AhoCorasick.pas
+CursorX=35
+CursorY=152
+TopLine=9
 LeftCol=1
 Elisions=
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.MatchesFilter.pas
+EditViewName=D:\Work\EmailParser\Sources\Common\AhoCorasick.pas
 
 [View2]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Frames\Frame.Pathes.pas
-CursorX=41
-CursorY=11
-TopLine=1
+Module=D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Strings.pas
+CursorX=31
+CursorY=960
+TopLine=942
 LeftCol=1
 Elisions=
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Pathes.pas
+EditViewName=D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Strings.pas
 
 [View3]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Frames\Frame.Settings.pas
-CursorX=41
-CursorY=10
-TopLine=1
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Settings.pas
-
-[View4]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Frames\Frame.Sorter.pas
-CursorX=104
-CursorY=12
-TopLine=22
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Sorter.pas
-
-[View5]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\RegExp.Import.pas
-CursorX=15
-CursorY=239
-TopLine=223
-LeftCol=1
-Elisions={{5,0},{14,11},{'Region uses'}}
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\RegExp.Import.pas
-
-[View6]
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
 CursorX=41
@@ -196,82 +135,49 @@ Elisions=
 Bookmarks=
 EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
 
-[View7]
+[View4]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Frames\Frame.ResultView.pas
-CursorX=41
-CursorY=11
-TopLine=1
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.ResultView.pas
-
-[View8]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Common\AhoCorasick.pas
+Module=D:\Work\EmailParser\Sources\UnRAR\UnRAR.Helper.pas
 CursorX=1
-CursorY=128
-TopLine=111
+CursorY=106
+TopLine=85
 LeftCol=1
 Elisions={{5,0},{8,11},{'Region uses'}}
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Common\AhoCorasick.pas
+EditViewName=D:\Work\EmailParser\Sources\UnRAR\UnRAR.Helper.pas
 
-[View9]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\DataModules\DaModule.Resources.pas
-CursorX=35
-CursorY=37
-TopLine=30
-LeftCol=1
-Elisions={{5,0},{10,11},{'Region uses'}}
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\DataModules\DaModule.Resources.pas
-
-[View10]
+[View5]
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\MainForm.pas
-CursorX=38
-CursorY=319
-TopLine=298
+CursorX=42
+CursorY=222
+TopLine=194
 LeftCol=1
-Elisions={{5,0},{15,11},{'Region uses'}}
+Elisions={{5,0},{16,11},{'Region uses'}}
 Bookmarks=
-EditViewName=Borland.FormDesignerView
+EditViewName=D:\Work\EmailParser\Sources\MainForm.pas
 
-[View11]
+[View6]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\DataModules\Thread.Emails.pas
-CursorX=1
-CursorY=173
-TopLine=155
+Module=c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Taskbar.pas
+CursorX=21
+CursorY=93
+TopLine=76
 LeftCol=1
-Elisions={{5,0},{14,11},{'Region uses'}}
+Elisions=
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\DataModules\Thread.Emails.pas
+EditViewName=c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Taskbar.pas
 
-[View12]
+[View7]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Common\DebugWriter.pas
-CursorX=1
-CursorY=212
-TopLine=196
+Module=c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Win.TaskbarCore.pas
+CursorX=24
+CursorY=29
+TopLine=12
 LeftCol=1
-Elisions={{8,0},{13,11},{'Region uses'}}
+Elisions=
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Common\DebugWriter.pas
-
-[View13]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Common\XmlFiles.pas
-CursorX=15
-CursorY=155
-TopLine=138
-LeftCol=1
-Elisions={{68,0},{73,11},{'Region uses'}}
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Common\XmlFiles.pas
+EditViewName=c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Win.TaskbarCore.pas
 
 [Watches]
 Count=1
@@ -299,7 +205,8 @@ Dockable=1
 StayOnTop=0
 
 [Breakpoints]
-Count=0
+Count=1
+Breakpoint0='c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Threading.pas',981,'',0,1,'',1,0,0,'',1,'','','',0,''
 
 [EmbarcaderoWin32Debugger_AddressBreakpoints]
 Count=0
@@ -398,7 +305,7 @@ MaxLeft=-1
 MaxTop=-1
 ClientWidth=1896
 ClientHeight=4875
-TBDockHeight=7010
+TBDockHeight=8731
 LRDockWidth=1896
 Dockable=1
 StayOnTop=0
@@ -897,7 +804,7 @@ MaxLeft=-1
 MaxTop=-1
 ClientWidth=1896
 ClientHeight=1817
-TBDockHeight=7010
+TBDockHeight=8731
 LRDockWidth=1896
 Dockable=1
 StayOnTop=0

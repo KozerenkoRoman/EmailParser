@@ -6,8 +6,8 @@ inherited frmRegExpEditor: TfrmRegExpEditor
   Font.Height = -13
   Font.Name = 'Segoe UI'
   ShowHint = True
-  ExplicitWidth = 876
-  ExplicitHeight = 662
+  ExplicitWidth = 872
+  ExplicitHeight = 661
   TextHeight = 17
   object splPattern: TSplitter
     Left = 482
@@ -60,7 +60,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       Top = 0
       Width = 476
       Height = 185
-      ActivePage = tsRegularExpression
+      ActivePage = tsAhoCorasick
       Align = alTop
       MultiLine = True
       TabOrder = 0
@@ -101,6 +101,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
             ParentColor = True
             TabOrder = 0
             OnCloseUp = cbSetOfTemplatesCloseUp
+            ExplicitWidth = 367
           end
         end
         object edRegEx: TMemo
@@ -132,6 +133,8 @@ inherited frmRegExpEditor: TfrmRegExpEditor
           PopupMenu = pmMemo
           ScrollBars = ssVertical
           TabOrder = 0
+          ExplicitLeft = 1
+          ExplicitTop = 1
         end
       end
     end
@@ -150,7 +153,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       860
       42)
     object btnCancel: TBitBtn
-      Left = 625
+      Left = 621
       Top = 1
       Width = 110
       Height = 40
@@ -167,10 +170,10 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 2
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 621
+      ExplicitLeft = 617
     end
     object btnOk: TBitBtn
-      Left = 737
+      Left = 733
       Top = 1
       Width = 110
       Height = 40
@@ -187,7 +190,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 1
       ParentFont = False
       TabOrder = 1
-      ExplicitLeft = 733
+      ExplicitLeft = 729
     end
   end
   object tbPattern: TToolBar

@@ -15,28 +15,27 @@ uses
 
 type
   TframeProject = class(TframeSource)
-    aSetCurrent   : TAction;
-    btnSep04      : TToolButton;
-    btnSetCurrent : TToolButton;
-    btnLoadProject: TToolButton;
-    aLoadProject: TAction;
+    aLoadProject   : TAction;
+    aSetCurrent    : TAction;
+    btnLoadProject : TToolButton;
+    btnSep04       : TToolButton;
+    btnSetCurrent  : TToolButton;
     procedure aAddExecute(Sender: TObject);
     procedure aDeleteExecute(Sender: TObject);
     procedure aDeleteUpdate(Sender: TObject);
+    procedure aLoadProjectExecute(Sender: TObject);
+    procedure aLoadProjectUpdate(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
     procedure aSetCurrentExecute(Sender: TObject);
+    procedure aSetCurrentUpdate(Sender: TObject);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
     procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UItypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
-    procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode;
-      Column: TColumnIndex; TextType: TVSTTextType);
-    procedure aSetCurrentUpdate(Sender: TObject);
-    procedure aLoadProjectUpdate(Sender: TObject);
-    procedure aLoadProjectExecute(Sender: TObject);
+    procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
   private const
     COL_NAME = 0;
     COL_INFO = 1;

@@ -11,7 +11,8 @@ uses
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExp, Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.Settings, Global.Types, Vcl.Samples.Gauges,
   Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule, Frame.Sorter, Frame.DuplicateFiles,
-  Files.Utils, Vcl.CheckLst, ArrayHelper, System.Types, Frame.MatchesFilter, Frame.BruteForce, Frame.Project;
+  Files.Utils, Vcl.CheckLst, ArrayHelper, System.Types, Frame.MatchesFilter, Frame.BruteForce, Frame.Project,
+  System.Notification, System.Win.TaskbarCore, Vcl.Taskbar;
 {$ENDREGION}
 
 type
@@ -40,6 +41,8 @@ type
     gbSorter                : TGroupBox;
     imgMenu                 : TImage;
     lblProject              : TLabel;
+    lblTitle                : TLabel;
+    NotificationCenter      : TNotificationCenter;
     pnlCard                 : TCardPanel;
     pnlExtendedFilter       : TGroupBox;
     pnlLeft                 : TPanel;
@@ -50,7 +53,7 @@ type
     splPath                 : TSplitter;
     splView                 : TSplitView;
     srchBox                 : TSearchBox;
-    lblTitle: TLabel;
+    Taskbar                 : TTaskbar;
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
     procedure aToggleSplitPanelExecute(Sender: TObject);
     procedure catMenuItemsSelectedItemChange(Sender: TObject; const Button: TButtonItem);
@@ -64,6 +67,7 @@ type
     C_IDENTITY_NAME = 'MainForm';
   private
     FProgressBar: TGauge;
+    procedure NotifyComplete;
     procedure CreateProgressBar;
 
     //IConfig
@@ -276,6 +280,20 @@ begin
     TframeSource(TGeneral.ActiveFrame).SearchText(srchBox.Text);
 end;
 
+procedure TfrmMain.NotifyComplete;
+var
+  Notification: TNotification;
+begin
+  if NotificationCenter.Supported then
+  begin
+    Notification := NotificationCenter.CreateNotification;
+    Notification.Name      := Application.Title;
+    Notification.AlertBody := TLang.Lang.Translate('Successful');
+    Notification.FireDate  := Now;
+    NotificationCenter.PresentNotification(Notification);
+  end;
+end;
+
 procedure TfrmMain.ClearTree;
 begin
   // nothing
@@ -311,6 +329,8 @@ procedure TfrmMain.EndProgress;
 begin
   FProgressBar.Progress := 0;
   FProgressBar.Visible := False;
+  Taskbar.ProgressState := TTaskBarProgressState.None;
+  NotifyComplete;
 end;
 
 procedure TfrmMain.Progress;
@@ -319,11 +339,14 @@ begin
     FProgressBar.MaxValue := FProgressBar.MaxValue + C_PROGRESS_STEP;
   FProgressBar.Progress := FProgressBar.Progress + C_PROGRESS_STEP;
   FProgressBar.Refresh;
+  Taskbar.ProgressValue := FProgressBar.Progress;
   Application.ProcessMessages;
 end;
 
 procedure TfrmMain.StartProgress(const aMaxPosition: Integer);
 begin
+  Taskbar.ProgressMaxValue := aMaxPosition;
+  Taskbar.ProgressState := TTaskBarProgressState.Normal;
   FProgressBar.MaxValue := aMaxPosition;
   FProgressBar.Progress := 0;
   FProgressBar.Visible := True;
