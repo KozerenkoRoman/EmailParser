@@ -1427,8 +1427,8 @@ type
     FToColOff: Integer;
     FToRow: Integer;
     FToRowOff: Integer;
-    FFrmOffX: Integer;
-    FFrmOffY: Integer;
+    FFrmOffX: Cardinal;
+    FFrmOffY: Cardinal;
     FFrmExtCX: Integer;
     FFrmExtCY: Integer;
     FSheet: TZSheet;
@@ -1459,8 +1459,8 @@ type
     property ToColOff: Integer read FToColOff write FToColOff;
     property ToRow: Integer read FToRow write FToRow;
     property ToRowOff: Integer read FToRowOff write FToRowOff;
-    property FrmOffX: Integer read FFrmOffX write FFrmOffX;
-    property FrmOffY: Integer read FFrmOffY write FFrmOffY;
+    property FrmOffX: Cardinal read FFrmOffX write FFrmOffX;
+    property FrmOffY: Cardinal read FFrmOffY write FFrmOffY;
     property FrmExtCX: Integer read FFrmExtCX write FFrmExtCX;
     property FrmExtCY: Integer read FFrmExtCY write FFrmExtCY;
     property Image: TBytes read GetImage write SetImage;

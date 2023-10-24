@@ -11,7 +11,7 @@ uses
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
   Files.Utils, System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
   System.Math, System.ZLib, System.Zip, System.Masks, System.StrUtils, InformationDialog, Html.Lib,
-  Vcl.Graphics, UnRAR.Helper, Excel4Delphi, Excel4Delphi.Stream, System.Hash, AhoCorasick;
+  Vcl.Graphics, UnRAR.Helper, Excel4Delphi, Excel4Delphi.Stream, System.Hash, AhoCorasick, Vcl.ComCtrls;
 {$ENDREGION}
 
 type
@@ -31,11 +31,12 @@ type
     function GetAttchmentPath(const aFileName: TFileName): string;
     function GetEXIFInfo(const aFileName: TFileName): string;
     function GetMatchCollection(const aText: string; const aPatternData: PPatternData): TStringArray;
+    function GetRarFileList(const aFileName: TFileName; const aData: PResultData): string;
+    function GetRtfText(const aFileName: TFileName): string;
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     function GetWordText(const aFileName: TFileName): string;
-    function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
-    function GetRarFileList(const aFileName: TFileName; const aData: PResultData): string;
     function GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
+    function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
     function IsSuccessfulCheck: Boolean;
     procedure DoCopyAttachmentFiles(const aData: PResultData);
     procedure DoDeleteAttachmentFiles(const aData: PResultData);
@@ -195,7 +196,7 @@ begin
           LogWriter.Write(ddWarning, Self, 'Click Break button');
           Exit;
         end;
-        ParseFile(FileName);
+        ParseFile(TFileUtils.CheckLength(FileName));
         Inc(FCount);
       end;
     finally
@@ -488,7 +489,9 @@ var
   Hash        : string;
   MailMessage : TclMailMessage;
   Tasks       : array of ITask;
+//  NewName     : string;
 begin
+//  NewName := TFileUtils.GetCorrectFileName('', aFileName);
   Hash := TFileUtils.GetHash(aFileName);
   if not TGeneral.EmailList.ContainsKey(Hash) then
   begin
@@ -678,6 +681,7 @@ var
   end;
 
 begin
+//https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
 {$IFDEF DETAILED_LOG}
   LogWriter.Write(ddEnterMethod, Self, 'DoParseAttachmentFiles');
 {$ENDIF DETAILED_LOG}
@@ -802,6 +806,12 @@ begin
                 Attachment.ContentType := 'text/xml';
                 Attachment.ImageIndex  := TExtIcon.eiTxt.ToByte;
               end
+              else if Ext.Contains('.rtf') then
+              begin
+                Attachment.ParsedText  := GetRtfText(Attachment.FileName);
+                Attachment.ContentType := 'text/rtf';
+                Attachment.ImageIndex  := TExtIcon.eiHtml.ToByte;
+              end
               else if Ext.Contains('.htm') then
               begin
                 Attachment.ParsedText  := TFile.ReadAllText(Attachment.FileName);
@@ -872,21 +882,8 @@ begin
 
   Data      := TclMailMessage(Sender).ResultData;
   Path      := GetAttchmentPath(Data^.FileName);
-  aFileName := Concat('[', Data^.ShortName, '] ', TFileUtils.GetCorrectFileName(aFileName));
-  SetLength(aFileName, Min(Length(aFileName), 255));
-
-  if not TPath.HasValidFileNameChars(aFileName, False) then
-  begin
-    aFileName := Format('[%s] (%d)', [Data^.ShortName, aBody.Index]);
-    LogWriter.Write(ddText, Self,
-                            'DoSaveAttachment',
-                            'Email file name - '      + Data^.FileName  + sLineBreak +
-                            'Email short name - '     + Data^.ShortName + sLineBreak +
-                            'Attachment file name - ' + aFileName      + sLineBreak +
-                            'Attachment index - '     + aBody.Index.ToString);
-  end;
-
-  if aFileName.Trim.IsEmpty or (not TPath.HasValidFileNameChars(aFileName, False)) then
+  aFileName := TFileUtils.GetCorrectFileName(Path, Concat('[', Data^.ShortName, '] ', aFileName));
+  if aFileName.Trim.IsEmpty then
   begin
     var NewName := Concat('[', Data^.ShortName, '] (', aBody.Index.ToString, ')');
     LogWriter.Write(ddWarning, Self,
@@ -895,6 +892,7 @@ begin
                                'New file name - ' + NewName);
     aFileName := NewName;
   end;
+
   aFileName := TPath.Combine(Path, aFileName);
   Handled := not TFileUtils.IsForbidden(aFileName);
   if Handled then
@@ -1017,6 +1015,29 @@ begin
   end;
 end;
 
+function TPerformer.GetRtfText(const aFileName: TFileName): string;
+var
+  RTFConverter: TRichEdit;
+begin
+  if not TFile.Exists(aFileName) then
+    Exit;
+  RTFConverter := TRichEdit.CreateParented(HWND_MESSAGE);
+  try
+    try
+      RTFConverter.Lines.LoadFromFile(aFileName);
+      RTFConverter.PlainText             := True;
+      RTFConverter.Lines.StrictDelimiter := True;
+      RTFConverter.Lines.Delimiter       := #13;
+      Result := RTFConverter.Lines.DelimitedText;
+    except
+      on E: Exception do
+        LogWriter.Write(ddError, Self, 'GetRtfText', E.Message + sLineBreak + 'FileName - ' + aFileName);
+    end;
+  finally
+    FreeAndNil(RTFConverter);
+  end;
+end;
+
 function TPerformer.GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
 var
   Attachment  : PAttachment;
@@ -1099,8 +1120,7 @@ begin
         if not TFileUtils.IsForbidden(ZipFile.FileNames[i]) then
         begin
           ZipFile.Extract(ZipFile.FileNames[i], Path, True);
-          FileName := Concat('[', aData^.ShortName, '] ', TFileUtils.GetCorrectFileName(ZipFile.FileNames[i]));
-          SetLength(FileName, Min(Length(FileName), 255));
+          FileName := TFileUtils.GetCorrectFileName(Path, Concat('[', aData^.ShortName, '] ', ZipFile.FileNames[i]));
           if not RenameFile(TPath.Combine(Path, ZipFile.FileNames[i]), TPath.Combine(Path, FileName)) then
             DeleteFile(TPath.Combine(Path, ZipFile.FileNames[i]));
 
@@ -1193,8 +1213,7 @@ begin
           RarFile.Extract(FileList[i]);
           if (RarFile.LastError = 0) then
           begin
-            FileName := Concat('[', aData^.ShortName, '] ', TFileUtils.GetCorrectFileName(FileList[i]));
-            SetLength(FileName, Min(Length(FileName), 255));
+            FileName := TFileUtils.GetCorrectFileName(Path, Concat('[', aData^.ShortName, '] ', FileList[i]));
             if not RenameFile(TPath.Combine(Path, FileList[i]), TPath.Combine(Path, FileName)) then
               DeleteFile(TPath.Combine(Path, FileList[i]));
 

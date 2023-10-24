@@ -714,17 +714,7 @@ inherited frmMain: TfrmMain
     Top = 218
   end
   object Taskbar: TTaskbar
-    TaskBarButtons = <
-      item
-      end
-      item
-      end
-      item
-      end
-      item
-      end
-      item
-      end>
+    TaskBarButtons = <>
     TabProperties = [AppPeekWhenActive]
     Left = 531
     Top = 282

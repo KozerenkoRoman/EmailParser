@@ -1,36 +1,40 @@
 ﻿[Closed Files]
-File_0=TSourceModule,'D:\Work\EmailParser\Sources\RegExp.Editor.pas',0,1,329,34,338,0,0,{{5,0}
-File_1=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.SyncObjs.pas',0,1,189,22,209,0,0,,
-File_2=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Threading.pas',0,1,967,1,981,0,0,,
-File_3=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\win\Winapi.Windows.pas',0,1,40988,1,41006,0,0,,
-File_4=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.pas',0,1,21170,1,21187,0,0,,
-File_5=TSourceModule,'D:\Work\EmailParser\Sources\Global.Types.pas',0,1,1,1,9,0,0,,
-File_6=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.SysUtils.pas',0,1,243,15,258,0,0,,
-File_7=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\+inc\deltics.rtl.inc',0,1,1,7,1,0,0,,
-File_8=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\+inc\deltics.inc',0,1,61,15,83,0,0,,
-File_9=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Strings.Encoding.pas',0,1,114,1,132,0,0,,
-File_10=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.SysUtils.pas',0,1,4718,1,4721,0,0,,
-File_11=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Windows.pas',0,1,22,1,40,0,0,,
-File_12=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Types.pas',0,1,22,1,40,0,0,,
-File_13=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.MultiCast.pas',0,1,48,1,66,0,0,,
-File_14=TSourceModule,'D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Classes.pas',0,1,22,1,40,0,0,,
+File_0=TSourceModule,'D:\Work\EmailParser\Sources\Common\Files.Utils.pas',0,1,111,3,131,0,0,{{5,0}
+File_1=TSourceModule,'D:\Work\EmailParser\Sources\Frames\Frame.Settings.pas',0,1,75,1,96,0,0,{{5,0}
+File_2=TSourceModule,'D:\Work\EmailParser\Sources\MainForm.pas',0,1,294,1,351,0,0,,
+File_3=TSourceModule,'D:\Work\EmailParser\Sources\CommonForms.pas',0,1,56,1,73,0,0,{{5,0}
+File_4=TSourceModule,'D:\Work\EmailParser\Sources\Global.Resources.pas',0,1,1,1,6,0,0,,
+File_5=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Classes.pas',0,1,9544,76,9571,0,0,,
+File_6=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Hash.pas',0,1,1134,1,1156,0,0,,
+File_7=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Generics.Collections.pas',0,1,7127,1,7144,0,0,,
+File_8=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Zip.pas',0,1,1720,1,1742,0,0,,
+File_9=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.pas',0,1,30840,1,30851,0,0,,
+File_10=TSourceModule,'D:\Work\EmailParser\Sources\CleverInternetSuite\clMailMessage.pas',0,1,1973,1,1991,0,0,,
+File_11=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.SysUtils.pas',0,1,9225,20,9237,0,0,,
+File_12=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\win\Winapi.Windows.pas',0,1,39458,1,39475,0,0,,
+File_13=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.IOUtils.pas',0,1,253,40,262,0,0,,
+File_14=TSourceModule,'D:\Work\EmailParser\Sources\Excel4Delphi\Excel4Delphi.Stream.pas',0,1,1393,24,1409,0,0,{{340,0}
 
 [Modules]
-Module0=D:\Work\EmailParser\Sources\Common\AhoCorasick.pas
-Module1=D:\Work\EmailParser\Sources\MainForm.pas
-Module2=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
-Module3=D:\Work\EmailParser\Sources\Performer.pas
-Module4=c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Win.TaskbarCore.pas
-Module5=c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Taskbar.pas
-Module6=D:\Work\EmailParser\Sources\UnRAR\UnRAR.Helper.pas
-Module7=D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Strings.pas
-Count=8
+Module0=D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas
+Module1=D:\Work\EmailParser\Sources\Frames\Frame.Attachments.pas
+Module2=D:\Work\EmailParser\Sources\Frames\Frame.AllAttachments.pas
+Module3=D:\Work\EmailParser\Sources\Translate\Translate.Resources.pas
+Module4=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
+Module5=D:\Work\EmailParser\Sources\Performer.pas
+Count=6
 EditWindowCount=1
 
-[D:\Work\EmailParser\Sources\Common\AhoCorasick.pas]
+[D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\Sources\MainForm.pas]
+[D:\Work\EmailParser\Sources\Frames\Frame.Attachments.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\Frames\Frame.AllAttachments.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\Translate\Translate.Resources.pas]
 ModuleType=TSourceModule
 
 [D:\Work\EmailParser\Sources\Frames\Frame.Project.pas]
@@ -39,29 +43,15 @@ ModuleType=TSourceModule
 [D:\Work\EmailParser\Sources\Performer.pas]
 ModuleType=TSourceModule
 
-[c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Win.TaskbarCore.pas]
-ModuleType=TSourceModule
-
-[c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Taskbar.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\UnRAR\UnRAR.Helper.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Strings.pas]
-ModuleType=TSourceModule
-
 [EditWindow0]
-ViewCount=8
-CurrentEditView=D:\Work\EmailParser\Sources\Common\AhoCorasick.pas
+ViewCount=6
+CurrentEditView=D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas
 View0=0
 View1=1
 View2=2
 View3=3
 View4=4
 View5=5
-View6=6
-View7=7
 PercentageSizes=1
 Create=1
 Visible=1
@@ -80,13 +70,13 @@ BorlandEditorCodeExplorer=BorlandEditorCodeExplorer@EditWindow0
 TopPanelSize=0
 LeftPanelSize=1896
 LeftPanelClients=PropertyInspector,DockSite3
-LeftPanelData=00000800010100000000760F00000000000001680700000000000001000000002308000009000000446F636B536974653301000000007D1B00001100000050726F7065727479496E73706563746F72FFFFFFFF
+LeftPanelData=000008000101000000000B1300000000000001680700000000000001000000002308000009000000446F636B53697465330100000000DB2100001100000050726F7065727479496E73706563746F72FFFFFFFF
 RightPanelSize=2000
 RightPanelClients=DockSite2,DockSite4
-RightPanelData=0000080001010100000009000000446F636B5369746534760F00000000000001D00700000000000001000000007D1B000009000000446F636B5369746532FFFFFFFF
-BottomPanelSize=1556
+RightPanelData=0000080001010100000009000000446F636B53697465340B1300000000000001D0070000000000000100000000DB21000009000000446F636B5369746532FFFFFFFF
+BottomPanelSize=0
 BottomPanelClients=MessageView,DockSite1
-BottomPanelData=0000080001020100000009000000446F636B5369746531DE440000000000000214060000000000000100000000DE4400000F0000004D65737361676556696577466F726DFFFFFFFF
+BottomPanelData=000008000102020000000F0000004D65737361676556696577466F726D09000000446F636B5369746531DE44000000000000023906000000000000FFFFFFFF
 BottomMiddlePanelSize=0
 BottomMiddlePanelClients=DockSite0,GraphDrawingModel
 BottomMiddelPanelData=0000080001020200000009000000446F636B536974653010000000477261706844726177696E67566965773C29000000000000024B06000000000000FFFFFFFF
@@ -94,94 +84,72 @@ BottomMiddelPanelData=0000080001020200000009000000446F636B5369746530100000004772
 [View0]
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\Performer.pas
-CursorX=1
-CursorY=661
-TopLine=633
+CursorX=42
+CursorY=1104
+TopLine=1070
 LeftCol=1
 Elisions=
-Bookmarks=
+Bookmarks={1,877,99}
 EditViewName=D:\Work\EmailParser\Sources\Performer.pas
 
 [View1]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Common\AhoCorasick.pas
-CursorX=35
-CursorY=152
-TopLine=9
+Module=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
+CursorX=77
+CursorY=92
+TopLine=74
 LeftCol=1
-Elisions=
+Elisions={{5,0},{14,11},{'Region uses'}}
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Common\AhoCorasick.pas
+EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
 
 [View2]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Strings.pas
-CursorX=31
-CursorY=960
-TopLine=942
+Module=D:\Work\EmailParser\Sources\Frames\Frame.AllAttachments.pas
+CursorX=10
+CursorY=43
+TopLine=25
 LeftCol=1
 Elisions=
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Deltics\rtl\Deltics.Strings.pas
+Bookmarks={1,285,1}
+EditViewName=Borland.FormDesignerView
 
 [View3]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
-CursorX=41
-CursorY=11
+Module=D:\Work\EmailParser\Sources\Frames\Frame.Attachments.pas
+CursorX=60
+CursorY=22
 TopLine=1
 LeftCol=1
 Elisions=
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
+EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Attachments.pas
 
 [View4]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\UnRAR\UnRAR.Helper.pas
-CursorX=1
-CursorY=106
-TopLine=85
+Module=D:\Work\EmailParser\Sources\Frames\Frame.Emails.pas
+CursorX=24
+CursorY=138
+TopLine=123
 LeftCol=1
-Elisions={{5,0},{8,11},{'Region uses'}}
+Elisions={{5,0},{15,11},{'Region uses'}}
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\UnRAR\UnRAR.Helper.pas
+EditViewName=Borland.FormDesignerView
 
 [View5]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\MainForm.pas
-CursorX=42
-CursorY=222
-TopLine=194
-LeftCol=1
-Elisions={{5,0},{16,11},{'Region uses'}}
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\MainForm.pas
-
-[View6]
-CustomEditViewType=TEditView
-Module=c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Taskbar.pas
-CursorX=21
-CursorY=93
-TopLine=76
+Module=D:\Work\EmailParser\Sources\Translate\Translate.Resources.pas
+CursorX=33
+CursorY=298
+TopLine=273
 LeftCol=1
 Elisions=
-Bookmarks=
-EditViewName=c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Taskbar.pas
-
-[View7]
-CustomEditViewType=TEditView
-Module=c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Win.TaskbarCore.pas
-CursorX=24
-CursorY=29
-TopLine=12
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Win.TaskbarCore.pas
+Bookmarks={1,295,61}
+EditViewName=D:\Work\EmailParser\Sources\Translate\Translate.Resources.pas
 
 [Watches]
 Count=1
-Watch0='Result',256,0,18,1,0,'Watches',1
+Watch0='aFileName',256,0,18,1,0,'Watches',1
 
 [WatchWindow]
 WatchColumnWidth=120
@@ -205,8 +173,10 @@ Dockable=1
 StayOnTop=0
 
 [Breakpoints]
-Count=1
+Count=3
 Breakpoint0='c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Threading.pas',981,'',0,1,'',1,0,0,'',1,'','','',0,''
+Breakpoint1='c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Classes.pas',9560,'',0,1,'',1,0,0,'',1,'','','',0,''
+Breakpoint2='c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Classes.pas',9571,'',0,1,'',1,0,0,'',1,'','','',0,''
 
 [EmbarcaderoWin32Debugger_AddressBreakpoints]
 Count=0
@@ -243,11 +213,11 @@ State=0
 Left=0
 Top=0
 Width=2000
-Height=6769
+Height=8462
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=2000
-ClientHeight=6769
+ClientHeight=8462
 TBDockHeight=5904
 LRDockWidth=2349
 Dockable=1
@@ -256,18 +226,18 @@ StayOnTop=0
 [MessageView]
 PercentageSizes=1
 Create=1
-Visible=1
+Visible=0
 Docked=1
 State=0
 Left=0
-Top=28
-Width=9917
-Height=1346
+Top=0
+Width=2771
+Height=1385
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=9917
-ClientHeight=1346
-TBDockHeight=1346
+ClientWidth=2771
+ClientHeight=1385
+TBDockHeight=1385
 LRDockWidth=2771
 Dockable=1
 StayOnTop=0
@@ -300,16 +270,21 @@ State=0
 Left=0
 Top=253
 Width=1896
-Height=4875
+Height=6567
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=1896
-ClientHeight=4875
-TBDockHeight=8731
+ClientHeight=6567
+TBDockHeight=7010
 LRDockWidth=1896
 Dockable=1
 StayOnTop=0
 SplitPos=149
+
+[PropInspDesignerSelection]
+ArrangeBy=Name
+SelectedItem=Action,
+ExpandedItems=Action=0,"LiveBindings Designer=0","Action.LiveBindings Designer=0",Images=0,MenuAnimation=0
 
 [frmDesignPreview]
 PercentageSizes=1
@@ -748,7 +723,7 @@ Create=1
 Visible=0
 Docked=1
 State=0
-Left=952
+Left=0
 Top=28
 Width=3823
 Height=1423
@@ -775,11 +750,11 @@ State=0
 Left=0
 Top=28
 Width=2000
-Height=7038
+Height=8731
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=2000
-ClientHeight=7038
+ClientHeight=8731
 TBDockHeight=8731
 LRDockWidth=2000
 Dockable=1
@@ -804,7 +779,7 @@ MaxLeft=-1
 MaxTop=-1
 ClientWidth=1896
 ClientHeight=1817
-TBDockHeight=8731
+TBDockHeight=7010
 LRDockWidth=1896
 Dockable=1
 StayOnTop=0

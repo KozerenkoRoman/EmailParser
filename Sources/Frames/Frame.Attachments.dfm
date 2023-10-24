@@ -101,17 +101,41 @@ inherited frameAttachments: TframeAttachments
       Visible = False
     end
     object aOpenAttachFile: TAction [9]
+      Caption = 'Open Attach File'
+      Hint = 'Open Attach File'
       ImageIndex = 69
       ImageName = 'email_attach'
       OnExecute = aOpenAttachFileExecute
       OnUpdate = aOpenAttachFileUpdate
     end
     object aOpenParsedText: TAction [10]
+      Caption = 'Open Parsed Text'
       Hint = 'Open Parsed Text'
       ImageIndex = 72
       ImageName = 'email_open'
       OnExecute = aOpenParsedTextExecute
       OnUpdate = aOpenAttachFileUpdate
+    end
+    object aOpenLocation: TAction
+      Caption = 'Open Location'
+      Hint = 'Open Location'
+      ImageIndex = 5
+      ImageName = 'Open_32x32'
+      OnExecute = aOpenLocationExecute
+    end
+  end
+  inherited pmFrame: TPopupMenu
+    object miSep: TMenuItem
+      Caption = '-'
+    end
+    object miOpenAttachFile: TMenuItem
+      Action = aOpenAttachFile
+    end
+    object miOpenParsedText: TMenuItem
+      Action = aOpenParsedText
+    end
+    object miOpenLocation: TMenuItem
+      Action = aOpenLocation
     end
   end
   object SaveDialogAttachment: TSaveDialog

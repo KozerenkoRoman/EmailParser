@@ -1406,13 +1406,13 @@ var
         begin
           if Xml.IsTagClosedByName('a:off') then
           begin
-            picture.FrmOffX := StrToInt(Xml.Attributes['x']);
-            picture.FrmOffY := StrToInt(Xml.Attributes['y']);
+            picture.FrmOffX := StrToInt64(Xml.Attributes['x']);
+            picture.FrmOffY := StrToInt64(Xml.Attributes['y']);
           end
           else if Xml.IsTagClosedByName('a:ext') then
           begin
-            picture.FrmExtCX := StrToInt(Xml.Attributes['cx']);
-            picture.FrmExtCY := StrToInt(Xml.Attributes['cy']);
+            picture.FrmExtCX := StrToInt64(Xml.Attributes['cx']);
+            picture.FrmExtCY := StrToInt64(Xml.Attributes['cy']);
           end
         end;
       end;

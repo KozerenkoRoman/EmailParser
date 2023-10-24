@@ -7,7 +7,7 @@ interface
 uses
   System.SysUtils, System.Variants, System.Classes, System.Generics.Defaults, System.Generics.Collections,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Winapi.Windows, System.DateUtils, System.IniFiles,
-  Vcl.Controls, Winapi.ShellAPI, System.IOUtils, Vcl.Forms, System.Hash;
+  Vcl.Controls, Winapi.ShellAPI, System.IOUtils, Vcl.Forms, System.Hash, System.Math;
 {$ENDREGION}
 
 type
@@ -19,17 +19,26 @@ type
   end;
 
   TFileUtils = class
+  const
+    EXTENDED_PREFIX : string = '\\?\';
+    FORBIDDEN_EXT   : string = '.exe.com.cmd.bat.eml';
   public
+    class function CheckLength(const aFileName: string): string;
     class function CheckSignature(const aFileName: string; const aSignature: TFileSignature): Boolean;
     class function GetCmdLineValue(aCmdLine, aArg: string; aSwitch, aSeparator: Char): string;
-    class function GetCorrectFileName(const aFileName: string): string; inline;
+    class function GetCorrectFileName(const aPath, aFileName: string): string;
     class function GetHash(const aFileName: string): string;
     class function GetHashString(const aParsedText: string): string;
+    class function GetShortPath(const aFileName: string): string; inline;
     class function GetSignature(const aFileName: string): TFileSignature;
     class function IsForbidden(const aFileName: TFileName): Boolean; inline;
+    class function MakePath(const aParts: TArray<string>; const aCreate: Boolean): string; overload;
+    class function MakePath(const aParts: TArray<string>; const aFileName: string; const aCreatePath: Boolean): string; overload;
     class function ShellExecuteAndWait(const aFileName, aParams: string): Boolean; inline;
     class procedure ShellOpen(const aUrl: string; const aParams: string = '');
   end;
+
+implementation
 
 const
   //See https://en.wikipedia.org/wiki/List_of_file_signatures
@@ -56,9 +65,7 @@ const
     (TypeSignature: fsUnknown; Signature: [])
     );
   LENGTH_SIGNATURE = 12;
-  FORBIDDEN_EXT: string = '.exe.com.cmd.bat.eml';
 
-implementation
 
 { TFileUtils }
 
@@ -88,11 +95,25 @@ begin
   Result := True;
 end;
 
-class function TFileUtils.GetCorrectFileName(const aFileName: string): string;
+class function TFileUtils.GetCorrectFileName(const aPath, aFileName: string): string;
+const
+  LENGTH_PATH = MAX_PATH - 10;
+var
+  Len: Integer;
+  Ext: string;
 begin
   Result := aFileName;
   for var i := Low(TPath.GetInvalidFileNameChars) to High(TPath.GetInvalidFileNameChars) do
     Result := Result.Replace(TPath.GetInvalidFileNameChars[i], '');
+
+  if ((aPath.Length + Result.Length) >= LENGTH_PATH) then
+  begin
+    Ext    := TPath.GetExtension(Result);
+    Result := TPath.GetFileNameWithoutExtension(Result);
+    Len    := LENGTH_PATH - aPath.Length - Ext.Length;
+    SetLength(Result, Min(Length(Result), Len));
+    Result := Result + Ext;
+  end;
 end;
 
 class function TFileUtils.GetHash(const aFileName: string): string;
@@ -108,6 +129,16 @@ end;
 class procedure TFileUtils.ShellOpen(const aUrl: string; const aParams: string = '');
 begin
   Winapi.ShellAPI.ShellExecute(0, 'Open', PChar(aUrl), PChar(aParams), nil, SW_SHOWNORMAL);
+end;
+
+class function TFileUtils.GetShortPath(const aFileName: string): string;
+begin
+  Result := '';
+  SetLength(Result, MAX_PATH + 1);
+  if GetShortPathName(PWideChar(aFileName), PWideChar(Result), MAX_PATH) = 0 then
+    Result := aFileName
+  else
+    SetLength(Result, StrLen(PWideChar(Result)));
 end;
 
 class function TFileUtils.GetSignature(const aFileName: string): TFileSignature;
@@ -138,6 +169,14 @@ end;
 class function TFileUtils.IsForbidden(const aFileName: TFileName): Boolean;
 begin
   Result := FORBIDDEN_EXT.Contains(TPath.GetExtension(aFileName));
+end;
+
+class function TFileUtils.CheckLength(const aFileName: string): string;
+begin
+  Result := aFileName;
+  if (aFileName.Length >= MAX_PATH) then
+    if not aFileName.StartsWith(EXTENDED_PREFIX) then
+      Result := Concat(EXTENDED_PREFIX, aFileName);
 end;
 
 class function TFileUtils.CheckSignature(const aFileName: string; const aSignature: TFileSignature): Boolean;
@@ -180,6 +219,56 @@ begin
   else
     LenghtValue := NextSwitchIndex - SepIndex - 1;
   Result := Copy(aCmdLine, SepIndex + 2, LenghtValue).Trim;
+end;
+
+class function TFileUtils.MakePath(const aParts: TArray<string>; const aCreate: Boolean): string;
+const
+  APPEND_STRATEGY: array [False .. True, False .. True] of Integer = ((0, 1), (1, 2));
+var
+  i: Integer;
+begin
+  case Length(aParts) of
+    0:
+      Result := '';
+    1:
+      Result := aParts[0];
+  else
+    i := 0;
+    while (aParts[i] = '') do
+      Inc(i);
+    Result := aParts[i];
+    for i := Succ(i) to Pred(Length(aParts)) do
+    begin
+      if (aParts[i] = '') then
+        Continue;
+
+      case APPEND_STRATEGY[Result[Length(Result)] = '\', aParts[i][1] = '\'] of
+        0:
+          Result := Result + '\' + aParts[i];
+        2:
+          Result := Result + Copy(aParts[i], 2, Length(aParts[i]));
+        1:
+          Result := Result + aParts[i];
+      end
+    end;
+
+    if Result[Length(Result)] = '\' then
+      SetLength(Result, Length(Result) - 1);
+  end;
+
+  if (Result <> '') then
+  begin
+    if Result[Length(Result)] = '\' then
+      SetLength(Result, Length(Result) - 1);
+
+    if aCreate and not DirectoryExists(Result) then
+      ForceDirectories(Result);
+  end;
+end;
+
+class function TFileUtils.MakePath(const aParts: TArray<string>; const aFileName: string; const aCreatePath: Boolean): string;
+begin
+  Result := MakePath(aParts, aCreatePath) + '\' + aFileName;
 end;
 
 end.

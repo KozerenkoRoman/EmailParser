@@ -83,6 +83,7 @@ resourcestring
   en_Info                 = 'Info ';
   en_IsLogginActive       = 'Write information to the log file';
   en_Language             = 'Language';
+  en_LoadProject          = 'Load project';
   en_LoadRecordsFromDB    = 'Load records from DB at startup';
   en_Main                 = 'Main';
   en_Mask                 = 'Mask';
@@ -99,7 +100,9 @@ resourcestring
   en_Ok                   = 'Ok';
   en_OpenEmail            = 'Open email';
   en_OpenFile             = 'Open File';
+  en_OpenLocation         = 'Open Location';
   en_OpenLogFile          = 'Open Log File';
+  en_OpenParsedText       = 'Open parsed text';
   en_Operation            = 'Operation';
   en_Options              = 'Options';
   en_Parameter            = 'Parameter';
@@ -136,6 +139,7 @@ resourcestring
   en_SearchDuplicateFiles = 'Search duplicate files';
   en_SelectAll            = 'Select all';
   en_Server               = 'Server';
+  en_SetCurrent           = 'Set current';
   en_SetOfTemplates       = 'Set of templates';
   en_ShowSearchBar        = 'Show search bar';
   en_Size                 = 'Size';
@@ -152,7 +156,6 @@ resourcestring
   en_Utilities            = 'Utilities';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
-  en_SetCurrent           = 'Set current';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -217,6 +220,7 @@ resourcestring
   uk_Info                 = 'Опис ';
   uk_IsLogginActive       = 'Записувати інформацію в лог-файл';
   uk_Language             = 'Мова';
+  uk_LoadProject          = 'Завантажити проект';
   uk_LoadRecordsFromDB    = 'Завантажувати записи з БД при старті';
   uk_Main                 = 'Основне';
   uk_Mask                 = 'Маска';
@@ -233,7 +237,9 @@ resourcestring
   uk_Ok                   = 'Ок';
   uk_OpenEmail            = 'Відкрити email';
   uk_OpenFile             = 'Відкрити файл';
+  uk_OpenLocation         = 'Відкрити розташування';
   uk_OpenLogFile          = 'Відкрити журнал логування';
+  uk_OpenParsedText       = 'Відкрити текст';
   uk_Operation            = 'Операція';
   uk_Options              = 'Опції';
   uk_Parameter            = 'Параметр';
@@ -270,6 +276,7 @@ resourcestring
   uk_SearchDuplicateFiles = 'Пошук дублікатів файлів';
   uk_SelectAll            = 'Виділити все';
   uk_Server               = 'Сервер';
+  uk_SetCurrent           = 'Встановити поточним';
   uk_SetOfTemplates       = 'Набір шаблонів';
   uk_ShowSearchBar        = 'Показати панель пошуку';
   uk_Size                 = 'Розмір';
@@ -286,10 +293,9 @@ resourcestring
   uk_Utilities            = 'Утиліти';
   uk_Value                = 'Значення';
   uk_WithSubdir           = 'З підкаталогами';
-  uk_SetCurrent           = 'Встановити поточним';
 
 const
-   ArrayMessages: array[1 .. 130] of TMessageItem = (
+   ArrayMessages: array[1 .. 133] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AhoCorasick'          ; En: en_AhoCorasick;          Uk: uk_AhoCorasick),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
@@ -302,7 +308,6 @@ const
     (Key: 'BruteForce'           ; En: en_BruteForce;           Uk: uk_BruteForce),
     (Key: 'Cancel'               ; En: en_Cancel;               Uk: uk_Cancel),
     (Key: 'ClassName'            ; En: en_ClassName;            Uk: uk_ClassName),
-    (Key: 'SetCurrent'           ; En: en_SetCurrent;           Uk: uk_SetCurrent),
     (Key: 'CollapseAll'          ; En: en_CollapseAll;          Uk: uk_CollapseAll),
     (Key: 'Color'                ; En: en_Color;                Uk: uk_Color),
     (Key: 'ColumnSettings'       ; En: en_ColumnSettings;       Uk: uk_ColumnSettings),
@@ -353,6 +358,7 @@ const
     (Key: 'Info'                 ; En: en_Info;                 Uk: uk_Info),
     (Key: 'IsLogginActive'       ; En: en_IsLogginActive;       Uk: uk_IsLogginActive),
     (Key: 'Language'             ; En: en_Language;             Uk: uk_Language),
+    (Key: 'LoadProject'          ; En: en_LoadProject;          Uk: uk_LoadProject),
     (Key: 'LoadRecordsFromDB'    ; En: en_LoadRecordsFromDB;    Uk: uk_LoadRecordsFromDB),
     (Key: 'Main'                 ; En: en_Main;                 Uk: uk_Main),
     (Key: 'Mask'                 ; En: en_Mask;                 Uk: uk_Mask),
@@ -369,7 +375,9 @@ const
     (Key: 'Ok'                   ; En: en_Ok;                   Uk: uk_Ok),
     (Key: 'OpenEmail'            ; En: en_OpenEmail;            Uk: uk_OpenEmail),
     (Key: 'OpenFile'             ; En: en_OpenFile;             Uk: uk_OpenFile),
+    (Key: 'OpenLocation'         ; En: en_OpenLocation;         Uk: uk_OpenLocation),
     (Key: 'OpenLogFile'          ; En: en_OpenLogFile;          Uk: uk_OpenLogFile),
+    (Key: 'OpenParsedText'       ; En: en_OpenParsedText;       Uk: uk_OpenParsedText),
     (Key: 'Operation'            ; En: en_Operation;            Uk: uk_Operation),
     (Key: 'Options'              ; En: en_Options;              Uk: uk_Options),
     (Key: 'Parameter'            ; En: en_Parameter;            Uk: uk_Parameter),
@@ -404,6 +412,7 @@ const
     (Key: 'SearchComplete'       ; En: en_SearchComplete;       Uk: uk_SearchComplete),
     (Key: 'SearchDuplicateFiles' ; En: en_SearchDuplicateFiles; Uk: uk_SearchDuplicateFiles),
     (Key: 'SelectAll'            ; En: en_SelectAll;            Uk: uk_SelectAll),
+    (Key: 'SetCurrent'           ; En: en_SetCurrent;           Uk: uk_SetCurrent),
     (Key: 'SetOfTemplates'       ; En: en_SetOfTemplates;       Uk: uk_SetOfTemplates),
     (Key: 'ShowSearchBar'        ; En: en_ShowSearchBar;        Uk: uk_ShowSearchBar),
     (Key: 'Size'                 ; En: en_Size;                 Uk: uk_Size),

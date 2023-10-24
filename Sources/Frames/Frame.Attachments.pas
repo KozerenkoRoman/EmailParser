@@ -11,19 +11,25 @@ uses
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
   Vcl.WinXPanels, Publishers.Interfaces, Publishers, Global.Utils, VirtualTrees.ExportHelper, Global.Resources,
-  DaModule, System.Threading, EXIF.Dialog, XLSX.Dialog;
+  DaModule, System.Threading, EXIF.Dialog, XLSX.Dialog, Winapi.ShellAPI;
 {$ENDREGION}
 
 type
   TframeAttachments = class(TframeSource, IEmailChange, IConfig)
     aOpenAttachFile      : TAction;
+    aOpenLocation        : TAction;
     aOpenParsedText      : TAction;
     btnOpenAttachFile    : TToolButton;
     btnOpenParsedText    : TToolButton;
     btnSep04             : TToolButton;
+    miOpenAttachFile     : TMenuItem;
+    miOpenLocation       : TMenuItem;
+    miOpenParsedText     : TMenuItem;
+    miSep                : TMenuItem;
     SaveDialogAttachment : TSaveDialog;
     procedure aOpenAttachFileExecute(Sender: TObject);
     procedure aOpenAttachFileUpdate(Sender: TObject);
+    procedure aOpenLocationExecute(Sender: TObject);
     procedure aOpenParsedTextExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
     procedure vstTreeBeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
@@ -95,7 +101,12 @@ end;
 procedure TframeAttachments.Translate;
 begin
   inherited;
-  aOpenAttachFile.Hint  := TLang.Lang.Translate('OpenFile');
+  aOpenAttachFile.Caption := TLang.Lang.Translate('OpenFile');
+  aOpenAttachFile.Hint    := TLang.Lang.Translate('OpenFile');
+  aOpenLocation.Caption   := TLang.Lang.Translate('OpenLocation');
+  aOpenLocation.Hint      := TLang.Lang.Translate('OpenLocation');
+  aOpenParsedText.Caption := TLang.Lang.Translate('OpenParsedText');
+  aOpenParsedText.Hint    := TLang.Lang.Translate('OpenParsedText');
   vstTree.Header.Columns[COL_SHORT_NAME].Text   := TLang.Lang.Translate('FileName');
   vstTree.Header.Columns[COL_FILE_NAME].Text    := TLang.Lang.Translate('Path');
   vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
@@ -196,6 +207,24 @@ procedure TframeAttachments.aOpenAttachFileUpdate(Sender: TObject);
 begin
   inherited;
   TAction(Sender).Enabled := not vstTree.IsEmpty and Assigned(vstTree.FocusedNode);
+end;
+
+procedure TframeAttachments.aOpenLocationExecute(Sender: TObject);
+var
+  Data: PAttachment;
+  PathName: string;
+begin
+  inherited;
+  if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
+  begin
+    Data := TGeneral.AttachmentList.GetItem(PAttachData(vstTree.FocusedNode^.GetData).Hash);
+    if Assigned(Data) then
+    begin
+      PathName := TPath.GetDirectoryName(Data^.FileName);
+      if not PathName.IsEmpty then
+        Winapi.ShellAPI.ShellExecute(Handle, nil, PChar(PathName), nil, nil, sw_Show);
+    end;
+  end;
 end;
 
 procedure TframeAttachments.aOpenParsedTextExecute(Sender: TObject);
@@ -355,8 +384,9 @@ var
 begin
   inherited;
   Data := TGeneral.AttachmentList.GetItem(PAttachData(Node^.GetData).Hash);
-  if (Column in [COL_FILE_NAME, COL_SHORT_NAME]) and Data^.FromDB then
-    TargetCanvas.Font.Color := clNavy;
+  if Assigned(Data) then
+    if (Column in [COL_FILE_NAME, COL_SHORT_NAME]) and Data^.FromZip then
+      TargetCanvas.Font.Color := clNavy;
 end;
 
 procedure TframeAttachments.FocusChanged(const aData: PResultData);

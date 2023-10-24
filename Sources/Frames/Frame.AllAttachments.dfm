@@ -213,6 +213,7 @@ inherited frameAllAttachments: TframeAllAttachments
       OnExecute = aRefreshExecute
     end
     object aOpenAttachFile: TAction [9]
+      Caption = 'Open Attach File'
       Hint = 'Open Attach File'
       ImageIndex = 69
       ImageName = 'email_attach'
@@ -220,6 +221,7 @@ inherited frameAllAttachments: TframeAllAttachments
       OnUpdate = aOpenAttachFileUpdate
     end
     object aOpenParsedText: TAction [10]
+      Caption = 'Open Parsed Text'
       Hint = 'Open Parsed Text'
       ImageIndex = 72
       ImageName = 'email_open'
@@ -227,6 +229,8 @@ inherited frameAllAttachments: TframeAllAttachments
       OnUpdate = aOpenAttachFileUpdate
     end
     object aOpenEmail: TAction [11]
+      Caption = 'Open Email'
+      Hint = 'Open Email'
       ImageIndex = 68
       ImageName = 'email'
       OnExecute = aOpenEmailExecute
@@ -261,6 +265,31 @@ inherited frameAllAttachments: TframeAllAttachments
       ImageIndex = 76
       ImageName = 'toolbar_add'
       OnExecute = aShowSearchBarExecute
+    end
+    object aOpenLocation: TAction
+      Caption = 'Open Location'
+      Hint = 'Open Location'
+      ImageIndex = 5
+      ImageName = 'Open_32x32'
+      OnExecute = aOpenLocationExecute
+    end
+  end
+  inherited pmFrame: TPopupMenu
+    object miSep: TMenuItem
+      Caption = '-'
+    end
+    object miOpenEmail: TMenuItem
+      Action = aOpenEmail
+    end
+    object miOpenAttachFile: TMenuItem
+      Action = aOpenAttachFile
+    end
+    object miOpenParsedText: TMenuItem
+      Action = aOpenParsedText
+      Default = True
+    end
+    object miOpenLocation: TMenuItem
+      Action = aOpenLocation
     end
   end
   object SaveDialogAttachment: TSaveDialog

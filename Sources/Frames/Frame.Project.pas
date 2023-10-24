@@ -88,6 +88,7 @@ end;
 procedure TframeProject.Translate;
 begin
   inherited;
+  aLoadProject.Hint                     := TLang.Lang.Translate('LoadProject');
   aSetCurrent.Hint                      := TLang.Lang.Translate('SetCurrent');
   vstTree.Header.Columns[COL_HASH].Text := TLang.Lang.Translate('Hash');
   vstTree.Header.Columns[COL_INFO].Text := TLang.Lang.Translate('Info');
@@ -123,16 +124,14 @@ procedure TframeProject.LoadFromXML;
             Data := NewNode.GetData;
             Data^ := Item;
             if Data^.Current then
-            begin
               TGeneral.CurrentProject := Data^;
-              TPublishers.ConfigPublisher.UpdateProject;
-            end;
           end;
         end;
         TGeneral.XMLParams.NextKey;
       end;
     finally
       TGeneral.XMLParams.CurrentSection := '';
+      TPublishers.ConfigPublisher.UpdateProject;
     end;
   end;
 
@@ -142,6 +141,7 @@ begin
   try
     vstTree.Clear;
     LoadNode;
+
   finally
     vstTree.EndUpdate;
   end;
@@ -162,10 +162,7 @@ procedure TframeProject.SaveToXML;
     TGeneral.XMLParams.WriteAttributes;
 
     if Data^.Current then
-    begin
       TGeneral.CurrentProject := Data^;
-      TPublishers.ConfigPublisher.UpdateProject;
-    end;
   end;
 
 var
@@ -175,7 +172,7 @@ begin
   TGeneral.XMLParams.EraseSection('Project');
   TGeneral.XMLParams.CurrentSection := 'Project';
   try
-    Node := vstTree.GetFirst;
+    Node := vstTree.RootNode.FirstChild;
     while Assigned(Node) do
     begin
       SaveNode(Node);
@@ -260,7 +257,7 @@ end;
 procedure TframeProject.aSetCurrentExecute(Sender: TObject);
 var
   Data: PProject;
-  CurrentNode: PVirtualNode;
+  FocusedNode: PVirtualNode;
   RunNode: PVirtualNode;
 begin
   inherited;
@@ -268,7 +265,7 @@ begin
   begin
     vstTree.BeginUpdate;
     try
-      CurrentNode := vstTree.FocusedNode;
+      FocusedNode := vstTree.FocusedNode;
       RunNode := vstTree.RootNode.FirstChild;
       while Assigned(RunNode) do
       begin
@@ -276,12 +273,13 @@ begin
         Data^.Current := False;
         RunNode := RunNode.NextSibling;
       end;
-      Data := CurrentNode^.GetData;
+      Data := FocusedNode^.GetData;
       Data^.Current := True;
     finally
       vstTree.EndUpdate;
     end;
     SaveToXML;
+    TPublishers.ConfigPublisher.UpdateProject;
   end;
 end;
 
