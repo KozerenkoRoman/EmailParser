@@ -7,11 +7,13 @@
 
 uses
   Vcl.Forms,
-  System.SysUtils,
+  Vcl.Styles,
+  Vcl.Themes,
   System.IOUtils,
+  System.SysUtils,
   Winapi.Windows,
-  ArrayHelper in 'Sources\Common\ArrayHelper.pas',
   AhoCorasick in 'Sources\Common\AhoCorasick.pas',
+  ArrayHelper in 'Sources\Common\ArrayHelper.pas',
   Column.Settings in 'Sources\Column.Settings.pas' {frmColumnSettings},
   Column.Types in 'Sources\Common\Column.Types.pas',
   Common.Types in 'Sources\Common\Common.Types.pas',
@@ -21,7 +23,6 @@ uses
   DaModule.Resources in 'Sources\DataModules\DaModule.Resources.pas',
   DebugWriter in 'Sources\Common\DebugWriter.pas',
   dEXIF.Helper in 'Sources\dEXIF\dEXIF.Helper.pas',
-  ExecConsoleProgram in 'Sources\Common\ExecConsoleProgram.pas',
   EXIF.Dialog in 'Sources\Common\EXIF.Dialog.pas' {EXIFDialog},
   Files.Utils in 'Sources\Common\Files.Utils.pas',
   Frame.AllAttachments in 'Sources\Frames\Frame.AllAttachments.pas' {frameAllAttachments: TFrame},

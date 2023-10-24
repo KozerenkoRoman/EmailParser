@@ -104,9 +104,9 @@ procedure TframeProject.LoadFromXML;
 
  procedure LoadNode;
   var
-    Item: TProject;
-    Data: PProject;
-    NewNode: PVirtualNode;
+    Data    : PProject;
+    Hash    : string;
+    NewNode : PVirtualNode;
   begin
     TGeneral.XMLParams.CurrentSection := 'Project';
     try
@@ -114,15 +114,16 @@ procedure TframeProject.LoadFromXML;
       begin
         if TGeneral.XMLParams.ReadAttributes then
         begin
-          Item.Hash    := TGeneral.XMLParams.Attributes.GetAttributeValue('Hash', '');
-          Item.Name    := TGeneral.XMLParams.Attributes.GetAttributeValue('Name', '');
-          Item.Info    := TGeneral.XMLParams.Attributes.GetAttributeValue('Info', '');
-          Item.Current := TGeneral.XMLParams.Attributes.GetAttributeValue('Current', False);
-          if not Item.Hash.IsEmpty then
+          Hash := TGeneral.XMLParams.Attributes.GetAttributeValue('Hash', '');
+          if not Hash.IsEmpty then
           begin
             NewNode := vstTree.AddChild(nil);
             Data := NewNode.GetData;
-            Data^ := Item;
+            Data^.Hash    := Hash;
+            Data^.Name    := TGeneral.XMLParams.Attributes.GetAttributeValue('Name', '');
+            Data^.Info    := TGeneral.XMLParams.Attributes.GetAttributeValue('Info', '');
+            Data^.Current := TGeneral.XMLParams.Attributes.GetAttributeValue('Current', False);
+
             if Data^.Current then
               TGeneral.CurrentProject := Data^;
           end;

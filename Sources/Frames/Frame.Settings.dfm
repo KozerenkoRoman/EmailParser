@@ -100,6 +100,16 @@ inherited frameSettings: TframeSettings
         Column = 1
         Control = edtNumberOfDays
         Row = 8
+      end
+      item
+        Column = 0
+        Control = lblStyle
+        Row = 4
+      end
+      item
+        Column = 1
+        Control = cbStyle
+        Row = 4
       end>
     ParentColor = True
     RowCollection = <
@@ -147,6 +157,8 @@ inherited frameSettings: TframeSettings
         Value = 100.000000000000000000
       end>
     TabOrder = 1
+    ExplicitLeft = 3
+    ExplicitTop = 15
     DesignSize = (
       784
       480)
@@ -356,6 +368,34 @@ inherited frameSettings: TframeSettings
       SpinButtonOptions.Placement = nbspCompact
       UseMouseWheel = True
     end
+    object lblStyle: TLabel
+      AlignWithMargins = True
+      Left = 3
+      Top = 143
+      Width = 314
+      Height = 29
+      Align = alClient
+      Alignment = taRightJustify
+      Caption = 'Style'
+      Layout = tlCenter
+      ExplicitLeft = 292
+      ExplicitWidth = 25
+      ExplicitHeight = 15
+    end
+    object cbStyle: TComboBox
+      AlignWithMargins = True
+      Left = 330
+      Top = 146
+      Width = 145
+      Height = 23
+      Margins.Left = 10
+      Margins.Top = 6
+      Margins.Bottom = 6
+      Align = alLeft
+      Style = csDropDownList
+      TabOrder = 7
+      ExplicitLeft = 479
+    end
   end
   inherited alFrame: TActionList
     inherited aAdd: TAction
@@ -401,7 +441,7 @@ inherited frameSettings: TframeSettings
     FavoriteLinks = <>
     FileTypes = <>
     Options = [fdoPickFolders]
-    Left = 440
-    Top = 166
+    Left = 600
+    Top = 30
   end
 end

@@ -174,7 +174,6 @@ inherited frmMain: TfrmMain
     Color = 1986047
     ParentBackground = False
     TabOrder = 1
-    ExplicitWidth = 1093
     object lblProject: TLabel
       Left = 250
       Top = 0
@@ -247,24 +246,27 @@ inherited frmMain: TfrmMain
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitLeft = 784
-      object srchBox: TSearchBox
-        Left = 11
+      object srchBox: TButtonedEdit
+        Left = 2
         Top = 8
-        Width = 286
+        Width = 303
         Height = 25
-        AutoSize = False
-        Ctl3D = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
         Font.Name = 'Segoe UI'
         Font.Style = []
-        ParentCtl3D = False
+        Images = DMImage.vilFileExt
+        LeftButton.ImageIndex = 100
+        LeftButton.ImageName = 'remove-bold'
         ParentFont = False
-        CanUndoSelText = True
+        RightButton.ImageIndex = 99
+        RightButton.ImageName = 'search'
+        RightButton.Visible = True
         TabOrder = 0
-        OnInvokeSearch = srchBoxInvokeSearch
+        OnChange = srchBoxChange
+        OnLeftButtonClick = srchBoxLeftButtonClick
+        OnRightButtonClick = srchBoxRightButtonClick
       end
     end
   end
@@ -523,9 +525,24 @@ inherited frmMain: TfrmMain
               Column = 1
               Control = frameSettings.edtNumberOfDays
               Row = 8
+            end
+            item
+              Column = 0
+              Control = frameSettings.lblStyle
+              Row = 4
+            end
+            item
+              Column = 1
+              Control = frameSettings.cbStyle
+              Row = 4
             end>
+          ExplicitLeft = 0
+          ExplicitTop = 39
           ExplicitWidth = 845
           ExplicitHeight = 603
+          inherited cbStyle: TComboBox
+            ExplicitLeft = 330
+          end
         end
       end
     end

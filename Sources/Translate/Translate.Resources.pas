@@ -83,7 +83,7 @@ resourcestring
   en_Info                 = 'Info ';
   en_IsLogginActive       = 'Write information to the log file';
   en_Language             = 'Language';
-  en_LoadProject          = 'Load project';
+  en_LoadProject          = 'Load current project';
   en_LoadRecordsFromDB    = 'Load records from DB at startup';
   en_Main                 = 'Main';
   en_Mask                 = 'Mask';
@@ -156,6 +156,7 @@ resourcestring
   en_Utilities            = 'Utilities';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
+  en_Style                = 'Style';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -220,7 +221,7 @@ resourcestring
   uk_Info                 = 'Опис ';
   uk_IsLogginActive       = 'Записувати інформацію в лог-файл';
   uk_Language             = 'Мова';
-  uk_LoadProject          = 'Завантажити проект';
+  uk_LoadProject          = 'Завантажити поточний проект';
   uk_LoadRecordsFromDB    = 'Завантажувати записи з БД при старті';
   uk_Main                 = 'Основне';
   uk_Mask                 = 'Маска';
@@ -292,10 +293,11 @@ resourcestring
   uk_UseRawText           = 'Парсити сирий текст';
   uk_Utilities            = 'Утиліти';
   uk_Value                = 'Значення';
+  uk_Style                = 'Стиль';
   uk_WithSubdir           = 'З підкаталогами';
 
 const
-   ArrayMessages: array[1 .. 133] of TMessageItem = (
+   ArrayMessages: array[1 .. 134] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AhoCorasick'          ; En: en_AhoCorasick;          Uk: uk_AhoCorasick),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
@@ -318,6 +320,7 @@ const
     (Key: 'Copy'                 ; En: en_Copy;                 Uk: uk_Copy),
     (Key: 'Date'                 ; En: en_Date;                 Uk: uk_Date),
     (Key: 'Delete'               ; En: en_Delete;               Uk: uk_Delete),
+    (Key: 'Style'                ; En: en_Style;                Uk: uk_Style),
     (Key: 'DeleteAttachments'    ; En: en_DeleteAttachments;    Uk: uk_DeleteAttachments),
     (Key: 'DeletePrompt'         ; En: en_DeletePrompt;         Uk: uk_DeletePrompt),
     (Key: 'DeleteSelected'       ; En: en_DeleteSelected;       Uk: uk_DeleteSelected),

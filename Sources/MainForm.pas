@@ -12,7 +12,7 @@ uses
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.Settings, Global.Types, Vcl.Samples.Gauges,
   Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule, Frame.Sorter, Frame.DuplicateFiles,
   Files.Utils, Vcl.CheckLst, ArrayHelper, System.Types, Frame.MatchesFilter, Frame.BruteForce, Frame.Project,
-  System.Notification, System.Win.TaskbarCore, Vcl.Taskbar;
+  System.Notification, System.Win.TaskbarCore, Vcl.Taskbar, Vcl.Themes;
 {$ENDREGION}
 
 type
@@ -52,7 +52,7 @@ type
     splExtendedFilter       : TSplitter;
     splPath                 : TSplitter;
     splView                 : TSplitView;
-    srchBox                 : TSearchBox;
+    srchBox                 : TButtonedEdit;
     Taskbar                 : TTaskbar;
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
     procedure aToggleSplitPanelExecute(Sender: TObject);
@@ -62,11 +62,14 @@ type
     procedure FormResize(Sender: TObject);
     procedure splViewClosed(Sender: TObject);
     procedure splViewOpened(Sender: TObject);
-    procedure srchBoxInvokeSearch(Sender: TObject);
+    procedure srchBoxChange(Sender: TObject);
+    procedure srchBoxLeftButtonClick(Sender: TObject);
+    procedure srchBoxRightButtonClick(Sender: TObject);
   private const
     C_IDENTITY_NAME = 'MainForm';
   private
     FProgressBar: TGauge;
+    FTopColor: TColor;
     procedure NotifyComplete;
     procedure CreateProgressBar;
 
@@ -103,7 +106,6 @@ implementation
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   inherited;
-  CreateProgressBar;
   TPublishers.ProgressPublisher.Subscribe(Self);
   TPublishers.ConfigPublisher.Subscribe(Self);
 end;
@@ -118,11 +120,15 @@ begin
 end;
 
 procedure TfrmMain.Initialize;
+var
+  StyleName: string;
 begin
   inherited;
   Randomize;
   TLang.Lang.Language      := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
   pnlExtendedFilter.Height := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'ExtendedFilterHeight', 250);
+  StyleName                := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Style', TStyleManager.cSystemStyleName);
+
   TGeneral.Initialize;
   DaMod.Initialize;
   frameProject.Initialize;
@@ -134,11 +140,17 @@ begin
   frameDuplicateFiles.Initialize;
   frameMatchesFilter.Initialize;
   frameBruteForce.Initialize;
-
-  pnlTop.Color                := C_TOP_COLOR;
-  catMenuItems.HotButtonColor := C_TOP_COLOR;
-  catMenuItems.Height         := 20;
   Translate;
+  catMenuItems.Height := C_ICON_SIZE div 2;
+
+  TStyleManager.TrySetStyle(StyleName, False);
+  if TStyleManager.ActiveStyle.IsSystemStyle then
+    FTopColor := C_TOP_COLOR
+  else
+    FTopColor := TStyleManager.ActiveStyle.GetStyleColor(scButtonHot);
+  pnlTop.Color                := FTopColor;
+  catMenuItems.HotButtonColor := FTopColor;
+  CreateProgressBar;
 end;
 
 procedure TfrmMain.Deinitialize;
@@ -203,8 +215,9 @@ end;
 procedure TfrmMain.CreateProgressBar;
 begin
   FProgressBar := TGauge.Create(nil);
+  FProgressBar.StyleName   := TStyleManager.cSystemStyleName;
   FProgressBar.Parent      := sbMain;
-  FProgressBar.ForeColor   := C_TOP_COLOR;
+  FProgressBar.ForeColor   := FTopColor;
   FProgressBar.BackColor   := clBtnFace;
   FProgressBar.BorderStyle := bsNone;
   FProgressBar.Progress    := 100;
@@ -273,11 +286,23 @@ begin
   catMenuItems.Width         := splView.OpenedWidth;
 end;
 
-procedure TfrmMain.srchBoxInvokeSearch(Sender: TObject);
+procedure TfrmMain.srchBoxLeftButtonClick(Sender: TObject);
+begin
+  inherited;
+  srchBox.Text := string.Empty;
+end;
+
+procedure TfrmMain.srchBoxRightButtonClick(Sender: TObject);
 begin
   inherited;
   if Assigned(TGeneral.ActiveFrame) and (TGeneral.ActiveFrame is TframeSource) then
     TframeSource(TGeneral.ActiveFrame).SearchText(srchBox.Text);
+end;
+
+procedure TfrmMain.srchBoxChange(Sender: TObject);
+begin
+  inherited;
+   srchBox.LeftButton.Visible := not string(srchBox.Text).IsEmpty;
 end;
 
 procedure TfrmMain.NotifyComplete;
