@@ -8,10 +8,10 @@ uses
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
   System.IOUtils, Vcl.Forms, ArrayHelper, Common.Types, Translate.Lang, System.IniFiles, Global.Types,
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
-  clHtmlParser, clMailMessage, MailMessage.Helper, Utils, PdfiumCore, PdfiumCtrl,
-  Files.Utils, System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
+  clHtmlParser, clMailMessage, MailMessage.Helper, Utils, PdfiumCore, PdfiumCtrl, Files.Utils,
+  System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
   System.Math, System.ZLib, System.Zip, System.Masks, System.StrUtils, InformationDialog, Html.Lib,
-  Vcl.Graphics, UnRAR.Helper, Excel4Delphi, Excel4Delphi.Stream, System.Hash, AhoCorasick, Vcl.ComCtrls;
+  Vcl.Graphics, UnRAR.Helper, System.Hash, AhoCorasick, Vcl.ComCtrls, ExcelReader.Helper;
 {$ENDREGION}
 
 type
@@ -756,7 +756,7 @@ begin
               begin
                 Attachment.ContentType := 'application/excel';
                 Attachment.ImageIndex  := TExtIcon.eiXls.ToByte;
-                Attachment.ParsedText  := '';
+                Attachment.ParsedText  := GetXlsxSheetList(Attachment.FileName, aData);
               end
               else if Ext.Contains('.doc') then
               begin
@@ -1040,56 +1040,35 @@ end;
 
 function TPerformer.GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
 var
-  Attachment  : PAttachment;
-  FileName    : string;
-  WorkBook    : TZWorkBook;
-  ParsedText  : string;
-  RowText     : string;
-  RowIsEmpty  : Boolean;
+  Attachment : PAttachment;
+  FileName   : string;
+  Sheets     : TArrayRecord<TSheet>;
 begin
   Result := '';
-  WorkBook := TZWorkBook.Create(nil);
   try
-    try
-      WorkBook.LoadFromFile(aFileName);
-      for var i := 0 to WorkBook.Sheets.Count - 1 do
-        if (WorkBook.Sheets[i].ColCount > 0) and (WorkBook.Sheets[i].RowCount > 0) then
-        begin
-          ParsedText := '';
-          for var row := 0 to WorkBook.Sheets[i].RowCount - 1 do
-          begin
-            RowText := '';
-            RowIsEmpty := False;
-            for var col := 0 to WorkBook.Sheets[i].ColCount - 1 do
-            begin
-              RowIsEmpty := RowIsEmpty or WorkBook.Sheets[i].Cell[col, row].AsString.IsEmpty;
-              RowText := Concat(RowText, '"', WorkBook.Sheets[i].Cell[col, row].AsString.Replace('"', '""'), '";');
-            end;
-            if not RowIsEmpty then
-              ParsedText := Concat(ParsedText, RowText, sLineBreak);
-          end;
-          FileName := Concat(TPath.GetFileNameWithoutExtension(aFileName), '\', WorkBook.Sheets[i].Title);
-          New(Attachment);
-          Attachment^.ParsedText    := ParsedText;
-          Attachment^.FileName      := FileName; //aFileName;
-          Attachment^.ShortName     := FileName;
-          Attachment^.Hash          := TFileUtils.GetHashString(ParsedText);
-          Attachment^.ParentHash    := aData^.Hash;
-          Attachment^.ParentName    := aData^.ShortName;
-          Attachment^.Matches.Count := TGeneral.PatternList.Count;
-          Attachment^.FromZip       := True;
-          Attachment^.ContentType   := 'text/sheet';
-          Attachment^.ImageIndex    := TExtIcon.eiXls.ToByte;
-          TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
-          aData^.Attachments.AddUnique(Attachment^.Hash);
-          Result := Concat(Result, (i + 1).ToString, '. ', WorkBook.Sheets[i].Title, '<br>');
-        end;
-    except
-      on E: Exception do
-        LogWriter.Write(ddError, Self, 'GetXlsxSheetList', E.Message + sLineBreak + aFileName);
-    end;
-  finally
-    FreeAndNil(WorkBook);
+    Sheets := ExcelReader.Helper.GetXlsSheetList(aFileName);
+    for var i := 0 to Sheets.Count - 1 do
+      if not Sheets[i].Text.IsEmpty then
+      begin
+        FileName := Concat(TPath.GetFileNameWithoutExtension(aFileName), '\', Sheets[i].Title);
+        New(Attachment);
+        Attachment^.ParsedText    := Sheets[i].Text;
+        Attachment^.FileName      := FileName;
+        Attachment^.ShortName     := FileName;
+        Attachment^.Hash          := TFileUtils.GetHashString(Sheets[i].Text);
+        Attachment^.ParentHash    := aData^.Hash;
+        Attachment^.ParentName    := aData^.ShortName;
+        Attachment^.Matches.Count := TGeneral.PatternList.Count;
+        Attachment^.FromZip       := True;
+        Attachment^.ContentType   := 'text/sheet';
+        Attachment^.ImageIndex    := TExtIcon.eiXls.ToByte;
+        TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+        aData^.Attachments.AddUnique(Attachment^.Hash);
+        Result := Concat(Result, (i + 1).ToString, '. ', Sheets[i].Title, '<br>');
+      end;
+  except
+    on E: Exception do
+      LogWriter.Write(ddError, Self, 'GetXlsxSheetList', E.Message + sLineBreak + aFileName);
   end;
 end;
 

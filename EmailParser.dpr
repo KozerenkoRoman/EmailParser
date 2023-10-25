@@ -23,6 +23,7 @@ uses
   DaModule.Resources in 'Sources\DataModules\DaModule.Resources.pas',
   DebugWriter in 'Sources\Common\DebugWriter.pas',
   dEXIF.Helper in 'Sources\dEXIF\dEXIF.Helper.pas',
+  ExcelReader.Helper in 'Sources\Excel\ExcelReader.Helper.pas',
   EXIF.Dialog in 'Sources\Common\EXIF.Dialog.pas' {EXIFDialog},
   Files.Utils in 'Sources\Common\Files.Utils.pas',
   Frame.AllAttachments in 'Sources\Frames\Frame.AllAttachments.pas' {frameAllAttachments: TFrame},
