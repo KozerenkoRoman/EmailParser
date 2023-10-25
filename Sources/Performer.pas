@@ -8,10 +8,10 @@ uses
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
   System.IOUtils, Vcl.Forms, ArrayHelper, Common.Types, Translate.Lang, System.IniFiles, Global.Types,
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
-  clHtmlParser, clMailMessage, MailMessage.Helper, Utils, ExecConsoleProgram, PdfiumCore, PdfiumCtrl,
-  Files.Utils, System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
+  clHtmlParser, clMailMessage, MailMessage.Helper, Utils, PdfiumCore, PdfiumCtrl, Files.Utils,
+  System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
   System.Math, System.ZLib, System.Zip, System.Masks, System.StrUtils, InformationDialog, Html.Lib,
-  Vcl.Graphics, UnRAR.Helper, Excel4Delphi, Excel4Delphi.Stream, System.Hash, AhoCorasick;
+  Vcl.Graphics, UnRAR.Helper, System.Hash, AhoCorasick, Vcl.ComCtrls, ExcelReader.Helper;
 {$ENDREGION}
 
 type
@@ -31,11 +31,12 @@ type
     function GetAttchmentPath(const aFileName: TFileName): string;
     function GetEXIFInfo(const aFileName: TFileName): string;
     function GetMatchCollection(const aText: string; const aPatternData: PPatternData): TStringArray;
+    function GetRarFileList(const aFileName: TFileName; const aData: PResultData): string;
+    function GetRtfText(const aFileName: TFileName): string;
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     function GetWordText(const aFileName: TFileName): string;
-    function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
-    function GetRarFileList(const aFileName: TFileName; const aData: PResultData): string;
     function GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
+    function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
     function IsSuccessfulCheck: Boolean;
     procedure DoCopyAttachmentFiles(const aData: PResultData);
     procedure DoDeleteAttachmentFiles(const aData: PResultData);
@@ -195,7 +196,7 @@ begin
           LogWriter.Write(ddWarning, Self, 'Click Break button');
           Exit;
         end;
-        ParseFile(FileName);
+        ParseFile(TFileUtils.CheckLength(FileName));
         Inc(FCount);
       end;
     finally
@@ -488,7 +489,9 @@ var
   Hash        : string;
   MailMessage : TclMailMessage;
   Tasks       : array of ITask;
+//  NewName     : string;
 begin
+//  NewName := TFileUtils.GetCorrectFileName('', aFileName);
   Hash := TFileUtils.GetHash(aFileName);
   if not TGeneral.EmailList.ContainsKey(Hash) then
   begin
@@ -634,7 +637,7 @@ begin
             aData^.Matches[i] := GetMatchCollection(TextRaw, TGeneral.PatternList[i])
           else
             aData^.Matches[i] := GetMatchCollection(TextPlan, TGeneral.PatternList[i]);
-      end).Start;
+      end);
 
     Tasks[1] := TTask.Create(
       procedure()
@@ -654,7 +657,10 @@ begin
             Attachment^.LengthAlignment;
             TPublishers.ProgressPublisher.CompletedAttach(Attachment);
           end;
-      end).Start;
+      end);
+
+     for var Task in Tasks do
+       Task.ExecuteWork;
     TTask.WaitForAll(Tasks);
     TPublishers.ProgressPublisher.CompletedItem(aData);
   end;
@@ -675,6 +681,7 @@ var
   end;
 
 begin
+//https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
 {$IFDEF DETAILED_LOG}
   LogWriter.Write(ddEnterMethod, Self, 'DoParseAttachmentFiles');
 {$ENDIF DETAILED_LOG}
@@ -749,7 +756,7 @@ begin
               begin
                 Attachment.ContentType := 'application/excel';
                 Attachment.ImageIndex  := TExtIcon.eiXls.ToByte;
-                Attachment.ParsedText  := '';
+                Attachment.ParsedText  := GetXlsxSheetList(Attachment.FileName, aData);
               end
               else if Ext.Contains('.doc') then
               begin
@@ -798,6 +805,12 @@ begin
                 Attachment.ParsedText  := TFile.ReadAllText(Attachment.FileName);
                 Attachment.ContentType := 'text/xml';
                 Attachment.ImageIndex  := TExtIcon.eiTxt.ToByte;
+              end
+              else if Ext.Contains('.rtf') then
+              begin
+                Attachment.ParsedText  := GetRtfText(Attachment.FileName);
+                Attachment.ContentType := 'text/rtf';
+                Attachment.ImageIndex  := TExtIcon.eiHtml.ToByte;
               end
               else if Ext.Contains('.htm') then
               begin
@@ -869,21 +882,8 @@ begin
 
   Data      := TclMailMessage(Sender).ResultData;
   Path      := GetAttchmentPath(Data^.FileName);
-  aFileName := Concat('[', Data^.ShortName, '] ', TFileUtils.GetCorrectFileName(aFileName));
-  SetLength(aFileName, Min(Length(aFileName), 255));
-
-  if not TPath.HasValidFileNameChars(aFileName, False) then
-  begin
-    aFileName := Format('[%s] (%d)', [Data^.ShortName, aBody.Index]);
-    LogWriter.Write(ddText, Self,
-                            'DoSaveAttachment',
-                            'Email file name - '      + Data^.FileName  + sLineBreak +
-                            'Email short name - '     + Data^.ShortName + sLineBreak +
-                            'Attachment file name - ' + aFileName      + sLineBreak +
-                            'Attachment index - '     + aBody.Index.ToString);
-  end;
-
-  if aFileName.Trim.IsEmpty or (not TPath.HasValidFileNameChars(aFileName, False)) then
+  aFileName := TFileUtils.GetCorrectFileName(Path, Concat('[', Data^.ShortName, '] ', aFileName));
+  if aFileName.Trim.IsEmpty then
   begin
     var NewName := Concat('[', Data^.ShortName, '] (', aBody.Index.ToString, ')');
     LogWriter.Write(ddWarning, Self,
@@ -892,6 +892,7 @@ begin
                                'New file name - ' + NewName);
     aFileName := NewName;
   end;
+
   aFileName := TPath.Combine(Path, aFileName);
   Handled := not TFileUtils.IsForbidden(aFileName);
   if Handled then
@@ -1014,58 +1015,60 @@ begin
   end;
 end;
 
-function TPerformer.GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
+function TPerformer.GetRtfText(const aFileName: TFileName): string;
 var
-  Attachment  : PAttachment;
-  FileName    : string;
-  WorkBook    : TZWorkBook;
-  ParsedText  : string;
-  RowText     : string;
-  RowIsEmpty  : Boolean;
+  RTFConverter: TRichEdit;
 begin
-  Result := '';
-  WorkBook := TZWorkBook.Create(nil);
+  if not TFile.Exists(aFileName) then
+    Exit;
+  RTFConverter := TRichEdit.CreateParented(HWND_MESSAGE);
   try
     try
-      WorkBook.LoadFromFile(aFileName);
-      for var i := 0 to WorkBook.Sheets.Count - 1 do
-        if (WorkBook.Sheets[i].ColCount > 0) and (WorkBook.Sheets[i].RowCount > 0) then
-        begin
-          ParsedText := '';
-          for var row := 0 to WorkBook.Sheets[i].RowCount - 1 do
-          begin
-            RowText := '';
-            RowIsEmpty := False;
-            for var col := 0 to WorkBook.Sheets[i].ColCount - 1 do
-            begin
-              RowIsEmpty := RowIsEmpty or WorkBook.Sheets[i].Cell[col, row].AsString.IsEmpty;
-              RowText := Concat(RowText, '"', WorkBook.Sheets[i].Cell[col, row].AsString.Replace('"', '""'), '";');
-            end;
-            if not RowIsEmpty then
-              ParsedText := Concat(ParsedText, RowText, sLineBreak);
-          end;
-          FileName := Concat(TPath.GetFileNameWithoutExtension(aFileName), '\', WorkBook.Sheets[i].Title);
-          New(Attachment);
-          Attachment^.ParsedText    := ParsedText;
-          Attachment^.FileName      := FileName; //aFileName;
-          Attachment^.ShortName     := FileName;
-          Attachment^.Hash          := TFileUtils.GetHashString(ParsedText);
-          Attachment^.ParentHash    := aData^.Hash;
-          Attachment^.ParentName    := aData^.ShortName;
-          Attachment^.Matches.Count := TGeneral.PatternList.Count;
-          Attachment^.FromZip       := True;
-          Attachment^.ContentType   := 'text/sheet';
-          Attachment^.ImageIndex    := TExtIcon.eiXls.ToByte;
-          TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
-          aData^.Attachments.AddUnique(Attachment^.Hash);
-          Result := Concat(Result, (i + 1).ToString, '. ', WorkBook.Sheets[i].Title, '<br>');
-        end;
+      RTFConverter.Lines.LoadFromFile(aFileName);
+      RTFConverter.PlainText             := True;
+      RTFConverter.Lines.StrictDelimiter := True;
+      RTFConverter.Lines.Delimiter       := #13;
+      Result := RTFConverter.Lines.DelimitedText;
     except
       on E: Exception do
-        LogWriter.Write(ddError, Self, 'GetXlsxSheetList', E.Message + sLineBreak + aFileName);
+        LogWriter.Write(ddError, Self, 'GetRtfText', E.Message + sLineBreak + 'FileName - ' + aFileName);
     end;
   finally
-    FreeAndNil(WorkBook);
+    FreeAndNil(RTFConverter);
+  end;
+end;
+
+function TPerformer.GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
+var
+  Attachment : PAttachment;
+  FileName   : string;
+  Sheets     : TArrayRecord<TSheet>;
+begin
+  Result := '';
+  try
+    Sheets := ExcelReader.Helper.GetXlsSheetList(aFileName);
+    for var i := 0 to Sheets.Count - 1 do
+      if not Sheets[i].Text.IsEmpty then
+      begin
+        FileName := Concat(TPath.GetFileNameWithoutExtension(aFileName), '\', Sheets[i].Title);
+        New(Attachment);
+        Attachment^.ParsedText    := Sheets[i].Text;
+        Attachment^.FileName      := FileName;
+        Attachment^.ShortName     := FileName;
+        Attachment^.Hash          := TFileUtils.GetHashString(Sheets[i].Text);
+        Attachment^.ParentHash    := aData^.Hash;
+        Attachment^.ParentName    := aData^.ShortName;
+        Attachment^.Matches.Count := TGeneral.PatternList.Count;
+        Attachment^.FromZip       := True;
+        Attachment^.ContentType   := 'text/sheet';
+        Attachment^.ImageIndex    := TExtIcon.eiXls.ToByte;
+        TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+        aData^.Attachments.AddUnique(Attachment^.Hash);
+        Result := Concat(Result, (i + 1).ToString, '. ', Sheets[i].Title, '<br>');
+      end;
+  except
+    on E: Exception do
+      LogWriter.Write(ddError, Self, 'GetXlsxSheetList', E.Message + sLineBreak + aFileName);
   end;
 end;
 
@@ -1096,8 +1099,7 @@ begin
         if not TFileUtils.IsForbidden(ZipFile.FileNames[i]) then
         begin
           ZipFile.Extract(ZipFile.FileNames[i], Path, True);
-          FileName := Concat('[', aData^.ShortName, '] ', TFileUtils.GetCorrectFileName(ZipFile.FileNames[i]));
-          SetLength(FileName, Min(Length(FileName), 255));
+          FileName := TFileUtils.GetCorrectFileName(Path, Concat('[', aData^.ShortName, '] ', ZipFile.FileNames[i]));
           if not RenameFile(TPath.Combine(Path, ZipFile.FileNames[i]), TPath.Combine(Path, FileName)) then
             DeleteFile(TPath.Combine(Path, ZipFile.FileNames[i]));
 
@@ -1190,8 +1192,7 @@ begin
           RarFile.Extract(FileList[i]);
           if (RarFile.LastError = 0) then
           begin
-            FileName := Concat('[', aData^.ShortName, '] ', TFileUtils.GetCorrectFileName(FileList[i]));
-            SetLength(FileName, Min(Length(FileName), 255));
+            FileName := TFileUtils.GetCorrectFileName(Path, Concat('[', aData^.ShortName, '] ', FileList[i]));
             if not RenameFile(TPath.Combine(Path, FileList[i]), TPath.Combine(Path, FileName)) then
               DeleteFile(TPath.Combine(Path, FileList[i]));
 
@@ -1244,21 +1245,16 @@ function TPerformer.GetMatchCollection(const aText: string; const aPatternData: 
   var
     AhoCorasickObj: TAhoCorasick;
   begin
-    FCriticalSection.Enter;
+    AhoCorasickObj := TAhoCorasick.Create;
     try
-      AhoCorasickObj := TAhoCorasick.Create;
-      try
-        var arrPattern := aPatternData^.Pattern.Split([#10]);
-        for var i := Low(arrPattern) to High(arrPattern) do
-          if not arrPattern[i].Trim.IsEmpty then
-            AhoCorasickObj.AddPattern(arrPattern[i].Trim);
-        AhoCorasickObj.Build;
-        Result.AddRange(AhoCorasickObj.Search(aText));
-      finally
-        FreeAndNil(AhoCorasickObj);
-      end;
+      var arrPattern := aPatternData^.Pattern.Split([#10]);
+      for var i := Low(arrPattern) to High(arrPattern) do
+        if not arrPattern[i].Trim.IsEmpty then
+          AhoCorasickObj.AddPattern(arrPattern[i].Trim);
+      AhoCorasickObj.Build;
+      Result.AddRange(AhoCorasickObj.Search(aText));
     finally
-      FCriticalSection.Leave;
+      FreeAndNil(AhoCorasickObj);
     end;
   end;
 

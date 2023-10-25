@@ -15,28 +15,27 @@ uses
 
 type
   TframeProject = class(TframeSource)
-    aSetCurrent   : TAction;
-    btnSep04      : TToolButton;
-    btnSetCurrent : TToolButton;
-    btnLoadProject: TToolButton;
-    aLoadProject: TAction;
+    aLoadProject   : TAction;
+    aSetCurrent    : TAction;
+    btnLoadProject : TToolButton;
+    btnSep04       : TToolButton;
+    btnSetCurrent  : TToolButton;
     procedure aAddExecute(Sender: TObject);
     procedure aDeleteExecute(Sender: TObject);
     procedure aDeleteUpdate(Sender: TObject);
+    procedure aLoadProjectExecute(Sender: TObject);
+    procedure aLoadProjectUpdate(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
     procedure aSetCurrentExecute(Sender: TObject);
+    procedure aSetCurrentUpdate(Sender: TObject);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
     procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UItypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
-    procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode;
-      Column: TColumnIndex; TextType: TVSTTextType);
-    procedure aSetCurrentUpdate(Sender: TObject);
-    procedure aLoadProjectUpdate(Sender: TObject);
-    procedure aLoadProjectExecute(Sender: TObject);
+    procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
   private const
     COL_NAME = 0;
     COL_INFO = 1;
@@ -89,6 +88,7 @@ end;
 procedure TframeProject.Translate;
 begin
   inherited;
+  aLoadProject.Hint                     := TLang.Lang.Translate('LoadProject');
   aSetCurrent.Hint                      := TLang.Lang.Translate('SetCurrent');
   vstTree.Header.Columns[COL_HASH].Text := TLang.Lang.Translate('Hash');
   vstTree.Header.Columns[COL_INFO].Text := TLang.Lang.Translate('Info');
@@ -104,9 +104,9 @@ procedure TframeProject.LoadFromXML;
 
  procedure LoadNode;
   var
-    Item: TProject;
-    Data: PProject;
-    NewNode: PVirtualNode;
+    Data    : PProject;
+    Hash    : string;
+    NewNode : PVirtualNode;
   begin
     TGeneral.XMLParams.CurrentSection := 'Project';
     try
@@ -114,26 +114,25 @@ procedure TframeProject.LoadFromXML;
       begin
         if TGeneral.XMLParams.ReadAttributes then
         begin
-          Item.Hash    := TGeneral.XMLParams.Attributes.GetAttributeValue('Hash', '');
-          Item.Name    := TGeneral.XMLParams.Attributes.GetAttributeValue('Name', '');
-          Item.Info    := TGeneral.XMLParams.Attributes.GetAttributeValue('Info', '');
-          Item.Current := TGeneral.XMLParams.Attributes.GetAttributeValue('Current', False);
-          if not Item.Hash.IsEmpty then
+          Hash := TGeneral.XMLParams.Attributes.GetAttributeValue('Hash', '');
+          if not Hash.IsEmpty then
           begin
             NewNode := vstTree.AddChild(nil);
             Data := NewNode.GetData;
-            Data^ := Item;
+            Data^.Hash    := Hash;
+            Data^.Name    := TGeneral.XMLParams.Attributes.GetAttributeValue('Name', '');
+            Data^.Info    := TGeneral.XMLParams.Attributes.GetAttributeValue('Info', '');
+            Data^.Current := TGeneral.XMLParams.Attributes.GetAttributeValue('Current', False);
+
             if Data^.Current then
-            begin
               TGeneral.CurrentProject := Data^;
-              TPublishers.ConfigPublisher.UpdateProject;
-            end;
           end;
         end;
         TGeneral.XMLParams.NextKey;
       end;
     finally
       TGeneral.XMLParams.CurrentSection := '';
+      TPublishers.ConfigPublisher.UpdateProject;
     end;
   end;
 
@@ -143,6 +142,7 @@ begin
   try
     vstTree.Clear;
     LoadNode;
+
   finally
     vstTree.EndUpdate;
   end;
@@ -163,10 +163,7 @@ procedure TframeProject.SaveToXML;
     TGeneral.XMLParams.WriteAttributes;
 
     if Data^.Current then
-    begin
       TGeneral.CurrentProject := Data^;
-      TPublishers.ConfigPublisher.UpdateProject;
-    end;
   end;
 
 var
@@ -176,7 +173,7 @@ begin
   TGeneral.XMLParams.EraseSection('Project');
   TGeneral.XMLParams.CurrentSection := 'Project';
   try
-    Node := vstTree.GetFirst;
+    Node := vstTree.RootNode.FirstChild;
     while Assigned(Node) do
     begin
       SaveNode(Node);
@@ -261,7 +258,7 @@ end;
 procedure TframeProject.aSetCurrentExecute(Sender: TObject);
 var
   Data: PProject;
-  CurrentNode: PVirtualNode;
+  FocusedNode: PVirtualNode;
   RunNode: PVirtualNode;
 begin
   inherited;
@@ -269,7 +266,7 @@ begin
   begin
     vstTree.BeginUpdate;
     try
-      CurrentNode := vstTree.FocusedNode;
+      FocusedNode := vstTree.FocusedNode;
       RunNode := vstTree.RootNode.FirstChild;
       while Assigned(RunNode) do
       begin
@@ -277,12 +274,13 @@ begin
         Data^.Current := False;
         RunNode := RunNode.NextSibling;
       end;
-      Data := CurrentNode^.GetData;
+      Data := FocusedNode^.GetData;
       Data^.Current := True;
     finally
       vstTree.EndUpdate;
     end;
     SaveToXML;
+    TPublishers.ConfigPublisher.UpdateProject;
   end;
 end;
 

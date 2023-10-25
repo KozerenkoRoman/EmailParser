@@ -109,7 +109,6 @@ begin
   Translate;
   html := Concat(C_HTML_OPEN,
                  C_HTML_HEAD_OPEN,
-//                 C_STYLE,
                  C_HTML_HEAD_CLOSE,
                  C_HTML_BODY_OPEN,
                  FMessageText,
@@ -117,7 +116,6 @@ begin
                  C_HTML_CLOSE);
 
   THtmlLib.LoadStringToBrowser(wbMessage, html);
-//  wbMessage.OleObject.Document.bgColor := THtmlLib.ColorToHtml(clWebWhite);
   if wbMessage.Showing and Assigned(wbMessage.Document) then
     with wbMessage.Application as IOleobject do
       DoVerb(OLEIVERB_UIACTIVATE, nil, wbMessage, 0, Handle, GetClientRect);

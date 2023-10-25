@@ -8,11 +8,6 @@ uses
 {$ENDREGION}
 
 type
-  TAppender<T> = class
-    class procedure AddItem(var Arr: TArray<T>; const Value: T);
-    class procedure AddRange(var Arr: TArray<T>; const Value: TArray<T>);
-  end;
-
   PNode = ^TNode;
   TNode = record
   public
@@ -24,6 +19,7 @@ type
   TAhoCorasick = class
   private
     Root: TNode;
+    function AnsiFromWide(const aString: string): AnsiString;
   public
     constructor Create;
     destructor Destroy; override;
@@ -32,25 +28,13 @@ type
     procedure Build;
   end;
 
+  //helper class for array
+  TAppender<T> = class
+    class procedure AddItem(var Arr: TArray<T>; const Value: T);
+    class procedure AddRange(var Arr: TArray<T>; const Value: TArray<T>);
+  end;
+
 implementation
-
-{ TAppender<T> }
-
-class procedure TAppender<T>.AddItem(var Arr: TArray<T>; const Value: T);
-begin
-  SetLength(Arr, Length(Arr) + 1);
-  Arr[High(Arr)] := Value;
-end;
-
-class procedure TAppender<T>.AddRange(var Arr: TArray<T>; const Value: TArray<T>);
-var
-  Index: Integer;
-begin
-  Index := Length(Arr);
-  SetLength(Arr, Length(Arr) + Length(Value));
-  for var i := Low(Value) to High(Value) do
-    Arr[Index + i] := Value[i];
-end;
 
 { TAhoCorasick }
 
@@ -84,12 +68,12 @@ end;
 
 procedure TAhoCorasick.AddPattern(const aPattern: string);
 var
-  AnsiTextBuf: TBytes;
-  NextNode:PNode;
+  AnsiTextBuf: AnsiString;
+  NextNode: PNode;
   Node: PNode;
 begin
   Node := @Root;
-  AnsiTextBuf := TEncoding.ASCII.GetBytes(aPattern);
+  AnsiTextBuf := AnsiFromWide(aPattern);
   for var i := Low(AnsiTextBuf) to High(AnsiTextBuf) do
   begin
     if not Assigned(Node.Next[AnsiChar(AnsiTextBuf[i])]) then
@@ -141,12 +125,12 @@ end;
 
 function TAhoCorasick.Search(const aText: string): TArray<string>;
 var
-  AnsiTextBuf: TBytes;
+  AnsiTextBuf: AnsiString;
   NextNode: PNode;
   Node: PNode;
 begin
   Node := @Root;
-  AnsiTextBuf := TEncoding.ASCII.GetBytes(aText);
+  AnsiTextBuf := AnsiFromWide(aText);
   for var i := Low(AnsiTextBuf) to High(AnsiTextBuf) do
   begin
     while (Assigned(Node)) and (not Assigned(Node.Next[AnsiChar(AnsiTextBuf[i])])) do
@@ -163,6 +147,41 @@ begin
       NextNode := NextNode.Fail;
     end;
   end;
+end;
+
+function TAhoCorasick.AnsiFromWide(const aString: string): AnsiString;
+var
+  InputLen: Integer;
+  Len: Integer;
+begin
+  Result := '';
+  InputLen := System.Length(aString);
+  if (InputLen = 0) then
+    Exit;
+
+  Len := WideCharToMultiByte(CP_ACP, 0, PWideChar(aString), InputLen, nil, 0, nil, nil);
+  if (InputLen = -1) then
+    Dec(Len);
+  SetLength(Result, Len);
+  WideCharToMultiByte(CP_ACP, 0, PWideChar(aString), InputLen, PAnsiChar(Result), System.Length(Result), nil, nil);
+end;
+
+{ TAppender<T> }
+
+class procedure TAppender<T>.AddItem(var Arr: TArray<T>; const Value: T);
+begin
+  SetLength(Arr, Length(Arr) + 1);
+  Arr[High(Arr)] := Value;
+end;
+
+class procedure TAppender<T>.AddRange(var Arr: TArray<T>; const Value: TArray<T>);
+var
+  Index: Integer;
+begin
+  Index := Length(Arr);
+  SetLength(Arr, Length(Arr) + Length(Value));
+  for var i := Low(Value) to High(Value) do
+    Arr[Index + i] := Value[i];
 end;
 
 end.

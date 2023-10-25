@@ -9,7 +9,7 @@ uses
   Vcl.ToolWin, VirtualTrees, Vcl.StdCtrls, Vcl.ExtCtrls, System.Generics.Defaults,Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Common.Types, DaImages, System.RegularExpressions,
   System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Global.Types, Vcl.FileCtrl,
-  Global.Resources, Vcl.WinXPanels, Frame.Custom, Publishers, Vcl.NumberBox;
+  Global.Resources, Vcl.WinXPanels, Frame.Custom, Publishers, Vcl.NumberBox, Vcl.Themes;
 {$ENDREGION}
 
 type
@@ -20,6 +20,7 @@ type
     cbDeleteAttachments    : TCheckBox;
     cbLanguage             : TComboBox;
     cbLogWriteActive       : TCheckBox;
+    cbStyle                : TComboBox;
     dlgAttachmments        : TFileOpenDialog;
     edtExtensions          : TEdit;
     edtMaxSize             : TNumberBox;
@@ -33,6 +34,7 @@ type
     lblMaxSize             : TLabel;
     lblNumberOfDays        : TLabel;
     lblPathForAttachments  : TLabel;
+    lblStyle               : TLabel;
     miAttachmentsMain      : TMenuItem;
     miAttachmentsSub       : TMenuItem;
     miPathForAttachments   : TMenuItem;
@@ -64,6 +66,15 @@ implementation
 procedure TframeSettings.Initialize;
 begin
   inherited Initialize;
+
+  cbStyle.Items.Clear;
+  cbLanguage.Items.Clear;
+  for var StyleName in TStyleManager.StyleNames do
+    cbStyle.Items.Add(StyleName);
+  cbStyle.Sorted := True;
+  for var lang := Low(TLanguage) to High(TLanguage) do
+    cbLanguage.Items.Add(lang.ToString);
+
   LoadFromXML;
   Translate;
   dlgAttachmments.Title := Application.Title;
@@ -93,6 +104,7 @@ begin
   lblMaxSize.Caption            := TLang.Lang.Translate('MaxSizeLogFile');
   lblNumberOfDays.Caption       := TLang.Lang.Translate('NumberOfDays');
   lblPathForAttachments.Caption := TLang.Lang.Translate('PathForAttachments');
+  lblStyle.Caption              := TLang.Lang.Translate('Style');
 end;
 
 function TframeSettings.GetIdentityName: string;
@@ -103,9 +115,6 @@ end;
 procedure TframeSettings.LoadFromXML;
 begin
   inherited;
-  cbLanguage.Items.Clear;
-  for var lang := Low(TLanguage) to High(TLanguage) do
-    cbLanguage.Items.Add(lang.ToString);
   cbDeleteAttachments.Checked := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
   cbLanguage.ItemIndex        := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0);
   cbLogWriteActive.Checked    := TGeneral.XMLParams.ReadBool(C_SECTION_DEBUG, C_KEY_IS_ACTIVE, True);
@@ -113,6 +122,7 @@ begin
   edtMaxSize.ValueInt         := TGeneral.XMLParams.ReadInteger(C_SECTION_DEBUG, C_KEY_MAX_SIZE, 1);
   edtNumberOfDays.ValueInt    := TGeneral.XMLParams.ReadInteger(C_SECTION_DEBUG, C_KEY_COUNT_OF_DAYS, 30);
   edtPathForAttachments.Text  := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
+  cbStyle.ItemIndex           := cbStyle.Items.IndexOf(TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Style', TStyleManager.cSystemStyleName));
 end;
 
 procedure TframeSettings.SaveToXML;
@@ -125,6 +135,7 @@ begin
   TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'Language', cbLanguage.ItemIndex, cbLanguage.Text);
   TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'Extensions', edtExtensions.Text, lblExtensions.Caption);
   TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'PathForAttachments', edtPathForAttachments.Text, lblPathForAttachments.Caption);
+  TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'Style', cbStyle.Text, lblStyle.Caption);
   TGeneral.XMLParams.Save;
 end;
 
@@ -133,6 +144,7 @@ begin
   inherited;
   SaveToXML;
   TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
+  TStyleManager.TrySetStyle(cbStyle.Text);
   TPublishers.ConfigPublisher.UpdateLanguage;
 end;
 

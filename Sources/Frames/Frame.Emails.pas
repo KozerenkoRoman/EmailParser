@@ -19,6 +19,7 @@ type
     aBreak          : TAction;
     aFilter         : TAction;
     aOpenEmail      : TAction;
+    aOpenLocation   : TAction;
     aSearch         : TAction;
     btnBreak        : TToolButton;
     btnFilter       : TToolButton;
@@ -26,6 +27,9 @@ type
     btnSearch       : TToolButton;
     btnSep04        : TToolButton;
     btnSep05        : TToolButton;
+    miOpenEmail     : TMenuItem;
+    miOpenLocation  : TMenuItem;
+    miSep           : TMenuItem;
     SaveDialogEmail : TSaveDialog;
     procedure aBreakExecute(Sender: TObject);
     procedure aExpandAllUpdate(Sender: TObject);
@@ -43,6 +47,7 @@ type
     procedure vstTreeFocusChanging(Sender: TBaseVirtualTree; OldNode, NewNode: PVirtualNode; OldColumn, NewColumn: TColumnIndex; var Allowed: Boolean);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
+    procedure aOpenLocationExecute(Sender: TObject);
   private const
     COL_POSITION      = 0;
     COL_SHORT_NAME    = 1;
@@ -141,10 +146,13 @@ begin
   vstTree.Header.Columns[COL_FROM].Text         := TLang.Lang.Translate('From');
   vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
 
-  aBreak.Hint     := TLang.Lang.Translate('Break');
-  aFilter.Hint    := TLang.Lang.Translate('Filter');
-  aOpenEmail.Hint := TLang.Lang.Translate('OpenEmail');
-  aSearch.Hint    := TLang.Lang.Translate('StartSearch');
+  aBreak.Hint           := TLang.Lang.Translate('Break');
+  aFilter.Hint          := TLang.Lang.Translate('Filter');
+  aOpenEmail.Caption    := TLang.Lang.Translate('OpenEmail');
+  aOpenEmail.Hint       := TLang.Lang.Translate('OpenEmail');
+  aOpenLocation.Caption := TLang.Lang.Translate('OpenLocation');
+  aOpenLocation.Hint    := TLang.Lang.Translate('OpenLocation');
+  aSearch.Hint          := TLang.Lang.Translate('StartSearch');
 end;
 
 procedure TframeEmails.UpdateColumns;
@@ -471,6 +479,24 @@ procedure TframeEmails.aOpenEmailUpdate(Sender: TObject);
 begin
   inherited;
   TAction(Sender).Enabled := not vstTree.IsEmpty and Assigned(vstTree.FocusedNode);
+end;
+
+procedure TframeEmails.aOpenLocationExecute(Sender: TObject);
+var
+  Data: PResultData;
+  PathName: string;
+begin
+  inherited;
+  if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
+  begin
+    Data := TGeneral.EmailList.GetItem(PEmail(vstTree.FocusedNode^.GetData).Hash);
+    if Assigned(Data) then
+    begin
+      PathName := TPath.GetDirectoryName(Data^.FileName);
+      if not PathName.IsEmpty then
+        Winapi.ShellAPI.ShellExecute(Handle, nil, PChar(PathName), nil, nil, sw_Show);
+    end;
+  end;
 end;
 
 procedure TframeEmails.aRefreshExecute(Sender: TObject);

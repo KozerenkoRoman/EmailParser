@@ -11,7 +11,7 @@ uses
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
   Vcl.WinXPanels, Publishers.Interfaces, Publishers, VirtualTrees.ExportHelper, Global.Resources, Global.Utils,
-  Performer, DaModule, Vcl.WinXCtrls, EXIF.Dialog, XLSX.Dialog;
+  Performer, DaModule, Vcl.WinXCtrls, EXIF.Dialog, XLSX.Dialog, Winapi.ShellAPI;
 {$ENDREGION}
 
 type
@@ -21,6 +21,7 @@ type
     aFilter              : TAction;
     aOpenAttachFile      : TAction;
     aOpenEmail           : TAction;
+    aOpenLocation        : TAction;
     aOpenParsedText      : TAction;
     aShowSearchBar       : TAction;
     btnFileBreak         : TToolButton;
@@ -35,6 +36,11 @@ type
     dlgFileSearch        : TFileOpenDialog;
     edtPath              : TButtonedEdit;
     lblPath              : TLabel;
+    miOpenAttachFile     : TMenuItem;
+    miOpenEmail          : TMenuItem;
+    miOpenLocation       : TMenuItem;
+    miOpenParsedText     : TMenuItem;
+    miSep                : TMenuItem;
     pnlFileSearch        : TPanel;
     SaveDialogAttachment : TSaveDialog;
     tbFileSearch         : TToolBar;
@@ -47,6 +53,7 @@ type
     procedure aOpenAttachFileExecute(Sender: TObject);
     procedure aOpenAttachFileUpdate(Sender: TObject);
     procedure aOpenEmailExecute(Sender: TObject);
+    procedure aOpenLocationExecute(Sender: TObject);
     procedure aOpenParsedTextExecute(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
@@ -149,13 +156,19 @@ end;
 procedure TframeAllAttachments.Translate;
 begin
   inherited;
-  aFileBreak.Hint      := TLang.Lang.Translate('Break');
-  aFileSearch.Hint     := TLang.Lang.Translate('StartSearch');
-  aShowSearchBar.Hint  := TLang.Lang.Translate('ShowSearchBar');
-  aFilter.Hint         := TLang.Lang.Translate('Filter');
-  aOpenAttachFile.Hint := TLang.Lang.Translate('OpenFile');
-  aOpenEmail.Hint      := TLang.Lang.Translate('OpenEmail');
-  lblPath.Caption      := TLang.Lang.Translate('Path');
+  aFileBreak.Hint         := TLang.Lang.Translate('Break');
+  aFileSearch.Hint        := TLang.Lang.Translate('StartSearch');
+  aFilter.Hint            := TLang.Lang.Translate('Filter');
+  aOpenAttachFile.Caption := TLang.Lang.Translate('OpenFile');
+  aOpenAttachFile.Hint    := TLang.Lang.Translate('OpenFile');
+  aOpenEmail.Caption      := TLang.Lang.Translate('OpenEmail');
+  aOpenEmail.Hint         := TLang.Lang.Translate('OpenEmail');
+  aOpenParsedText.Caption := TLang.Lang.Translate('OpenParsedText');
+  aOpenParsedText.Hint    := TLang.Lang.Translate('OpenParsedText');
+  aShowSearchBar.Hint     := TLang.Lang.Translate('ShowSearchBar');
+  aOpenLocation.Caption   := TLang.Lang.Translate('OpenLocation');
+  aOpenLocation.Hint      := TLang.Lang.Translate('OpenLocation');
+  lblPath.Caption         := TLang.Lang.Translate('Path');
   vstTree.Header.Columns[COL_SHORT_NAME].Text   := TLang.Lang.Translate('FileName');
   vstTree.Header.Columns[COL_EMAIL_NAME].Text   := TLang.Lang.Translate('Email');
   vstTree.Header.Columns[COL_FILE_NAME].Text    := TLang.Lang.Translate('Path');
@@ -268,6 +281,24 @@ begin
   end;
 end;
 
+procedure TframeAllAttachments.aOpenLocationExecute(Sender: TObject);
+var
+  Data: PAttachment;
+  PathName: string;
+begin
+  inherited;
+  if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
+  begin
+    Data := TGeneral.AttachmentList.GetItem(PAttachData(vstTree.FocusedNode^.GetData).Hash);
+    if Assigned(Data) then
+    begin
+      PathName := TPath.GetDirectoryName(Data^.FileName);
+      if not PathName.IsEmpty then
+        Winapi.ShellAPI.ShellExecute(Handle, nil, PChar(PathName), nil, nil, sw_Show);
+    end;
+  end;
+end;
+
 procedure TframeAllAttachments.aOpenParsedTextExecute(Sender: TObject);
 var
   Data: PAttachment;
@@ -369,8 +400,9 @@ var
 begin
   inherited;
   Data := TGeneral.AttachmentList.GetItem(PAttachData(Node^.GetData).Hash);
-  if (Column in [COL_FILE_NAME, COL_SHORT_NAME]) and Data^.FromDB then
-    TargetCanvas.Font.Color := clNavy;
+  if Assigned(Data) then
+    if (Column in [COL_FILE_NAME, COL_SHORT_NAME, COL_EMAIL_NAME]) and Data^.FromZip then
+      TargetCanvas.Font.Color := clNavy;
 end;
 
 procedure TframeAllAttachments.vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);

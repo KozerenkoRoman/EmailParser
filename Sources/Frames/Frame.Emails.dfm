@@ -178,6 +178,7 @@ inherited frameEmails: TframeEmails
       OnExecute = aBreakExecute
     end
     object aOpenEmail: TAction [11]
+      Caption = 'Open Email'
       Hint = 'Open Email'
       ImageIndex = 68
       ImageName = 'email'
@@ -197,10 +198,26 @@ inherited frameEmails: TframeEmails
     inherited aCollapseAll: TAction
       OnUpdate = aExpandAllUpdate
     end
+    object aOpenLocation: TAction
+      Caption = 'Open Location'
+      Hint = 'Open Location'
+      ImageIndex = 5
+      ImageName = 'Open_32x32'
+      OnExecute = aOpenLocationExecute
+    end
   end
   inherited pmFrame: TPopupMenu
     Left = 588
     Top = 116
+    object miSep: TMenuItem
+      Caption = '-'
+    end
+    object miOpenEmail: TMenuItem
+      Action = aOpenEmail
+    end
+    object miOpenLocation: TMenuItem
+      Action = aOpenLocation
+    end
   end
   object SaveDialogEmail: TSaveDialog
     DefaultExt = '*.eml'
