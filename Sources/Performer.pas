@@ -36,6 +36,7 @@ type
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     function GetWordText(const aFileName: TFileName): string;
     function GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
+    function GetXlsSheetList(const aFileName: TFileName; const aData: PResultData): string;
     function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
     function IsSuccessfulCheck: Boolean;
     procedure DoCopyAttachmentFiles(const aData: PResultData);
@@ -756,7 +757,7 @@ begin
               begin
                 Attachment.ContentType := 'application/excel';
                 Attachment.ImageIndex  := TExtIcon.eiXls.ToByte;
-                Attachment.ParsedText  := GetXlsxSheetList(Attachment.FileName, aData);
+                Attachment.ParsedText  := GetXlsSheetList(Attachment.FileName, aData);
               end
               else if Ext.Contains('.doc') then
               begin
@@ -1039,6 +1040,40 @@ begin
 end;
 
 function TPerformer.GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
+var
+  Attachment : PAttachment;
+  FileName   : string;
+  Sheets     : TArrayRecord<TSheet>;
+begin
+  Result := '';
+  try
+    Sheets := ExcelReader.Helper.GetXlsxSheetList(aFileName);
+    for var i := 0 to Sheets.Count - 1 do
+      if not Sheets[i].Text.IsEmpty then
+      begin
+        FileName := Concat(TPath.GetFileNameWithoutExtension(aFileName), '\', Sheets[i].Title);
+        New(Attachment);
+        Attachment^.ParsedText    := Sheets[i].Text;
+        Attachment^.FileName      := FileName;
+        Attachment^.ShortName     := FileName;
+        Attachment^.Hash          := TFileUtils.GetHashString(Sheets[i].Text);
+        Attachment^.ParentHash    := aData^.Hash;
+        Attachment^.ParentName    := aData^.ShortName;
+        Attachment^.Matches.Count := TGeneral.PatternList.Count;
+        Attachment^.FromZip       := True;
+        Attachment^.ContentType   := 'text/sheet';
+        Attachment^.ImageIndex    := TExtIcon.eiXls.ToByte;
+        TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+        aData^.Attachments.AddUnique(Attachment^.Hash);
+        Result := Concat(Result, (i + 1).ToString, '. ', Sheets[i].Title, '<br>');
+      end;
+  except
+    on E: Exception do
+      LogWriter.Write(ddError, Self, 'GetXlsxSheetList', E.Message + sLineBreak + aFileName);
+  end;
+end;
+
+function TPerformer.GetXlsSheetList(const aFileName: TFileName; const aData: PResultData): string;
 var
   Attachment : PAttachment;
   FileName   : string;

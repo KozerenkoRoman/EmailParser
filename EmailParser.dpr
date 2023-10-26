@@ -91,9 +91,9 @@ begin
       TfrmSplashScreen.ShowSplashScreen;
 {$ENDIF}
       Application.CreateForm(TDMImage, DMImage);
-  Application.CreateForm(TDaMod, DaMod);
-  Application.CreateForm(TfrmMain, frmMain);
-  frmMain.Initialize;
+      Application.CreateForm(TDaMod, DaMod);
+      Application.CreateForm(TfrmMain, frmMain);
+      frmMain.Initialize;
     finally
       TfrmSplashScreen.HideSplashScreen;
     end;

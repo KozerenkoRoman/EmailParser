@@ -99,6 +99,7 @@ inherited frameSource: TframeSource
     OnMeasureItem = vstTreeMeasureItem
     Touch.InteractiveGestures = [igPan, igPressAndTap]
     Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
+    ExplicitTop = 47
     Columns = <>
     DefaultText = ''
   end
