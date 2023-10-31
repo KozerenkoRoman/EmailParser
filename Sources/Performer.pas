@@ -99,7 +99,9 @@ procedure TPerformer.FillStartParameters;
 begin
   FPathList         := TGeneral.GetPathList;
   FSorterPathList   := TGeneral.GetSorterPathList;
-  FUserDefinedDir   := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
+  FUserDefinedDir   := TGeneral.CurrentProject.PathForAttachments;
+  if FUserDefinedDir.IsEmpty then
+    FUserDefinedDir := C_ATTACHMENTS_DIR;
   FAttachmentDir    := FAttachmentDir.FromString(FUserDefinedDir);
   FDeleteAttachment := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
   FFileExt          := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');

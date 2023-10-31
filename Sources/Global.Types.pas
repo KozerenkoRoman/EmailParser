@@ -17,10 +17,11 @@ type
 
   PProject = ^TProject;
   TProject = record
-    Current : Boolean;
-    Hash    : string;
-    Name    : string;
-    Info    : string;
+    Current            : Boolean;
+    Hash               : string;
+    Name               : string;
+    Info               : string;
+    PathForAttachments : string;
   end;
 
   PParamPath = ^TParamPath;

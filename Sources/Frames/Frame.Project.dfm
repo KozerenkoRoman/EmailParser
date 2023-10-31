@@ -1,7 +1,14 @@
 inherited frameProject: TframeProject
+  Width = 1217
+  Height = 552
+  ExplicitWidth = 1217
+  ExplicitHeight = 552
+  PixelsPerInch = 144
   inherited tbMain: TToolBar
+    Width = 1217
+    ExplicitWidth = 856
     object btnSep04: TToolButton
-      Left = 375
+      Left = 563
       Top = 0
       Width = 8
       Caption = 'btnSep04'
@@ -10,20 +17,23 @@ inherited frameProject: TframeProject
       Style = tbsSeparator
     end
     object btnSetCurrent: TToolButton
-      Left = 383
+      Left = 571
       Top = 0
       Action = aSetCurrent
     end
     object btnLoadProject: TToolButton
-      Left = 422
+      Left = 630
       Top = 0
       Action = aLoadProject
     end
   end
   inherited vstTree: TVirtualStringTree
-    Header.MainColumn = 0
+    Width = 1217
+    Height = 493
+    Header.MainColumn = 3
     Images = DMImage.vil16
     Indent = 15
+    PopupMenu = nil
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowRoot, toShowTreeLines, toShowVertGridLines, toThemeAware, toUseBlendedSelection, toShowFilteredNodes]
     OnCompareNodes = vstTreeCompareNodes
     OnCreateEditor = vstTreeCreateEditor
@@ -31,6 +41,9 @@ inherited frameProject: TframeProject
     OnPaintText = vstTreePaintText
     OnGetImageIndex = vstTreeGetImageIndex
     OnNewText = vstTreeNewText
+    OnNodeClick = vstTreeNodeClick
+    ExplicitWidth = 856
+    ExplicitHeight = 354
     Columns = <
       item
         BiDiMode = bdLeftToRight
@@ -60,6 +73,21 @@ inherited frameProject: TframeProject
         Position = 2
         Text = 'Hash'
         Width = 182
+      end
+      item
+        CaptionAlignment = taCenter
+        MaxWidth = 1000
+        MinWidth = 200
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 3
+        Text = 'Path For Attachments'
+        Width = 500
+      end
+      item
+        MaxWidth = 100
+        MinWidth = 50
+        Position = 4
+        Width = 100
       end>
     DefaultText = ''
   end
@@ -101,5 +129,39 @@ inherited frameProject: TframeProject
       OnExecute = aLoadProjectExecute
       OnUpdate = aLoadProjectUpdate
     end
+    object aPathForAttachments: TAction
+      Caption = 'Open'
+      ImageIndex = 5
+      ImageName = 'Open_32x32'
+      OnExecute = aPathForAttachmentsExecute
+    end
+    object aAttachmentsSub: TAction
+      Caption = '#Attachments (subdirectories)'
+      OnExecute = aAttachmentsSubExecute
+    end
+    object aAttachmentsMain: TAction
+      Caption = '#Attachments (main directory)'
+      OnExecute = aAttachmentsMainExecute
+    end
+  end
+  inherited pmFrame: TPopupMenu
+    Left = 88
+    Top = 260
+    object miAttachmentsMain: TMenuItem
+      Action = aAttachmentsMain
+    end
+    object miAttachmentsSub: TMenuItem
+      Action = aAttachmentsSub
+    end
+    object miPathForAttachments: TMenuItem
+      Action = aPathForAttachments
+    end
+  end
+  object dlgAttachmments: TFileOpenDialog
+    FavoriteLinks = <>
+    FileTypes = <>
+    Options = [fdoPickFolders]
+    Left = 516
+    Top = 210
   end
 end

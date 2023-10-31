@@ -1,14 +1,15 @@
 inherited frameSource: TframeSource
-  Width = 551
-  Height = 284
+  Width = 677
+  Height = 318
   OnEnter = FrameEnter
-  ExplicitWidth = 551
-  ExplicitHeight = 284
+  ExplicitWidth = 677
+  ExplicitHeight = 318
+  PixelsPerInch = 144
   inherited tbMain: TToolBar
-    Width = 551
+    Width = 677
     ExplicitWidth = 551
     object btnExportToExcel: TToolButton
-      Left = 211
+      Left = 319
       Top = 0
       Margins.Left = 8
       Margins.Top = 8
@@ -17,7 +18,7 @@ inherited frameSource: TframeSource
       Action = aExportToExcel
     end
     object btnExportToCSV: TToolButton
-      Left = 250
+      Left = 378
       Top = 0
       Margins.Left = 8
       Margins.Top = 8
@@ -26,7 +27,7 @@ inherited frameSource: TframeSource
       Action = aExportToCSV
     end
     object btnPrint: TToolButton
-      Left = 289
+      Left = 437
       Top = 0
       Margins.Left = 8
       Margins.Top = 8
@@ -35,7 +36,7 @@ inherited frameSource: TframeSource
       Action = aPrint
     end
     object btnSep03: TToolButton
-      Left = 328
+      Left = 496
       Top = 0
       Width = 8
       Margins.Left = 5
@@ -48,7 +49,7 @@ inherited frameSource: TframeSource
       Style = tbsSeparator
     end
     object btnColumnSettings: TToolButton
-      Left = 336
+      Left = 504
       Top = 0
       Margins.Left = 5
       Margins.Top = 5
@@ -59,9 +60,9 @@ inherited frameSource: TframeSource
   end
   object vstTree: TVirtualStringTree [1]
     Left = 0
-    Top = 39
-    Width = 551
-    Height = 245
+    Top = 59
+    Width = 677
+    Height = 259
     Margins.Left = 5
     Margins.Top = 5
     Margins.Right = 5
@@ -99,7 +100,8 @@ inherited frameSource: TframeSource
     OnMeasureItem = vstTreeMeasureItem
     Touch.InteractiveGestures = [igPan, igPressAndTap]
     Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
-    ExplicitTop = 47
+    ExplicitWidth = 551
+    ExplicitHeight = 225
     Columns = <>
     DefaultText = ''
   end
