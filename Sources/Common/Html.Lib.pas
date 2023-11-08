@@ -410,7 +410,7 @@ begin
                        '<summary>',aCaption,'</summary>',
                        '<table>',
                          '<tr>',
-                           '<td class="sql-code"><pre>',
+                           '<td><pre>',
                              SqlToHtml(aText),
                            '</pre></td>',
                          '</tr>',
