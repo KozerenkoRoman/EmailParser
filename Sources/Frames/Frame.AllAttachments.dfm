@@ -3,34 +3,50 @@ inherited frameAllAttachments: TframeAllAttachments
   Height = 448
   ExplicitWidth = 797
   ExplicitHeight = 448
+  PixelsPerInch = 144
   inherited tbMain: TToolBar
     Width = 797
     ExplicitWidth = 797
-    object btnSep04: TToolButton
-      Left = 375
+    object btnSep04: TToolButton [7]
+      Left = 211
       Top = 0
       Width = 8
       Style = tbsSeparator
     end
-    object btnFilter: TToolButton
-      Left = 383
+    object btnFilter: TToolButton [8]
+      Left = 219
       Top = 0
       Action = aFilter
     end
-    object btnOpenEmail: TToolButton
-      Left = 422
+    object btnOpenEmail: TToolButton [9]
+      Left = 258
       Top = 0
       Action = aOpenEmail
     end
-    object btnOpenAttachFile: TToolButton
-      Left = 461
+    inherited btnExportToExcel: TToolButton
+      Left = 297
+    end
+    object btnOpenAttachFile: TToolButton [11]
+      Left = 336
       Top = 0
       Action = aOpenAttachFile
     end
-    object btnOpenParsedText: TToolButton
-      Left = 500
+    inherited btnExportToCSV: TToolButton
+      Left = 375
+    end
+    inherited btnPrint: TToolButton
+      Left = 414
+    end
+    object btnOpenParsedText: TToolButton [14]
+      Left = 453
       Top = 0
       Action = aOpenParsedText
+    end
+    inherited btnSep03: TToolButton
+      Left = 492
+    end
+    inherited btnColumnSettings: TToolButton
+      Left = 500
     end
     object btnSep05: TToolButton
       Left = 539

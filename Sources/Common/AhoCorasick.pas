@@ -19,7 +19,6 @@ type
   TAhoCorasick = class
   private
     Root: TNode;
-    function AnsiFromWide(const aString: string): AnsiString;
   public
     constructor Create;
     destructor Destroy; override;
@@ -73,7 +72,7 @@ var
   Node: PNode;
 begin
   Node := @Root;
-  AnsiTextBuf := AnsiFromWide(aPattern);
+  AnsiTextBuf := Utf8Encode(aPattern);
   for var i := Low(AnsiTextBuf) to High(AnsiTextBuf) do
   begin
     if not Assigned(Node.Next[AnsiChar(AnsiTextBuf[i])]) then
@@ -130,7 +129,7 @@ var
   Node: PNode;
 begin
   Node := @Root;
-  AnsiTextBuf := AnsiFromWide(aText);
+  AnsiTextBuf := Utf8Encode(aText);
   for var i := Low(AnsiTextBuf) to High(AnsiTextBuf) do
   begin
     while (Assigned(Node)) and (not Assigned(Node.Next[AnsiChar(AnsiTextBuf[i])])) do
@@ -147,23 +146,6 @@ begin
       NextNode := NextNode.Fail;
     end;
   end;
-end;
-
-function TAhoCorasick.AnsiFromWide(const aString: string): AnsiString;
-var
-  InputLen: Integer;
-  Len: Integer;
-begin
-  Result := '';
-  InputLen := System.Length(aString);
-  if (InputLen = 0) then
-    Exit;
-
-  Len := WideCharToMultiByte(CP_ACP, 0, PWideChar(aString), InputLen, nil, 0, nil, nil);
-  if (InputLen = -1) then
-    Dec(Len);
-  SetLength(Result, Len);
-  WideCharToMultiByte(CP_ACP, 0, PWideChar(aString), InputLen, PAnsiChar(Result), System.Length(Result), nil, nil);
 end;
 
 { TAppender<T> }

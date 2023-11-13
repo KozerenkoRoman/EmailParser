@@ -3,6 +3,7 @@ inherited frameAttachments: TframeAttachments
   Height = 374
   ExplicitWidth = 663
   ExplicitHeight = 374
+  PixelsPerInch = 144
   inherited tbMain: TToolBar
     Width = 663
     ExplicitWidth = 663

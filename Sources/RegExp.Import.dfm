@@ -30,7 +30,7 @@ object frmImportFromXML: TfrmImportFromXML
       745
       42)
     object btnOk: TBitBtn
-      Left = 615
+      Left = 635
       Top = 1
       Width = 108
       Height = 40
@@ -47,7 +47,6 @@ object frmImportFromXML: TfrmImportFromXML
       ModalResult = 1
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 611
     end
   end
   object vstTree: TVirtualStringTree

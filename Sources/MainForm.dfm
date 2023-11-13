@@ -30,13 +30,14 @@ inherited frmMain: TfrmMain
     OnOpened = splViewOpened
     object splExtendedFilter: TSplitter
       Left = 0
-      Top = 639
+      Top = 389
       Width = 250
       Height = 5
       Cursor = crVSplit
       Align = alBottom
       Visible = False
-      ExplicitTop = 300
+      ExplicitLeft = -3
+      ExplicitTop = 378
     end
     object catMenuItems: TCategoryButtons
       Left = 0
@@ -121,7 +122,7 @@ inherited frmMain: TfrmMain
     end
     object pnlExtendedFilter: TGroupBox
       Left = 0
-      Top = 389
+      Top = 394
       Width = 250
       Height = 250
       Align = alBottom
@@ -137,6 +138,12 @@ inherited frmMain: TfrmMain
         Width = 246
         Height = 231
         Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 0
         ExplicitLeft = 2
         ExplicitTop = 17
@@ -174,6 +181,7 @@ inherited frmMain: TfrmMain
     Color = 1986047
     ParentBackground = False
     TabOrder = 1
+    ExplicitWidth = 1093
     object lblProject: TLabel
       Left = 250
       Top = 0
@@ -246,6 +254,7 @@ inherited frmMain: TfrmMain
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 1
+      ExplicitLeft = 784
       object srchBox: TButtonedEdit
         Left = 2
         Top = 8
@@ -283,6 +292,10 @@ inherited frmMain: TfrmMain
       Top = 1
       Width = 845
       Height = 642
+      Margins.Left = 1
+      Margins.Top = 1
+      Margins.Right = 1
+      Margins.Bottom = 1
       Caption = 'crdProject'
       CardIndex = 0
       TabOrder = 0
@@ -291,7 +304,17 @@ inherited frmMain: TfrmMain
         Top = 0
         Width = 845
         Height = 642
+        Margins.Left = 2
+        Margins.Top = 2
+        Margins.Right = 2
+        Margins.Bottom = 2
         Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 0
         ExplicitWidth = 845
         ExplicitHeight = 642
@@ -313,57 +336,104 @@ inherited frmMain: TfrmMain
       Top = 1
       Width = 845
       Height = 642
+      Margins.Left = 1
+      Margins.Top = 1
+      Margins.Right = 1
+      Margins.Bottom = 1
       Caption = 'crdPathsToFindFiles'
       CardIndex = 1
       TabOrder = 2
       object splPath: TSplitter
         Left = 0
-        Top = 316
+        Top = 140
         Width = 845
-        Height = 3
+        Height = 1
         Cursor = crVSplit
+        Margins.Left = 1
+        Margins.Top = 1
+        Margins.Right = 1
+        Margins.Bottom = 1
         Align = alTop
-        ExplicitTop = 295
-        ExplicitWidth = 287
+        ExplicitTop = 141
+        ExplicitWidth = 427
       end
       object gbPathes: TGroupBox
         AlignWithMargins = True
-        Left = 3
-        Top = 3
-        Width = 839
-        Height = 310
+        Left = 1
+        Top = 1
+        Width = 843
+        Height = 138
+        Margins.Left = 1
+        Margins.Top = 1
+        Margins.Right = 1
+        Margins.Bottom = 1
         Align = alTop
         Caption = 'gbPathes'
         TabOrder = 0
         inline framePathes: TframePathes
           Left = 2
           Top = 17
-          Width = 835
-          Height = 291
+          Width = 839
+          Height = 119
+          Margins.Left = 2
+          Margins.Top = 2
+          Margins.Right = 2
+          Margins.Bottom = 2
           Align = alClient
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
           TabOrder = 0
           ExplicitLeft = 2
           ExplicitTop = 17
-          ExplicitWidth = 835
-          ExplicitHeight = 291
+          ExplicitWidth = 839
+          ExplicitHeight = 119
           inherited tbMain: TToolBar
-            Width = 835
-            ExplicitWidth = 835
+            Width = 839
+            ExplicitWidth = 839
+            inherited btnExportToExcel: TToolButton
+              Left = 211
+              ExplicitLeft = 211
+            end
+            inherited btnExportToCSV: TToolButton
+              Left = 250
+              ExplicitLeft = 250
+            end
+            inherited btnPrint: TToolButton
+              Left = 289
+              ExplicitLeft = 289
+            end
+            inherited btnSep03: TToolButton
+              Left = 328
+              ExplicitLeft = 328
+            end
+            inherited btnColumnSettings: TToolButton
+              Left = 336
+              ExplicitLeft = 336
+            end
           end
           inherited vstTree: TVirtualStringTree
-            Width = 835
-            Height = 252
-            ExplicitWidth = 835
-            ExplicitHeight = 252
+            Width = 839
+            Height = 80
+            ExplicitTop = 39
+            ExplicitWidth = 839
+            ExplicitHeight = 80
             DefaultText = ''
           end
         end
       end
       object gbSorter: TGroupBox
         Left = 0
-        Top = 319
+        Top = 141
         Width = 845
-        Height = 323
+        Height = 501
+        Margins.Left = 1
+        Margins.Top = 1
+        Margins.Right = 1
+        Margins.Bottom = 1
         Align = alClient
         Caption = 'gbSorter'
         TabOrder = 1
@@ -371,22 +441,53 @@ inherited frmMain: TfrmMain
           Left = 2
           Top = 17
           Width = 841
-          Height = 304
+          Height = 482
+          Margins.Left = 2
+          Margins.Top = 2
+          Margins.Right = 2
+          Margins.Bottom = 2
           Align = alClient
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
           TabOrder = 0
           ExplicitLeft = 2
           ExplicitTop = 17
           ExplicitWidth = 841
-          ExplicitHeight = 304
+          ExplicitHeight = 482
           inherited tbMain: TToolBar
             Width = 841
             ExplicitWidth = 841
+            inherited btnExportToExcel: TToolButton
+              Left = 211
+              ExplicitLeft = 211
+            end
+            inherited btnExportToCSV: TToolButton
+              Left = 250
+              ExplicitLeft = 250
+            end
+            inherited btnPrint: TToolButton
+              Left = 289
+              ExplicitLeft = 289
+            end
+            inherited btnSep03: TToolButton
+              Left = 328
+              ExplicitLeft = 328
+            end
+            inherited btnColumnSettings: TToolButton
+              Left = 336
+              ExplicitLeft = 336
+            end
           end
           inherited vstTree: TVirtualStringTree
             Width = 841
-            Height = 265
+            Height = 443
+            ExplicitTop = 39
             ExplicitWidth = 841
-            ExplicitHeight = 265
+            ExplicitHeight = 443
             DefaultText = ''
           end
         end
@@ -397,6 +498,10 @@ inherited frmMain: TfrmMain
       Top = 1
       Width = 845
       Height = 642
+      Margins.Left = 1
+      Margins.Top = 1
+      Margins.Right = 1
+      Margins.Bottom = 1
       Caption = 'crdRegExpParameters'
       CardIndex = 2
       TabOrder = 1
@@ -405,13 +510,55 @@ inherited frmMain: TfrmMain
         Top = 0
         Width = 845
         Height = 642
+        Margins.Left = 2
+        Margins.Top = 2
+        Margins.Right = 2
+        Margins.Bottom = 2
         Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 0
         ExplicitWidth = 845
         ExplicitHeight = 642
         inherited tbMain: TToolBar
           Width = 845
           ExplicitWidth = 845
+          inherited btnExportToExcel: TToolButton
+            Left = 211
+            ExplicitLeft = 211
+          end
+          inherited btnSep04: TToolButton [8]
+            Left = 250
+            ExplicitLeft = 250
+          end
+          inherited btnExportToCSV: TToolButton [9]
+            Left = 258
+            ExplicitLeft = 258
+          end
+          inherited btnDown: TToolButton [10]
+            Left = 297
+            ExplicitLeft = 297
+          end
+          inherited btnUp: TToolButton [11]
+            Left = 336
+            ExplicitLeft = 336
+          end
+          inherited btnPrint: TToolButton [12]
+            Left = 375
+            ExplicitLeft = 375
+          end
+          inherited btnSep03: TToolButton [13]
+            Left = 414
+            ExplicitLeft = 414
+          end
+          inherited btnColumnSettings: TToolButton [14]
+            Left = 422
+            ExplicitLeft = 422
+          end
         end
         inherited vstTree: TVirtualStringTree
           Width = 845
@@ -431,25 +578,20 @@ inherited frmMain: TfrmMain
       Top = 1
       Width = 845
       Height = 642
+      Margins.Left = 1
+      Margins.Top = 1
+      Margins.Right = 1
+      Margins.Bottom = 1
       Caption = 'crdCommonParams'
       CardIndex = 3
       TabOrder = 3
       inline frameSettings: TframeSettings
         Left = 0
         Top = 0
-        Width = 845
-        Height = 642
-        Align = alClient
+        Width = 646
+        Height = 412
         TabOrder = 0
-        ExplicitWidth = 845
-        ExplicitHeight = 642
-        inherited tbMain: TToolBar
-          Width = 845
-          ExplicitWidth = 845
-        end
         inherited grdCommonParams: TGridPanel
-          Width = 845
-          Height = 603
           ControlCollection = <
             item
               Column = 0
@@ -459,17 +601,7 @@ inherited frmMain: TfrmMain
             item
               Column = 0
               Control = frameSettings.lblExtensions
-              Row = 1
-            end
-            item
-              Column = 0
-              Control = frameSettings.lblPathForAttachments
               Row = 2
-            end
-            item
-              Column = 0
-              Control = frameSettings.lblDeleteAttachments
-              Row = 3
             end
             item
               Column = 1
@@ -479,69 +611,57 @@ inherited frmMain: TfrmMain
             item
               Column = 1
               Control = frameSettings.edtExtensions
-              Row = 1
-            end
-            item
-              Column = 1
-              Control = frameSettings.edtPathForAttachments
               Row = 2
-            end
-            item
-              Column = 1
-              Control = frameSettings.cbDeleteAttachments
-              Row = 3
             end
             item
               Column = 0
               Control = frameSettings.ShapeDividingLine
-              Row = 5
+              Row = 3
             end
             item
               Column = 0
               Control = frameSettings.lblMaxSize
-              Row = 7
+              Row = 5
             end
             item
               Column = 0
               Control = frameSettings.lblLogWriteActive
-              Row = 6
+              Row = 4
             end
             item
               Column = 0
               Control = frameSettings.lblNumberOfDays
-              Row = 8
-            end
-            item
-              Column = 1
-              Control = frameSettings.cbLogWriteActive
               Row = 6
             end
             item
               Column = 1
+              Control = frameSettings.cbLogWriteActive
+              Row = 4
+            end
+            item
+              Column = 1
               Control = frameSettings.edtMaxSize
-              Row = 7
+              Row = 5
             end
             item
               Column = 1
               Control = frameSettings.edtNumberOfDays
-              Row = 8
+              Row = 6
             end
             item
               Column = 0
               Control = frameSettings.lblStyle
-              Row = 4
+              Row = 1
             end
             item
               Column = 1
               Control = frameSettings.cbStyle
-              Row = 4
+              Row = 1
             end>
-          ExplicitLeft = 0
-          ExplicitTop = 39
-          ExplicitWidth = 845
-          ExplicitHeight = 603
+          ExplicitWidth = 646
+          ExplicitHeight = 373
           inherited cbStyle: TComboBox
-            ExplicitLeft = 330
+            ExplicitTop = 41
           end
         end
       end
@@ -551,6 +671,10 @@ inherited frmMain: TfrmMain
       Top = 1
       Width = 845
       Height = 642
+      Margins.Left = 1
+      Margins.Top = 1
+      Margins.Right = 1
+      Margins.Bottom = 1
       Caption = 'crdResultView'
       CardIndex = 4
       TabOrder = 4
@@ -559,7 +683,17 @@ inherited frmMain: TfrmMain
         Top = 0
         Width = 845
         Height = 642
+        Margins.Left = 5
+        Margins.Top = 5
+        Margins.Right = 5
+        Margins.Bottom = 5
         Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 0
         ExplicitWidth = 845
         ExplicitHeight = 642
@@ -578,8 +712,8 @@ inherited frmMain: TfrmMain
             inherited splInfo: TSplitter
               Top = 327
               Width = 837
-              ExplicitTop = 236
-              ExplicitWidth = 730
+              ExplicitTop = -15
+              ExplicitWidth = 632
             end
             inherited pcInfo: TPageControl
               Top = 332
@@ -590,18 +724,54 @@ inherited frmMain: TfrmMain
                 ExplicitWidth = 829
                 inherited wbBody: TWebBrowser
                   Width = 829
-                  ExplicitWidth = 829
+                  ExplicitWidth = 688
                   ControlData = {
                     4C000000AE550000D71900000000000000000000000000000000000000000000
                     000000004C000000000000000000000001000000E0D057007335CF11AE690800
-                    2B2E12620A000000000000004C0000000114020000000000C000000000000046
+                    2B2E126202000000000000004C0000000114020000000000C000000000000046
                     8000000000000000000000000000000000000000000000000000000000000000
                     00000000000000000100000000000000000000000000000000000000}
                 end
               end
               inherited tsAttachments: TTabSheet
                 inherited frameAttachments: TframeAttachments
+                  ParentFont = False
+                  inherited tbMain: TToolBar
+                    inherited btnExportToExcel: TToolButton
+                      Left = 211
+                      ExplicitLeft = 211
+                    end
+                    inherited btnSep04: TToolButton [8]
+                      Left = 250
+                      ExplicitLeft = 250
+                    end
+                    inherited btnExportToCSV: TToolButton [9]
+                      Left = 258
+                      ExplicitLeft = 258
+                    end
+                    inherited btnOpenAttachFile: TToolButton [10]
+                      Left = 297
+                      ExplicitLeft = 297
+                    end
+                    inherited btnOpenParsedText: TToolButton [11]
+                      Left = 336
+                      ExplicitLeft = 336
+                    end
+                    inherited btnPrint: TToolButton [12]
+                      Left = 375
+                      ExplicitLeft = 375
+                    end
+                    inherited btnSep03: TToolButton [13]
+                      Left = 414
+                      ExplicitLeft = 414
+                    end
+                    inherited btnColumnSettings: TToolButton [14]
+                      Left = 422
+                      ExplicitLeft = 422
+                    end
+                  end
                   inherited vstTree: TVirtualStringTree
+                    ExplicitTop = 39
                     DefaultText = ''
                   end
                 end
@@ -610,15 +780,57 @@ inherited frmMain: TfrmMain
             inherited frameEmails: TframeEmails
               Width = 837
               Height = 327
+              ParentFont = False
               ExplicitWidth = 837
               ExplicitHeight = 327
               inherited tbMain: TToolBar
                 Width = 837
                 ExplicitWidth = 837
+                inherited btnExportToExcel: TToolButton
+                  Left = 211
+                  ExplicitLeft = 211
+                end
+                inherited btnSep04: TToolButton [8]
+                  Left = 250
+                  ExplicitLeft = 250
+                end
+                inherited btnExportToCSV: TToolButton [9]
+                  Left = 258
+                  ExplicitLeft = 258
+                end
+                inherited btnSearch: TToolButton [10]
+                  Left = 297
+                  ExplicitLeft = 297
+                end
+                inherited btnBreak: TToolButton [11]
+                  Left = 336
+                  ExplicitLeft = 336
+                end
+                inherited btnPrint: TToolButton [12]
+                  Left = 375
+                  ExplicitLeft = 375
+                end
+                inherited btnFilter: TToolButton [13]
+                  Left = 414
+                  ExplicitLeft = 414
+                end
+                inherited btnSep03: TToolButton [14]
+                  Left = 453
+                  ExplicitLeft = 453
+                end
+                inherited btnSep05: TToolButton [15]
+                  Left = 461
+                  ExplicitLeft = 461
+                end
+                inherited btnColumnSettings: TToolButton [16]
+                  Left = 469
+                  ExplicitLeft = 469
+                end
               end
               inherited vstTree: TVirtualStringTree
                 Width = 837
                 Height = 288
+                ExplicitTop = 39
                 ExplicitWidth = 837
                 ExplicitHeight = 288
                 DefaultText = ''
@@ -627,6 +839,37 @@ inherited frmMain: TfrmMain
           end
           inherited tsAllAttachments: TTabSheet
             inherited frameAllAttachments: TframeAllAttachments
+              ParentFont = False
+              inherited tbMain: TToolBar
+                inherited btnExportToExcel: TToolButton
+                  Left = 336
+                  ExplicitLeft = 336
+                end
+                inherited btnSep04: TToolButton [8]
+                  Left = 328
+                  ExplicitLeft = 328
+                end
+                inherited btnOpenAttachFile: TToolButton [9]
+                  Left = 211
+                  ExplicitLeft = 211
+                end
+                inherited btnFilter: TToolButton [10]
+                  Left = 289
+                  ExplicitLeft = 289
+                end
+                inherited btnOpenEmail: TToolButton [11]
+                  Left = 250
+                  ExplicitLeft = 250
+                end
+                inherited btnExportToCSV: TToolButton [12]
+                end
+                inherited btnPrint: TToolButton [13]
+                end
+                inherited btnSep03: TToolButton [14]
+                end
+                inherited btnColumnSettings: TToolButton [15]
+                end
+              end
               inherited vstTree: TVirtualStringTree
                 DefaultText = ''
               end
@@ -640,6 +883,10 @@ inherited frmMain: TfrmMain
       Top = 1
       Width = 845
       Height = 642
+      Margins.Left = 1
+      Margins.Top = 1
+      Margins.Right = 1
+      Margins.Bottom = 1
       Caption = 'crdSearchDuplicateFiles'
       CardIndex = 5
       TabOrder = 5
@@ -648,13 +895,37 @@ inherited frmMain: TfrmMain
         Top = 0
         Width = 845
         Height = 642
+        Margins.Left = 2
+        Margins.Top = 2
+        Margins.Right = 2
+        Margins.Bottom = 2
         Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 0
         ExplicitWidth = 845
         ExplicitHeight = 642
         inherited tbMain: TToolBar
           Width = 845
           ExplicitWidth = 845
+          inherited btnPrint: TToolButton [7]
+            Left = 297
+            ExplicitLeft = 297
+          end
+          inherited btnSep03: TToolButton [8]
+            Left = 289
+            ExplicitLeft = 289
+          end
+          inherited btnExportToExcel: TToolButton [9]
+            Left = 250
+            ExplicitLeft = 250
+          end
+          inherited btnExportToCSV: TToolButton [10]
+          end
         end
         inherited vstTree: TVirtualStringTree
           Width = 845
@@ -666,6 +937,39 @@ inherited frmMain: TfrmMain
         inherited tbFileSearch: TToolBar
           Width = 845
           ExplicitWidth = 845
+          inherited btnFileSearch: TToolButton
+            Wrap = True
+          end
+          inherited btnFileBreak: TToolButton
+            Left = 0
+            Top = 38
+            ExplicitLeft = 0
+            ExplicitTop = 38
+          end
+          inherited btnSep04: TToolButton
+            Left = 39
+            Top = 38
+            ExplicitLeft = 39
+            ExplicitTop = 38
+          end
+          inherited btnDeleteSelected: TToolButton
+            Left = 47
+            Top = 38
+            ExplicitLeft = 47
+            ExplicitTop = 38
+          end
+          inherited btnAllUnCheck: TToolButton
+            Left = 86
+            Top = 38
+            ExplicitLeft = 86
+            ExplicitTop = 38
+          end
+          inherited btnAllCheck: TToolButton
+            Left = 125
+            Top = 38
+            ExplicitLeft = 125
+            ExplicitTop = 38
+          end
         end
       end
     end
@@ -674,6 +978,10 @@ inherited frmMain: TfrmMain
       Top = 1
       Width = 845
       Height = 642
+      Margins.Left = 1
+      Margins.Top = 1
+      Margins.Right = 1
+      Margins.Bottom = 1
       Caption = 'crdBruteForce'
       CardIndex = 6
       TabOrder = 6
@@ -682,13 +990,63 @@ inherited frmMain: TfrmMain
         Top = 0
         Width = 845
         Height = 642
+        Margins.Left = 2
+        Margins.Top = 2
+        Margins.Right = 2
+        Margins.Bottom = 2
         Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 0
         ExplicitWidth = 845
         ExplicitHeight = 642
         inherited tbMain: TToolBar
           Width = 845
           ExplicitWidth = 845
+          inherited btnExportToExcel: TToolButton
+            Left = 211
+            ExplicitLeft = 211
+          end
+          inherited btnSep04: TToolButton [8]
+            Left = 250
+            ExplicitLeft = 250
+          end
+          inherited btnExportToCSV: TToolButton [9]
+            Left = 258
+            ExplicitLeft = 258
+          end
+          inherited btnDown: TToolButton [10]
+            Left = 297
+            ExplicitLeft = 297
+          end
+          inherited btnUp: TToolButton [11]
+            Left = 336
+            ExplicitLeft = 336
+          end
+          inherited btnPrint: TToolButton [12]
+            Left = 375
+            ExplicitLeft = 375
+          end
+          inherited btnSep05: TToolButton [13]
+            Left = 414
+            ExplicitLeft = 414
+          end
+          inherited btnStart: TToolButton [14]
+            Left = 422
+            ExplicitLeft = 422
+          end
+          inherited btnSep03: TToolButton [15]
+            Left = 461
+            ExplicitLeft = 461
+          end
+          inherited btnColumnSettings: TToolButton [16]
+            Left = 469
+            ExplicitLeft = 469
+          end
         end
         inherited vstTree: TVirtualStringTree
           Width = 845
@@ -709,6 +1067,10 @@ inherited frmMain: TfrmMain
     Top = 685
     Width = 1097
     Height = 20
+    Margins.Left = 1
+    Margins.Top = 1
+    Margins.Right = 1
+    Margins.Bottom = 1
     Panels = <>
     ExplicitTop = 684
     ExplicitWidth = 1093

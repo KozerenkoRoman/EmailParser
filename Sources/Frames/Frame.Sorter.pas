@@ -21,7 +21,6 @@ type
     procedure aEditExecute(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
-    procedure vstTreeClick(Sender: TObject);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
     procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
@@ -29,6 +28,7 @@ type
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
+    procedure vstTreeNodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
   private const
     COL_MASK        = 0;
     COL_PATH        = 1;
@@ -215,14 +215,14 @@ begin
   SaveToXML;
 end;
 
-procedure TframeSorter.vstTreeClick(Sender: TObject);
+procedure TframeSorter.vstTreeNodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
 var
   Data: PSorterPath;
 begin
   inherited;
-  if Assigned(vstTree.FocusedNode) and (vstTree.FocusedColumn = COL_OPEN_DIALOG) then
+  if Assigned(HitInfo.HitNode) and (HitInfo.HitColumn = COL_OPEN_DIALOG) then
   begin
-    Data := vstTree.FocusedNode.GetData;
+    Data := HitInfo.HitNode.GetData;
     if TDirectory.Exists(Data^.Path) then
       OpenDialog.DefaultFolder := Data^.Path
     else

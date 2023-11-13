@@ -19,12 +19,14 @@ type
     FConnection      : TFDConnection;
     FQueryAttachment : TFDQuery;
     FQueryEmail      : TFDQuery;
+    FQueryProjAttach : TFDQuery;
+    FQueryProjEmail  : TFDQuery;
     FQueue           : TThreadedQueue<PResultData>;
     function GetSQLiteDatabase: TSQLiteDatabase;
     procedure CreateConnection;
     procedure ExecSQL(const aSQL: string);
     procedure InsertAttachment(const aAttachment: PAttachment; const aParentHash: string);
-    procedure InsertData(const aResultData: PResultData);
+    procedure InsertEmail(const aResultData: PResultData);
   protected
     procedure Commit;
     procedure RollBack;
@@ -55,8 +57,12 @@ begin
   FQueue.DoShutDown;
   FQueryEmail.Unprepare;
   FQueryAttachment.Unprepare;
+  FQueryProjAttach.Unprepare;
+  FQueryProjEmail.Unprepare;
   FreeAndNil(FQueryEmail);
   FreeAndNil(FQueryAttachment);
+  FreeAndNil(FQueryProjAttach);
+  FreeAndNil(FQueryProjEmail);
   FreeAndNil(FConnection);
   FreeAndNil(FQueue);
   inherited;
@@ -78,7 +84,7 @@ begin
       WaitResult := FQueue.PopItem(ResultData);
       if (WaitResult = TWaitResult.wrSignaled) then
         if (not Terminated) and (not ResultData.MessageId.IsEmpty) then
-          InsertData(ResultData);
+          InsertEmail(ResultData);
     end;
   except
     on E: Exception do
@@ -121,11 +127,19 @@ begin
   end;
   FQueryEmail := TFDQuery.Create(nil);
   FQueryEmail.Connection := FConnection;
-  FQueryEmail.SQL.Add(rsSQLInsertEmail);
+  FQueryEmail.SQL.Text := rsSQLInsertEmail;
 
   FQueryAttachment := TFDQuery.Create(nil);
   FQueryAttachment.Connection := FConnection;
-  FQueryAttachment.SQL.Add(rsSQLInsertAttachment);
+  FQueryAttachment.SQL.Text := rsSQLInsertAttachment;
+
+  FQueryProjAttach := TFDQuery.Create(nil);
+  FQueryProjAttach.Connection := FConnection;
+  FQueryProjAttach.SQL.Text := rsSQLInsertProjectAttachments;
+
+  FQueryProjEmail := TFDQuery.Create(nil);
+  FQueryProjEmail.Connection := FConnection;
+  FQueryProjEmail.SQL.Text := rsSQLInsertProjectsEmails;
 end;
 
 function TThreadEmails.GetSQLiteDatabase: TSQLiteDatabase;
@@ -165,7 +179,7 @@ begin
     end;
 end;
 
-procedure TThreadEmails.InsertData(const aResultData: PResultData);
+procedure TThreadEmails.InsertEmail(const aResultData: PResultData);
 var
   IsStartTransaction: Boolean;
   Attachment: PAttachment;
@@ -181,7 +195,6 @@ begin
     FQueryEmail.ParamByName('PARSED_TEXT').DataType := ftBlob;
     FQueryEmail.ParamByName('PARSED_TEXT').AsStream := TZipPack.GetCompressStr(aResultData^.ParsedText);
 
-    FQueryEmail.ParamByName('PROJECT_ID').AsString   := TGeneral.CurrentProject.Hash;
     FQueryEmail.ParamByName('HASH').AsString         := aResultData^.Hash;
     FQueryEmail.ParamByName('MESSAGE_ID').AsString   := aResultData^.MessageId;
     FQueryEmail.ParamByName('FILE_NAME').AsString    := aResultData^.FileName;
@@ -192,6 +205,10 @@ begin
     FQueryEmail.ParamByName('TIME_STAMP').AsDateTime := aResultData^.TimeStamp;
     FQueryEmail.ParamByName('ATTACH').AsString       := string.Join(';', aResultData^.Attachments.Items);
     FQueryEmail.ExecSQL;
+
+    FQueryProjEmail.ParamByName('PROJECT_ID').AsString := TGeneral.CurrentProject.Hash;
+    FQueryProjEmail.ParamByName('EMAIL_ID').AsString := aResultData^.Hash;
+    FQueryProjEmail.ExecSQL;
     if IsStartTransaction then
       Commit;
     aResultData^.ParsedText := '';
@@ -224,7 +241,6 @@ begin
       FQueryAttachment.ParamByName('PARSED_TEXT').DataType := ftBlob;
       FQueryAttachment.ParamByName('PARSED_TEXT').AsStream := TZipPack.GetCompressStr(aAttachment^.ParsedText);
 
-      FQueryAttachment.ParamByName('PROJECT_ID').AsString   := TGeneral.CurrentProject.Hash;
       FQueryAttachment.ParamByName('HASH').AsString         := aAttachment^.Hash;
       FQueryAttachment.ParamByName('PARENT_HASH').AsString  := aParentHash;
       FQueryAttachment.ParamByName('CONTENT_ID').AsString   := aAttachment^.ContentID;
@@ -234,6 +250,10 @@ begin
       FQueryAttachment.ParamByName('FROM_ZIP').AsInteger    := aAttachment^.FromZip.ToInteger;
       FQueryAttachment.ParamByName('IMAGE_INDEX').AsInteger := aAttachment^.ImageIndex;
       FQueryAttachment.ExecSQL;
+
+      FQueryProjAttach.ParamByName('PROJECT_ID').AsString := TGeneral.CurrentProject.Hash;
+      FQueryProjAttach.ParamByName('ATTACHMENT_ID').AsString := aAttachment^.Hash;
+      FQueryProjAttach.ExecSQL;
       if IsStartTransaction then
         Commit;
     except

@@ -1,13 +1,26 @@
 inherited frameSorter: TframeSorter
+  Width = 656
+  Height = 309
+  ExplicitWidth = 656
+  ExplicitHeight = 309
+  PixelsPerInch = 144
+  inherited tbMain: TToolBar
+    Width = 656
+    ExplicitWidth = 656
+  end
   inherited vstTree: TVirtualStringTree
+    Width = 656
+    Height = 250
     Header.MainColumn = 0
     Images = DMImage.vil16
-    OnClick = vstTreeClick
     OnCompareNodes = vstTreeCompareNodes
     OnCreateEditor = vstTreeCreateEditor
     OnEditing = vstTreeEditing
     OnGetImageIndex = vstTreeGetImageIndex
     OnNewText = vstTreeNewText
+    OnNodeClick = vstTreeNodeClick
+    ExplicitWidth = 656
+    ExplicitHeight = 250
     Columns = <
       item
         BiDiMode = bdLeftToRight
@@ -31,7 +44,7 @@ inherited frameSorter: TframeSorter
       end
       item
         CaptionAlignment = taCenter
-        MaxWidth = 1000
+        MaxWidth = 100
         MinWidth = 50
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 2

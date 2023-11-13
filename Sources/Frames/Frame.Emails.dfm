@@ -7,6 +7,7 @@ inherited frameEmails: TframeEmails
   Margins.Bottom = 0
   ExplicitWidth = 752
   ExplicitHeight = 346
+  PixelsPerInch = 144
   inherited tbMain: TToolBar
     Width = 752
     ExplicitWidth = 752

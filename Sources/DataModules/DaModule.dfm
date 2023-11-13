@@ -44,7 +44,8 @@ object DaMod: TDaMod
   object qEmailBodyAndText: TFDQuery
     Connection = Connection
     SQL.Strings = (
-      'select BODY, PARSED_TEXT'
+      'select BODY, '
+      '       PARSED_TEXT'
       'from emails '
       'where HASH = :HASH')
     Left = 208
@@ -69,8 +70,10 @@ object DaMod: TDaMod
       '       a.CONTENT_TYPE, '
       '       a.FROM_ZIP,'
       '       a.IMAGE_INDEX'
-      'from attachments a LEFT JOIN emails e on a.PARENT_HASH = e.HASH'
-      'where  a.PROJECT_ID = :PROJECT_ID')
+      'from projects_attachments p,'
+      '     attachments a left join emails e on a.PARENT_HASH = e.HASH'
+      'where  a.HASH = p.ATTACHMENT_ID and'
+      '       p.PROJECT_ID = :PROJECT_ID')
     Left = 320
     Top = 88
     ParamData = <
@@ -120,8 +123,10 @@ object DaMod: TDaMod
       '       ADDRESS_FROM, '
       '       CONTENT_TYPE, '
       '       TIME_STAMP'
-      'from EMAILS'
-      'where PROJECT_ID = :PROJECT_ID')
+      'from EMAILS e,'
+      '     PROJECTS_EMAILS p '
+      'where e.HASH = p.EMAIL_ID'
+      '  and p.PROJECT_ID = :PROJECT_ID')
     Left = 320
     Top = 16
     ParamData = <

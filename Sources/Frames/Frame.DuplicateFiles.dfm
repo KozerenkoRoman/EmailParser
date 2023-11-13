@@ -3,6 +3,7 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
   Height = 424
   ExplicitWidth = 869
   ExplicitHeight = 424
+  PixelsPerInch = 144
   inherited tbMain: TToolBar
     Width = 869
     ExplicitWidth = 869
@@ -12,6 +13,24 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
     end
     inherited btnSep01: TToolButton
       Visible = False
+    end
+    inherited btnColumnSettings: TToolButton [7]
+      Left = 211
+      ExplicitLeft = 211
+    end
+    inherited btnSep03: TToolButton [8]
+      Left = 250
+      ExplicitLeft = 250
+    end
+    inherited btnPrint: TToolButton
+      Left = 258
+      ExplicitLeft = 258
+    end
+    inherited btnExportToExcel: TToolButton [10]
+      Left = 297
+    end
+    inherited btnExportToCSV: TToolButton [11]
+      Left = 336
     end
   end
   inherited vstTree: TVirtualStringTree
@@ -215,6 +234,28 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
       ImageName = 'check_boxes2'
       OnExecute = aAllCheckExecute
       OnUpdate = aAllCheckUpdate
+    end
+    object aOpenLocation: TAction
+      Caption = 'Open Location'
+      ImageIndex = 5
+      ImageName = 'Open_32x32'
+      OnExecute = aOpenLocationExecute
+    end
+    object aOpenFile: TAction
+      Caption = 'Open File'
+      OnExecute = aOpenFileExecute
+    end
+  end
+  inherited pmFrame: TPopupMenu
+    object miSep01: TMenuItem
+      Caption = '-'
+    end
+    object miOpenFile: TMenuItem
+      Action = aOpenFile
+      Default = True
+    end
+    object miOpenLocation: TMenuItem
+      Action = aOpenLocation
     end
   end
   object dlgFileSearch: TFileOpenDialog

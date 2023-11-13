@@ -24,7 +24,6 @@ type
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
     procedure vstTreeChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
-    procedure vstTreeClick(Sender: TObject);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
     procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
@@ -32,6 +31,7 @@ type
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
+    procedure vstTreeNodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
   private const
     COL_PATH        = 0;
     COL_OPEN_DIALOG = 1;
@@ -238,21 +238,20 @@ begin
   Data.WithSubdir := Node.CheckState = csCheckedNormal;
 end;
 
-procedure TframePathes.vstTreeClick(Sender: TObject);
+procedure TframePathes.vstTreeNodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
 var
   Data: PParamPath;
 begin
   inherited;
-  if Assigned(vstTree.FocusedNode) and (vstTree.FocusedColumn = COL_OPEN_DIALOG) then
+  if Assigned(HitInfo.HitNode) and (HitInfo.HitColumn = COL_OPEN_DIALOG) then
   begin
-    Data := vstTree.FocusedNode.GetData;
+    Data := HitInfo.HitNode.GetData;
     if TDirectory.Exists(Data^.Path) then
       OpenDialog.DefaultFolder := Data^.Path
     else
       OpenDialog.DefaultFolder := TDirectory.GetCurrentDirectory;
     if OpenDialog.Execute then
       Data^.Path := OpenDialog.FileName;
-    vstTree.FocusedColumn := COL_PATH;
   end;
 end;
 

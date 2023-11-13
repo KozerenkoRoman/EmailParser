@@ -10,6 +10,7 @@
 *.~dsk
 *.zip
 *.cmd
+*.rar
 /CleverInternetSuite/__history/
 /Common/__history/
 /Common/__recovery/

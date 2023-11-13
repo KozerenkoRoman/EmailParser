@@ -212,18 +212,14 @@ end;
 procedure TframeAttachments.aOpenLocationExecute(Sender: TObject);
 var
   Data: PAttachment;
-  PathName: string;
 begin
   inherited;
   if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
   begin
     Data := TGeneral.AttachmentList.GetItem(PAttachData(vstTree.FocusedNode^.GetData).Hash);
     if Assigned(Data) then
-    begin
-      PathName := TPath.GetDirectoryName(Data^.FileName);
-      if not PathName.IsEmpty then
-        Winapi.ShellAPI.ShellExecute(Handle, nil, PChar(PathName), nil, nil, sw_Show);
-    end;
+      if not Data^.FileName.IsEmpty then
+        Winapi.ShellAPI.ShellExecute(0, nil, 'explorer.exe', PChar('/select,' + Data^.FileName), nil, SW_SHOWNORMAL)
   end;
 end;
 

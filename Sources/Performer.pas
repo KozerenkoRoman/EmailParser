@@ -35,7 +35,7 @@ type
     function GetRtfText(const aFileName: TFileName): string;
     function GetTextFromPDFFile(const aFileName: TFileName): string;
     function GetWordText(const aFileName: TFileName): string;
-    function GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
+    function GetXlsSheetList(const aFileName: TFileName; const aData: PResultData): string;
     function GetZipFileList(const aFileName: TFileName; const aData: PResultData): string;
     function IsSuccessfulCheck: Boolean;
     procedure DoCopyAttachmentFiles(const aData: PResultData);
@@ -99,9 +99,11 @@ procedure TPerformer.FillStartParameters;
 begin
   FPathList         := TGeneral.GetPathList;
   FSorterPathList   := TGeneral.GetSorterPathList;
-  FUserDefinedDir   := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'PathForAttachments', C_ATTACHMENTS_SUB_DIR);
+  FUserDefinedDir   := TGeneral.CurrentProject.PathForAttachments;
+  FDeleteAttachment := TGeneral.CurrentProject.DeleteAttachments;
+  if FUserDefinedDir.IsEmpty then
+    FUserDefinedDir := C_ATTACHMENTS_DIR;
   FAttachmentDir    := FAttachmentDir.FromString(FUserDefinedDir);
-  FDeleteAttachment := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
   FFileExt          := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
 end;
 
@@ -729,7 +731,7 @@ begin
               begin
                 Attachment.ContentType := 'application/excel';
                 Attachment.ImageIndex  := TExtIcon.eiXls.ToByte;
-                Attachment.ParsedText  := GetXlsxSheetList(Attachment.FileName, aData);
+                Attachment.ParsedText  := GetXlsSheetList(Attachment.FileName, aData);
               end
               else if Ext.Contains('.docx') then
               begin
@@ -756,7 +758,7 @@ begin
               begin
                 Attachment.ContentType := 'application/excel';
                 Attachment.ImageIndex  := TExtIcon.eiXls.ToByte;
-                Attachment.ParsedText  := GetXlsxSheetList(Attachment.FileName, aData);
+                Attachment.ParsedText  := GetXlsSheetList(Attachment.FileName, aData);
               end
               else if Ext.Contains('.doc') then
               begin
@@ -1038,7 +1040,7 @@ begin
   end;
 end;
 
-function TPerformer.GetXlsxSheetList(const aFileName: TFileName; const aData: PResultData): string;
+function TPerformer.GetXlsSheetList(const aFileName: TFileName; const aData: PResultData): string;
 var
   Attachment : PAttachment;
   FileName   : string;
@@ -1068,7 +1070,7 @@ begin
       end;
   except
     on E: Exception do
-      LogWriter.Write(ddError, Self, 'GetXlsxSheetList', E.Message + sLineBreak + aFileName);
+      LogWriter.Write(ddError, Self, 'GetXlsSheetList', E.Message + sLineBreak + aFileName);
   end;
 end;
 

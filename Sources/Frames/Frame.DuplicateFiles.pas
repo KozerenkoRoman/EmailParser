@@ -11,7 +11,7 @@ uses
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} MessageDialog, Common.Types, DaImages, System.RegularExpressions,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
   Vcl.WinXPanels, Publishers.Interfaces, Publishers, VirtualTrees.ExportHelper, Global.Resources, Global.Utils,
-  DaModule, Vcl.WinXCtrls, System.Types, Performer, System.Threading;
+  DaModule, Vcl.WinXCtrls, System.Types, Performer, System.Threading, Winapi.ShellAPI;
 {$ENDREGION}
 
 type
@@ -21,6 +21,8 @@ type
     aDeleteSelected   : TAction;
     aFileBreak        : TAction;
     aFileSearch       : TAction;
+    aOpenFile         : TAction;
+    aOpenLocation     : TAction;
     btnAllCheck       : TToolButton;
     btnAllUnCheck     : TToolButton;
     btnDeleteSelected : TToolButton;
@@ -31,6 +33,9 @@ type
     dlgFileSearch     : TFileOpenDialog;
     edtPath           : TButtonedEdit;
     lblPath           : TLabel;
+    miOpenFile        : TMenuItem;
+    miOpenLocation    : TMenuItem;
+    miSep01           : TMenuItem;
     pnlFileSearch     : TPanel;
     tbFileSearch      : TToolBar;
     procedure aAllCheckExecute(Sender: TObject);
@@ -40,11 +45,13 @@ type
     procedure aDeleteSelectedUpdate(Sender: TObject);
     procedure aFileBreakExecute(Sender: TObject);
     procedure aFileSearchExecute(Sender: TObject);
+    procedure aOpenFileExecute(Sender: TObject);
+    procedure aOpenLocationExecute(Sender: TObject);
     procedure edtPathRightButtonClick(Sender: TObject);
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+    procedure vstTreeDblClick(Sender: TObject);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
     procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
-    procedure vstTreeDblClick(Sender: TObject);
   private const
     COL_SHORT_NAME = 0;
     COL_FILE_NAME  = 1;
@@ -111,12 +118,16 @@ end;
 procedure TframeDuplicateFiles.Translate;
 begin
   inherited;
-  aDeleteSelected.Hint := TLang.Lang.Translate('DeleteSelected');
-  aFileBreak.Hint      := TLang.Lang.Translate('Break');
-  aFileSearch.Hint     := TLang.Lang.Translate('StartSearch');
-  aAllUnCheck.Hint     := TLang.Lang.Translate('AllUnCheck');
-  aAllCheck.Hint       := TLang.Lang.Translate('AllCheck');
-  lblPath.Caption      := TLang.Lang.Translate('Path');
+  aAllCheck.Hint        := TLang.Lang.Translate('AllCheck');
+  aAllUnCheck.Hint      := TLang.Lang.Translate('AllUnCheck');
+  aDeleteSelected.Hint  := TLang.Lang.Translate('DeleteSelected');
+  aFileBreak.Hint       := TLang.Lang.Translate('Break');
+  aFileSearch.Hint      := TLang.Lang.Translate('StartSearch');
+  aOpenFile.Caption     := TLang.Lang.Translate('OpenFile');
+  aOpenFile.Hint        := TLang.Lang.Translate('OpenFile');
+  aOpenLocation.Caption := TLang.Lang.Translate('OpenLocation');
+  aOpenLocation.Hint    := TLang.Lang.Translate('OpenLocation');
+  lblPath.Caption       := TLang.Lang.Translate('Path');
 
   vstTree.Header.Columns[COL_DATE].Text       := TLang.Lang.Translate('Date');
   vstTree.Header.Columns[COL_FILE_NAME].Text  := TLang.Lang.Translate('Path');
@@ -345,6 +356,38 @@ begin
         end)
     end).Start;
   Performer.IsQuiet := True;
+end;
+
+procedure TframeDuplicateFiles.aOpenFileExecute(Sender: TObject);
+var
+  Data: PFileData;
+begin
+  inherited;
+  if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
+  begin
+    Data := vstTree.FocusedNode^.GetData;
+    if Assigned(Data) then
+    begin
+      if TFile.Exists(Data^.FileName) then
+        TFileUtils.ShellOpen(Data^.FileName)
+      else
+        TMessageDialog.ShowWarning(Format(TLang.Lang.Translate('FileNotFound'), [Data^.FileName]));
+    end
+  end;
+end;
+
+procedure TframeDuplicateFiles.aOpenLocationExecute(Sender: TObject);
+var
+  Data: PFileData;
+begin
+  inherited;
+  if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
+  begin
+    Data := vstTree.FocusedNode^.GetData;
+    if Assigned(Data) then
+      if not Data^.FileName.IsEmpty then
+        Winapi.ShellAPI.ShellExecute(0, nil, 'explorer.exe', PChar('/select,' + Data^.FileName), nil, SW_SHOWNORMAL)
+  end;
 end;
 
 procedure TframeDuplicateFiles.aDeleteSelectedExecute(Sender: TObject);

@@ -267,7 +267,7 @@ begin
   if Assigned(vstTree.FocusedNode) then
   begin
     Data := vstTree.FocusedNode.GetData;
-    if (TfrmRegExpEditor.GetPattern(Data) = mrOk) then
+    if (TfrmRegExpEditor.ShowDocument(Data) = mrOk) then
     begin
       if Data^.UseRawText then
         vstTree.FocusedNode.CheckState := csCheckedNormal
