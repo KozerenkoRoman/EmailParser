@@ -61,13 +61,13 @@ type
     procedure aSelectAllExecute(Sender: TObject);
     procedure aTestExecute(Sender: TObject);
     procedure cbSetOfTemplatesCloseUp(Sender: TObject);
-    procedure tvResultsCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure cbTypePatternChange(Sender: TObject);
+    procedure tvResultsCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
   private const
     C_IDENTITY_NAME = 'RegExpEditor';
   private
     function GetGroupIndex: Integer;
-    function GetPattern_: string;
+    function GetPattern: string;
     function GetSelectedColor: TColor;
     function GetTemplateName: string;
     function GetTypePattern: TTypePattern;
@@ -86,14 +86,14 @@ type
 
     property TypePattern   : TTypePattern read GetTypePattern   write SetTypePattern;
     property GroupIndex    : Integer      read GetGroupIndex    write SetGroupIndex;
-    property Pattern       : string       read GetPattern_      write SetPattern;
+    property Pattern       : string       read GetPattern       write SetPattern;
     property SelectedColor : TColor       read GetSelectedColor write SetSelectedColor;
     property TemplateName  : string       read GetTemplateName  write SetTemplateName;
     property UseRawText    : Boolean      read GetUseRawText    write SetUseRawText;
   protected
     function GetIdentityName: string; override;
   public
-    class function GetPattern(const aData: PPatternData): TModalResult;
+    class function ShowDocument(const aData: PPatternData): TModalResult;
 
     procedure Initialize; override;
     procedure Deinitialize; override;
@@ -104,7 +104,7 @@ implementation
 
 {$R *.dfm}
 
-class function TfrmRegExpEditor.GetPattern(const aData: PPatternData): TModalResult;
+class function TfrmRegExpEditor.ShowDocument(const aData: PPatternData): TModalResult;
 begin
   Result := mrCancel;
   with TfrmRegExpEditor.Create(nil) do
@@ -329,7 +329,7 @@ begin
   Result := C_IDENTITY_NAME;
 end;
 
-function TfrmRegExpEditor.GetPattern_: string;
+function TfrmRegExpEditor.GetPattern: string;
 begin
   case TypePattern of
     tpRegularExpression:

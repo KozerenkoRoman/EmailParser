@@ -6,7 +6,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} System.IOUtils, Vcl.Forms,
-  ArrayHelper, VirtualTrees, System.RegularExpressions, System.Math, Vcl.Graphics, Files.Utils, XmlFiles;
+  ArrayHelper, VirtualTrees, System.RegularExpressions, System.Math, Vcl.Graphics, Files.Utils, XmlFiles,
+  TesseractOCR.Consts;
 {$ENDREGION}
 
 type
@@ -22,6 +23,9 @@ type
     Name               : string;
     Info               : string;
     PathForAttachments : string;
+    DeleteAttachments  : Boolean;
+    UseOCR             : Boolean;
+    LanguageOCR        : TOCRLanguage;
   end;
 
   PParamPath = ^TParamPath;

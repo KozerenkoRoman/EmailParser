@@ -3,6 +3,7 @@ inherited frameRegExp: TframeRegExp
   Height = 444
   ExplicitWidth = 749
   ExplicitHeight = 444
+  PixelsPerInch = 144
   inherited tbMain: TToolBar
     Top = 41
     Width = 749

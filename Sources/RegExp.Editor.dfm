@@ -101,7 +101,6 @@ inherited frmRegExpEditor: TfrmRegExpEditor
             ParentColor = True
             TabOrder = 0
             OnCloseUp = cbSetOfTemplatesCloseUp
-            ExplicitWidth = 367
           end
         end
         object edRegEx: TMemo
@@ -133,8 +132,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
           PopupMenu = pmMemo
           ScrollBars = ssVertical
           TabOrder = 0
-          ExplicitLeft = 1
-          ExplicitTop = 1
+          ExplicitWidth = 464
         end
       end
     end
@@ -153,7 +151,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       860
       42)
     object btnCancel: TBitBtn
-      Left = 621
+      Left = 613
       Top = 1
       Width = 110
       Height = 40
@@ -170,10 +168,10 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 2
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 617
+      ExplicitLeft = 609
     end
     object btnOk: TBitBtn
-      Left = 733
+      Left = 725
       Top = 1
       Width = 110
       Height = 40
@@ -190,7 +188,7 @@ inherited frmRegExpEditor: TfrmRegExpEditor
       ModalResult = 1
       ParentFont = False
       TabOrder = 1
-      ExplicitLeft = 729
+      ExplicitLeft = 721
     end
   end
   object tbPattern: TToolBar

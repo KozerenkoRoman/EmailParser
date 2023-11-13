@@ -83,6 +83,7 @@ resourcestring
   en_Info                 = 'Info ';
   en_IsLogginActive       = 'Write information to the log file';
   en_Language             = 'Language';
+  en_LanguageOCR          = 'Language of optical character recognition';
   en_LoadProject          = 'Load current project';
   en_LoadRecordsFromDB    = 'Load records from DB at startup';
   en_Main                 = 'Main';
@@ -144,6 +145,7 @@ resourcestring
   en_ShowSearchBar        = 'Show search bar';
   en_Size                 = 'Size';
   en_StartSearch          = 'Start Search';
+  en_Style                = 'Style';
   en_Subject              = 'Subject';
   en_Successful           = 'Operation is successful';
   en_SystemInfo           = 'System information';
@@ -152,11 +154,11 @@ resourcestring
   en_Time                 = 'Time';
   en_TypePattern          = 'Type pattern';
   en_Up                   = 'Up';
+  en_UseOCR               = 'Use optical character recognition';
   en_UseRawText           = 'Use raw text';
   en_Utilities            = 'Utilities';
   en_Value                = 'Value';
   en_WithSubdir           = 'With subdir';
-  en_Style                = 'Style';
 
   //Ukrainian
   uk_Add                  = 'Додати';
@@ -221,6 +223,7 @@ resourcestring
   uk_Info                 = 'Опис ';
   uk_IsLogginActive       = 'Записувати інформацію в лог-файл';
   uk_Language             = 'Мова';
+  uk_LanguageOCR          = 'Мова системи розпізнавання текстів';
   uk_LoadProject          = 'Завантажити поточний проект';
   uk_LoadRecordsFromDB    = 'Завантажувати записи з БД при старті';
   uk_Main                 = 'Основне';
@@ -282,6 +285,7 @@ resourcestring
   uk_ShowSearchBar        = 'Показати панель пошуку';
   uk_Size                 = 'Розмір';
   uk_StartSearch          = 'Почати пошук';
+  uk_Style                = 'Стиль';
   uk_Subject              = 'Тема';
   uk_Successful           = 'Операція успішна';
   uk_SystemInfo           = 'Інформація про систему';
@@ -290,14 +294,14 @@ resourcestring
   uk_Time                 = 'Час';
   uk_TypePattern          = 'Тип шаблону';
   uk_Up                   = 'Вгору';
+  uk_UseOCR               = 'Використовувати систему розпізнавання текстів';
   uk_UseRawText           = 'Парсити сирий текст';
   uk_Utilities            = 'Утиліти';
   uk_Value                = 'Значення';
-  uk_Style                = 'Стиль';
   uk_WithSubdir           = 'З підкаталогами';
 
 const
-   ArrayMessages: array[1 .. 134] of TMessageItem = (
+   ArrayMessages: array[1 .. 136] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AhoCorasick'          ; En: en_AhoCorasick;          Uk: uk_AhoCorasick),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
@@ -320,7 +324,6 @@ const
     (Key: 'Copy'                 ; En: en_Copy;                 Uk: uk_Copy),
     (Key: 'Date'                 ; En: en_Date;                 Uk: uk_Date),
     (Key: 'Delete'               ; En: en_Delete;               Uk: uk_Delete),
-    (Key: 'Style'                ; En: en_Style;                Uk: uk_Style),
     (Key: 'DeleteAttachments'    ; En: en_DeleteAttachments;    Uk: uk_DeleteAttachments),
     (Key: 'DeletePrompt'         ; En: en_DeletePrompt;         Uk: uk_DeletePrompt),
     (Key: 'DeleteSelected'       ; En: en_DeleteSelected;       Uk: uk_DeleteSelected),
@@ -361,6 +364,7 @@ const
     (Key: 'Info'                 ; En: en_Info;                 Uk: uk_Info),
     (Key: 'IsLogginActive'       ; En: en_IsLogginActive;       Uk: uk_IsLogginActive),
     (Key: 'Language'             ; En: en_Language;             Uk: uk_Language),
+    (Key: 'LanguageOCR'          ; En: en_LanguageOCR;          Uk: uk_LanguageOCR),
     (Key: 'LoadProject'          ; En: en_LoadProject;          Uk: uk_LoadProject),
     (Key: 'LoadRecordsFromDB'    ; En: en_LoadRecordsFromDB;    Uk: uk_LoadRecordsFromDB),
     (Key: 'Main'                 ; En: en_Main;                 Uk: uk_Main),
@@ -420,6 +424,7 @@ const
     (Key: 'ShowSearchBar'        ; En: en_ShowSearchBar;        Uk: uk_ShowSearchBar),
     (Key: 'Size'                 ; En: en_Size;                 Uk: uk_Size),
     (Key: 'StartSearch'          ; En: en_StartSearch;          Uk: uk_StartSearch),
+    (Key: 'Style'                ; En: en_Style;                Uk: uk_Style),
     (Key: 'Subject'              ; En: en_Subject;              Uk: uk_Subject),
     (Key: 'Successful'           ; En: en_Successful;           Uk: uk_Successful),
     (Key: 'SystemInfo'           ; En: en_SystemInfo;           Uk: uk_SystemInfo),
@@ -428,6 +433,7 @@ const
     (Key: 'Time'                 ; En: en_Time;                 Uk: uk_Time),
     (Key: 'TypePattern'          ; En: en_TypePattern;          Uk: uk_TypePattern),
     (Key: 'Up'                   ; En: en_Up;                   Uk: uk_Up),
+    (Key: 'UseOCR'               ; En: en_UseOCR;               Uk: uk_UseOCR),
     (Key: 'UseRawText'           ; En: en_UseRawText;           Uk: uk_UseRawText),
     (Key: 'Utilities'            ; En: en_Utilities;            Uk: uk_Utilities),
     (Key: 'Value'                ; En: en_Value;                Uk: uk_Value),

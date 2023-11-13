@@ -14,22 +14,20 @@ uses
 
 type
   TframeSettings = class(TFrameCustom)
-    cbDeleteAttachments  : TCheckBox;
-    cbLanguage           : TComboBox;
-    cbLogWriteActive     : TCheckBox;
-    cbStyle              : TComboBox;
-    edtExtensions        : TEdit;
-    edtMaxSize           : TNumberBox;
-    edtNumberOfDays      : TNumberBox;
-    grdCommonParams      : TGridPanel;
-    lblDeleteAttachments : TLabel;
-    lblExtensions        : TLabel;
-    lblLanguage          : TLabel;
-    lblLogWriteActive    : TLabel;
-    lblMaxSize           : TLabel;
-    lblNumberOfDays      : TLabel;
-    lblStyle             : TLabel;
-    ShapeDividingLine    : TShape;
+    cbLanguage        : TComboBox;
+    cbLogWriteActive  : TCheckBox;
+    cbStyle           : TComboBox;
+    edtExtensions     : TEdit;
+    edtMaxSize        : TNumberBox;
+    edtNumberOfDays   : TNumberBox;
+    grdCommonParams   : TGridPanel;
+    lblExtensions     : TLabel;
+    lblLanguage       : TLabel;
+    lblLogWriteActive : TLabel;
+    lblMaxSize        : TLabel;
+    lblNumberOfDays   : TLabel;
+    lblStyle          : TLabel;
+    ShapeDividingLine : TShape;
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
   private const
@@ -76,13 +74,12 @@ end;
 procedure TframeSettings.Translate;
 begin
   inherited;
-  lblDeleteAttachments.Caption := TLang.Lang.Translate('DeleteAttachments');
-  lblExtensions.Caption        := TLang.Lang.Translate('FileExtensions');
-  lblLanguage.Caption          := TLang.Lang.Translate('Language');
-  lblLogWriteActive.Caption    := TLang.Lang.Translate('IsLogginActive');
-  lblMaxSize.Caption           := TLang.Lang.Translate('MaxSizeLogFile');
-  lblNumberOfDays.Caption      := TLang.Lang.Translate('NumberOfDays');
-  lblStyle.Caption             := TLang.Lang.Translate('Style');
+  lblExtensions.Caption     := TLang.Lang.Translate('FileExtensions');
+  lblLanguage.Caption       := TLang.Lang.Translate('Language');
+  lblLogWriteActive.Caption := TLang.Lang.Translate('IsLogginActive');
+  lblMaxSize.Caption        := TLang.Lang.Translate('MaxSizeLogFile');
+  lblNumberOfDays.Caption   := TLang.Lang.Translate('NumberOfDays');
+  lblStyle.Caption          := TLang.Lang.Translate('Style');
 end;
 
 function TframeSettings.GetIdentityName: string;
@@ -93,20 +90,18 @@ end;
 procedure TframeSettings.LoadFromXML;
 begin
   inherited;
-  cbDeleteAttachments.Checked := TGeneral.XMLParams.ReadBool(C_SECTION_MAIN, 'DeleteAttachments', True);
-  cbLanguage.ItemIndex        := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0);
-  cbLogWriteActive.Checked    := TGeneral.XMLParams.ReadBool(C_SECTION_DEBUG, C_KEY_IS_ACTIVE, True);
-  edtExtensions.Text          := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
-  edtMaxSize.ValueInt         := TGeneral.XMLParams.ReadInteger(C_SECTION_DEBUG, C_KEY_MAX_SIZE, 1);
-  edtNumberOfDays.ValueInt    := TGeneral.XMLParams.ReadInteger(C_SECTION_DEBUG, C_KEY_COUNT_OF_DAYS, 30);
-  cbStyle.ItemIndex           := cbStyle.Items.IndexOf(TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Style', TStyleManager.cSystemStyleName));
+  cbLanguage.ItemIndex     := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0);
+  cbLogWriteActive.Checked := TGeneral.XMLParams.ReadBool(C_SECTION_DEBUG, C_KEY_IS_ACTIVE, True);
+  edtExtensions.Text       := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
+  edtMaxSize.ValueInt      := TGeneral.XMLParams.ReadInteger(C_SECTION_DEBUG, C_KEY_MAX_SIZE, 1);
+  edtNumberOfDays.ValueInt := TGeneral.XMLParams.ReadInteger(C_SECTION_DEBUG, C_KEY_COUNT_OF_DAYS, 30);
+  cbStyle.ItemIndex        := cbStyle.Items.IndexOf(TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Style', TStyleManager.cSystemStyleName));
 end;
 
 procedure TframeSettings.SaveToXML;
 begin
   inherited;
   TGeneral.XMLParams.WriteBool(C_SECTION_DEBUG, C_KEY_IS_ACTIVE, cbLogWriteActive.Checked, lblLogWriteActive.Caption);
-  TGeneral.XMLParams.WriteBool(C_SECTION_MAIN, 'DeleteAttachments', cbDeleteAttachments.Checked, lblDeleteAttachments.Caption);
   TGeneral.XMLParams.WriteInteger(C_SECTION_DEBUG, C_KEY_MAX_SIZE, edtMaxSize.ValueInt, lblMaxSize.Caption);
   TGeneral.XMLParams.WriteInteger(C_SECTION_DEBUG, C_KEY_COUNT_OF_DAYS, edtNumberOfDays.ValueInt, lblNumberOfDays.Caption);
   TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'Language', cbLanguage.ItemIndex, cbLanguage.Text);

@@ -1,14 +1,34 @@
 inherited frameProject: TframeProject
-  Width = 1217
-  Height = 552
-  ExplicitWidth = 1217
-  ExplicitHeight = 552
+  Width = 798
+  Height = 470
+  ExplicitWidth = 798
+  ExplicitHeight = 470
   PixelsPerInch = 144
   inherited tbMain: TToolBar
-    Width = 1217
-    ExplicitWidth = 856
+    Width = 798
+    ExplicitWidth = 798
+    inherited btnExportToExcel: TToolButton
+      Left = 211
+      ExplicitLeft = 211
+    end
+    inherited btnExportToCSV: TToolButton
+      Left = 250
+      ExplicitLeft = 250
+    end
+    inherited btnPrint: TToolButton
+      Left = 289
+      ExplicitLeft = 289
+    end
+    inherited btnSep03: TToolButton
+      Left = 328
+      ExplicitLeft = 328
+    end
+    inherited btnColumnSettings: TToolButton
+      Left = 336
+      ExplicitLeft = 336
+    end
     object btnSep04: TToolButton
-      Left = 563
+      Left = 375
       Top = 0
       Width = 8
       Caption = 'btnSep04'
@@ -17,33 +37,36 @@ inherited frameProject: TframeProject
       Style = tbsSeparator
     end
     object btnSetCurrent: TToolButton
-      Left = 571
+      Left = 383
       Top = 0
       Action = aSetCurrent
     end
     object btnLoadProject: TToolButton
-      Left = 630
+      Left = 422
       Top = 0
       Action = aLoadProject
     end
   end
   inherited vstTree: TVirtualStringTree
-    Width = 1217
-    Height = 493
-    Header.MainColumn = 3
+    Width = 798
+    Height = 431
+    Header.MainColumn = 0
     Images = DMImage.vil16
     Indent = 15
     PopupMenu = nil
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowRoot, toShowTreeLines, toShowVertGridLines, toThemeAware, toUseBlendedSelection, toShowFilteredNodes]
     OnCompareNodes = vstTreeCompareNodes
     OnCreateEditor = vstTreeCreateEditor
+    OnDblClick = aEditExecute
     OnEditing = vstTreeEditing
     OnPaintText = vstTreePaintText
     OnGetImageIndex = vstTreeGetImageIndex
+    OnGetImageIndexEx = vstTreeGetImageIndexEx
     OnNewText = vstTreeNewText
     OnNodeClick = vstTreeNodeClick
-    ExplicitWidth = 856
-    ExplicitHeight = 354
+    ExplicitTop = 39
+    ExplicitWidth = 798
+    ExplicitHeight = 431
     Columns = <
       item
         BiDiMode = bdLeftToRight
@@ -62,7 +85,7 @@ inherited frameProject: TframeProject
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 1
         Text = 'Info'
-        Width = 241
+        Width = 175
       end
       item
         BiDiMode = bdLeftToRight
@@ -81,12 +104,39 @@ inherited frameProject: TframeProject
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 3
         Text = 'Path For Attachments'
-        Width = 500
+        Width = 312
       end
       item
         MaxWidth = 100
         MinWidth = 50
         Position = 4
+        Width = 100
+      end
+      item
+        CaptionAlignment = taCenter
+        MaxWidth = 500
+        MinWidth = 100
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 5
+        Text = 'Use OCR'
+        Width = 100
+      end
+      item
+        CaptionAlignment = taCenter
+        MaxWidth = 500
+        MinWidth = 200
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 6
+        Text = 'Language OCR'
+        Width = 200
+      end
+      item
+        CaptionAlignment = taCenter
+        MaxWidth = 500
+        MinWidth = 100
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 7
+        Text = 'Delete attach'
         Width = 100
       end>
     DefaultText = ''
@@ -97,6 +147,8 @@ inherited frameProject: TframeProject
       OnExecute = aAddExecute
     end
     inherited aEdit: TAction
+      Visible = True
+      OnExecute = aEditExecute
       OnUpdate = aDeleteUpdate
     end
     inherited aDelete: TAction
@@ -161,7 +213,7 @@ inherited frameProject: TframeProject
     FavoriteLinks = <>
     FileTypes = <>
     Options = [fdoPickFolders]
-    Left = 516
-    Top = 210
+    Left = 260
+    Top = 274
   end
 end

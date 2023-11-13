@@ -8,9 +8,9 @@ uses
   Vcl.Forms, Vcl.Dialogs, VirtualTrees, Vcl.ExtCtrls, System.Generics.Collections, System.UITypes, DebugWriter,
   Global.Types, System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin,
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
-  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Common.Types, DaImages, System.RegularExpressions,
+  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Common.Types, DaImages, System.RegularExpressions, Vcl.Themes,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
-  Vcl.WinXPanels, Frame.Custom, Publishers, DaModule, Performer, Global.Resources;
+  Vcl.WinXPanels, Frame.Custom, Publishers, DaModule, Performer, Global.Resources, TesseractOCR.Consts, Project.Editor;
 {$ENDREGION}
 
 type
@@ -24,14 +24,15 @@ type
     aAttachmentsSub     : TAction;
     aPathForAttachments : TAction;
     dlgAttachmments     : TFileOpenDialog;
+    procedure aAddExecute(Sender: TObject);
     procedure aAttachmentsMainExecute(Sender: TObject);
     procedure aAttachmentsSubExecute(Sender: TObject);
-    procedure aPathForAttachmentsExecute(Sender: TObject);
-    procedure aAddExecute(Sender: TObject);
     procedure aDeleteExecute(Sender: TObject);
     procedure aDeleteUpdate(Sender: TObject);
+    procedure aEditExecute(Sender: TObject);
     procedure aLoadProjectExecute(Sender: TObject);
     procedure aLoadProjectUpdate(Sender: TObject);
+    procedure aPathForAttachmentsExecute(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
     procedure aSetCurrentExecute(Sender: TObject);
@@ -40,18 +41,24 @@ type
     procedure vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
     procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
     procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UItypes.TImageIndex);
+    procedure vstTreeGetImageIndexEx(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex; var ImageList: TCustomImageList);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
-    procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
     procedure vstTreeNodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+    procedure vstTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
   private const
-    COL_NAME        = 0;
-    COL_INFO        = 1;
-    COL_HASH        = 2;
-    COL_PATH_ATTACH = 3;
-    COL_OPEN_DIALOG = 4;
+    COL_NAME          = 0;
+    COL_INFO          = 1;
+    COL_HASH          = 2;
+    COL_PATH_ATTACH   = 3;
+    COL_OPEN_DIALOG   = 4;
+    COL_USE_OCR       = 5;
+    COL_LANGUAGE_OCR  = 6;
+    COL_DELETE_ATTACH = 7;
 
     C_IDENTITY_NAME = 'frameProject';
+  private
+    FCBSize: TSize;
   protected
     function GetIdentityName: string; override;
     procedure SaveToXML; override;
@@ -84,10 +91,15 @@ begin
 end;
 
 procedure TframeProject.Initialize;
+var
+  ThemedElement: TThemedElementDetails;
 begin
   inherited Initialize;
   vstTree.FullExpand;
   Translate;
+
+  ThemedElement := TStyleManager.ActiveStyle.GetElementDetails(tbCheckBoxCheckedNormal);
+  TStyleManager.ActiveStyle.GetElementSize(vstTree.Canvas.Handle, ThemedElement, esActual, FCBSize);
 end;
 
 procedure TframeProject.Deinitialize;
@@ -101,10 +113,13 @@ begin
   inherited;
   aLoadProject.Hint := TLang.Lang.Translate('LoadProject');
   aSetCurrent.Hint  := TLang.Lang.Translate('SetCurrent');
-  vstTree.Header.Columns[COL_HASH].Text        := TLang.Lang.Translate('Hash');
-  vstTree.Header.Columns[COL_INFO].Text        := TLang.Lang.Translate('Info');
-  vstTree.Header.Columns[COL_NAME].Text        := TLang.Lang.Translate('Name');
-  vstTree.Header.Columns[COL_PATH_ATTACH].Text := TLang.Lang.Translate('PathForAttachments');
+  vstTree.Header.Columns[COL_DELETE_ATTACH].Text := TLang.Lang.Translate('DeleteAttachments');
+  vstTree.Header.Columns[COL_HASH].Text          := TLang.Lang.Translate('Hash');
+  vstTree.Header.Columns[COL_INFO].Text          := TLang.Lang.Translate('Info');
+  vstTree.Header.Columns[COL_LANGUAGE_OCR].Text  := TLang.Lang.Translate('LanguageOCR');
+  vstTree.Header.Columns[COL_NAME].Text          := TLang.Lang.Translate('Name');
+  vstTree.Header.Columns[COL_PATH_ATTACH].Text   := TLang.Lang.Translate('PathForAttachments');
+  vstTree.Header.Columns[COL_USE_OCR].Text       := TLang.Lang.Translate('UseOCR');
 end;
 
 function TframeProject.GetIdentityName: string;
@@ -136,6 +151,9 @@ procedure TframeProject.LoadFromXML;
             Data^.Info               := TGeneral.XMLParams.Attributes.GetAttributeValue('Info', '');
             Data^.Current            := TGeneral.XMLParams.Attributes.GetAttributeValue('Current', False);
             Data^.PathForAttachments := TGeneral.XMLParams.Attributes.GetAttributeValue('PathForAttachments', C_ATTACHMENTS_DIR);
+            Data^.DeleteAttachments  := TGeneral.XMLParams.Attributes.GetAttributeValue('DeleteAttachments', False);
+            Data^.UseOCR             := TGeneral.XMLParams.Attributes.GetAttributeValue('UseOCR', False);
+            Data^.LanguageOCR        := TGeneral.XMLParams.Attributes.GetAttributeValue('LanguageOCR', lgUnknow);
             if Data^.Current then
               TGeneral.CurrentProject := Data^;
           end;
@@ -172,6 +190,9 @@ procedure TframeProject.SaveToXML;
     TGeneral.XMLParams.Attributes.SetAttributeValue('Hash', Data^.Hash);
     TGeneral.XMLParams.Attributes.SetAttributeValue('Info', Data^.Info);
     TGeneral.XMLParams.Attributes.SetAttributeValue('PathForAttachments', Data^.PathForAttachments);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('DeleteAttachments', Data^.DeleteAttachments);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('UseOCR', Data^.UseOCR);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('LanguageOCR', Data^.LanguageOCR);
     TGeneral.XMLParams.WriteAttributes;
 
     if Data^.Current then
@@ -234,6 +255,19 @@ procedure TframeProject.aDeleteUpdate(Sender: TObject);
 begin
   inherited;
   TAction(Sender).Enabled := not vstTree.IsEmpty;
+end;
+
+procedure TframeProject.aEditExecute(Sender: TObject);
+var
+  Data: PProject;
+begin
+  inherited;
+  if Assigned(vstTree.FocusedNode) then
+  begin
+    Data := vstTree.FocusedNode^.GetData;
+    if (TfrmProjectEditor.ShowDocument(Data) = mrOk) then
+      vstTree.InvalidateNode(vstTree.FocusedNode);
+  end;
 end;
 
 procedure TframeProject.aLoadProjectExecute(Sender: TObject);
@@ -304,16 +338,37 @@ end;
 
 procedure TframeProject.vstTreeNodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
 var
-  Point: TPoint;
-  CellRect: TRect;
+  CellRect : TRect;
+  Data     : PProject;
+  MousePos : TPoint;
+  Point    : TPoint;
 begin
   inherited;
-  if Assigned(HitInfo.HitNode) and (HitInfo.HitColumn = COL_OPEN_DIALOG) then
+  if not Assigned(HitInfo.HitNode) then
+    Exit;
+  if (HitInfo.HitColumn = COL_OPEN_DIALOG) then
   begin
     CellRect := vstTree.GetDisplayRect(HitInfo.HitNode, HitInfo.HitColumn, False);
     Point := TPoint.Create(CellRect.BottomRight.X - CellRect.Width, CellRect.BottomRight.Y);
     Point := vstTree.ClientToScreen(Point);
     pmFrame.Popup(Point.X, Point.Y);
+  end
+  else if (HitInfo.HitColumn in [COL_USE_OCR, COL_DELETE_ATTACH]) then
+  begin
+    CellRect := vstTree.GetDisplayRect(HitInfo.HitNode, HitInfo.HitColumn, False);
+    Inc(CellRect.Top, (CellRect.Height - FCBSize.Height) div 2);
+    CellRect.Bottom := CellRect.Top + FCBSize.cy;
+    Inc(CellRect.Left, Sender.ScaledPixels(4));
+    CellRect.Right := CellRect.Left + FCBSize.cx;
+    MousePos := vstTree.ScreenToClient(mouse.CursorPos);
+    if not CellRect.Contains(MousePos) then
+      Exit;
+    Data := HitInfo.HitNode^.GetData;
+    if (HitInfo.HitColumn = COL_USE_OCR) then
+      Data^.UseOCR := not Data^.UseOCR
+    else if (HitInfo.HitColumn = COL_DELETE_ATTACH) then
+      Data^.DeleteAttachments := not Data^.DeleteAttachments;
+    Sender.InvalidateNode(HitInfo.HitNode);
   end;
 end;
 
@@ -333,6 +388,12 @@ begin
       Result := CompareText(Data1^.Name, Data2^.Name);
     COL_PATH_ATTACH:
       Result := CompareText(Data1^.PathForAttachments, Data2^.PathForAttachments);
+    COL_USE_OCR:
+      Result := CompareValue(Data1^.UseOCR.ToInteger, Data2^.UseOCR.ToInteger);
+    COL_LANGUAGE_OCR:
+      Result := CompareText(Data1^.LanguageOCR.ToLanguageName, Data2^.LanguageOCR.ToLanguageName);
+    COL_DELETE_ATTACH:
+      Result := CompareValue(Data1^.DeleteAttachments.ToInteger, Data2^.DeleteAttachments.ToInteger);
   end;
 end;
 
@@ -365,6 +426,28 @@ begin
   end;
 end;
 
+procedure TframeProject.vstTreeGetImageIndexEx(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex; var ImageList: TCustomImageList);
+var
+  Data: PProject;
+  Checked: Boolean;
+begin
+  inherited;
+  if (Column in [COL_USE_OCR, COL_DELETE_ATTACH]) and (Kind in [ikNormal, ikSelected]) then
+  begin
+    ImageList := DMImage.ilCustomCheckImages;
+    Data := Node^.GetData;
+    Checked := False;
+    if (Column = COL_USE_OCR) then
+      Checked := Data^.UseOCR
+    else if (Column = COL_DELETE_ATTACH) then
+      Checked := Data^.DeleteAttachments;
+    if Checked then
+      ImageIndex := 13
+    else
+      ImageIndex := 9;
+  end;
+end;
+
 procedure TframeProject.vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
   Data: PProject;
@@ -381,6 +464,8 @@ begin
       CellText := Data^.Name;
     COL_PATH_ATTACH:
       CellText := Data^.PathForAttachments;
+    COL_LANGUAGE_OCR:
+      CellText := Data^.LanguageOCR.ToLanguageName;
   end
 end;
 
