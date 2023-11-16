@@ -60,7 +60,6 @@ inherited frameProject: TframeProject
     OnDblClick = aEditExecute
     OnEditing = vstTreeEditing
     OnPaintText = vstTreePaintText
-    OnGetImageIndex = vstTreeGetImageIndex
     OnGetImageIndexEx = vstTreeGetImageIndexEx
     OnNewText = vstTreeNewText
     OnNodeClick = vstTreeNodeClick

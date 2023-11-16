@@ -10,7 +10,7 @@ uses
   Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, System.Generics.Defaults, Vcl.Menus, Translate.Lang, System.Math,
   {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Common.Types, DaImages, System.RegularExpressions, Vcl.Themes,
   Frame.Source, System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Files.Utils,
-  Vcl.WinXPanels, Frame.Custom, Publishers, DaModule, Performer, Global.Resources, TesseractOCR.Consts, Project.Editor;
+  Vcl.WinXPanels, Frame.Custom, Publishers, DaModule, Performer, Global.Resources, TesseractOCR.Types, Project.Editor;
 {$ENDREGION}
 
 type
@@ -40,7 +40,6 @@ type
     procedure vstTreeCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure vstTreeCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
     procedure vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
-    procedure vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UItypes.TImageIndex);
     procedure vstTreeGetImageIndexEx(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex; var ImageList: TCustomImageList);
     procedure vstTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string); override;
     procedure vstTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: string);
@@ -153,7 +152,7 @@ procedure TframeProject.LoadFromXML;
             Data^.PathForAttachments := TGeneral.XMLParams.Attributes.GetAttributeValue('PathForAttachments', C_ATTACHMENTS_DIR);
             Data^.DeleteAttachments  := TGeneral.XMLParams.Attributes.GetAttributeValue('DeleteAttachments', False);
             Data^.UseOCR             := TGeneral.XMLParams.Attributes.GetAttributeValue('UseOCR', False);
-            Data^.LanguageOCR        := TGeneral.XMLParams.Attributes.GetAttributeValue('LanguageOCR', lgUnknow);
+            Data^.LanguageOCR        := TGeneral.XMLParams.Attributes.GetAttributeValue('LanguageOCR', lgDefault);
             if Data^.Current then
               TGeneral.CurrentProject := Data^;
           end;
@@ -409,9 +408,10 @@ begin
   Allowed := (Column in [COL_NAME, COL_INFO, COL_HASH, COL_PATH_ATTACH]);
 end;
 
-procedure TframeProject.vstTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UItypes.TImageIndex);
+procedure TframeProject.vstTreeGetImageIndexEx(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex; var ImageList: TCustomImageList);
 var
   Data: PProject;
+  Checked: Boolean;
 begin
   inherited;
   if (Column = COL_OPEN_DIALOG) and (Kind in [ikNormal, ikSelected]) then
@@ -423,16 +423,8 @@ begin
       ImageIndex := 83
     else
       ImageIndex := 21;
-  end;
-end;
-
-procedure TframeProject.vstTreeGetImageIndexEx(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex; var ImageList: TCustomImageList);
-var
-  Data: PProject;
-  Checked: Boolean;
-begin
-  inherited;
-  if (Column in [COL_USE_OCR, COL_DELETE_ATTACH]) and (Kind in [ikNormal, ikSelected]) then
+  end
+  else if (Column in [COL_USE_OCR, COL_DELETE_ATTACH]) and (Kind in [ikNormal, ikSelected]) then
   begin
     ImageList := DMImage.ilCustomCheckImages;
     Data := Node^.GetData;
