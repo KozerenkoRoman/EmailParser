@@ -7,13 +7,13 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, ArrayHelper,
   Common.Types, System.Generics.Defaults, System.Types, Vcl.ComCtrls,
-  {$IFDEF AXOLOT}
+  {$IFDEF EXTENDED_COMPONENTS}
     //https://www.axolot.com/xls.htm
     //XLSSpreadSheet and XLSReadWriteII components
     XLSReadWriteII5, Xc12Utils5;
   {$ELSE}
     Excel4Delphi, Excel4Delphi.Stream;
-  {$ENDIF AXOLOT}
+  {$ENDIF EXTENDED_COMPONENTS}
 {$ENDREGION}
 
 type
@@ -32,7 +32,7 @@ begin
   Result := GetXlsSheetList(aFileName, ';', '"');
 end;
 
-{$IFDEF AXOLOT}
+{$IFDEF EXTENDED_COMPONENTS}
 function GetXlsSheetList(const aFileName: TFileName; const aSeparatorChar, aQuoteChar: Char): TArrayRecord<TSheet>;
 var
   ParsedText : string;
@@ -123,6 +123,6 @@ begin
     FreeAndNil(WorkBook);
   end;
 end;
-{$ENDIF AXOLOT}
+{$ENDIF EXTENDED_COMPONENTS}
 
 end.

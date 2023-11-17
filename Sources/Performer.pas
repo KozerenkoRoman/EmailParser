@@ -8,10 +8,15 @@ uses
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
   System.IOUtils, Vcl.Forms, ArrayHelper, Common.Types, Translate.Lang, System.IniFiles, Global.Types,
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
-  clHtmlParser, clMailMessage, MailMessage.Helper, Utils, PdfiumCore, PdfiumCtrl, Files.Utils,
-  System.SyncObjs, UHTMLParse, Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule,
-  System.Math, System.ZLib, System.Zip, System.Masks, System.StrUtils, InformationDialog, Html.Lib,
-  Vcl.Graphics, UnRAR.Helper, System.Hash, AhoCorasick, Vcl.ComCtrls, ExcelReader.Helper;
+  clHtmlParser, clMailMessage, MailMessage.Helper, Utils, Files.Utils, System.SyncObjs, UHTMLParse,
+  Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule, Global.Utils, System.Math, System.ZLib,
+  System.Zip, System.Masks, System.StrUtils, InformationDialog, Html.Lib, Vcl.Graphics, UnRAR.Helper,
+  System.Hash, AhoCorasick, Vcl.ComCtrls, ExcelReader.Helper, Vcl.Imaging.jpeg,
+  {$IFDEF EXTENDED_COMPONENTS}
+    TesseractOCR, gtPDFClasses, gtExProPDFDoc, gtCstPDFDoc
+  {$ELSE}
+    PdfiumCore
+  {$ENDIF EXTENDED_COMPONENTS};
 {$ENDREGION}
 
 type
@@ -28,6 +33,9 @@ type
     FPathList         : TParamPathArray;
     FSorterPathList   : TSorterPathArray;
     FUserDefinedDir   : string;
+{$IFDEF EXTENDED_COMPONENTS}
+    FTesseract : TTesseractOCR;
+{$ENDIF EXTENDED_COMPONENTS}
     function GetAttchmentPath(const aFileName: TFileName): string;
     function GetEXIFInfo(const aFileName: TFileName): string;
     function GetMatchCollection(const aText: string; const aPatternData: PPatternData): TStringArray;
@@ -78,6 +86,10 @@ end;
 destructor TPerformer.Destroy;
 begin
   FreeAndNil(FCriticalSection);
+{$IFDEF EXTENDED_COMPONENTS}
+  if Assigned(FTesseract) then
+    FreeAndNil(FTesseract);
+{$ENDIF EXTENDED_COMPONENTS}
   inherited;
 end;
 
@@ -177,6 +189,19 @@ begin
   FIsBreak     := False;
   FileList     := [];
   FFromDBCount := 0;
+{$IFDEF EXTENDED_COMPONENTS}
+  if TGeneral.CurrentProject.UseOCR and not TGeneral.CurrentProject.LanguageOCR.ToString.IsEmpty then
+  begin
+    if not Assigned(FTesseract) then
+      FTesseract := TTesseractOCR.Create(nil);
+    if Assigned(FTesseract) then
+    begin
+      FTesseract.Language := TGeneral.CurrentProject.LanguageOCR;
+      FTesseract.Active := True;
+    end;
+  end;
+{$ENDIF EXTENDED_COMPONENTS}
+
   try
     for var Dir in FPathList do
       if Dir.WithSubdir then
@@ -491,9 +516,7 @@ var
   Hash        : string;
   MailMessage : TclMailMessage;
   Tasks       : array of ITask;
-//  NewName     : string;
 begin
-//  NewName := TFileUtils.GetCorrectFileName('', aFileName);
   Hash := TFileUtils.GetHash(aFileName);
   if not TGeneral.EmailList.ContainsKey(Hash) then
   begin
@@ -536,7 +559,7 @@ begin
           LogWriter.Write(ddError, Self, 'ParseFile', E.Message + sLineBreak + Data^.FileName);
       end;
 
-      SetLength(Tasks, 2);
+      SetLength(Tasks, 1);
       Tasks[0] := TTask.Create(
         procedure()
         begin
@@ -553,13 +576,7 @@ begin
             end;
         end).Start;
 
-      Tasks[1] := TTask.Create(
-        procedure()
-        begin
-          TThread.NameThreadForDebugging('TPerformer.DoParseAttachmentFiles');
-          DoParseAttachmentFiles(Data);
-        end).Start;
-
+      DoParseAttachmentFiles(Data);
       TTask.WaitForAll(Tasks);
 {$IFDEF DETAILED_LOG}
       LogWriter.Write(ddText, Self, 'ParseFile', 'Email file name - ' + Data^.FileName);
@@ -683,7 +700,6 @@ var
   end;
 
 begin
-//https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
 {$IFDEF DETAILED_LOG}
   LogWriter.Write(ddEnterMethod, Self, 'DoParseAttachmentFiles');
 {$ENDIF DETAILED_LOG}
@@ -694,6 +710,7 @@ begin
       try
         Attachment.Matches.Count := TGeneral.PatternList.Count;
         Ext := TPath.GetExtension(Attachment.FileName).ToLower;
+        //https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
         case TFileUtils.GetSignature(Attachment.FileName) of
           fsPDF:
             begin
@@ -911,31 +928,84 @@ begin
   end;
 end;
 
+{$IFDEF EXTENDED_COMPONENTS}
 function TPerformer.GetTextFromPDFFile(const aFileName: TFileName): string;
 var
-  PDFCtrl: TPdfControl;
+  Document : TgtExProPDFDocument;
+  PageList : TgtPDFPageElementList;
+  PageText : string;
 begin
   Result := '';
   FCriticalSection.Enter;
-  PDFCtrl := TPdfControl.Create(nil);
+  Document := TgtExProPDFDocument.Create(nil);
   try
-    PDFCtrl.Visible := False;
     try
-      PDFCtrl.LoadFromFile(aFileName);
-      for var i := 0 to PDFCtrl.Document.PageCount - 1 do
+      Document.LoadFromFile(aFileName);
+      for var i := 1 to Document.PageCount do
+        try
+          PageText := '';
+          try
+            PageList := Document.GetPageElements(i, [etImage], muPixels);
+          except
+            on Err: Exception do
+              LogWriter.Write(ddError, Self, 'GetTextFromPDFFile', Err.Message + sLineBreak + 'PageList not assigned');
+          end;
+          if Assigned(PageList) then
+            for var j := 0 to PageList.Count - 1 do
+              if (PageList.Items[j] is TgtPDFImageElement) and TgtPDFImageElement(PageList.Items[j]).isJPEG then
+              begin
+                TgtPDFImageElement(PageList.Items[j]).Image.Seek(0, TSeekOrigin.soBeginning);
+                FTesseract.Picture.LoadFromStream(TgtPDFImageElement(PageList.Items[j]).Image);
+                LogWriter.Write(ddText, Self, 'Begin OCR recognize', Format('Page %d, image %d, file name - %s', [i, j, aFileName]));
+                PageText := PageText + FTesseract.Text.Trim;
+                LogWriter.Write(ddText, Self, 'End OCR recognize', Format('Page %d, image %d, file name - %s', [i, j, aFileName]));
+              end
+              else if (PageList.Items[j] is TgtPDFTextElement) then
+                PageText := PageText + TgtPDFTextElement(PageList.Items[j]).Text.Trim;
+              if not PageText.IsEmpty then
+                Result := Result + PageText + sLineBreak;
+        finally
+          if not Assigned(PageList) then
+            FreeAndNil(PageList);
+        end;
+    except
+      on E: Exception do
+        LogWriter.Write(ddError, Self, 'GetTextFromPDFFile', 'File name - ' + aFileName);
+    end;
+  finally
+    FreeAndNil(Document);
+    FCriticalSection.Leave;
+  end;
+end;
+
+{$ELSE}
+function TPerformer.GetTextFromPDFFile(const aFileName: TFileName): string;
+var
+  Document: TPdfDocument;
+  PageText: string;
+begin
+  Result := '';
+  FCriticalSection.Enter;
+  Document := TPdfDocument.Create;
+  try
+    try
+      Document.LoadFromFile(aFileName);
+      for var i := 0 to Document.PageCount - 1 do
       begin
-        PDFCtrl.PageIndex := i;
-        Result := Result + PDFCtrl.Document.Pages[i].ReadText(0, 10000);
+        PageText := Document.Pages[i].ReadText(0, 10000);
+        if not PageText.IsEmpty then
+          Result := Result + PageText + sLineBreak
       end;
     except
       on E: Exception do
         LogWriter.Write(ddError, Self, 'GetTextFromPDFFile', 'File name - ' + aFileName);
     end;
   finally
-    FreeAndNil(PDFCtrl);
+    FreeAndNil(Document);
     FCriticalSection.Leave;
   end;
 end;
+{$ENDIF EXTENDED_COMPONENTS}
 
 function TPerformer.GetEXIFInfo(const aFileName: TFileName): string;
 var

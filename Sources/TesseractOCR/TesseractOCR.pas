@@ -295,7 +295,7 @@ type
   end;
 
 var
-  LibraryName: string = {$IFDEF CPUX64}'ocr64.dll' {$ELSE} 'ocr.Dll'{$ENDIF CPUX64};
+  LibraryName: string = {$IFDEF CPUX64}'ocr64.dll' {$ELSE} 'ocr.dll'{$ENDIF CPUX64};
 
 function Loaded: Boolean;
 procedure LoadLibrary;
