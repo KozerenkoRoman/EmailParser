@@ -127,6 +127,7 @@ begin
   Randomize;
   TLang.Lang.Language      := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
   pnlExtendedFilter.Height := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'ExtendedFilterHeight', 250);
+  gbPathes.Height          := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'PathesHeight', 270);
   StyleName                := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Style', TStyleManager.cSystemStyleName);
 
   TGeneral.Initialize;
@@ -167,6 +168,7 @@ begin
   DaMod.Deinitialize;
   LogWriter.Finish;
   TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'ExtendedFilterHeight', pnlExtendedFilter.Height);
+  TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'PathesHeight', gbPathes.Height);
   TGeneral.XMLParams.Save;
   inherited;
 end;

@@ -1,28 +1,37 @@
 ﻿[Closed Files]
-File_0=TSourceModule,'D:\Components\VirtualTreeView\Source\VirtualTrees.pas',0,1,13842,33,13860,0,0,,
-File_1=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\win\Winapi.Windows.pas',0,1,40661,1,40679,0,0,,
-File_2=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Themes.pas',0,1,2770,45,2788,0,0,,
-File_3=TSourceModule,'D:\Work\EmailParser\Sources\DataModules\DaImages.pas',0,1,1,1,1,0,0,{{5,0},{9,11},{'Region uses'}},
-File_4=TSourceModule,'D:\Work\EmailParser\Sources\MainForm.pas',0,1,118,1,135,0,0,{{5,0},{16,11},{'Region uses'}},
+File_0=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Classes.pas',0,1,9554,1,9560,0,0,,
+File_1=TSourceModule,'D:\Components\VirtualTreeView\Source\VirtualTrees.pas',0,1,13842,33,13860,0,0,,
+File_2=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\win\Winapi.Windows.pas',0,1,40661,1,40679,0,0,,
+File_3=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Themes.pas',0,1,2770,45,2788,0,0,,
+File_4=TSourceModule,'D:\Work\EmailParser\Sources\MainForm.pas',0,1,118,1,135,0,0,{{5,0}
 File_5=TSourceModule,'D:\Work\EmailParser\Sources\Project.Editor.pas',0,1,120,1,171,0,0,,{1
 File_6=TSourceModule,'D:\Work\EmailParser\Sources\TesseractOCR\TesseractOCR.Consts.pas',0,1,24,27,30,0,0,,
 File_7=TSourceModule,'D:\Work\EmailParser\Sources\Translate\Translate.Resources.pas',0,1,40,6,46,0,0,,
-File_8=TSourceModule,'D:\Work\EmailParser\Sources\Global.Types.pas',0,1,1,50,33,0,0,,
-File_9=TSourceModule,'D:\Work\EmailParser\Sources\Common\Common.Types.pas',0,1,1,16,11,0,0,{{5,0}
-File_10=TSourceModule,'D:\Work\EmailParser\Sources\RegExp.Import.pas',0,1,40,1,54,0,0,{{5,0}
-File_11=TSourceModule,'D:\Work\EmailParser\Sources\DataModules\DaModule.pas',0,1,95,1,112,0,0,{{5,0}
-File_12=TSourceModule,'D:\Work\EmailParser\Sources\Common\Column.Types.pas',0,1,1,1,1,0,0,{{5,0}
-File_13=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Forms.pas',0,1,177,19,211,0,0,{{1990,4}
-File_14=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.ExtCtrls.pas',0,1,280,32,297,0,0,,
+File_8=TSourceModule,'D:\Work\EmailParser\Sources\Common\Common.Types.pas',0,1,1,16,11,0,0,{{5,0}
+File_9=TSourceModule,'D:\Work\EmailParser\Sources\RegExp.Import.pas',0,1,40,1,54,0,0,{{5,0}
+File_10=TSourceModule,'D:\Work\EmailParser\Sources\DataModules\DaModule.pas',0,1,95,1,112,0,0,{{5,0}
+File_11=TSourceModule,'D:\Work\EmailParser\Sources\Common\Column.Types.pas',0,1,1,1,1,0,0,{{5,0}
+File_12=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Forms.pas',0,1,177,19,211,0,0,{{1990,4}
+File_13=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.ExtCtrls.pas',0,1,280,32,297,0,0,,
 
 [Modules]
-Module0=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
-Module1=D:\Work\EmailParser\Sources\Frames\Frame.Source.pas
-Module2=D:\Work\EmailParser\Sources\DataModules\DaImages.pas
-Module3=D:\Work\EmailParser\EmailParser.dproj
-Module4=D:\Work\EmailParser\Sources\Performer.pas
-Count=5
+Module0=D:\Work\EmailParser\Sources\DataModules\DaImages.pas
+Module1=D:\Work\EmailParser\Sources\TesseractOCR\TesseractOCR.Types.pas
+Module2=D:\Work\EmailParser\Sources\Global.Types.pas
+Module3=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
+Module4=D:\Work\EmailParser\Sources\Frames\Frame.Source.pas
+Module5=D:\Work\EmailParser\Sources\Performer.pas
+Count=6
 EditWindowCount=1
+
+[D:\Work\EmailParser\Sources\DataModules\DaImages.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\TesseractOCR\TesseractOCR.Types.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\Global.Types.pas]
+ModuleType=TSourceModule
 
 [D:\Work\EmailParser\Sources\Frames\Frame.Project.pas]
 ModuleType=TSourceModule
@@ -30,23 +39,18 @@ ModuleType=TSourceModule
 [D:\Work\EmailParser\Sources\Frames\Frame.Source.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\Sources\DataModules\DaImages.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\EmailParser.dproj]
-ModuleType=TBaseProject
-
 [D:\Work\EmailParser\Sources\Performer.pas]
 ModuleType=TSourceModule
 
 [EditWindow0]
-ViewCount=5
-CurrentEditView=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
+ViewCount=6
+CurrentEditView=D:\Work\EmailParser\Sources\DataModules\DaImages.pas
 View0=0
 View1=1
 View2=2
 View3=3
 View4=4
+View5=5
 PercentageSizes=1
 Create=1
 Visible=1
@@ -90,15 +94,37 @@ EditViewName=D:\Work\EmailParser\Sources\Performer.pas
 [View1]
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
-CursorX=1
-CursorY=341
-TopLine=43
+CursorX=38
+CursorY=320
+TopLine=298
 LeftCol=1
-Elisions=
-Bookmarks={1,359,1}{2,99,9}{3,447,23}
+Elisions={{5,0},{14,11},{'Region uses'}}
+Bookmarks=
 EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
 
 [View2]
+CustomEditViewType=TEditView
+Module=D:\Work\EmailParser\Sources\Global.Types.pas
+CursorX=20
+CursorY=10
+TopLine=1
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=D:\Work\EmailParser\Sources\Global.Types.pas
+
+[View3]
+CustomEditViewType=TEditView
+Module=D:\Work\EmailParser\Sources\TesseractOCR\TesseractOCR.Types.pas
+CursorX=32
+CursorY=17
+TopLine=1
+LeftCol=1
+Elisions={{13,0},{16,11},{'Region uses'}}
+Bookmarks=
+EditViewName=D:\Work\EmailParser\Sources\TesseractOCR\TesseractOCR.Types.pas
+
+[View4]
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\Frames\Frame.Source.pas
 CursorX=37
@@ -109,7 +135,7 @@ Elisions={{5,0},{13,11},{'Region uses'}}
 Bookmarks=
 EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Source.pas
 
-[View3]
+[View5]
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\DataModules\DaImages.pas
 CursorX=10
@@ -119,17 +145,6 @@ LeftCol=1
 Elisions={{5,0},{9,11},{'Region uses'}}
 Bookmarks=
 EditViewName=D:\Work\EmailParser\Sources\DataModules\DaImages.pas
-
-[View4]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\EmailParser.dpr
-CursorX=1
-CursorY=89
-TopLine=72
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=D:\Work\EmailParser\EmailParser.dpr
 
 [Watches]
 Count=1
@@ -157,10 +172,8 @@ Dockable=1
 StayOnTop=0
 
 [Breakpoints]
-Count=3
+Count=1
 Breakpoint0='c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Threading.pas',981,'',0,1,'',1,0,0,'',1,'','','',0,''
-Breakpoint1='c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Classes.pas',9560,'',0,1,'',1,0,0,'',1,'','','',0,''
-Breakpoint2='c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Classes.pas',9571,'',0,1,'',1,0,0,'',1,'','','',0,''
 
 [EmbarcaderoWin32Debugger_AddressBreakpoints]
 Count=0
@@ -259,16 +272,11 @@ MaxLeft=-1
 MaxTop=-1
 ClientWidth=1896
 ClientHeight=4875
-TBDockHeight=7010
+TBDockHeight=8731
 LRDockWidth=1896
 Dockable=1
 StayOnTop=0
 SplitPos=149
-
-[PropInspDesignerSelection]
-ArrangeBy=Name
-SelectedItem=AccessibleName,OnGetImageIndex
-ExpandedItems=Anchors=0,BevelEdges=0,CustomCheckImages=0,Images=0,LiveBindings=0,ClipboardFormats=0,Colors=0,Constraints=0,DragOperations=0,Font=0
 
 [frmDesignPreview]
 PercentageSizes=1
@@ -763,7 +771,7 @@ MaxLeft=-1
 MaxTop=-1
 ClientWidth=1896
 ClientHeight=1817
-TBDockHeight=7010
+TBDockHeight=8731
 LRDockWidth=1896
 Dockable=1
 StayOnTop=0

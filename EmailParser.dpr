@@ -63,11 +63,7 @@ uses
   SplashScreen in 'Sources\SplashScreen.pas' {frmSplashScreen},
   SplashScreen.Resources in 'Sources\SplashScreen.Resources.pas',
   TesseractOCR in 'Sources\TesseractOCR\TesseractOCR.pas',
-  TesseractOCR.CAPI in 'Sources\TesseractOCR\TesseractOCR.CAPI.pas',
-  TesseractOCR.Consts in 'Sources\TesseractOCR\TesseractOCR.Consts.pas',
-  TesseractOCR.Leptonica in 'Sources\TesseractOCR\TesseractOCR.Leptonica.pas',
-  TesseractOCR.PageLayout in 'Sources\TesseractOCR\TesseractOCR.PageLayout.pas',
-  TesseractOCR.Utils in 'Sources\TesseractOCR\TesseractOCR.Utils.pas',
+  TesseractOCR.Types in 'Sources\TesseractOCR\TesseractOCR.Types.pas',
   Thread.Emails in 'Sources\DataModules\Thread.Emails.pas',
   Translate.Lang in 'Sources\Translate\Translate.Lang.pas',
   Translate.Resources in 'Sources\Translate\Translate.Resources.pas',
@@ -98,9 +94,9 @@ begin
       TfrmSplashScreen.ShowSplashScreen;
 {$ENDIF}
       Application.CreateForm(TDMImage, DMImage);
-      Application.CreateForm(TDaMod, DaMod);
-      Application.CreateForm(TfrmMain, frmMain);
-      frmMain.Initialize;
+  Application.CreateForm(TDaMod, DaMod);
+  Application.CreateForm(TfrmMain, frmMain);
+  frmMain.Initialize;
     finally
       TfrmSplashScreen.HideSplashScreen;
     end;
