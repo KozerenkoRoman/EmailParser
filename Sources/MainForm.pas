@@ -23,7 +23,6 @@ type
     catMenuItems            : TCategoryButtons;
     crdBruteForce           : TCard;
     crdCommonParams         : TCard;
-    crdPathsToFindScripts   : TCard;
     crdProject              : TCard;
     crdRegExpParameters     : TCard;
     crdResultView           : TCard;
@@ -37,12 +36,11 @@ type
     frameResultView         : TframeResultView;
     frameSettings           : TframeSettings;
     frameSorter             : TframeSorter;
-    gbPathes                : TGroupBox;
-    gbSorter                : TGroupBox;
     imgMenu                 : TImage;
     lblProject              : TLabel;
     lblTitle                : TLabel;
     NotificationCenter      : TNotificationCenter;
+    pcPathsAndSorter        : TPageControl;
     pnlCard                 : TCardPanel;
     pnlExtendedFilter       : TGroupBox;
     pnlLeft                 : TPanel;
@@ -50,10 +48,12 @@ type
     pnlTop                  : TPanel;
     sbMain                  : TStatusBar;
     splExtendedFilter       : TSplitter;
-    splPath                 : TSplitter;
+    splProject              : TSplitter;
     splView                 : TSplitView;
     srchBox                 : TButtonedEdit;
     Taskbar                 : TTaskbar;
+    tsPathes                : TTabSheet;
+    tsSorter                : TTabSheet;
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
     procedure aToggleSplitPanelExecute(Sender: TObject);
     procedure catMenuItemsSelectedItemChange(Sender: TObject; const Button: TButtonItem);
@@ -127,7 +127,7 @@ begin
   Randomize;
   TLang.Lang.Language      := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
   pnlExtendedFilter.Height := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'ExtendedFilterHeight', 250);
-  gbPathes.Height          := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'PathesHeight', 270);
+  pcPathsAndSorter.Height  := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'PathesHeight', 270);
   StyleName                := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Style', TStyleManager.cSystemStyleName);
 
   TGeneral.Initialize;
@@ -168,7 +168,7 @@ begin
   DaMod.Deinitialize;
   LogWriter.Finish;
   TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'ExtendedFilterHeight', pnlExtendedFilter.Height);
-  TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'PathesHeight', gbPathes.Height);
+  TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'PathesHeight', pcPathsAndSorter.Height);
   TGeneral.XMLParams.Save;
   inherited;
 end;
@@ -179,23 +179,21 @@ begin
   catMenuItems.Categories[0].Caption := TLang.Lang.Translate('Main');
   catMenuItems.Categories[1].Caption := TLang.Lang.Translate('Utilities');
   catMenuItems.Categories[0].Items[0].Caption := TLang.Lang.Translate('Project');
-  catMenuItems.Categories[0].Items[1].Caption := TLang.Lang.Translate('PathsToFindSaveFiles');
-  catMenuItems.Categories[0].Items[2].Caption := TLang.Lang.Translate('EditRegExpParameters');
-  catMenuItems.Categories[0].Items[3].Caption := TLang.Lang.Translate('EditCommonParameters');
-  catMenuItems.Categories[0].Items[4].Caption := TLang.Lang.Translate('Search');
+  catMenuItems.Categories[0].Items[1].Caption := TLang.Lang.Translate('EditRegExpParameters');
+  catMenuItems.Categories[0].Items[2].Caption := TLang.Lang.Translate('EditCommonParameters');
+  catMenuItems.Categories[0].Items[3].Caption := TLang.Lang.Translate('Search');
   catMenuItems.Categories[1].Items[0].Caption := TLang.Lang.Translate('SearchDuplicateFiles');
   catMenuItems.Categories[1].Items[1].Caption := TLang.Lang.Translate('BruteForce');
   catMenuItems.Categories[1].Items[2].Caption := TLang.Lang.Translate('OpenLogFile');
 
   crdBruteForce.Caption           := TLang.Lang.Translate('BruteForce');
   crdCommonParams.Caption         := TLang.Lang.Translate('EditCommonParameters');
-  crdPathsToFindScripts.Caption   := TLang.Lang.Translate('PathsToFindFiles');
   crdProject.Caption              := TLang.Lang.Translate('Project');
   crdRegExpParameters.Caption     := TLang.Lang.Translate('EditRegExpParameters');
   crdResultView.Caption           := TLang.Lang.Translate('Search');
   crdSearchDuplicateFiles.Caption := TLang.Lang.Translate('SearchDuplicateFiles');
-  gbPathes.Caption                := TLang.Lang.Translate('PathsToFindFiles');
-  gbSorter.Caption                := TLang.Lang.Translate('PathsToSaveFiles');
+  tsPathes.Caption                := TLang.Lang.Translate('PathsToFindFiles');
+  tsSorter.Caption                := TLang.Lang.Translate('PathsToSaveFiles');
   pnlExtendedFilter.Caption       := TLang.Lang.Translate('ExtendedFilter');
   lblTitle.Caption                := pnlCard.ActiveCard.Caption;
   UpdateProject;
@@ -236,10 +234,9 @@ begin
   if (Button.Category.Id = 0) then
     case Button.Id of
       0: pnlCard.ActiveCard := crdProject;
-      1: pnlCard.ActiveCard := crdPathsToFindScripts;
-      2: pnlCard.ActiveCard := crdRegExpParameters;
-      3: pnlCard.ActiveCard := crdCommonParams;
-      4: pnlCard.ActiveCard := crdResultView;
+      1: pnlCard.ActiveCard := crdRegExpParameters;
+      2: pnlCard.ActiveCard := crdCommonParams;
+      3: pnlCard.ActiveCard := crdResultView;
     end
   else if (Button.Category.Id = 1) then
     case Button.Id of

@@ -49,9 +49,9 @@ uses
   MailMessage.Helper in 'Sources\CleverInternetSuite\MailMessage.Helper.pas',
   MainForm in 'Sources\MainForm.pas' {frmMain},
   MessageDialog in 'Sources\Common\MessageDialog.pas',
-  PdfiumCore in 'Sources\PDFiumLib\PdfiumCore.pas',
-  PdfiumCtrl in 'Sources\PDFiumLib\PdfiumCtrl.pas',
-  PdfiumLib in 'Sources\PDFiumLib\PdfiumLib.pas',
+  PdfiumCore in 'Sources\PDF\PDFiumLib\PdfiumCore.pas',
+  PdfiumCtrl in 'Sources\PDF\PDFiumLib\PdfiumCtrl.pas',
+  PdfiumLib in 'Sources\PDF\PDFiumLib\PdfiumLib.pas',
   Performer in 'Sources\Performer.pas',
   Project.Editor in 'Sources\Project.Editor.pas' {frmProjectEditor},
   Publishers in 'Sources\Publishers.pas',
@@ -94,9 +94,9 @@ begin
       TfrmSplashScreen.ShowSplashScreen;
 {$ENDIF}
       Application.CreateForm(TDMImage, DMImage);
-  Application.CreateForm(TDaMod, DaMod);
-  Application.CreateForm(TfrmMain, frmMain);
-  frmMain.Initialize;
+      Application.CreateForm(TDaMod, DaMod);
+      Application.CreateForm(TfrmMain, frmMain);
+      frmMain.Initialize;
     finally
       TfrmSplashScreen.HideSplashScreen;
     end;

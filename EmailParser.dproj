@@ -1,4 +1,4 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{5702A4AE-B366-42BC-A911-88F590CFAFC3}</ProjectGuid>
         <ProjectVersion>19.5</ProjectVersion>
@@ -75,10 +75,10 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=Email Parser;FileVersion=1.275.0.0;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=1.275.0.0;Comments=</VerInfo_Keys>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-        <VerInfo_MinorVer>262</VerInfo_MinorVer>
-        <DCC_UnitSearchPath>D:\Components\VirtualTreeView\Source;.\Sources\CleverInternetSuite;.\Sources\JCL;.\Sources\JCL\jedi;.\Sources\dExif;.\Sources\HTMLParse;.\Sources\Excel\XLSReadWriteII;.\Sources\Excel\Excel4Delphi;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <Custom_Styles>"Aqua Light Slate|VCLSTYLE|$(BDSCOMMONDIR)\Styles\AquaLightSlate.vsf";"Iceberg Classico|VCLSTYLE|$(BDSCOMMONDIR)\Styles\IcebergClassico.vsf";"Lavender Classico|VCLSTYLE|$(BDSCOMMONDIR)\Styles\LavenderClassico.vsf";Sky|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Sky.vsf;"Slate Classico|VCLSTYLE|$(BDSCOMMONDIR)\Styles\SlateClassico.vsf";Windows10|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10.vsf;"Windows10 Blue|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10Blue.vsf";"Windows10 SlateGray|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10SlateGray.vsf";"Amethyst Kamri|VCLSTYLE|$(BDSCOMMONDIR)\Styles\AmethystKamri.vsf";"Charcoal Dark Slate|VCLSTYLE|$(BDSCOMMONDIR)\Styles\CharcoalDarkSlate.vsf";"Cyan Night|VCLSTYLE|$(BDSCOMMONDIR)\Styles\CyanNight.vsf";"Emerald Light Slate|VCLSTYLE|$(BDSCOMMONDIR)\Styles\EmeraldLightSlate.vsf";Light|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Light.vsf;Luna|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Luna.vsf;"Ruby Graphite|VCLSTYLE|$(BDSCOMMONDIR)\Styles\RubyGraphite.vsf";Silver|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Silver.vsf;"Smokey Quartz Kamri|VCLSTYLE|$(BDSCOMMONDIR)\Styles\SmokeyQuartzKamri.vsf";"Turquoise Gray|VCLSTYLE|$(BDSCOMMONDIR)\Styles\TurquoiseGray.vsf";Glossy|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Glossy.vsf</Custom_Styles>
-        <DCC_Define>AXOLOT;$(DCC_Define)</DCC_Define>
+        <VerInfo_MinorVer>275</VerInfo_MinorVer>
+        <DCC_UnitSearchPath>D:\Components\VirtualTreeView\Source;.\Sources\CleverInternetSuite;.\Sources\JCL;.\Sources\JCL\jedi;.\Sources\dExif;.\Sources\HTMLParse;.\Sources\Excel\XLSReadWriteII;.\Sources\Excel\Excel4Delphi;.\Sources\PDF\Gnostice PDFtoolkit;.\Sources\PDF\PDFiumLib\;.\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\Model\;.\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\Utils\;.\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\Base\;.\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\Stream\;.\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\Stream\ZLIB;.\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\ExportDevice\;.\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\FontProcessor\;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <Custom_Styles>&quot;Aqua Light Slate|VCLSTYLE|$(BDSCOMMONDIR)\Styles\AquaLightSlate.vsf&quot;;&quot;Iceberg Classico|VCLSTYLE|$(BDSCOMMONDIR)\Styles\IcebergClassico.vsf&quot;;&quot;Lavender Classico|VCLSTYLE|$(BDSCOMMONDIR)\Styles\LavenderClassico.vsf&quot;;Sky|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Sky.vsf;&quot;Slate Classico|VCLSTYLE|$(BDSCOMMONDIR)\Styles\SlateClassico.vsf&quot;;Windows10|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10.vsf;&quot;Windows10 Blue|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10Blue.vsf&quot;;&quot;Windows10 SlateGray|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10SlateGray.vsf&quot;;&quot;Amethyst Kamri|VCLSTYLE|$(BDSCOMMONDIR)\Styles\AmethystKamri.vsf&quot;;&quot;Charcoal Dark Slate|VCLSTYLE|$(BDSCOMMONDIR)\Styles\CharcoalDarkSlate.vsf&quot;;&quot;Cyan Night|VCLSTYLE|$(BDSCOMMONDIR)\Styles\CyanNight.vsf&quot;;&quot;Emerald Light Slate|VCLSTYLE|$(BDSCOMMONDIR)\Styles\EmeraldLightSlate.vsf&quot;;Light|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Light.vsf;Luna|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Luna.vsf;&quot;Ruby Graphite|VCLSTYLE|$(BDSCOMMONDIR)\Styles\RubyGraphite.vsf&quot;;Silver|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Silver.vsf;&quot;Smokey Quartz Kamri|VCLSTYLE|$(BDSCOMMONDIR)\Styles\SmokeyQuartzKamri.vsf&quot;;&quot;Turquoise Gray|VCLSTYLE|$(BDSCOMMONDIR)\Styles\TurquoiseGray.vsf&quot;;Glossy|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Glossy.vsf</Custom_Styles>
+        <DCC_Define>EXTENDED_COMPONENTS;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_UsePackage>DBXSqliteDriver;RESTComponents;fmxase;DBXDb2Driver;DBXInterBaseDriver;vclactnband;vclFireDAC;bindcompvclsmp;emsclientfiredac;tethering;svnui;DataSnapFireDAC;FireDACADSDriver;DBXMSSQLDriver;DatasnapConnectorsFreePascal;FireDACMSSQLDriver;vcltouch;vcldb;bindcompfmx;svn;DBXOracleDriver;inetdb;FmxTeeUI;emsedge;fmx;FireDACIBDriver;fmxdae;vcledge;vclib;FireDACDBXDriver;dbexpress;IndyCore;vclx;dsnap;emsclient;DataSnapCommon;FireDACCommon;RESTBackendComponents;DataSnapConnectors;VCLRESTComponents;soapserver;vclie;bindengine;DBXMySQLDriver;CloudService;FireDACOracleDriver;FireDACMySQLDriver;DBXFirebirdDriver;FireDACCommonODBC;FireDACCommonDriver;DataSnapClient;inet;IndyIPCommon;bindcompdbx;vcl;IndyIPServer;DBXSybaseASEDriver;IndySystem;FireDACDb2Driver;bindcompvclwinx;dsnapcon;VirtualTreesR;FireDACMSAccDriver;fmxFireDAC;FireDACInfxDriver;vclimg;TeeDB;FireDAC;emshosting;FireDACSqliteDriver;FireDACPgDriver;ibmonitor;FireDACASADriver;DBXOdbcDriver;FireDACTDataDriver;FMXTee;soaprtl;DbxCommonDriver;ibxpress;Tee;DataSnapServer;xmlrtl;soapmidas;DataSnapNativeClient;fmxobj;vclwinx;FireDACDSDriver;rtl;emsserverresource;DbxClientDriver;ibxbindings;DBXSybaseASADriver;CustomIPTransport;vcldsnap;bindcomp;appanalytics;DBXInformixDriver;IndyIPClient;bindcompvcl;TeeUI;dmvcframeworkRT;dbxcds;VclSmp;adortl;FireDACODBCDriver;DataSnapIndy10ServerTransport;dmvcframeworkDT;dsnapxml;DataSnapProviderClient;dbrtl;IndyProtocols;inetdbxpress;FireDACMongoDBDriver;DataSnapServerMidas;$(DCC_UsePackage)</DCC_UsePackage>
@@ -124,11 +124,11 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.275.0.0;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=1.275.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.275.0.16;InternalName=Email Parser;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Email Parser;ProductVersion=1.275.0.0;Comments=</VerInfo_Keys>
         <Icon_MainIcon>EmailParser_Icon.ico</Icon_MainIcon>
         <VerInfo_Debug>true</VerInfo_Debug>
-        <VerInfo_MinorVer>262</VerInfo_MinorVer>
-        <VerInfo_Build>13</VerInfo_Build>
+        <VerInfo_MinorVer>275</VerInfo_MinorVer>
+        <VerInfo_Build>16</VerInfo_Build>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -158,9 +158,7 @@
         <DCCReference Include="Sources\Common\AhoCorasick.pas">
             <Form>$R *.res</Form>
         </DCCReference>
-        <DCCReference Include="Sources\Common\ArrayHelper.pas">
-            <Form>$R</Form>
-        </DCCReference>
+        <DCCReference Include="Sources\Common\ArrayHelper.pas"/>
         <DCCReference Include="Sources\Column.Settings.pas">
             <Form>frmColumnSettings</Form>
         </DCCReference>
@@ -256,9 +254,9 @@
             <Form>frmMain</Form>
         </DCCReference>
         <DCCReference Include="Sources\Common\MessageDialog.pas"/>
-        <DCCReference Include="Sources\PDFiumLib\PdfiumCore.pas"/>
-        <DCCReference Include="Sources\PDFiumLib\PdfiumCtrl.pas"/>
-        <DCCReference Include="Sources\PDFiumLib\PdfiumLib.pas"/>
+        <DCCReference Include="Sources\PDF\PDFiumLib\PdfiumCore.pas"/>
+        <DCCReference Include="Sources\PDF\PDFiumLib\PdfiumCtrl.pas"/>
+        <DCCReference Include="Sources\PDF\PDFiumLib\PdfiumLib.pas"/>
         <DCCReference Include="Sources\Performer.pas"/>
         <DCCReference Include="Sources\Project.Editor.pas">
             <Form>frmProjectEditor</Form>
@@ -283,9 +281,7 @@
         <DCCReference Include="Sources\Translate\Translate.Lang.pas"/>
         <DCCReference Include="Sources\Translate\Translate.Resources.pas"/>
         <DCCReference Include="Sources\HTMLParse\UHtmlParse.pas"/>
-        <DCCReference Include="Sources\UnRAR\UnRAR.pas">
-            <Form>$R *.res</Form>
-        </DCCReference>
+        <DCCReference Include="Sources\UnRAR\UnRAR.pas"/>
         <DCCReference Include="Sources\UnRAR\UnRAR.Helper.pas"/>
         <DCCReference Include="Sources\Common\Utils.pas"/>
         <DCCReference Include="Sources\Common\Utils.Exceptions.pas"/>
@@ -322,16 +318,45 @@
                     <Language Name="ProjectLang">$00000409</Language>
                 </Language>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
                 <Resource_DLL_Projects>
                     <Resource_DLL_Projects Name="Item0">Іврит (Ізраїль)*$0000040D*HEB*HEB</Resource_DLL_Projects>
+                    <Resource_DLL_Projects Name="Item1">Українська (Україна)*$00000422*UKR*UKR</Resource_DLL_Projects>
                 </Resource_DLL_Projects>
                 <RDP_Source_Files>
                     <RDP_Source_Files Name="Item0">Settings.dfm</RDP_Source_Files>
                     <RDP_Source_Files Name="Item1">DataModules\DaModule.dfm</RDP_Source_Files>
                     <RDP_Source_Files Name="Item2">Win32\Debug\TableAtm.drc</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item3">Resources\Logo.rc</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item4">Sources\Column.Settings.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item5">Sources\CommonForms.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item6">Sources\DataModules\DaImages.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item7">Sources\DataModules\DaModule.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item8">Sources\Common\EXIF.Dialog.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item9">Sources\Frames\Frame.AllAttachments.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item10">Sources\Frames\Frame.Attachments.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item11">Sources\Frames\Frame.BruteForce.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item12">Sources\Frames\Frame.Custom.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item13">Sources\Frames\Frame.DuplicateFiles.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item14">Sources\Frames\Frame.Emails.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item15">Sources\Frames\Frame.MatchesFilter.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item16">Sources\Frames\Frame.Pathes.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item17">Sources\Frames\Frame.Project.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item18">Sources\Frames\Frame.RegExp.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item19">Sources\Frames\Frame.ResultView.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item20">Sources\Frames\Frame.Settings.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item21">Sources\Frames\Frame.Sorter.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item22">Sources\Frames\Frame.Source.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item23">Sources\Common\InformationDialog.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item24">Sources\MainForm.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item25">Sources\Project.Editor.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item26">Sources\RegExp.Editor.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item27">Sources\RegExp.Import.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item28">Sources\SplashScreen.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item29">Sources\Common\XLSX.Dialog.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item30">bin\EmailParser.drc</RDP_Source_Files>
                 </RDP_Source_Files>
             </Delphi.Personality>
             <Deployment Version="4">
