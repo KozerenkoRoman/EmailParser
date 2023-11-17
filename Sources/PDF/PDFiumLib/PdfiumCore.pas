@@ -315,84 +315,81 @@ type
 
   TPdfPage = class(TObject)
   private
-    FDocument: TPdfDocument;
-    FPage: FPDF_PAGE;
-    FWidth: Single;
-    FHeight: Single;
-    FTransparency: Boolean;
-    FRotation: TPdfPageRotation;
     FAnnotations: TPdfAnnotationList;
-    FTextHandle: FPDF_TEXTPAGE;
-    FSearchHandle: FPDF_SCHHANDLE;
+    FDocument: TPdfDocument;
+    FHeight: Single;
     FLinkHandle: FPDF_PAGELINK;
+    FPage: FPDF_PAGE;
+    FRotation: TPdfPageRotation;
+    FSearchHandle: FPDF_SCHHANDLE;
+    FTextHandle: FPDF_TEXTPAGE;
+    FTransparency: Boolean;
+    FWidth: Single;
+    class function GetDrawFlags(const Options: TPdfPageRenderOptions): Integer; static;
     constructor Create(ADocument: TPdfDocument; APage: FPDF_PAGE);
-    procedure UpdateMetrics;
-    procedure Open;
-    procedure SetRotation(const Value: TPdfPageRotation);
     function BeginText: Boolean;
     function BeginWebLinks: Boolean;
-    class function GetDrawFlags(const Options: TPdfPageRenderOptions): Integer; static;
-    procedure AfterOpen;
-    function IsValidForm: Boolean;
-    function GetMouseModifier(const Shift: TShiftState): Integer;
-    function GetKeyModifier(KeyData: LPARAM): Integer;
-    function GetHandle: FPDF_PAGE;
-    function GetTextHandle: FPDF_TEXTPAGE;
     function GetFormFields: TPdfFormFieldList;
+    function GetHandle: FPDF_PAGE;
+    function GetKeyModifier(KeyData: LPARAM): Integer;
+    function GetMouseModifier(const Shift: TShiftState): Integer;
+    function GetTextHandle: FPDF_TEXTPAGE;
+    function IsValidForm: Boolean;
+    procedure AfterOpen;
+    procedure Open;
+    procedure SetRotation(const Value: TPdfPageRotation);
+    procedure UpdateMetrics;
   public
     destructor Destroy; override;
     procedure Close;
     function IsLoaded: Boolean;
 
-    procedure Draw(DC: HDC; X, Y, Width, Height: Integer; Rotate: TPdfPageRotation = prNormal;
-      const Options: TPdfPageRenderOptions = []);
-    procedure DrawToPdfBitmap(APdfBitmap: TPdfBitmap; X, Y, Width, Height: Integer; Rotate: TPdfPageRotation = prNormal;
-      const Options: TPdfPageRenderOptions = []);
-    procedure DrawFormToPdfBitmap(APdfBitmap: TPdfBitmap; X, Y, Width, Height: Integer; Rotate: TPdfPageRotation = prNormal;
-      const Options: TPdfPageRenderOptions = []);
+    procedure Draw(DC: HDC; X, Y, Width, Height: Integer; Rotate: TPdfPageRotation = prNormal; const Options: TPdfPageRenderOptions = []);
+    procedure DrawToPdfBitmap(APdfBitmap: TPdfBitmap; X, Y, Width, Height: Integer; Rotate: TPdfPageRotation = prNormal; const Options: TPdfPageRenderOptions = []);
+    procedure DrawFormToPdfBitmap(APdfBitmap: TPdfBitmap; X, Y, Width, Height: Integer; Rotate: TPdfPageRotation = prNormal; const Options: TPdfPageRenderOptions = []);
 
-    function DeviceToPage(X, Y, Width, Height: Integer; DeviceX, DeviceY: Integer; Rotate: TPdfPageRotation = prNormal): TPdfPoint; overload;
-    function PageToDevice(X, Y, Width, Height: Integer; PageX, PageY: Double; Rotate: TPdfPageRotation = prNormal): TPoint; overload;
     function DeviceToPage(X, Y, Width, Height: Integer; const R: TRect; Rotate: TPdfPageRotation = prNormal): TPdfRect; overload;
+    function DeviceToPage(X, Y, Width, Height: Integer; DeviceX, DeviceY: Integer; Rotate: TPdfPageRotation = prNormal): TPdfPoint; overload;
     function PageToDevice(X, Y, Width, Height: Integer; const R: TPdfRect; Rotate: TPdfPageRotation = prNormal): TRect; overload;
+    function PageToDevice(X, Y, Width, Height: Integer; PageX, PageY: Double; Rotate: TPdfPageRotation = prNormal): TPoint; overload;
 
     procedure ApplyChanges;
     procedure Flatten(AFlatPrint: Boolean);
 
+    function FormCanRedo: Boolean;
+    function FormCanUndo: Boolean;
     function FormEventFocus(const Shift: TShiftState; PageX, PageY: Double): Boolean;
-    function FormEventMouseWheel(const Shift: TShiftState; WheelDelta: Integer; PageX, PageY: Double): Boolean;
-    function FormEventMouseMove(const Shift: TShiftState; PageX, PageY: Double): Boolean;
+    function FormEventKeyDown(KeyCode: Word; KeyData: LPARAM): Boolean;
+    function FormEventKeyPress(Key: Word; KeyData: LPARAM): Boolean;
+    function FormEventKeyUp(KeyCode: Word; KeyData: LPARAM): Boolean;
+    function FormEventKillFocus: Boolean;
     function FormEventLButtonDown(const Shift: TShiftState; PageX, PageY: Double): Boolean;
     function FormEventLButtonUp(const Shift: TShiftState; PageX, PageY: Double): Boolean;
+    function FormEventMouseMove(const Shift: TShiftState; PageX, PageY: Double): Boolean;
+    function FormEventMouseWheel(const Shift: TShiftState; WheelDelta: Integer; PageX, PageY: Double): Boolean;
     function FormEventRButtonDown(const Shift: TShiftState; PageX, PageY: Double): Boolean;
     function FormEventRButtonUp(const Shift: TShiftState; PageX, PageY: Double): Boolean;
-    function FormEventKeyDown(KeyCode: Word; KeyData: LPARAM): Boolean;
-    function FormEventKeyUp(KeyCode: Word; KeyData: LPARAM): Boolean;
-    function FormEventKeyPress(Key: Word; KeyData: LPARAM): Boolean;
-    function FormEventKillFocus: Boolean;
     function FormGetFocusedText: string;
     function FormGetSelectedText: string;
-    function FormReplaceSelection(const ANewText: string): Boolean;
-    function FormReplaceAndKeepSelection(const ANewText: string): Boolean;
-    function FormSelectAllText: Boolean;
-    function FormCanUndo: Boolean;
-    function FormCanRedo: Boolean;
-    function FormUndo: Boolean;
     function FormRedo: Boolean;
+    function FormReplaceAndKeepSelection(const ANewText: string): Boolean;
+    function FormReplaceSelection(const ANewText: string): Boolean;
+    function FormSelectAllText: Boolean;
+    function FormUndo: Boolean;
 
     function BeginFind(const SearchString: string; MatchCase, MatchWholeWord: Boolean; FromEnd: Boolean): Boolean;
     function FindNext(var CharIndex, Count: Integer): Boolean;
     function FindPrev(var CharIndex, Count: Integer): Boolean;
     procedure EndFind;
 
-    function GetCharCount: Integer;
-    function ReadChar(CharIndex: Integer): WideChar;
-    function GetCharFontSize(CharIndex: Integer): Double;
     function GetCharBox(CharIndex: Integer): TPdfRect;
+    function GetCharCount: Integer;
+    function GetCharFontSize(CharIndex: Integer): Double;
     function GetCharIndexAt(PageX, PageY, ToleranceX, ToleranceY: Double): Integer;
-    function ReadText(CharIndex, Count: Integer): string;
     function GetTextAt(const R: TPdfRect): string; overload;
     function GetTextAt(Left, Top, Right, Bottom: Double): string; overload;
+    function ReadChar(CharIndex: Integer): WideChar;
+    function ReadText(CharIndex, Count: Integer): string;
 
     function GetTextRectCount(CharIndex, Count: Integer): Integer;
     function GetTextRect(RectIndex: Integer): TPdfRect;
@@ -404,22 +401,20 @@ type
     function GetWebLinkRectCount(LinkIndex: Integer): Integer;
     function GetWebLinkRect(LinkIndex, RectIndex: Integer): TPdfRect;
 
-    property Handle: FPDF_PAGE read GetHandle;
-    property TextHandle: FPDF_TEXTPAGE read GetTextHandle;
-
-    property Width: Single read FWidth;
-    property Height: Single read FHeight;
-    property Transparency: Boolean read FTransparency;
-    property Rotation: TPdfPageRotation read FRotation write SetRotation;
-
-    property Annotations: TPdfAnnotationList read FAnnotations;
-    property FormFields: TPdfFormFieldList read GetFormFields;
+    property Annotations  : TPdfAnnotationList read FAnnotations;
+    property FormFields   : TPdfFormFieldList  read GetFormFields;
+    property Handle       : FPDF_PAGE          read GetHandle;
+    property Height       : Single             read FHeight;
+    property Rotation     : TPdfPageRotation   read FRotation write SetRotation;
+    property TextHandle   : FPDF_TEXTPAGE      read GetTextHandle;
+    property Transparency : Boolean            read FTransparency;
+    property Width        : Single             read FWidth;
   end;
 
+  TPdfFormFieldFocusEvent = procedure(Document: TPdfDocument; Value: PWideChar; ValueLen: Integer; FieldFocused: Boolean) of object;
+  TPdfFormGetCurrentPageEvent = procedure(Document: TPdfDocument; var CurrentPage: TPdfPage) of object;
   TPdfFormInvalidateEvent = procedure(Document: TPdfDocument; Page: TPdfPage; const PageRect: TPdfRect) of object;
   TPdfFormOutputSelectedRectEvent = procedure(Document: TPdfDocument; Page: TPdfPage; const PageRect: TPdfRect) of object;
-  TPdfFormGetCurrentPageEvent = procedure(Document: TPdfDocument; var CurrentPage: TPdfPage) of object;
-  TPdfFormFieldFocusEvent = procedure(Document: TPdfDocument; Value: PWideChar; ValueLen: Integer; FieldFocused: Boolean) of object;
 
   TPdfAttachment = record
   private
@@ -457,11 +452,10 @@ type
     function HasKey(const Key: string): Boolean;
     function GetValueType(const Key: string): TPdfObjectType;
 
+    property ContentSize: Integer read GetContentSize;
+    property Handle: FPDF_ATTACHMENT read FHandle;
     property Name: string read GetName;
     property Values[const Key: string]: string read GetKeyValue write SetKeyValue;
-    property ContentSize: Integer read GetContentSize;
-
-    property Handle: FPDF_ATTACHMENT read FHandle;
   end;
 
   TPdfAttachmentList = class(TObject)
@@ -488,101 +482,92 @@ type
       FileAccess: TFPDFFileAccess;
     end;
   private
-    FDocument: FPDF_DOCUMENT;
-    FPages: TObjectList;
     FAttachments: TPdfAttachmentList;
-    FFileName: string;
-    FFileHandle: THandle;
-    FFileMapping: THandle;
     FBuffer: PByte;
     FBytes: TBytes;
     FClosing: Boolean;
-    FUnsupportedFeatures: Boolean;
     FCustomLoadData: PCustomLoadDataRec;
-
+    FDocument: FPDF_DOCUMENT;
+    FFileHandle: THandle;
+    FFileMapping: THandle;
+    FFileName: string;
     FForm: FPDF_FORMHANDLE;
-    FFormFillHandler: TPdfFormFillHandler;
-    FFormFieldHighlightColor: TColor;
     FFormFieldHighlightAlpha: Integer;
-    FPrintHidesFormFieldHighlight: Boolean;
+    FFormFieldHighlightColor: TColor;
+    FFormFillHandler: TPdfFormFillHandler;
     FFormModified: Boolean;
+    FOnFormFieldFocus: TPdfFormFieldFocusEvent;
+    FOnFormGetCurrentPage: TPdfFormGetCurrentPageEvent;
     FOnFormInvalidate: TPdfFormInvalidateEvent;
     FOnFormOutputSelectedRect: TPdfFormOutputSelectedRectEvent;
-    FOnFormGetCurrentPage: TPdfFormGetCurrentPageEvent;
-    FOnFormFieldFocus: TPdfFormFieldFocusEvent;
+    FPages: TObjectList;
+    FPrintHidesFormFieldHighlight: Boolean;
+    FUnsupportedFeatures: Boolean;
 
-    procedure InternLoadFromMem(Buffer: PByte; Size: NativeInt; const APassword: UTF8String);
-    procedure InternLoadFromCustom(ReadFunc: TPdfDocumentCustomReadProc; ASize: LongWord;
-      AParam: Pointer; const APassword: UTF8String);
-    function InternImportPages(Source: TPdfDocument; PageIndices: PInteger; PageIndicesCount: Integer;
-      const Range: AnsiString; Index: Integer; ImportByRange: Boolean): Boolean;
-    function GetPage(Index: Integer): TPdfPage;
-    function GetPageCount: Integer;
-    procedure ExtractPage(APage: TPdfPage);
-    function ReloadPage(APage: TPdfPage): FPDF_PAGE;
-    function GetPrintScaling: Boolean;
+    function FindPage(Page: FPDF_PAGE): TPdfPage;
     function GetActive: Boolean;
-    procedure CheckActive;
-    function GetSecurityHandlerRevision: Integer;
     function GetDocPermissions: Integer;
     function GetFileVersion: Integer;
-    function GetPageSize(Index: Integer): TPdfPoint;
-    function GetPageMode: TPdfDocumentPageMode;
     function GetNumCopies: Integer;
+    function GetPage(Index: Integer): TPdfPage;
+    function GetPageCount: Integer;
+    function GetPageMode: TPdfDocumentPageMode;
+    function GetPageSize(Index: Integer): TPdfPoint;
+    function GetPrintScaling: Boolean;
+    function GetSecurityHandlerRevision: Integer;
+    function InternImportPages(Source: TPdfDocument; PageIndices: PInteger; PageIndicesCount: Integer; const Range: AnsiString; Index: Integer; ImportByRange: Boolean): Boolean;
+    function ReloadPage(APage: TPdfPage): FPDF_PAGE;
+    procedure CheckActive;
     procedure DocumentLoaded;
+    procedure ExtractPage(APage: TPdfPage);
+    procedure InternLoadFromCustom(ReadFunc: TPdfDocumentCustomReadProc; ASize: LongWord; AParam: Pointer; const APassword: UTF8String);
+    procedure InternLoadFromMem(Buffer: PByte; Size: NativeInt; const APassword: UTF8String);
     procedure SetFormFieldHighlightAlpha(Value: Integer);
     procedure SetFormFieldHighlightColor(const Value: TColor);
-    function FindPage(Page: FPDF_PAGE): TPdfPage;
     procedure UpdateFormFieldHighlight;
   public
     constructor Create;
     destructor Destroy; override;
 
-    procedure LoadFromCustom(ReadFunc: TPdfDocumentCustomReadProc; ASize: LongWord; AParam: Pointer; const APassword: UTF8String = '');
-    procedure LoadFromActiveStream(Stream: TStream; const APassword: UTF8String = ''); // Stream must not be released until the document is closed
-    procedure LoadFromActiveBuffer(Buffer: Pointer; Size: NativeInt; const APassword: UTF8String = ''); // Buffer must not be released until the document is closed
-    procedure LoadFromBytes(const ABytes: TBytes; const APassword: UTF8String = ''); overload;
-    procedure LoadFromBytes(const ABytes: TBytes; AIndex: NativeInt; ACount: NativeInt; const APassword: UTF8String = ''); overload;
-    procedure LoadFromStream(AStream: TStream; const APassword: UTF8String = '');
-    procedure LoadFromFile(const AFileName: string; const APassword: UTF8String = ''; ALoadOption: TPdfDocumentLoadOption = dloMMF);
-    procedure Close;
-
-    procedure SaveToFile(const AFileName: string; Option: TPdfDocumentSaveOption = dsoRemoveSecurity; FileVersion: Integer = -1);
-    procedure SaveToStream(Stream: TStream; Option: TPdfDocumentSaveOption = dsoRemoveSecurity; FileVersion: Integer = -1);
-    procedure SaveToBytes(var Bytes: TBytes; Option: TPdfDocumentSaveOption = dsoRemoveSecurity; FileVersion: Integer = -1);
-
-    function NewDocument: Boolean;
     class function CreateNPagesOnOnePageDocument(Source: TPdfDocument; NewPageWidth, NewPageHeight: Double; NumPagesXAxis, NumPagesYAxis: Integer): TPdfDocument; overload;
     class function CreateNPagesOnOnePageDocument(Source: TPdfDocument; NumPagesXAxis, NumPagesYAxis: Integer): TPdfDocument; overload;
-    function ImportAllPages(Source: TPdfDocument; Index: Integer = -1): Boolean;
-    function ImportPages(Source: TPdfDocument; const Range: string = ''; Index: Integer = -1): Boolean;
-    function ImportPageRange(Source: TPdfDocument; PageIndex: Integer; Count: Integer = -1; Index: Integer = -1): Boolean;
-    function ImportPagesByIndex(Source: TPdfDocument; const PageIndices: array of Integer; Index: Integer = -1): Boolean;
-    procedure DeletePage(Index: Integer);
-    function NewPage(Width, Height: Double; Index: Integer = -1): TPdfPage; overload;
-    function NewPage(Index: Integer = -1): TPdfPage; overload;
+    class function SetPrintMode(PrintMode: TPdfPrintMode): Boolean; static;
     function ApplyViewerPreferences(Source: TPdfDocument): Boolean;
-    function IsPageLoaded(PageIndex: Integer): Boolean;
-
     function GetFileIdentifier(IdType: TPdfFileIdType): string;
     function GetMetaText(const TagName: string): string;
-
-    class function SetPrintMode(PrintMode: TPdfPrintMode): Boolean; static;
-
-    property FileName: string read FFileName;
-    property PageCount: Integer read GetPageCount;
-    property Pages[Index: Integer]: TPdfPage read GetPage;
-    property PageSizes[Index: Integer]: TPdfPoint read GetPageSize;
-
-    property Attachments: TPdfAttachmentList read FAttachments;
+    function ImportAllPages(Source: TPdfDocument; Index: Integer = -1): Boolean;
+    function ImportPageRange(Source: TPdfDocument; PageIndex: Integer; Count: Integer = -1; Index: Integer = -1): Boolean;
+    function ImportPages(Source: TPdfDocument; const Range: string = ''; Index: Integer = -1): Boolean;
+    function ImportPagesByIndex(Source: TPdfDocument; const PageIndices: array of Integer; Index: Integer = -1): Boolean;
+    function IsPageLoaded(PageIndex: Integer): Boolean;
+    function NewDocument: Boolean;
+    function NewPage(Index: Integer = -1): TPdfPage; overload;
+    function NewPage(Width, Height: Double; Index: Integer = -1): TPdfPage; overload;
+    procedure Close;
+    procedure DeletePage(Index: Integer);
+    procedure LoadFromActiveBuffer(Buffer: Pointer; Size: NativeInt; const APassword: UTF8String = ''); // Buffer must not be released until the document is closed
+    procedure LoadFromActiveStream(Stream: TStream; const APassword: UTF8String = ''); // Stream must not be released until the document is closed
+    procedure LoadFromBytes(const ABytes: TBytes; AIndex: NativeInt; ACount: NativeInt; const APassword: UTF8String = ''); overload;
+    procedure LoadFromBytes(const ABytes: TBytes; const APassword: UTF8String = ''); overload;
+    procedure LoadFromCustom(ReadFunc: TPdfDocumentCustomReadProc; ASize: LongWord; AParam: Pointer; const APassword: UTF8String = '');
+    procedure LoadFromFile(const AFileName: string; const APassword: UTF8String = ''; ALoadOption: TPdfDocumentLoadOption = dloMMF);
+    procedure LoadFromStream(AStream: TStream; const APassword: UTF8String = '');
+    procedure SaveToBytes(var Bytes: TBytes; Option: TPdfDocumentSaveOption = dsoRemoveSecurity; FileVersion: Integer = -1);
+    procedure SaveToFile(const AFileName: string; Option: TPdfDocumentSaveOption = dsoRemoveSecurity; FileVersion: Integer = -1);
+    procedure SaveToStream(Stream: TStream; Option: TPdfDocumentSaveOption = dsoRemoveSecurity; FileVersion: Integer = -1);
 
     property Active: Boolean read GetActive;
-    property PrintScaling: Boolean read GetPrintScaling;
-    property NumCopies: Integer read GetNumCopies;
-    property SecurityHandlerRevision: Integer read GetSecurityHandlerRevision;
+    property Attachments: TPdfAttachmentList read FAttachments;
     property DocPermissions: Integer read GetDocPermissions;
+    property FileName: string read FFileName;
     property FileVersion: Integer read GetFileVersion;
+    property NumCopies: Integer read GetNumCopies;
+    property PageCount: Integer read GetPageCount;
     property PageMode: TPdfDocumentPageMode read GetPageMode;
+    property Pages[Index: Integer]: TPdfPage read GetPage;
+    property PageSizes[Index: Integer]: TPdfPoint read GetPageSize;
+    property PrintScaling: Boolean read GetPrintScaling;
+    property SecurityHandlerRevision: Integer read GetSecurityHandlerRevision;
 
     // if UnsupportedFeatures is True, then the document has unsupported features. It is updated
     // after accessing a page.
@@ -606,50 +591,41 @@ type
   TPdfDocumentPrinter = class(TObject)
   private
     FBeginPrintCounter: Integer;
-
     FPrinterDC: HDC;
     FPrintPortraitOrientation: Boolean;
     FPaperSize: TSize;
     FPrintArea: TSize;
     FMargins: TPoint;
-
     FFitPageToPrintArea: Boolean;
     FOnPrintStatus: TPdfDocumentPrinterStatusEvent;
-
     function IsPortraitOrientation(AWidth, AHeight: Integer): Boolean;
     procedure GetPrinterBounds;
   protected
+    function GetPrinterDC: HDC; virtual; abstract;
     function PrinterStartDoc(const AJobTitle: string): Boolean; virtual; abstract;
     procedure PrinterEndDoc; virtual; abstract;
-    procedure PrinterStartPage; virtual; abstract;
     procedure PrinterEndPage; virtual; abstract;
-    function GetPrinterDC: HDC; virtual; abstract;
+    procedure PrinterStartPage; virtual; abstract;
 
     procedure InternPrintPage(APage: TPdfPage; X, Y, Width, Height: Double);
   public
     constructor Create;
-
     { BeginPrint must be called before printing multiple documents.
       Returns false if the printer can't print. (e.g. The user aborted the PDF Printer's FileDialog) }
     function BeginPrint(const AJobTitle: string = ''): Boolean;
     { EndPrint must be called after printing multiple documents were printed. }
     procedure EndPrint;
-
     { Prints a range of PDF document pages (0..PageCount-1) }
     function Print(ADocument: TPdfDocument; AFromPageIndex, AToPageIndex: Integer): Boolean; overload;
     { Prints all pages of the PDF document. }
     function Print(ADocument: TPdfDocument): Boolean; overload;
-
-
     { If FitPageToPrintArea is true the page fill be scaled to fit into the printable area. }
     property FitPageToPrintArea: Boolean read FFitPageToPrintArea write FFitPageToPrintArea default True;
-
     { OnPrintStatus is triggered after every printed page }
     property OnPrintStatus: TPdfDocumentPrinterStatusEvent read FOnPrintStatus write FOnPrintStatus;
   end;
 
 function SetThreadPdfUnsupportedFeatureHandler(const Handler: TPdfUnsupportedFeatureHandler): TPdfUnsupportedFeatureHandler;
-
 var
   PDFiumDllDir: string = '';
   PDFiumDllFileName: string = ''; // use this instead of PDFiumDllDir if you want to change the DLLs file name
@@ -1948,7 +1924,6 @@ begin
     FPDF_RenderPage(DC, FPage, X, Y, Width, Height, Ord(Rotate), GetDrawFlags(Options));
     Exit;
   end;
-
 
   FillChar(BitmapInfo, SizeOf(BitmapInfo), 0);
   BitmapInfo.bmiHeader.biSize := SizeOf(BitmapInfo);
