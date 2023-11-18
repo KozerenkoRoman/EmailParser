@@ -113,6 +113,7 @@ inherited frmMain: TfrmMain
       SelectedButtonColor = clNone
       TabOrder = 0
       OnSelectedItemChange = catMenuItemsSelectedItemChange
+      ExplicitHeight = 350
     end
     object pnlExtendedFilter: TGroupBox
       Left = 0
@@ -279,7 +280,7 @@ inherited frmMain: TfrmMain
     Width = 796
     Height = 606
     Align = alClient
-    ActiveCard = crdRegExpParameters
+    ActiveCard = crdProject
     TabOrder = 2
     object crdProject: TCard
       Left = 1
@@ -323,7 +324,7 @@ inherited frmMain: TfrmMain
         ExplicitHeight = 348
         inherited tbMain: TToolBar
           Width = 794
-          ExplicitWidth = 790
+          ExplicitWidth = 794
         end
         inherited vstTree: TVirtualStringTree
           Width = 794
@@ -364,7 +365,27 @@ inherited frmMain: TfrmMain
             ExplicitHeight = 220
             inherited tbMain: TToolBar
               Width = 786
-              ExplicitWidth = 782
+              ExplicitWidth = 786
+              inherited btnExportToExcel: TToolButton
+                Left = 211
+                ExplicitLeft = 211
+              end
+              inherited btnExportToCSV: TToolButton
+                Left = 250
+                ExplicitLeft = 250
+              end
+              inherited btnPrint: TToolButton
+                Left = 289
+                ExplicitLeft = 289
+              end
+              inherited btnSep03: TToolButton
+                Left = 328
+                ExplicitLeft = 328
+              end
+              inherited btnColumnSettings: TToolButton
+                Left = 336
+                ExplicitLeft = 336
+              end
             end
             inherited vstTree: TVirtualStringTree
               Width = 786
@@ -467,7 +488,7 @@ inherited frmMain: TfrmMain
         ExplicitHeight = 604
         inherited tbMain: TToolBar
           Width = 794
-          ExplicitWidth = 794
+          ExplicitWidth = 790
           inherited btnExportToExcel: TToolButton
             Left = 211
             ExplicitLeft = 211
@@ -510,7 +531,7 @@ inherited frmMain: TfrmMain
         end
         inherited tbSettings: TToolBar
           Width = 794
-          ExplicitWidth = 794
+          ExplicitWidth = 790
         end
       end
     end
@@ -737,7 +758,7 @@ inherited frmMain: TfrmMain
               inherited tbMain: TToolBar
                 Width = 786
                 ExplicitWidth = 786
-                inherited btnExportToExcel: TToolButton [7]
+                inherited btnExportToExcel: TToolButton
                   Left = 211
                   ExplicitLeft = 211
                 end
@@ -792,41 +813,41 @@ inherited frmMain: TfrmMain
             inherited frameAllAttachments: TframeAllAttachments
               ParentFont = False
               inherited tbMain: TToolBar
-                inherited btnOpenEmail: TToolButton [7]
-                  Left = 211
-                  ExplicitLeft = 211
-                end
-                inherited btnFilter: TToolButton [8]
-                  Left = 250
-                  ExplicitLeft = 250
-                end
-                inherited btnSep04: TToolButton [9]
+                inherited btnSep04: TToolButton [7]
                   Left = 289
                   ExplicitLeft = 289
                 end
-                inherited btnOpenAttachFile: TToolButton [10]
-                  Left = 297
-                  ExplicitLeft = 297
+                inherited btnOpenEmail: TToolButton [8]
+                  Left = 211
+                  ExplicitLeft = 211
                 end
-                inherited btnExportToExcel: TToolButton [11]
+                inherited btnFilter: TToolButton [9]
+                  Left = 250
+                  ExplicitLeft = 250
+                end
+                inherited btnExportToExcel: TToolButton [10]
                   Left = 336
                   ExplicitLeft = 336
+                end
+                inherited btnOpenAttachFile: TToolButton [11]
+                  Left = 297
+                  ExplicitLeft = 297
                 end
                 inherited btnExportToCSV: TToolButton [12]
                 end
                 inherited btnPrint: TToolButton [13]
                 end
-                inherited btnSep03: TToolButton [14]
+                inherited btnOpenParsedText: TToolButton [14]
+                  Left = 500
+                  ExplicitLeft = 500
+                end
+                inherited btnSep03: TToolButton [15]
                   Left = 453
                   ExplicitLeft = 453
                 end
-                inherited btnColumnSettings: TToolButton [15]
+                inherited btnColumnSettings: TToolButton [16]
                   Left = 461
                   ExplicitLeft = 461
-                end
-                inherited btnOpenParsedText: TToolButton
-                  Left = 500
-                  ExplicitLeft = 500
                 end
               end
               inherited vstTree: TVirtualStringTree
@@ -871,25 +892,25 @@ inherited frmMain: TfrmMain
         inherited tbMain: TToolBar
           Width = 794
           ExplicitWidth = 794
-          inherited btnSep03: TToolButton [7]
-            Left = 211
-            ExplicitLeft = 211
+          inherited btnPrint: TToolButton [7]
+            Left = 336
+            ExplicitLeft = 336
           end
-          inherited btnExportToExcel: TToolButton [8]
-            Left = 219
-            ExplicitLeft = 219
-          end
-          inherited btnExportToCSV: TToolButton [9]
-            Left = 258
-            ExplicitLeft = 258
-          end
-          inherited btnColumnSettings: TToolButton [10]
+          inherited btnColumnSettings: TToolButton [8]
             Left = 297
             ExplicitLeft = 297
           end
-          inherited btnPrint: TToolButton [11]
-            Left = 336
-            ExplicitLeft = 336
+          inherited btnSep03: TToolButton [9]
+            Left = 211
+            ExplicitLeft = 211
+          end
+          inherited btnExportToExcel: TToolButton [10]
+            Left = 219
+            ExplicitLeft = 219
+          end
+          inherited btnExportToCSV: TToolButton [11]
+            Left = 258
+            ExplicitLeft = 258
           end
         end
         inherited vstTree: TVirtualStringTree

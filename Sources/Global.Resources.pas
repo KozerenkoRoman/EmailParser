@@ -22,6 +22,8 @@ resourcestring
   C_SQLITE_DB_FILE    = 'EmailParser.db';
   C_XML_PARAMS_FILE   = 'EmailParser.xml';
 
+  C_OCR_SEPARATOR = '-- Tesseract OCR Text --';
+
 implementation
 
 end.

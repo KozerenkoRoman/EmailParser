@@ -225,7 +225,7 @@ var
   Item: TObject;
 begin
   if not Application.Terminated then
-    TThread.Queue(nil,
+    TThread.Synchronize(nil,
       procedure
       var
         obj: IProgress;

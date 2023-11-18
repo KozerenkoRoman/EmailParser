@@ -742,6 +742,12 @@ begin
               Attachment.ImageIndex  := TExtIcon.eiJpg.ToByte;
               Attachment.ParsedText  := GetEXIFInfo(Attachment.FileName);
             end;
+          fsTiff, fsTif:
+            begin
+              Attachment.ContentType := 'image/tiff';
+              Attachment.ImageIndex  := TExtIcon.eiTiff.ToByte;
+              Attachment.ParsedText  := GetEXIFInfo(Attachment.FileName);
+            end;
           fsZip:
             begin
               if Ext.Contains('.xlsx') or Ext.Contains('.xlsm') then
@@ -957,6 +963,7 @@ begin
                 TgtPDFImageElement(PageList.Items[j]).Image.Seek(0, TSeekOrigin.soBeginning);
                 FTesseract.Picture.LoadFromStream(TgtPDFImageElement(PageList.Items[j]).Image);
                 LogWriter.Write(ddText, Self, 'Begin OCR recognize', Format('Page %d, image %d, file name - %s', [i, j, aFileName]));
+                Application.ProcessMessages;
                 PageText := PageText + FTesseract.Text.Trim;
                 LogWriter.Write(ddText, Self, 'End OCR recognize', Format('Page %d, image %d, file name - %s', [i, j, aFileName]));
               end
@@ -1008,6 +1015,39 @@ end;
 {$ENDIF EXTENDED_COMPONENTS}
 
 function TPerformer.GetEXIFInfo(const aFileName: TFileName): string;
+
+  function GetTextFromImage: string;
+  var
+    pict: TPicture;
+  begin
+    Result := '';
+{$IFDEF EXTENDED_COMPONENTS}
+    pict := TPicture.Create;
+    try
+      pict.LoadFromFile(aFileName);
+      if (pict.Width < 400) or (pict.Height < 600) then
+        Exit;
+    finally
+      FreeAndNil(pict);
+    end;
+
+    FCriticalSection.Enter;
+    try
+      FTesseract.Picture.LoadFromFile(aFileName);
+      Application.ProcessMessages;
+      try
+        Result := C_OCR_SEPARATOR + sLineBreak + FTesseract.Text.Trim;
+      except
+        on E: Exception do
+          LogWriter.Write(ddError, Self, 'GetEXIFInfo.GetTextFromImage', 'File name - ' + aFileName);
+      end;
+    finally
+      FCriticalSection.Leave;
+    end;
+    LogWriter.Write(ddText, Self, 'GetEXIFInfo.GetTextFromImage', 'File name - ' + aFileName);
+{$ENDIF EXTENDED_COMPONENTS}
+  end;
+
 var
   ImgData: TEXIFDump;
 begin
@@ -1015,7 +1055,7 @@ begin
   ImgData := TEXIFDump.Create(aFileName);
   try
     try
-      Result := ImgData.GetText;
+      Result := ImgData.GetText + GetTextFromImage;
     except
       on E: Exception do
         LogWriter.Write(ddError, Self, 'GetEXIFInfo', E.Message + sLineBreak + 'File name - ' + aFileName);

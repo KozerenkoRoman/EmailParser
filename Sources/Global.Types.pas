@@ -205,7 +205,7 @@ type
   TFilterSet = set of 0 .. SizeOf(Cardinal) * 8 - 1;     //Count of RegExp patterns - 32
   TFilterOperation = (foAND, foOR);
   TExtIcon = (eiPdf = 20, eiPng = 21, eiGif = 8, eiIco = 2, eiJpg = 12, eiZip = 30, eiRar = 23, eiHtml = 9,
-              eiTxt = 0,  eiXls = 29, eiDoc = 4);
+              eiTxt = 0,  eiXls = 29, eiDoc = 4, eiTiff = 25);
   TExtIconHelper = record helper for TExtIcon
     function ToByte: Byte;
   end;

@@ -12,7 +12,8 @@ uses
 
 type
   TFileSignature = (fsPDF, fsGif, fsPng, fsJpg, fsZip, fsRar, fsOffice, fsCrt, fsKey, fsJp2, fsIco,
-                    fsUTF8, fsUTF7, fsUTF1, fsUTF16be, fsUTF16le, fsUTF32be, fsUTF32le, fsUnknown);
+                    fsTiff, fsTif, fsUTF8, fsUTF7, fsUTF1, fsUTF16be, fsUTF16le, fsUTF32be, fsUTF32le,
+                    fsUnknown);
   TSignatureItem = record
     TypeSignature: TFileSignature;
     Signature: TBytes;
@@ -43,7 +44,7 @@ implementation
 const
   //See https://en.wikipedia.org/wiki/List_of_file_signatures
   //    https://en.wikipedia.org/wiki/Byte_order_mark
-  ArraySignatures: array [1 .. 19] of TSignatureItem = (
+  ArraySignatures: array [1 .. 21] of TSignatureItem = (
     (TypeSignature: fsPDF;     Signature: [$25, $50, $44, $46, $2D]),
     (TypeSignature: fsGif;     Signature: [$47, $49, $46, $38]),
     (TypeSignature: fsPng;     Signature: [$89, $50, $4E, $47, $0D, $0A, $1A, $0A]),
@@ -52,6 +53,8 @@ const
     (TypeSignature: fsZip;     Signature: [$50, $4B]),
     (TypeSignature: fsRar;     Signature: [$52, $61, $72, $21, $1A, $07]),
     (TypeSignature: fsIco;     Signature: [$00, $00, $01, $00]),
+    (TypeSignature: fsTif;     Signature: [$49, $49, $2A, $00]),
+    (TypeSignature: fsTiff;    Signature: [$4D, $4D, $00, $2A]),
     (TypeSignature: fsOffice;  Signature: [$D0, $CF, $11, $E0, $A1, $B1, $1A, $E1]),
     (TypeSignature: fsCrt;     Signature: [$2D, $2D, $2D, $2D, $2D, $42, $45, $47, $49, $4E, $20, $43]),
     (TypeSignature: fsKey;     Signature: [$2D, $2D, $2D, $2D, $2D, $42, $45, $47, $49, $4E, $20, $50]),
