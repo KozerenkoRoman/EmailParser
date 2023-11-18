@@ -8,7 +8,8 @@ uses
   System.SysUtils, System.Variants, Vcl.ActnList, System.Actions, Vcl.OleCtrls, System.IOUtils, MessageDialog,
   DebugWriter, Html.Consts, Html.Lib, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} CommonForms, Vcl.ExtDlgs,
   Vcl.StdCtrls, DaImages, Common.Types, Translate.Lang, Vcl.Grids, Vcl.ValEdit, Generics.Collections,
-  Generics.Defaults, Vcl.VirtualImage, VCLTee.TeeFilters, Vcl.Imaging.jpeg, ArrayHelper, Global.Utils;
+  Generics.Defaults, Vcl.VirtualImage, VCLTee.TeeFilters, Vcl.Imaging.jpeg, ArrayHelper, Global.Utils,
+  Global.Resources;
 {$ENDREGION}
 
 type
@@ -103,7 +104,9 @@ begin
   TArray.Sort<string>(arrMessage, TStringComparer.Ordinal);
   ValueListEditor.Strings.Add('File name=' + FImageFile);
   for var item in arrMessage do
-    if item.Contains('=') then
+    if item.Contains(C_OCR_SEPARATOR) then
+      Break
+    else if item.Contains('=') then
       ValueListEditor.Strings.Add(item);
 
   if TFile.Exists(FImageFile) then

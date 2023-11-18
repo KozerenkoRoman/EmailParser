@@ -1,6 +1,7 @@
 *.7z
 *.drc
 *.gbk
+*.zip
 *.IB
 *.identcache
 *.local
@@ -8,16 +9,8 @@
 *.todo
 *.tvsconfig
 *.~dsk
-*.zip
 *.cmd
 *.rar
-/CleverInternetSuite/__history/
-/Common/__history/
-/Common/__recovery/
-/Documents/
-/ModelSupport_RoboTrade/
-/ModelSupport_RobotXT/
-/Sources/
 /Sources/AutoTrades/__history/
 /Sources/AutoTrades/__recovery/
 /Sources/Brokers/__history/
@@ -49,19 +42,6 @@
 /Sources/__history/
 /Sources/__recovery/
 /Sources/dEXIF/__history/
-/TableAtm/DataModules/__history/
-/TableAtm/DataModules/__recovery/
-/TableAtm/Resources/__history/
-/TableAtm/Resources/__recovery/
-/TableAtm/Sources/__history/
-/TableAtm/Sources/__recovery/
-/TableAtm/Translate/__history/
-/TableAtm/Translate/__recovery/
-/TableAtm/__history/
-/TableAtm/__recovery/
-/TableAtm/bin/
-/TableAtm/bin/TableAtm.exe
-/TableAtm/bin/log/
 /Translate/__history/
 /Translate/__recovery/
 /__history/
@@ -69,5 +49,7 @@
 /arch.bat
 /arch.txt
 /bin/
-/binn/
 /dcu/
+/Sources/Excel/XLSReadWriteII/
+/Sources/PDF/Gnostice PDFtoolkit/
+/Sources/TesseractOCR/__history/

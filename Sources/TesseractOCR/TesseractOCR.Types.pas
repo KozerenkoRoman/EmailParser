@@ -70,7 +70,7 @@ const
 resourcestring
   rsCannotAnalyseLayout              = 'Cannot analyse layout';
   rsCannotCreatePdfRenderer          = 'Cannot create PDF renderer';
-  rsCannotInitializeLibrary          = 'Cannot initialize Tesseract library';
+  rsCannotInitializeLibrary          = 'Cannot initialize Tesseract library, check the language files';
   rsImageFileCannotBeUsed            = 'Image file cannot be used';
   rsIncorrectConnectedComponentIndex = 'Incorrect connected component index';
   rsIncorrectDllLibraryVersion       = 'Incorrect version of ocr.dll library';

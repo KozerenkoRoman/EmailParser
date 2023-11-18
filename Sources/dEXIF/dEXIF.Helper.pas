@@ -35,8 +35,10 @@ type
     constructor Create(const aFileName: TFileName; const aEXIFObjects: TEXIFObjects = [eoEXIF]);
     destructor Destroy; override;
 
+    function GetHeight: Integer;
     function GetTags: string;
     function GetText: string;
+    function GetWidth: Integer;
   end;
 
 implementation
@@ -198,6 +200,16 @@ begin
   FImgData.ExifObj.ResetIterator;
   while FImgData.ExifObj.IterateFoundTags(CustomEXIF, tag) do
     AppendTag(tag.Desc, tag.Data);
+end;
+
+function TEXIFDump.GetHeight: Integer;
+begin
+  Result := FImgData.Height;
+end;
+
+function TEXIFDump.GetWidth: Integer;
+begin
+  Result := FImgData.Width;
 end;
 
 function TEXIFDump.GetTags: string;

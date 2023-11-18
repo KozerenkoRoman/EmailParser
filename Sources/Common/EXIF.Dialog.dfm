@@ -26,7 +26,7 @@ object EXIFDialog: TEXIFDialog
       474
       42)
     object btnSave: TBitBtn
-      Left = 239
+      Left = 247
       Top = 1
       Width = 110
       Height = 40
@@ -42,10 +42,9 @@ object EXIFDialog: TEXIFDialog
       Images = DMImage.vil32
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 235
     end
     object btnOk: TBitBtn
-      Left = 352
+      Left = 360
       Top = 1
       Width = 110
       Height = 40
@@ -60,7 +59,6 @@ object EXIFDialog: TEXIFDialog
       Images = DMImage.vil32
       ParentFont = False
       TabOrder = 1
-      ExplicitLeft = 348
     end
   end
   object PageControl1: TPageControl

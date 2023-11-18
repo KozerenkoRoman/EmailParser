@@ -1,56 +1,65 @@
 ﻿[Closed Files]
-File_0=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Classes.pas',0,1,9554,1,9560,0,0,,
-File_1=TSourceModule,'D:\Components\VirtualTreeView\Source\VirtualTrees.pas',0,1,13842,33,13860,0,0,,
-File_2=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\win\Winapi.Windows.pas',0,1,40661,1,40679,0,0,,
-File_3=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Themes.pas',0,1,2770,45,2788,0,0,,
-File_4=TSourceModule,'D:\Work\EmailParser\Sources\MainForm.pas',0,1,118,1,135,0,0,{{5,0}
-File_5=TSourceModule,'D:\Work\EmailParser\Sources\Project.Editor.pas',0,1,120,1,171,0,0,,{1
-File_6=TSourceModule,'D:\Work\EmailParser\Sources\TesseractOCR\TesseractOCR.Consts.pas',0,1,24,27,30,0,0,,
-File_7=TSourceModule,'D:\Work\EmailParser\Sources\Translate\Translate.Resources.pas',0,1,40,6,46,0,0,,
-File_8=TSourceModule,'D:\Work\EmailParser\Sources\Common\Common.Types.pas',0,1,1,16,11,0,0,{{5,0}
-File_9=TSourceModule,'D:\Work\EmailParser\Sources\RegExp.Import.pas',0,1,40,1,54,0,0,{{5,0}
-File_10=TSourceModule,'D:\Work\EmailParser\Sources\DataModules\DaModule.pas',0,1,95,1,112,0,0,{{5,0}
-File_11=TSourceModule,'D:\Work\EmailParser\Sources\Common\Column.Types.pas',0,1,1,1,1,0,0,{{5,0}
-File_12=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Forms.pas',0,1,177,19,211,0,0,{{1990,4}
-File_13=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.ExtCtrls.pas',0,1,280,32,297,0,0,,
+File_0=TSourceModule,'D:\Work\EmailParser\Sources\Common\EXIF.Dialog.pas',0,1,94,10,109,0,0,,
+File_1=TSourceModule,'D:\Work\EmailParser\Sources\Global.Resources.pas',0,1,1,6,1,0,0,,
+File_2=TSourceModule,'D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\Model\PDContentStream.pas',0,1,4290,60,4282,0,0,,{1,4281,1}{2,1468,40}
+File_3=TSourceModule,'D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\Model\PDContents.pas',0,1,136,1,144,0,0,,
+File_4=TSourceModule,'D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\Model\PDPage.pas',0,1,2447,42,2454,0,0,,
+File_5=TSourceModule,'D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\Model\PDDocument.pas',0,1,898,15,922,0,0,,
+File_6=TSourceModule,'D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\FontProcessor\FreeType.pas',0,1,25,1,40,0,0,,
+File_7=TSourceModule,'D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\FontProcessor\FreeTypeImport.pas',0,1,322,73,25,0,0,,
+File_8=TSourceModule,'D:\Work\EmailParser\Sources\Publishers.pas',0,1,220,1,233,0,0,{{5,0},{11,11},{'Region uses'}},
+File_9=TSourceModule,'D:\Work\EmailParser\Sources\DataModules\Thread.Emails.pas',0,1,172,1,187,0,0,{{5,0},{14,11},{'Region uses'}},
+File_10=TSourceModule,'D:\Work\EmailParser\Sources\dExif\dmetadata.pas',0,1,31,1,37,0,0,,
+File_11=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Threading.pas',0,1,2169,1,2186,0,0,,
+File_12=TSourceModule,'D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\FontProcessor\uObjDelphiImport.pas',0,1,31,6,24,0,0,,
 
 [Modules]
-Module0=D:\Work\EmailParser\Sources\DataModules\DaImages.pas
-Module1=D:\Work\EmailParser\Sources\TesseractOCR\TesseractOCR.Types.pas
+Module0=D:\Work\EmailParser\Sources\Performer.pas
+Module1=D:\Work\EmailParser\Sources\dEXIF\dEXIF.Helper.pas
 Module2=D:\Work\EmailParser\Sources\Global.Types.pas
-Module3=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
-Module4=D:\Work\EmailParser\Sources\Frames\Frame.Source.pas
-Module5=D:\Work\EmailParser\Sources\Performer.pas
-Count=6
+Module3=D:\Work\EmailParser\Sources\Common\Html.Lib.pas
+Module4=D:\Work\EmailParser\Sources\Common\Files.Utils.pas
+Module5=D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\FontProcessor\FontProcessor.pas
+Module6=D:\Work\EmailParser\Sources\DataModules\DaImages.pas
+Module7=D:\Work\EmailParser\Sources\DataModules\DaModule.pas
+Count=8
 EditWindowCount=1
 
-[D:\Work\EmailParser\Sources\DataModules\DaImages.pas]
+[D:\Work\EmailParser\Sources\Performer.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\Sources\TesseractOCR\TesseractOCR.Types.pas]
+[D:\Work\EmailParser\Sources\dEXIF\dEXIF.Helper.pas]
 ModuleType=TSourceModule
 
 [D:\Work\EmailParser\Sources\Global.Types.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\Sources\Frames\Frame.Project.pas]
+[D:\Work\EmailParser\Sources\Common\Html.Lib.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\Sources\Frames\Frame.Source.pas]
+[D:\Work\EmailParser\Sources\Common\Files.Utils.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\Sources\Performer.pas]
+[D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\FontProcessor\FontProcessor.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\DataModules\DaImages.pas]
+ModuleType=TSourceModule
+
+[D:\Work\EmailParser\Sources\DataModules\DaModule.pas]
 ModuleType=TSourceModule
 
 [EditWindow0]
-ViewCount=6
-CurrentEditView=D:\Work\EmailParser\Sources\DataModules\DaImages.pas
+ViewCount=8
+CurrentEditView=D:\Work\EmailParser\Sources\Performer.pas
 View0=0
 View1=1
 View2=2
 View3=3
 View4=4
 View5=5
+View6=6
+View7=7
 PercentageSizes=1
 Create=1
 Visible=1
@@ -83,30 +92,30 @@ BottomMiddelPanelData=0000080001020200000009000000446F636B5369746530100000004772
 [View0]
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\Performer.pas
-CursorX=46
-CursorY=108
-TopLine=86
+CursorX=58
+CursorY=1028
+TopLine=1018
 LeftCol=1
 Elisions=
-Bookmarks=
+Bookmarks={1,937,29}{2,1018,1}
 EditViewName=D:\Work\EmailParser\Sources\Performer.pas
 
 [View1]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
-CursorX=38
-CursorY=320
-TopLine=298
+Module=D:\Work\EmailParser\Sources\Common\Html.Lib.pas
+CursorX=1
+CursorY=137
+TopLine=119
 LeftCol=1
-Elisions={{5,0},{14,11},{'Region uses'}}
+Elisions={{15,0},{19,11},{'Region uses'}}
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
+EditViewName=D:\Work\EmailParser\Sources\Common\Html.Lib.pas
 
 [View2]
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\Global.Types.pas
-CursorX=20
-CursorY=10
+CursorX=98
+CursorY=7
 TopLine=1
 LeftCol=1
 Elisions=
@@ -115,40 +124,61 @@ EditViewName=D:\Work\EmailParser\Sources\Global.Types.pas
 
 [View3]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\TesseractOCR\TesseractOCR.Types.pas
-CursorX=32
-CursorY=17
-TopLine=1
-LeftCol=1
-Elisions={{13,0},{16,11},{'Region uses'}}
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\TesseractOCR\TesseractOCR.Types.pas
-
-[View4]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Frames\Frame.Source.pas
-CursorX=37
-CursorY=30
-TopLine=1
-LeftCol=1
-Elisions={{5,0},{13,11},{'Region uses'}}
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Source.pas
-
-[View5]
-CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\DataModules\DaImages.pas
-CursorX=10
-CursorY=27
+CursorX=1
+CursorY=1
 TopLine=1
 LeftCol=1
 Elisions={{5,0},{9,11},{'Region uses'}}
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\DataModules\DaImages.pas
+EditViewName=Borland.FormDesignerView
+
+[View4]
+CustomEditViewType=TEditView
+Module=D:\Work\EmailParser\Sources\Common\Files.Utils.pas
+CursorX=34
+CursorY=47
+TopLine=37
+LeftCol=1
+Elisions={{5,0},{11,11},{'Region uses'}}
+Bookmarks=
+EditViewName=D:\Work\EmailParser\Sources\Common\Files.Utils.pas
+
+[View5]
+CustomEditViewType=TEditView
+Module=D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\FontProcessor\FontProcessor.pas
+CursorX=1
+CursorY=1358
+TopLine=1341
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\FontProcessor\FontProcessor.pas
+
+[View6]
+CustomEditViewType=TEditView
+Module=D:\Work\EmailParser\Sources\dEXIF\dEXIF.Helper.pas
+CursorX=1
+CursorY=112
+TopLine=98
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=D:\Work\EmailParser\Sources\dEXIF\dEXIF.Helper.pas
+
+[View7]
+CustomEditViewType=TEditView
+Module=D:\Work\EmailParser\Sources\DataModules\DaModule.pas
+CursorX=24
+CursorY=188
+TopLine=179
+LeftCol=1
+Elisions={{5,0},{17,11},{'Region uses'}}
+Bookmarks=
+EditViewName=D:\Work\EmailParser\Sources\DataModules\DaModule.pas
 
 [Watches]
-Count=1
-Watch0='aFileName',256,0,18,1,0,'Watches',1
+Count=0
 
 [WatchWindow]
 WatchColumnWidth=120
@@ -172,8 +202,7 @@ Dockable=1
 StayOnTop=0
 
 [Breakpoints]
-Count=1
-Breakpoint0='c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Threading.pas',981,'',0,1,'',1,0,0,'',1,'','','',0,''
+Count=0
 
 [EmbarcaderoWin32Debugger_AddressBreakpoints]
 Count=0
