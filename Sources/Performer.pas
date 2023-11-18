@@ -318,6 +318,19 @@ begin
         FillStartParameters;
         FIsBreak := False;
 
+{$IFDEF EXTENDED_COMPONENTS}
+        if TGeneral.CurrentProject.UseOCR and not TGeneral.CurrentProject.LanguageOCR.ToString.IsEmpty then
+        begin
+          if not Assigned(FTesseract) then
+            FTesseract := TTesseractOCR.Create(nil);
+          if Assigned(FTesseract) then
+          begin
+            FTesseract.Language := TGeneral.CurrentProject.LanguageOCR;
+            FTesseract.Active := True;
+          end;
+        end;
+{$ENDIF EXTENDED_COMPONENTS}
+
         TThread.NameThreadForDebugging('TPerformer.RefreshAttachment');
         FCount       := 0;
         FFromDBCount := 0;
@@ -948,33 +961,38 @@ begin
     try
       Document.LoadFromFile(aFileName);
       for var i := 1 to Document.PageCount do
+      try
+        PageText := '';
         try
-          PageText := '';
-          try
-            PageList := Document.GetPageElements(i, [etImage], muPixels);
-          except
-            on Err: Exception do
-              LogWriter.Write(ddError, Self, 'GetTextFromPDFFile', Err.Message + sLineBreak + 'PageList not assigned');
-          end;
-          if Assigned(PageList) then
-            for var j := 0 to PageList.Count - 1 do
-              if (PageList.Items[j] is TgtPDFImageElement) and TgtPDFImageElement(PageList.Items[j]).isJPEG then
+          PageList := Document.GetPageElements(i, [etImage], muPixels);
+        except
+          on Err: Exception do
+            LogWriter.Write(ddError, Self, 'GetTextFromPDFFile', Err.Message + sLineBreak + 'PageList not assigned');
+        end;
+        if Assigned(PageList) then
+          for var j := 0 to PageList.Count - 1 do
+            if (PageList.Items[j] is TgtPDFImageElement) and TgtPDFImageElement(PageList.Items[j]).isJPEG then
+            begin
+              if TGeneral.CurrentProject.UseOCR and
+                 not TGeneral.CurrentProject.LanguageOCR.ToString.IsEmpty and
+                 Assigned(FTesseract) then
               begin
                 TgtPDFImageElement(PageList.Items[j]).Image.Seek(0, TSeekOrigin.soBeginning);
                 FTesseract.Picture.LoadFromStream(TgtPDFImageElement(PageList.Items[j]).Image);
                 LogWriter.Write(ddText, Self, 'Begin OCR recognize', Format('Page %d, image %d, file name - %s', [i, j, aFileName]));
-                Application.ProcessMessages;
+//                  Application.ProcessMessages;
                 PageText := PageText + FTesseract.Text.Trim;
                 LogWriter.Write(ddText, Self, 'End OCR recognize', Format('Page %d, image %d, file name - %s', [i, j, aFileName]));
-              end
-              else if (PageList.Items[j] is TgtPDFTextElement) then
-                PageText := PageText + TgtPDFTextElement(PageList.Items[j]).Text.Trim;
-              if not PageText.IsEmpty then
-                Result := Result + PageText + sLineBreak;
-        finally
-          if not Assigned(PageList) then
-            FreeAndNil(PageList);
-        end;
+              end;
+            end
+            else if (PageList.Items[j] is TgtPDFTextElement) then
+              PageText := PageText + TgtPDFTextElement(PageList.Items[j]).Text.Trim;
+            if not PageText.IsEmpty then
+              Result := Result + PageText + sLineBreak;
+      finally
+        if Assigned(PageList) then
+          FreeAndNil(PageList);
+      end;
     except
       on E: Exception do
         LogWriter.Write(ddError, Self, 'GetTextFromPDFFile', 'File name - ' + aFileName);
@@ -1017,12 +1035,10 @@ end;
 function TPerformer.GetEXIFInfo(const aFileName: TFileName): string;
 
   function GetTextFromImage: string;
-  var
-    pict: TPicture;
   begin
     Result := '';
 {$IFDEF EXTENDED_COMPONENTS}
-    pict := TPicture.Create;
+    var pict := TPicture.Create;
     try
       pict.LoadFromFile(aFileName);
       if (pict.Width < 400) or (pict.Height < 600) then
@@ -1031,18 +1047,23 @@ function TPerformer.GetEXIFInfo(const aFileName: TFileName): string;
       FreeAndNil(pict);
     end;
 
-    FCriticalSection.Enter;
-    try
-      FTesseract.Picture.LoadFromFile(aFileName);
-      Application.ProcessMessages;
+    if TGeneral.CurrentProject.UseOCR and
+       not TGeneral.CurrentProject.LanguageOCR.ToString.IsEmpty and
+       Assigned(FTesseract) then
+    begin
+      FCriticalSection.Enter;
       try
-        Result := C_OCR_SEPARATOR + sLineBreak + FTesseract.Text.Trim;
-      except
-        on E: Exception do
-          LogWriter.Write(ddError, Self, 'GetEXIFInfo.GetTextFromImage', 'File name - ' + aFileName);
+        FTesseract.Picture.LoadFromFile(aFileName);
+        Application.ProcessMessages;
+        try
+          Result := C_OCR_SEPARATOR + sLineBreak + FTesseract.Text.Trim;
+        except
+          on E: Exception do
+            LogWriter.Write(ddError, Self, 'GetEXIFInfo.GetTextFromImage', 'File name - ' + aFileName);
+        end;
+      finally
+        FCriticalSection.Leave;
       end;
-    finally
-      FCriticalSection.Leave;
     end;
     LogWriter.Write(ddText, Self, 'GetEXIFInfo.GetTextFromImage', 'File name - ' + aFileName);
 {$ENDIF EXTENDED_COMPONENTS}
