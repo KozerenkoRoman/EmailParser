@@ -53,6 +53,8 @@ uses
   PdfiumCtrl in 'Sources\PDF\PDFiumLib\PdfiumCtrl.pas',
   PdfiumLib in 'Sources\PDF\PDFiumLib\PdfiumLib.pas',
   Performer in 'Sources\Performer.pas',
+  Process.Pool in 'Sources\Common\Process.Pool.pas',
+  Process.Utils in 'Sources\Common\Process.Utils.pas',
   Project.Editor in 'Sources\Project.Editor.pas' {frmProjectEditor},
   Publishers in 'Sources\Publishers.pas',
   Publishers.Interfaces in 'Sources\Publishers.Interfaces.pas',

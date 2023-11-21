@@ -11,7 +11,7 @@ uses
   clHtmlParser, clMailMessage, MailMessage.Helper, Utils, Files.Utils, System.SyncObjs, UHTMLParse,
   Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule, Global.Utils, System.Math, System.ZLib,
   System.Zip, System.Masks, System.StrUtils, InformationDialog, Html.Lib, Vcl.Graphics, UnRAR.Helper,
-  System.Hash, AhoCorasick, Vcl.ComCtrls, ExcelReader.Helper, Vcl.Imaging.jpeg,
+  System.Hash, AhoCorasick, Vcl.ComCtrls, ExcelReader.Helper, Vcl.Imaging.jpeg, Process.Utils,
   {$IFDEF EXTENDED_COMPONENTS}
     TesseractOCR, gtPDFClasses, gtExProPDFDoc, gtCstPDFDoc
   {$ELSE}
@@ -21,7 +21,7 @@ uses
 
 type
   TPerformer = class
-  private
+  strict private
     FAttachmentDir    : TAttachmentDir;
     FCount            : Integer;
     FCriticalSection  : TCriticalSection;
@@ -54,7 +54,7 @@ type
     procedure DoSaveAttachment(Sender: TObject; aBody: TclAttachmentBody; var aFileName: string; var aStreamData: TStream; var Handled: Boolean);
     procedure FillStartParameters;
     procedure ParseFile(const aFileName: TFileName);
-
+  private
     class var FPerformer: TPerformer;
   public
     procedure Start;
