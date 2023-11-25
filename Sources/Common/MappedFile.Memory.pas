@@ -341,7 +341,6 @@ begin
   Result := 0;
   aSize := Length(aBuffer);
   if (aSize > 0) then
-//  Result := ReadMemory(@aBuffer, aSize, aOffset);
     Result := Read(aBuffer[0], aSize, aOffset);
 end;
 

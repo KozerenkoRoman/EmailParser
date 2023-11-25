@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{6788A5D9-7F98-4009-82FE-B4CD1E0F9B68}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="EmailParser.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="OCRBroker.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="EmailParser">
+        <MSBuild Projects="EmailParser.dproj"/>
+    </Target>
+    <Target Name="EmailParser:Clean">
+        <MSBuild Projects="EmailParser.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EmailParser:Make">
+        <MSBuild Projects="EmailParser.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="OCRBroker">
+        <MSBuild Projects="OCRBroker.dproj"/>
+    </Target>
+    <Target Name="OCRBroker:Clean">
+        <MSBuild Projects="OCRBroker.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="OCRBroker:Make">
+        <MSBuild Projects="OCRBroker.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="EmailParser;OCRBroker"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="EmailParser:Clean;OCRBroker:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="EmailParser:Make;OCRBroker:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

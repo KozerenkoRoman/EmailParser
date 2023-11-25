@@ -15,15 +15,28 @@ uses
   Utils.CmdParser in 'Sources\Common\Utils.CmdParser.pas';
 
 var
-  MemoryFile: TMemoryMappedFile;
-  Ocr: TTesseractOCR;
-  OutText: TStringStream;
+  Bytes      : TBytes;
+  CmdParser  : TCmdParser;
+  Id         : string;
+  ImageName  : string;
+  IsHelp     : Boolean;
+  Lang       : string;
+  MemoryFile : TMemoryMappedFile;
+  Ocr        : TTesseractOCR;
+  OutText    : string;
 
-  Lang: string;
-  Id: string;
-  IsHelp: Boolean;
-  ImageName: string;
-  CmdParser: TCmdParser;
+  procedure WriteHelp;
+  begin
+    Writeln('');
+    Writeln('OCRBroker -lang=eng -image="d:\pict.jpg" [-id=123ABC]');
+    Writeln('or');
+    Writeln('OCRBroker -help');
+    Writeln('');
+    Writeln('lang  - the language to use. If none is specified, eng (English) is assumed');
+    Writeln('id    - the memory-mapped file name contains the out contents of file in virtual memory');
+    Writeln('image - the name of the input file. This can be an image file');
+    Flush(Output);
+  end;
 
 begin
   CmdParser := TCmdParser.Create;
@@ -38,61 +51,53 @@ begin
 
   if IsHelp then
   begin
-    Writeln('');
-    Writeln('OCRBroker lang=eng [id=123456] [image=d:\pict.jpg]');
-    Writeln('');
-    Writeln('lang  - the language to use. If none is specified, eng (English) is assumed');
-    Writeln('id    - the memory-mapped file name contains the contents of file in virtual memory');
-    Writeln('image - the name of the input file. This can be an image file');
-    Flush(Output);
-    Exit;
+    WriteHelp;
+    Halt(0);
   end
-  else if Id.IsEmpty and ImageName.IsEmpty then
+  else if ImageName.IsEmpty then
   begin
-    Writeln('Parametr "FileId" or "FileName" not found');
+    Writeln('Parametr "image" not found!');
     Flush(Output);
-    Exit;
+    WriteHelp;
+    Halt(0);
   end
-  else if Lang.IsEmpty then
-    Lang := 'eng';
+  else if not TFile.Exists(ImageName) then
+  begin
+    Writeln('File "' + ImageName + '" not found!');
+    Flush(Output);
+    WriteHelp;
+    Halt(0);
+  end;
 
-  if not Id.IsEmpty then
+  if Lang.IsEmpty then
   begin
-    Writeln('id=' + Id);
-    Flush(Output);
+    Lang := 'eng';
+    Writeln('The "lang" parameter is set to eng (English)');
   end;
 
   Ocr := TTesseractOCR.Create(nil);
   try
     try
       Ocr.LanguageCode := Lang;
-      if not ImageName.IsEmpty and TFile.Exists(ImageName) then
-        Ocr.PictureFileName := ImageName
-      else if not Id.IsEmpty then
-      begin
-        //ToDo
-      end;
-
+      Ocr.PictureFileName := ImageName;
       Ocr.DataPath := ExtractFilePath(Application.ExeName) + 'tessdata';
       Ocr.Active := True;
-      OutText := TStringStream.Create(Ocr.Text);
-      try
-        if not Id.IsEmpty then
-        begin
-          MemoryFile := TMemoryMappedFile.Create(ParamStr(1));
-          try
-            MemoryFile.Open(True);
-            MemoryFile.Write(OutText.Bytes);
-          finally
-            FreeAndNil(MemoryFile);
+      OutText := Ocr.Text;
+      if not Id.IsEmpty then
+      begin
+        MemoryFile := TMemoryMappedFile.Create(Id);
+        try
+          if MemoryFile.Open(True) then
+          begin
+            Bytes := TEncoding.UTF8.GetBytes(OutText);
+            MemoryFile.Write(Bytes);
           end;
-        end
-        else
-          Writeln(OutText.DataString);
-      finally
-        FreeAndNil(OutText);
-      end;
-
+        finally
+          FreeAndNil(MemoryFile);
+        end;
+      end
+      else
+        Writeln(OutText);
     except
       on E: Exception do
       begin
@@ -103,5 +108,4 @@ begin
   finally
     FreeAndNil(Ocr);
   end;
-
 end.

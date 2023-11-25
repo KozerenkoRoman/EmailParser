@@ -81,6 +81,7 @@ implementation
 constructor TPerformer.Create;
 begin
   FCriticalSection := TCriticalSection.Create;
+  TThreadPool.Default.SetMinWorkerThreads(TThread.ProcessorCount * 128);
 end;
 
 destructor TPerformer.Destroy;
@@ -252,7 +253,7 @@ end;
 procedure TPerformer.RefreshEmails;
 var
   arrKeys : TArray<string>;
-  Data     : PResultData;
+  Data    : PResultData;
 begin
   if (TGeneral.EmailList.Count = 0) then
     Exit;
@@ -572,7 +573,7 @@ begin
           LogWriter.Write(ddError, Self, 'ParseFile', E.Message + sLineBreak + Data^.FileName);
       end;
 
-      SetLength(Tasks, 1);
+      SetLength(Tasks, 2);
       Tasks[0] := TTask.Create(
         procedure()
         begin
@@ -587,9 +588,23 @@ begin
                                          E.Message + sLineBreak +
                                          'Email name - ' + Data^.FileName);
             end;
-        end).Start;
+        end, TThreadPool.Default);
 
-      DoParseAttachmentFiles(Data);
+      Tasks[1] := TTask.Create(
+        procedure()
+        begin
+          TThread.NameThreadForDebugging('TPerformer.DoParseAttachmentFiles');
+          try
+            DoParseAttachmentFiles(Data);
+          except
+            on E: Exception do
+              LogWriter.Write(ddError, Self, 'TPerformer.DoParseAttachmentFiles',
+                E.Message + sLineBreak + 'Email name - ' + Data^.FileName);
+          end;
+        end, TThreadPool.Default);
+
+      for var Task in Tasks do
+        Task.Start;
       TTask.WaitForAll(Tasks);
 {$IFDEF DETAILED_LOG}
       LogWriter.Write(ddText, Self, 'ParseFile', 'Email file name - ' + Data^.FileName);
@@ -606,7 +621,7 @@ begin
           DoCopyAttachmentFiles(Data);
           DoDeleteAttachmentFiles(Data);
           TPublishers.ProgressPublisher.CompletedItem(Data);
-        end).Start;
+        end, TThreadPool.Default).Start;
     finally
       TPublishers.ProgressPublisher.Progress;
       FreeAndNil(MailMessage);
@@ -669,7 +684,7 @@ begin
             aData^.Matches[i] := GetMatchCollection(TextRaw, TGeneral.PatternList[i])
           else
             aData^.Matches[i] := GetMatchCollection(TextPlan, TGeneral.PatternList[i]);
-      end);
+      end, TThreadPool.Default);
 
     Tasks[1] := TTask.Create(
       procedure()
@@ -689,7 +704,7 @@ begin
             Attachment^.LengthAlignment;
             TPublishers.ProgressPublisher.CompletedAttach(Attachment);
           end;
-      end);
+      end, TThreadPool.Default);
 
      for var Task in Tasks do
        Task.ExecuteWork;
@@ -969,6 +984,7 @@ begin
           on Err: Exception do
             LogWriter.Write(ddError, Self, 'GetTextFromPDFFile', Err.Message + sLineBreak + 'PageList not assigned');
         end;
+
         if Assigned(PageList) then
           for var j := 0 to PageList.Count - 1 do
             if (PageList.Items[j] is TgtPDFImageElement) and TgtPDFImageElement(PageList.Items[j]).isJPEG then
@@ -1035,6 +1051,8 @@ end;
 function TPerformer.GetEXIFInfo(const aFileName: TFileName): string;
 
   function GetTextFromImage: string;
+  var
+    Text: string;
   begin
     Result := '';
 {$IFDEF EXTENDED_COMPONENTS}
@@ -1051,20 +1069,20 @@ function TPerformer.GetEXIFInfo(const aFileName: TFileName): string;
        not TGeneral.CurrentProject.LanguageOCR.ToString.IsEmpty and
        Assigned(FTesseract) then
     begin
-      FCriticalSection.Enter;
-      try
-        FTesseract.Picture.LoadFromFile(aFileName);
-        Application.ProcessMessages;
-        try
-          Result := C_OCR_SEPARATOR + sLineBreak + FTesseract.Text.Trim;
-        except
-          on E: Exception do
-            LogWriter.Write(ddError, Self, 'GetEXIFInfo.GetTextFromImage', 'File name - ' + aFileName);
-        end;
-      finally
-        FCriticalSection.Leave;
-      end;
+      TThread.Synchronize(nil,
+        procedure
+        begin
+          FTesseract.Picture.LoadFromFile(aFileName);
+          Application.ProcessMessages;
+          try
+            Text := C_OCR_SEPARATOR + sLineBreak + FTesseract.Text.Trim;
+          except
+            on E: Exception do
+              LogWriter.Write(ddError, Self, 'GetEXIFInfo.GetTextFromImage', 'File name - ' + aFileName);
+          end;
+        end);
     end;
+    Result := Text;
     LogWriter.Write(ddText, Self, 'GetEXIFInfo.GetTextFromImage', 'File name - ' + aFileName);
 {$ENDIF EXTENDED_COMPONENTS}
   end;

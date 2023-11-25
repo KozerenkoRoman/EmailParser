@@ -5,222 +5,223 @@ unit UsourceParser;
 // 10 november 2019
 // part of HTML parser project
 
-// Ttokenizer will split the source into HTML tags and text in between
+// TTokenizer will split the Source into HTML tags and text in between
 
 interface
 
-uses classes, sysUtils, strUtils, Generics.collections,
+uses
+  System.Classes, System.SysUtils, System.StrUtils, Generics.Collections,
   UhtmlReference;
 
 type
-  TtokenType = (ttEmpty, ttOpenTag, ttCloseTag, ttCommentTag, ttText);
+  TTokenType = (ttEmpty, ttOpenTag, ttCloseTag, ttCommentTag, ttText);
 
-  Rtoken = record
-    tokenType: TtokenType;
-    startPos: integer; // first position after <
-    endPos: integer; // last position before >
-    tagReference: TtagReference;
-    tag: string;
-    procedure determineTag(var source: string);
+  RToken = record
+    EndPos: Integer; // last position before >
+    StartPos: Integer; // first position after <
+    Tag: string;
+    TagReference: TtagReference;
+    TokenType: TTokenType;
+    procedure DetermineTag(var Source: string);
   end;
 
-  Ttokenizer = class
-    token: Rtoken;
-    source: string;
-    currentPos: integer;
-    sourceLength: integer;
-    doNOTadvance: boolean; // because the current token will be reused
-    function locate(ch: char): integer;
-    function tagString: string;
-    procedure advance;
-    procedure assign(const aSource: string);
-    procedure initialize;
-    procedure LoadFromFile(filename: string);
+  TTokenizer = class
+    CurrentPos: Integer;
+    DoNotAdvance: Boolean; // because the current Token will be reused
+    Source: string;
+    SourceLength: Integer;
+    Token: RToken;
+    function Locate(aCh: Char): Integer;
+    function TagString: string;
+    procedure Advance;
+    procedure Assign(const aSource: string);
+    procedure Initialize;
+    procedure LoadFromFile(aFileName: string);
   private
-    procedure setEOF;
-    function ThereIsText(pStart, pEnd: integer): boolean;
+    procedure SetEOF;
+    function ThereIsText(pStart, pEnd: Integer): Boolean;
   end;
 
 implementation
 
-{ Ttokenizer }
+{ TTokenizer }
 
-function Ttokenizer.ThereIsText(pStart, pEnd: integer): boolean;
+function TTokenizer.ThereIsText(pStart, pEnd: Integer): Boolean;
 // is there a non-blank character in the range ?
 var
-  p: integer;
+  p: Integer;
 begin
   for p := pStart to pEnd do
-    if source[p] > ' ' then
-      exit(true);
-  result := false
+    if Source[p] > ' ' then
+      Exit(true);
+  Result := False
 end;
 
-procedure Ttokenizer.advance;
+procedure TTokenizer.Advance;
 var
-  PosOpenBracket, p: integer;
+  PosOpenBracket, p: Integer;
 begin
-  token.tagReference := trUNPARSED;
-  token.tag := '';
-  doNOTadvance := false;
+  Token.TagReference := trUNPARSED;
+  Token.Tag := '';
+  DoNotAdvance := False;
 
   // find the next <
-  PosOpenBracket := locate('<');
+  PosOpenBracket := Locate('<');
   if PosOpenBracket = 0 then
   begin // EOF
-    if ThereIsText(currentPos, sourceLength) then
+    if ThereIsText(CurrentPos, SourceLength) then
     begin // trailing text
-      token.tokenType := ttText;
-      token.startPos := currentPos;
-      token.endPos := sourceLength;
-      currentPos := token.endPos + 1;
+      Token.TokenType := ttText;
+      Token.StartPos := CurrentPos;
+      Token.EndPos := SourceLength;
+      CurrentPos := Token.EndPos + 1;
     end
     else
-      setEOF;
-    exit;
+      SetEOF;
+    Exit;
   end;
 
-  // if there is text between currentPos and PosOpenBracket then return a ttText
-  if ThereIsText(currentPos, PosOpenBracket - 1) then
+  // if there is text between CurrentPos and PosOpenBracket then return a ttText
+  if ThereIsText(CurrentPos, PosOpenBracket - 1) then
   begin
-    token.tokenType := ttText;
-    token.tag := 'TEXT';
-    token.tagReference := trTEXT;
-    token.startPos := currentPos;
-    token.endPos := PosOpenBracket - 1;
-    currentPos := PosOpenBracket;
-    exit
+    Token.TokenType := ttText;
+    Token.Tag := 'TEXT';
+    Token.TagReference := trTEXT;
+    Token.StartPos := CurrentPos;
+    Token.EndPos := PosOpenBracket - 1;
+    CurrentPos := PosOpenBracket;
+    Exit
   end;
 
-  if PosOpenBracket + 3 > sourceLength then
+  if PosOpenBracket + 3 > SourceLength then
   begin
-    setEOF;
-    exit
+    SetEOF;
+    Exit
   end;
 
-  // if the tag starts with <!, it may be a comment, DOCTYPE or propriority (like Microsofts's <![endif]--> )
-  if (source[PosOpenBracket + 1] = '!') then
-  begin // if the tag signals a comment '<!--' then return start and end of text between open/close comment tags
-    if (source[PosOpenBracket + 2] = '-') AND (source[PosOpenBracket + 3] = '-') then
+  // if the Tag starts with <!, it may be a comment, DOCTYPE or propriority (like Microsofts's <![endif]--> )
+  if (Source[PosOpenBracket + 1] = '!') then
+  begin // if the Tag signals a comment '<!--' then return start and end of text between open/close comment tags
+    if (Source[PosOpenBracket + 2] = '-') AND (Source[PosOpenBracket + 3] = '-') then
     begin
-      token.tokenType := ttCommentTag;
-      token.tag := 'COMMENT';
-      token.startPos := PosOpenBracket + 4;
-      p := posEx('-->', source, token.startPos);
+      Token.TokenType := ttCommentTag;
+      Token.Tag := 'COMMENT';
+      Token.StartPos := PosOpenBracket + 4;
+      p := posEx('-->', Source, Token.StartPos);
       if p = 0 then
-        token.endPos := sourceLength
+        Token.EndPos := SourceLength
       else
-        token.endPos := p - 1;
-      currentPos := token.endPos + 4;
-      exit
+        Token.EndPos := p - 1;
+      CurrentPos := Token.EndPos + 4;
+      Exit
     end
-    else if (UpperCase(source[PosOpenBracket + 2]) <> 'D') // DOCTYPE, treated below as opentag
+    else if (UpperCase(Source[PosOpenBracket + 2]) <> 'D') // DOCTYPE, treated below as opentag
     then
     begin // step over it
-      currentPos := locate('>') + 1;
-      advance;
-      exit;
+      CurrentPos := Locate('>') + 1;
+      Advance;
+      Exit;
     end
   end;
 
-  // is it an end tag? starting with '</'
-  if (source[PosOpenBracket + 1] = '/') then
+  // is it an end Tag? starting with '</'
+  if (Source[PosOpenBracket + 1] = '/') then
   begin
-    token.tokenType := ttCloseTag;
-    token.startPos := PosOpenBracket + 2; // first char after '</'
-    currentPos := token.startPos;
-    p := locate('>');
+    Token.TokenType := ttCloseTag;
+    Token.StartPos := PosOpenBracket + 2; // first Char after '</'
+    CurrentPos := Token.StartPos;
+    p := Locate('>');
     if p = 0 then
-      token.endPos := sourceLength
+      Token.EndPos := SourceLength
     else
-      token.endPos := p - 1; // last char before '>'
-    currentPos := token.endPos + 2;
-    token.determineTag(source);
-    exit
+      Token.EndPos := p - 1; // last Char before '>'
+    CurrentPos := Token.EndPos + 2;
+    Token.DetermineTag(Source);
+    Exit
   end;
 
-  // it is an open tag
-  token.tokenType := ttOpenTag;
-  token.startPos := PosOpenBracket + 1; // first char after '<'
-  currentPos := token.startPos;
-  p := locate('>');
+  // it is an open Tag
+  Token.TokenType := ttOpenTag;
+  Token.StartPos := PosOpenBracket + 1; // first Char after '<'
+  CurrentPos := Token.StartPos;
+  p := Locate('>');
   if p = 0 then
-    token.endPos := sourceLength
+    Token.EndPos := SourceLength
   else
-    token.endPos := p - 1; // last char before '>'
-  currentPos := token.endPos + 2;
-  token.determineTag(source);
+    Token.EndPos := p - 1; // last Char before '>'
+  CurrentPos := Token.EndPos + 2;
+  Token.DetermineTag(Source);
 end;
 
-procedure Ttokenizer.assign(const aSource: string);
+procedure TTokenizer.Assign(const aSource: string);
 begin
-  source := aSource;
+  Source := aSource;
 end;
 
-procedure Ttokenizer.initialize;
+procedure TTokenizer.Initialize;
 begin
-  currentPos := 1;
-  sourceLength := length(source);
+  CurrentPos := 1;
+  SourceLength := Length(Source);
 end;
 
-procedure Ttokenizer.loadFromFile(filename: string);
+procedure TTokenizer.LoadFromFile(aFileName: string);
 var
-  sList: Tstringlist;
+  sList: TStringList;
 begin
-  sList := Tstringlist.Create;
+  sList := TStringList.Create;
   try
-    sList.loadFromFile(filename);
-    source := sList.Text;
+    sList.LoadFromFile(aFileName);
+    Source := sList.Text;
   except
-    source := '<-- ERROR READING FILE ' + filename + ' -->';
+    Source := '<-- ERROR READING FILE ' + aFileName + ' -->';
   end;
   sList.Free;
 end;
 
-function Ttokenizer.locate(ch: char): integer;
+function TTokenizer.Locate(aCh: Char): Integer;
 // same as utilities.pos but simpler
 begin
-  result := currentPos;
-  while (result <= sourceLength) AND (source[result] <> ch) do
-    inc(result);
-  if result > sourceLength then
-    result := 0;
+  Result := CurrentPos;
+  while (Result <= SourceLength) AND (Source[Result] <> aCh) do
+    Inc(Result);
+  if Result > SourceLength then
+    Result := 0;
 end;
 
-procedure Ttokenizer.setEOF;
+procedure TTokenizer.SetEOF;
 begin
-  token.tokenType := ttEmpty;
-  token.startPos := sourceLength + 1;
-  token.endPos := token.startPos;
-  currentPos := token.startPos;
+  Token.TokenType := ttEmpty;
+  Token.StartPos := SourceLength + 1;
+  Token.EndPos := Token.StartPos;
+  CurrentPos := Token.StartPos;
 end;
 
-function Ttokenizer.tagString: string;
-// return the string from token.startPos to token.endPos, trimmed
+function TTokenizer.TagString: string;
+// return the string from Token.StartPos to Token.EndPos, trimmed
 begin
-  result := copy(source, token.startPos, token.endPos - token.startPos + 1);
-  result := trim(result)
+  Result := Copy(Source, Token.StartPos, Token.EndPos - Token.StartPos + 1);
+  Result := Trim(Result)
 end;
 
-{ Rtoken }
+{ RToken }
 
-procedure Rtoken.determineTag(var source: string);
+procedure RToken.DetermineTag(var Source: string);
 var
-  p: integer;
+  p: Integer;
 begin
-  p := startPos;
+  p := StartPos;
   // skip blanks
-  while (p < endPos) AND (source[p] <= ' ') do
-    inc(p);
-  // the tag is next string up to blank
-  tag := '';
-  while (p <= endPos) AND (source[p] > ' ') do
+  while (p < EndPos) AND (Source[p] <= ' ') do
+    Inc(p);
+  // the Tag is next string up to blank
+  Tag := '';
+  while (p <= EndPos) AND (Source[p] > ' ') do
   begin
-    tag := tag + UpperCase(source[p]);
-    inc(p)
+    Tag := Tag + UpperCase(Source[p]);
+    Inc(p)
   end;
 
-  tagReference := getTagReference(tag);
+  TagReference := getTagReference(Tag);
 end;
 
 end.

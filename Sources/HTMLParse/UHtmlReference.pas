@@ -7,10 +7,11 @@ unit UhtmlReference;
 
 interface
 
-uses SysUtils, classes, Generics.collections;
+uses
+  System.SysUtils, System.Classes, Generics.Collections;
 
 type
-  TtagReference = (trA, trABBR, trACRONYM, trADDRESS, trAPPLET, trAREA, trARTICLE, trASIDE, trAUDIO, trB, trBASE,
+  TTagReference = (trA, trABBR, trACRONYM, trADDRESS, trAPPLET, trAREA, trARTICLE, trASIDE, trAUDIO, trB, trBASE,
     trBASEFONT, trBDI, trBDO, trBIG, trBLOCKQUOTE, trBODY, trBR, trBUTTON, trCANVAS, trCAPTION, trCENTER, trCITE,
     trCODE, trCOL, trCOLGROUP, trCOMMENT, trDATA, trDATALIST, trDD, trDEL, trDETAILS, trDFN, trDIALOG, trDIR, trDIV,
     trDL, trDOCTYPE, trDT, trEM, trEMBED, trFIELDSET, trFIGCAPTION, trFIGURE, trFONT, trFOOTER, trFORM, trFRAME,
@@ -23,596 +24,458 @@ type
     trUNPARSED, // reference not set
     trUL, trVAR, trVIDEO, trWBR);
 
-  TtagReferenceSet = set of TtagReference;
+  TtagReferenceSet = set of TTagReference;
 
-function getTagReference(const aTag: string): TtagReference;
-function BodylessTag(tag: TtagReference): boolean;
-function ImplicitCloseTag(currentTag, nextTag: TtagReference): boolean;
-
-const
-  nlcr = #13#10;
+function GetTagReference(const aTag: string): TTagReference;
+function BodylessTag(tag: TTagReference): Boolean;
+function ImplicitCloseTag(currentTag, nextTag: TTagReference): Boolean;
 
 implementation
 
 {
-  // function getTagReference has two implementations. The one commented out here
+  // function GetTagReference has two implementations. The one commented out here
   // uses a Tdictionary of (tagname,tagReference) pairs. If you want to use that,
   // then remove the comment marks around the initialization / finalization sections
   // as well.
 
   type
-  TtagReferenceTable = Tdictionary<string,TtagReference>;
+  TtagReferenceTable = Tdictionary<string,TTagReference>;
 
   var tagReferenceTable: TtagReferenceTable;
 
 
-  function getTagReference(var tag : string) : TtagReference;
+  function GetTagReference(var tag : string) : TTagReference;
   // assign tagReference for speedy tag selection later
   begin
-  if (tag='') OR NOT tagReferenceTable.TryGetValue(tag,result)
-  then result:=trUNKNOWN
+  if (tag='') OR NOT tagReferenceTable.TryGetValue(tag,Result)
+  then Result:=trUNKNOWN
   end;
 }
 
-function getTagReference(const aTag: string): TtagReference;
+function GetTagReference(const aTag: string): TTagReference;
 // assign tagReference for speedy tag selection later
 var
   tag: string;
 begin
-  result := trUNKNOWN;
+  Result := trUNKNOWN;
   if aTag = '' then
-    exit;
+    Exit;
   tag := UpperCase(aTag);
 
   case tag[1] of
     'A':
       if tag = 'A' then
-        result := trA
+        Result := trA
       else
         case tag[2] of
           'B':
             if tag = 'ABBR' then
-              result := trABBR;
+              Result := trABBR;
           'C':
             if tag = 'ACRONYM' then
-              result := trACRONYM;
+              Result := trACRONYM;
           'D':
             if tag = 'ADDRESS' then
-              result := trADDRESS;
+              Result := trADDRESS;
           'P':
             if tag = 'APPLET' then
-              result := trAPPLET;
+              Result := trAPPLET;
           'R':
             if tag = 'AREA' then
-              result := trAREA
+              Result := trAREA
             else if tag = 'ARTICLE' then
-              result := trARTICLE;
+              Result := trARTICLE;
           'S':
             if tag = 'ASIDE' then
-              result := trASIDE;
+              Result := trASIDE;
           'U':
             if tag = 'AUDIO' then
-              result := trAUDIO;
+              Result := trAUDIO;
         end;
     'B':
       if tag = 'B' then
-        result := trB
+        Result := trB
       else
         case tag[2] of
           'A':
             if tag = 'BASE' then
-              result := trBASE
+              Result := trBASE
             else if tag = 'BASEFONT' then
-              result := trBASEFONT;
+              Result := trBASEFONT;
           'D':
             if tag = 'BDI' then
-              result := trBDI
+              Result := trBDI
             else if tag = 'BDO' then
-              result := trBDO;
+              Result := trBDO;
           'I':
             if tag = 'BIG' then
-              result := trBIG;
+              Result := trBIG;
           'L':
             if tag = 'BLOCKQUOTE' then
-              result := trBLOCKQUOTE;
+              Result := trBLOCKQUOTE;
           'O':
             if tag = 'BODY' then
-              result := trBODY;
+              Result := trBODY;
           'R':
             if tag = 'BR' then
-              result := trBR;
+              Result := trBR;
           'U':
             if tag = 'BUTTON' then
-              result := trBUTTON;
+              Result := trBUTTON;
         end;
     'C':
-      if length(tag) > 1 then
+      if Length(tag) > 1 then
         case tag[2] of
           'A':
             if tag = 'CANVAS' then
-              result := trCANVAS
+              Result := trCANVAS
             else if tag = 'CAPTION' then
-              result := trCAPTION;
+              Result := trCAPTION;
           'E':
             if tag = 'CENTER' then
-              result := trCENTER;
+              Result := trCENTER;
           'I':
             if tag = 'CITE' then
-              result := trCITE;
+              Result := trCITE;
           'O':
             if tag = 'CODE' then
-              result := trCODE
+              Result := trCODE
             else if tag = 'COL' then
-              result := trCOL
+              Result := trCOL
             else if tag = 'COLGROUP' then
-              result := trCOLGROUP;
+              Result := trCOLGROUP;
         end;
     'D':
-      if length(tag) > 1 then
+      if Length(tag) > 1 then
         case tag[2] of
           'A':
             if tag = 'DATA' then
-              result := trDATA
+              Result := trDATA
             else if tag = 'DATALIST' then
-              result := trDATALIST;
+              Result := trDATALIST;
           'D':
             if tag = 'DD' then
-              result := trDD;
+              Result := trDD;
           'E':
             if tag = 'DEL' then
-              result := trDEL
+              Result := trDEL
             else if tag = 'DETAILS' then
-              result := trDETAILS;
+              Result := trDETAILS;
           'F':
             if tag = 'DFN' then
-              result := trDFN;
+              Result := trDFN;
           'I':
             if tag = 'DIALOG' then
-              result := trDIALOG
+              Result := trDIALOG
             else if tag = 'DIR' then
-              result := trDIR
+              Result := trDIR
             else if tag = 'DIV' then
-              result := trDIV;
+              Result := trDIV;
           'L':
             if tag = 'DL' then
-              result := trDL;
+              Result := trDL;
           'T':
             if tag = 'DT' then
-              result := trDT;
+              Result := trDT;
         end;
     'E':
       if tag = 'EM' then
-        result := trEM
+        Result := trEM
       else if tag = 'EMBED' then
-        result := trEMBED
+        Result := trEMBED
       else
-        result := trUNKNOWN;
+        Result := trUNKNOWN;
     'F':
-      if length(tag) > 1 then
+      if Length(tag) > 1 then
         case tag[2] of
           'I':
             if tag = 'FIELDSET' then
-              result := trFIELDSET
+              Result := trFIELDSET
             else if tag = 'FIGCAPTION' then
-              result := trFIGCAPTION
+              Result := trFIGCAPTION
             else if tag = 'FIGURE' then
-              result := trFIGURE;
+              Result := trFIGURE;
           'O':
             if tag = 'FONT' then
-              result := trFONT
+              Result := trFONT
             else if tag = 'FOOTER' then
-              result := trFOOTER
+              Result := trFOOTER
             else if tag = 'FORM' then
-              result := trFORM;
+              Result := trFORM;
           'R':
             if tag = 'FRAME' then
-              result := trFRAME
+              Result := trFRAME
             else if tag = 'FRAMESET' then
-              result := trFRAMESET;
+              Result := trFRAMESET;
         end;
     'H':
-      if (length(tag) > 1) then
+      if (Length(tag) > 1) then
         case tag[2] of
           '1':
-            result := trH1;
+            Result := trH1;
           '2':
-            result := trH2;
+            Result := trH2;
           '3':
-            result := trH3;
+            Result := trH3;
           '4':
-            result := trH4;
+            Result := trH4;
           '5':
-            result := trH5;
+            Result := trH5;
           '6':
-            result := trH6;
+            Result := trH6;
           'E':
             if tag = 'HEAD' then
-              result := trHEAD
+              Result := trHEAD
             else if tag = 'HEADER' then
-              result := trHEADER;
+              Result := trHEADER;
           'R':
             if tag = 'HR' then
-              result := trHR;
+              Result := trHR;
           'T':
             if tag = 'HTML' then
-              result := trHTML;
+              Result := trHTML;
         end;
     'I':
       if tag = 'I' then
-        result := trI
+        Result := trI
       else
         case tag[2] of
           'F':
             if tag = 'IFRAME' then
-              result := trIFRAME;
+              Result := trIFRAME;
           'M':
             if tag = 'IMG' then
-              result := trIMG;
+              Result := trIMG;
           'N':
             if tag = 'INPUT' then
-              result := trINPUT
+              Result := trINPUT
             else if tag = 'INS' then
-              result := trINS;
+              Result := trINS;
         end;
     'K':
       if tag = 'KBD' then
-        result := trKBD;
+        Result := trKBD;
     'L':
       if tag = 'LABEL' then
-        result := trLABEL
+        Result := trLABEL
       else if tag = 'LEGEND' then
-        result := trLEGEND
+        Result := trLEGEND
       else if tag = 'LI' then
-        result := trLI
+        Result := trLI
       else if tag = 'LINK' then
-        result := trLINK
+        Result := trLINK
       else
-        result := trUNKNOWN;
+        Result := trUNKNOWN;
     'M':
-      if length(tag) > 1 then
+      if Length(tag) > 1 then
         case tag[2] of
           'A':
             if tag = 'MAIN' then
-              result := trMAIN
+              Result := trMAIN
             else if tag = 'MAP' then
-              result := trMAP
+              Result := trMAP
             else if tag = 'MARK' then
-              result := trMARK;
+              Result := trMARK;
           'E':
             if tag = 'META' then
-              result := trMETA
+              Result := trMETA
             else if tag = 'METER' then
-              result := trMETER;
+              Result := trMETER;
         end;
     'N':
       if tag = 'NAV' then
-        result := trNAV
+        Result := trNAV
       else if tag = 'NOFRAMES' then
-        result := trNOFRAMES
+        Result := trNOFRAMES
       else if tag = 'NOSCRIPT' then
-        result := trNOSCRIPT;
+        Result := trNOSCRIPT;
     'O':
       if tag = 'OBJECT' then
-        result := trOBJECT
+        Result := trOBJECT
       else if tag = 'OL' then
-        result := trOL
+        Result := trOL
       else if tag = 'OPTGROUP' then
-        result := trOPTGROUP
+        Result := trOPTGROUP
       else if tag = 'OPTION' then
-        result := trOPTION
+        Result := trOPTION
       else if tag = 'OUTPUT' then
-        result := trOUTPUT;
+        Result := trOUTPUT;
     'P':
       if tag = 'P' then
-        result := trP
+        Result := trP
       else
         case tag[2] of
           'A':
             if tag = 'PARAM' then
-              result := trPARAM;
+              Result := trPARAM;
           'I':
             if tag = 'PICTURE' then
-              result := trPICTURE;
+              Result := trPICTURE;
           'R':
             if tag = 'PRE' then
-              result := trPRE
+              Result := trPRE
             else if tag = 'PROGRESS' then
-              result := trPROGRESS;
+              Result := trPROGRESS;
         end;
     'Q':
       if tag = 'Q' then
-        result := trQ;
+        Result := trQ;
     'R':
       if tag = 'RP' then
-        result := trRP
+        Result := trRP
       else if tag = 'RT' then
-        result := trRT
+        Result := trRT
       else if tag = 'RUBY' then
-        result := trRUBY
+        Result := trRUBY
       else
-        result := trUNKNOWN;
+        Result := trUNKNOWN;
     'S':
       if tag = 'S' then
-        result := trS
+        Result := trS
       else
         case tag[2] of
           'A':
             if tag = 'SAMP' then
-              result := trSAMP;
+              Result := trSAMP;
           'C':
             if tag = 'SCRIPT' then
-              result := trSCRIPT;
+              Result := trSCRIPT;
           'E':
             if tag = 'SECTION' then
-              result := trSECTION
+              Result := trSECTION
             else if tag = 'SELECT' then
-              result := trSELECT;
+              Result := trSELECT;
           'M':
             if tag = 'SMALL' then
-              result := trSMALL;
+              Result := trSMALL;
           'O':
             if tag = 'SOURCE' then
-              result := trSOURCE;
+              Result := trSOURCE;
           'P':
             if tag = 'SPAN' then
-              result := trSPAN;
+              Result := trSPAN;
           'T':
             if tag = 'STRIKE' then
-              result := trSTRIKE
+              Result := trSTRIKE
             else if tag = 'STRONG' then
-              result := trSTRONG
+              Result := trSTRONG
             else if tag = 'STYLE' then
-              result := trSTYLE;
+              Result := trSTYLE;
           'U':
             if tag = 'SUB' then
-              result := trSUB
+              Result := trSUB
             else if tag = 'SUMMARY' then
-              result := trSUMMARY
+              Result := trSUMMARY
             else if tag = 'SUP' then
-              result := trSUP;
+              Result := trSUP;
           'V':
             if tag = 'SVG' then
-              result := trSVG;
+              Result := trSVG;
         end;
     'T':
-      if length(tag) > 1 then
+      if Length(tag) > 1 then
         case tag[2] of
           'A':
             if tag = 'TABLE' then
-              result := trTABLE;
+              Result := trTABLE;
           'B':
             if tag = 'TBODY' then
-              result := trTBODY;
+              Result := trTBODY;
           'D':
             if tag = 'TD' then
-              result := trTD;
+              Result := trTD;
           'E':
             if tag = 'TEMPLATE' then
-              result := trTEMPLATE
+              Result := trTEMPLATE
             else if tag = 'TEXT' then
-              result := trTEXT
+              Result := trTEXT
             else if tag = 'TEXTAREA' then
-              result := trTEXTAREA;
+              Result := trTEXTAREA;
           'F':
             if tag = 'TFOOT' then
-              result := trTFOOT;
+              Result := trTFOOT;
           'H':
             if tag = 'TH' then
-              result := trTH
+              Result := trTH
             else if tag = 'THEAD' then
-              result := trTHEAD;
+              Result := trTHEAD;
           'I':
             if tag = 'TIME' then
-              result := trTIME
+              Result := trTIME
             else if tag = 'TITLE' then
-              result := trTITLE;
+              Result := trTITLE;
           'R':
             if tag = 'TR' then
-              result := trTR
+              Result := trTR
             else if tag = 'TRACK' then
-              result := trTRACK;
+              Result := trTRACK;
           'T':
             if tag = 'TT' then
-              result := trTT;
+              Result := trTT;
         end;
     'U':
       if tag = 'U' then
-        result := trU
+        Result := trU
       else if tag = 'UL' then
-        result := trUL;
+        Result := trUL;
     'V':
       if tag = 'VAR' then
-        result := trVAR
+        Result := trVAR
       else if tag = 'VIDEO' then
-        result := trVIDEO;
+        Result := trVIDEO;
     'W':
       if tag = 'WBR' then
-        result := trWBR;
+        Result := trWBR;
     '!':
       if tag = '!DOCTYPE' then
-        result := trDOCTYPE
-      else if (length(tag) >= 3) AND (tag[2] = '-') AND (tag[3] = '-') then
-        result := trCOMMENT;
+        Result := trDOCTYPE
+      else if (Length(tag) >= 3) AND (tag[2] = '-') AND (tag[3] = '-') then
+        Result := trCOMMENT;
   end;
 end;
 
-function BodylessTag(tag: TtagReference): boolean;
+function BodylessTag(tag: TTagReference): Boolean;
 // these are the tags that do not have a closing tag
 begin
-  result := tag IN [trDOCTYPE, trBASE, trBASEFONT, trBR, trCOL, trDT, trFRAME, trHR, trIMG, trINPUT, trLINK, trMETA,
-    trPARAM, trWBR]
+  Result := tag IN [trDOCTYPE, trBASE, trBASEFONT, trBR, trCOL, trDT, trFRAME, trHR, trIMG, trINPUT, trLINK, trMETA, trPARAM, trWBR]
 end;
 
-function ImplicitCloseTag(currentTag, nextTag: TtagReference): boolean;
+function ImplicitCloseTag(currentTag, nextTag: TTagReference): Boolean;
 // When parsing an element with currentTag, is the next element with nextTag a child or a sibling?
 // Examples:
 // <IMG><B> : <B> is a sibling. <IMG> is implicitly closed
 // <TR><TD><TD> : the second <TD> is a sibling
 // <TR><TD><TR> : both <TD> and <TR> are closed
 begin
-  result := false;
+  Result := False;
   if currentTag = trUNPARSED then
-    exit(false);
+    Exit(False);
 
   // all elements that do not have a closing tag (like <IMG>) are implicitly closed by any following element
   if BodylessTag(currentTag) then
-    exit(true);
+    Exit(True);
 
   // <TR>,  <THEAD>, <TFOOT> closes <TR>, <TD>, <THEAD>, <TFOOT>
   if nextTag IN [trTR, trTHEAD, trTFOOT] then
-    exit(currentTag IN [trTR, trTD, trTHEAD, trTFOOT]);
+    Exit(currentTag IN [trTR, trTD, trTHEAD, trTFOOT]);
   // <TD> closes <TD>
   if (nextTag = trTD) AND (currentTag = trTD) then
-    exit(true);
+    Exit(True);
 
   // <LI> closes <LI>
   if nextTag = trLI then
-    exit(currentTag = trLI);
+    Exit(currentTag = trLI);
 
   // <DD> and <DT> close <DD>, <DT>
   if (nextTag IN [trDD, trDT]) then
-    exit(currentTag IN [trDD, trDT]);
+    Exit(currentTag IN [trDD, trDT]);
 
   // <HEAD>, <BODY> close each other
   if nextTag IN [trHEAD, trBODY] then
-    exit(currentTag IN [trHEAD, trBODY]);
+    Exit(currentTag IN [trHEAD, trBODY]);
 
   if nextTag = trDOCTYPE then
-    exit(true);
+    Exit(True);
 end;
 
-{
-  // needed only when activating the function getTagReference that is based on
-  // a Tdictionary of (tagname,tagReference) pairs.
-  initialization
-  tagReferenceTable:=TtagReferenceTable.Create(500);
-
-  tagReferenceTable.add('ABBR',trABBR);
-  tagReferenceTable.add('ACRONYM',trACRONYM);
-  tagReferenceTable.add('ADDRESS',trADDRESS);
-  tagReferenceTable.add('APPLET',trAPPLET);
-  tagReferenceTable.add('AREA',trAREA);
-  tagReferenceTable.add('ARTICLE',trARTICLE);
-  tagReferenceTable.add('ASIDE',trASIDE);
-  tagReferenceTable.add('AUDIO',trAUDIO);
-  tagReferenceTable.add('B',trB);
-  tagReferenceTable.add('BASE',trBASE);
-  tagReferenceTable.add('BASEFONT',trBASEFONT);
-  tagReferenceTable.add('BDI',trBDI);
-  tagReferenceTable.add('BDO',trBDO);
-  tagReferenceTable.add('BIG',trBIG);
-  tagReferenceTable.add('BLOCKQUOTE',trBLOCKQUOTE);
-  tagReferenceTable.add('BODY',trBODY);
-  tagReferenceTable.add('BR',trBR);
-  tagReferenceTable.add('BUTTON',trBUTTON);
-  tagReferenceTable.add('CANVAS',trCANVAS);
-  tagReferenceTable.add('CAPTION',trCAPTION);
-  tagReferenceTable.add('CENTER',trCENTER);
-  tagReferenceTable.add('CITE',trCITE);
-  tagReferenceTable.add('CODE',trCODE);
-  tagReferenceTable.add('COL',trCOL);
-  tagReferenceTable.add('COLGROUP',trCOLGROUP);
-  tagReferenceTable.add('COMMENT',trCOMMENT);
-  tagReferenceTable.add('DATA',trDATA);
-  tagReferenceTable.add('DATALIST',trDATALIST);
-  tagReferenceTable.add('DD',trDD);
-  tagReferenceTable.add('DEL',trDEL);
-  tagReferenceTable.add('DETAILS',trDETAILS);
-  tagReferenceTable.add('DFN',trDFN);
-  tagReferenceTable.add('DIALOG',trDIALOG);
-  tagReferenceTable.add('DIR',trDIR);
-  tagReferenceTable.add('DIV',trDIV);
-  tagReferenceTable.add('DL',trDL);
-  tagReferenceTable.add('DOCTYPE',trDOCTYPE);
-  tagReferenceTable.add('DT',trDT);
-  tagReferenceTable.add('EM',trEM);
-  tagReferenceTable.add('EMBED',trEMBED);
-  tagReferenceTable.add('FIELDSET',trFIELDSET);
-  tagReferenceTable.add('FIGCAPTION',trFIGCAPTION);
-  tagReferenceTable.add('FIGURE',trFIGURE);
-  tagReferenceTable.add('FONT',trFONT);
-  tagReferenceTable.add('FOOTER',trFOOTER);
-  tagReferenceTable.add('FORM',trFORM);
-  tagReferenceTable.add('FRAME',trFRAME);
-  tagReferenceTable.add('FRAMESET',trFRAMESET);
-  tagReferenceTable.add('H1',trH1);
-  tagReferenceTable.add('H2',trH2);
-  tagReferenceTable.add('H3',trH3);
-  tagReferenceTable.add('H4',trH4);
-  tagReferenceTable.add('H5',trH5);
-  tagReferenceTable.add('H6',trH6);
-  tagReferenceTable.add('HEAD',trHEAD);
-  tagReferenceTable.add('HEADER',trHEADER);
-  tagReferenceTable.add('HR',trHR);
-  tagReferenceTable.add('HTML',trHTML);
-  tagReferenceTable.add('I',trI);
-  tagReferenceTable.add('IFRAME',trIFRAME);
-  tagReferenceTable.add('IMG',trIMG);
-  tagReferenceTable.add('INPUT',trINPUT);
-  tagReferenceTable.add('INS',trINS);
-  tagReferenceTable.add('KBD',trKBD);
-  tagReferenceTable.add('LABEL',trLABEL);
-  tagReferenceTable.add('LEGEND',trLEGEND);
-  tagReferenceTable.add('LI',trLI);
-  tagReferenceTable.add('LINK',trLINK);
-  tagReferenceTable.add('MAIN',trMAIN);
-  tagReferenceTable.add('MAP',trMAP);
-  tagReferenceTable.add('MARK',trMARK);
-  tagReferenceTable.add('META',trMETA);
-  tagReferenceTable.add('METER',trMETER);
-  tagReferenceTable.add('NAV',trNAV);
-  tagReferenceTable.add('NOFRAMES',trNOFRAMES);
-  tagReferenceTable.add('NOSCRIPT',trNOSCRIPT);
-  tagReferenceTable.add('OBJECT',trOBJECT);
-  tagReferenceTable.add('OL',trOL);
-  tagReferenceTable.add('OPTGROUP',trOPTGROUP);
-  tagReferenceTable.add('OPTION',trOPTION);
-  tagReferenceTable.add('OUTPUT',trOUTPUT);
-  tagReferenceTable.add('P',trP);
-  tagReferenceTable.add('PARAM',trPARAM);
-  tagReferenceTable.add('PICTURE',trPICTURE);
-  tagReferenceTable.add('PRE',trPRE);
-  tagReferenceTable.add('PROGRESS',trPROGRESS);
-  tagReferenceTable.add('Q',trQ);
-  tagReferenceTable.add('RP',trRP);
-  tagReferenceTable.add('RT',trRT);
-  tagReferenceTable.add('RUBY',trRUBY);
-  tagReferenceTable.add('S',trS);
-  tagReferenceTable.add('SAMP',trSAMP);
-  tagReferenceTable.add('SCRIPT',trSCRIPT);
-  tagReferenceTable.add('SECTION',trSECTION);
-  tagReferenceTable.add('SELECT',trSELECT);
-  tagReferenceTable.add('SMALL',trSMALL);
-  tagReferenceTable.add('SOURCE',trSOURCE);
-  tagReferenceTable.add('SPAN',trSPAN);
-  tagReferenceTable.add('STRIKE',trSTRIKE);
-  tagReferenceTable.add('STRONG',trSTRONG);
-  tagReferenceTable.add('STYLE',trSTYLE);
-  tagReferenceTable.add('SUB',trSUB);
-  tagReferenceTable.add('SUMMARY',trSUMMARY);
-  tagReferenceTable.add('SUP',trSUP);
-  tagReferenceTable.add('SVG',trSVG);
-  tagReferenceTable.add('TABLE',trTABLE);
-  tagReferenceTable.add('TBODY',trTBODY);
-  tagReferenceTable.add('TD',trTD);
-  tagReferenceTable.add('TEMPLATE',trTEMPLATE);
-  tagReferenceTable.add('TEXTAREA',trTEXTAREA);
-  tagReferenceTable.add('TFOOT',trTFOOT);
-  tagReferenceTable.add('TH',trTH);
-  tagReferenceTable.add('THEAD',trTHEAD);
-  tagReferenceTable.add('TIME',trTIME);
-  tagReferenceTable.add('TITLE',trTITLE);
-  tagReferenceTable.add('TR',trTR);
-  tagReferenceTable.add('TRACK',trTRACK);
-  tagReferenceTable.add('TT',trTT);
-  tagReferenceTable.add('U',trU);
-  tagReferenceTable.add('UL',trUL);
-  tagReferenceTable.add('VAR',trVAR);
-  tagReferenceTable.add('VIDEO',trVIDEO);
-  tagReferenceTable.add('WBR',trWBR);
-
-
-  finalization
-  tagReferenceTable.Free;
-}
 end.
