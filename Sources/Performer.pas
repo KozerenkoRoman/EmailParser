@@ -332,7 +332,7 @@ begin
         end;
 {$ENDIF EXTENDED_COMPONENTS}
 
-        TThread.NameThreadForDebugging('TPerformer.RefreshAttachment');
+        //TThread.NameThreadForDebugging('TPerformer.FileSearch');
         FCount       := 0;
         FFromDBCount := 0;
         for var i := Low(FileList) to High(FileList) do
@@ -368,6 +368,7 @@ begin
           Attachment^.ParentName := '';
           Attachment^.OwnerNode  := nil;
           TGeneral.AttachmentList.AddOrSetValue(Hash, Attachment);
+          ResultData := Default(TResultData);
           ResultData.Attachments.Add(Hash);
           DoParseAttachmentFiles(@ResultData,
             procedure()
@@ -1106,7 +1107,7 @@ end;
 
 function TPerformer.GetWordText(const aFileName: TFileName): string;
 const
-  C_PATTERN = '(?im)w:p(?=\s+.*?>)|(?<=<w:t).*?>(.*?)</w:t>';
+  C_PATTERN = '(?im)w:p(?=\s+.*?>)|<w:t(\s.*?)*>(.*?)</w:t>';
 var
   Path     : string;
   resArray : TStringArray;
@@ -1145,7 +1146,7 @@ begin
     XmlText := TFile.ReadAllText(TPath.Combine(Path, 'document.xml'), TEncoding.UTF8);
     var PatternData: TPatternData;
     PatternData.Pattern     := C_PATTERN;
-    PatternData.GroupIndex  := 1;
+    PatternData.GroupIndex  := 2;
     PatternData.TypePattern := TTypePattern.tpRegularExpression;
     resArray := GetMatchCollection(XmlText, @PatternData);
     for var item in resArray do

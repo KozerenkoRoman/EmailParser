@@ -1,87 +1,47 @@
 ﻿[Closed Files]
-File_0=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Classes.pas',0,1,1800,1,1817,0,0,,
-File_1=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Threading.pas',0,1,3122,28,3138,0,0,,
-File_2=TSourceModule,'D:\Work\EmailParser\Sources\HTMLParse\UHtmlParse.pas',0,1,1,25,12,0,0,,
-File_3=TSourceModule,'D:\Work\EmailParser\Sources\HTMLParse\USourceParser.pas',0,1,28,1,1,0,0,,
-File_4=TSourceModule,'D:\Work\EmailParser\Sources\HTMLParse\UHtmlReference.pas',0,1,1,1,1,0,0,,
-File_5=TSourceModule,'D:\Work\EmailParser\Sources\HTMLParse\UhtmlChars.pas',0,1,1,14,23,0,0,,
-File_6=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.pas',0,1,664,50,681,0,0,,
-File_7=TSourceModule,'D:\Work\EmailParser\Sources\Common\Process.Utils.pas',0,1,1,1,11,0,0,{{5,0}
-File_8=TSourceModule,'D:\Work\EmailParser\Sources\Common\DebugWriter.pas',0,1,153,1,123,0,0,,
-File_9=TSourceModule,'D:\Work\EmailParser\Sources\Common\Files.Utils.pas',0,1,1,1,24,0,0,{{5,0}
-File_10=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\VCL\Vcl.Forms.pas',0,1,1,15,10,0,0,{{1990,4}
-File_11=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Generics.Collections.pas',0,1,500,1,509,0,0,,
-File_12=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Math.pas',0,1,1,17,12,0,0,,
-File_13=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\SOURCE\RTL\SYS\System.SysUtils.pas',0,1,5184,9,5000,0,0,,
-File_14=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.RTLConsts.pas',0,1,625,1,10,0,0,,
+File_0=TSourceModule,'D:\Work\EmailParser\Sources\Common\Process.Pool.pas',0,1,1,46,8,0,0,,
+File_1=TSourceModule,'D:\Work\Examples\Gnostice Document Studio\Source\DocumentEngines\gtDOCDocument.pas',0,1,133,1,1,0,0,,
+File_2=TSourceModule,'D:\Work\EmailParser\Sources\dEXIF\dEXIF.Helper.pas',0,1,98,1,112,0,0,,
+File_3=TSourceModule,'D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\FontProcessor\FontProcessor.pas',0,1,1368,1,1358,0,0,,
+File_4=TSourceModule,'D:\Work\EmailParser\Sources\Global.Types.pas',0,1,54,29,70,0,0,,
+File_5=TSourceModule,'D:\Work\EmailParser\Sources\Common\Html.Lib.pas',0,1,119,1,137,0,0,{{15,0}
+File_6=TSourceModule,'D:\Work\EmailParser\Sources\Frames\Frame.Project.pas',0,1,143,1,157,0,0,{{5,0}
+File_7=TSourceModule,'D:\Work\EmailParser\Sources\Publishers.pas',0,1,1,1,1,0,0,{{5,0}
+File_8=TSourceModule,'D:\Work\EmailParser\Sources\Common\ArrayHelper.pas',0,1,110,26,125,0,0,,
+File_9=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Classes.pas',0,1,1800,1,1817,0,0,,
+File_10=TSourceModule,'c:\program files (x86)\embarcadero\studio\22.0\source\rtl\common\System.Threading.pas',0,1,3122,28,3138,0,0,,
+File_11=TSourceModule,'D:\Work\EmailParser\Sources\HTMLParse\UHtmlParse.pas',0,1,1,25,12,0,0,,
+File_12=TSourceModule,'D:\Work\EmailParser\Sources\HTMLParse\USourceParser.pas',0,1,28,1,1,0,0,,
+File_13=TSourceModule,'D:\Work\EmailParser\Sources\HTMLParse\UHtmlReference.pas',0,1,1,1,1,0,0,,
+File_14=TSourceModule,'D:\Work\EmailParser\Sources\HTMLParse\UhtmlChars.pas',0,1,1,14,23,0,0,,
 
 [Modules]
 Module0=D:\Work\EmailParser\Sources\Performer.pas
-Module1=D:\Work\EmailParser\Sources\Common\Process.Pool.pas
-Module2=D:\Work\EmailParser\Sources\Global.Types.pas
-Module3=D:\Work\EmailParser\Sources\DataModules\DaImages.pas
-Module4=D:\Work\EmailParser\Sources\Publishers.pas
-Module5=D:\Work\EmailParser\Sources\Common\ArrayHelper.pas
-Module6=D:\Work\EmailParser\Sources\Frames\Frame.AllAttachments.pas
-Module7=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
-Module8=D:\Work\EmailParser\Sources\dEXIF\dEXIF.Helper.pas
-Module9=D:\Work\EmailParser\Sources\Common\Html.Lib.pas
-Module10=D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\FontProcessor\FontProcessor.pas
-Module11=D:\Work\EmailParser\Sources\DataModules\DaModule.pas
-Count=12
+Module1=D:\Work\EmailParser\Sources\DataModules\DaModule.pas
+Module2=D:\Work\EmailParser\Sources\Common\Process.Utils.pas
+Module3=D:\Work\EmailParser\Sources\Frames\Frame.AllAttachments.pas
+Count=4
 EditWindowCount=1
 
 [D:\Work\EmailParser\Sources\Performer.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\Sources\Common\Process.Pool.pas]
+[D:\Work\EmailParser\Sources\DataModules\DaModule.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\Sources\Global.Types.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\DataModules\DaImages.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Publishers.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Common\ArrayHelper.pas]
+[D:\Work\EmailParser\Sources\Common\Process.Utils.pas]
 ModuleType=TSourceModule
 
 [D:\Work\EmailParser\Sources\Frames\Frame.AllAttachments.pas]
 ModuleType=TSourceModule
 
-[D:\Work\EmailParser\Sources\Frames\Frame.Project.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\dEXIF\dEXIF.Helper.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\Common\Html.Lib.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\FontProcessor\FontProcessor.pas]
-ModuleType=TSourceModule
-
-[D:\Work\EmailParser\Sources\DataModules\DaModule.pas]
-ModuleType=TSourceModule
-
 [EditWindow0]
-ViewCount=12
+ViewCount=4
 CurrentEditView=D:\Work\EmailParser\Sources\Performer.pas
 View0=0
 View1=1
 View2=2
 View3=3
-View4=4
-View5=5
-View6=6
-View7=7
-View8=8
-View9=9
-View10=10
-View11=11
 PercentageSizes=1
 Create=1
 Visible=1
@@ -100,13 +60,13 @@ BorlandEditorCodeExplorer=BorlandEditorCodeExplorer@EditWindow0
 TopPanelSize=0
 LeftPanelSize=1896
 LeftPanelClients=PropertyInspector,DockSite3
-LeftPanelData=00000800010100000000760F00000000000001680700000000000001000000002308000009000000446F636B536974653301000000007D1B00001100000050726F7065727479496E73706563746F72FFFFFFFF
+LeftPanelData=000008000101000000000B1300000000000001680700000000000001000000002308000009000000446F636B53697465330100000000DB2100001100000050726F7065727479496E73706563746F72FFFFFFFF
 RightPanelSize=2000
 RightPanelClients=DockSite2,DockSite4
-RightPanelData=0000080001010100000009000000446F636B5369746534760F00000000000001D00700000000000001000000007D1B000009000000446F636B5369746532FFFFFFFF
-BottomPanelSize=1556
+RightPanelData=0000080001010100000009000000446F636B53697465340B1300000000000001D0070000000000000100000000DB21000009000000446F636B5369746532FFFFFFFF
+BottomPanelSize=0
 BottomPanelClients=MessageView,DockSite1
-BottomPanelData=0000080001020100000009000000446F636B5369746531DE440000000000000214060000000000000100000000DE4400000F0000004D65737361676556696577466F726DFFFFFFFF
+BottomPanelData=000008000102020000000F0000004D65737361676556696577466F726D09000000446F636B5369746531DE4400000000000002C9050000000000000100000000DE4400000F0000004D65737361676556696577466F726DFFFFFFFF
 BottomMiddlePanelSize=0
 BottomMiddlePanelClients=DockSite0,GraphDrawingModel
 BottomMiddelPanelData=0000080001020200000009000000446F636B536974653010000000477261706844726177696E67566965773C29000000000000024B06000000000000FFFFFFFF
@@ -114,137 +74,52 @@ BottomMiddelPanelData=0000080001020200000009000000446F636B5369746530100000004772
 [View0]
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\Performer.pas
-CursorX=1
-CursorY=992
-TopLine=940
+CursorX=42
+CursorY=338
+TopLine=344
 LeftCol=1
 Elisions=
-Bookmarks={1,591,33}{2,1075,6}{3,1000,50}
+Bookmarks={1,370,12}{2,882,16}{3,1001,50}
 EditViewName=D:\Work\EmailParser\Sources\Performer.pas
 
 [View1]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Common\Process.Pool.pas
+Module=D:\Work\EmailParser\Sources\Common\Process.Utils.pas
 CursorX=1
 CursorY=5
-TopLine=1
+TopLine=34
 LeftCol=1
 Elisions=
 Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Common\Process.Pool.pas
+EditViewName=D:\Work\EmailParser\Sources\Common\Process.Utils.pas
 
 [View2]
 CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Publishers.pas
-CursorX=1
-CursorY=1
-TopLine=1
-LeftCol=1
-Elisions={{5,0},{11,11},{'Region uses'}}
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Publishers.pas
-
-[View3]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Common\ArrayHelper.pas
-CursorX=26
-CursorY=125
-TopLine=110
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Common\ArrayHelper.pas
-
-[View4]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
-CursorX=1
-CursorY=157
-TopLine=143
-LeftCol=1
-Elisions={{5,0},{14,11},{'Region uses'}}
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.Project.pas
-
-[View5]
-CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\Frames\Frame.AllAttachments.pas
-CursorX=18
-CursorY=522
-TopLine=513
+CursorX=1
+CursorY=583
+TopLine=565
 LeftCol=1
 Elisions={{5,0},{15,11},{'Region uses'}}
 Bookmarks=
 EditViewName=D:\Work\EmailParser\Sources\Frames\Frame.AllAttachments.pas
 
-[View6]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Common\Html.Lib.pas
-CursorX=1
-CursorY=137
-TopLine=119
-LeftCol=1
-Elisions={{15,0},{19,11},{'Region uses'}}
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Common\Html.Lib.pas
-
-[View7]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\Global.Types.pas
-CursorX=29
-CursorY=70
-TopLine=54
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\Global.Types.pas
-
-[View8]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\DataModules\DaImages.pas
-CursorX=1
-CursorY=1
-TopLine=1
-LeftCol=1
-Elisions={{5,0},{9,11},{'Region uses'}}
-Bookmarks=
-EditViewName=Borland.FormDesignerView
-
-[View9]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\FontProcessor\FontProcessor.pas
-CursorX=1
-CursorY=1358
-TopLine=1341
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\PDF\Gnostice PDFtoolkit\PdfProcessor\FontProcessor\FontProcessor.pas
-
-[View10]
-CustomEditViewType=TEditView
-Module=D:\Work\EmailParser\Sources\dEXIF\dEXIF.Helper.pas
-CursorX=1
-CursorY=112
-TopLine=98
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=D:\Work\EmailParser\Sources\dEXIF\dEXIF.Helper.pas
-
-[View11]
+[View3]
 CustomEditViewType=TEditView
 Module=D:\Work\EmailParser\Sources\DataModules\DaModule.pas
-CursorX=24
-CursorY=188
-TopLine=179
+CursorX=23
+CursorY=204
+TopLine=180
 LeftCol=1
 Elisions={{5,0},{17,11},{'Region uses'}}
 Bookmarks=
 EditViewName=D:\Work\EmailParser\Sources\DataModules\DaModule.pas
 
 [Watches]
-Count=0
+Count=3
+Watch0='Attachment',256,0,18,1,0,'Watches',1
+Watch1='Attachment^.FileName',256,0,18,1,0,'Watches',1
+Watch2='Attachment.Hash',256,0,18,1,0,'Watches',1
 
 [WatchWindow]
 WatchColumnWidth=120
@@ -305,11 +180,11 @@ State=0
 Left=0
 Top=0
 Width=2000
-Height=6769
+Height=8462
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=2000
-ClientHeight=6769
+ClientHeight=8462
 TBDockHeight=5904
 LRDockWidth=2349
 Dockable=1
@@ -318,18 +193,18 @@ StayOnTop=0
 [MessageView]
 PercentageSizes=1
 Create=1
-Visible=1
+Visible=0
 Docked=1
 State=0
 Left=0
 Top=28
 Width=9917
-Height=1346
+Height=1269
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=9917
-ClientHeight=1346
-TBDockHeight=1346
+ClientHeight=1269
+TBDockHeight=1269
 LRDockWidth=2771
 Dockable=1
 StayOnTop=0
@@ -362,11 +237,11 @@ State=0
 Left=0
 Top=253
 Width=1896
-Height=4875
+Height=6567
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=1896
-ClientHeight=4875
+ClientHeight=6567
 TBDockHeight=8731
 LRDockWidth=1896
 Dockable=1
@@ -837,11 +712,11 @@ State=0
 Left=0
 Top=28
 Width=2000
-Height=7038
+Height=8731
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=2000
-ClientHeight=7038
+ClientHeight=8731
 TBDockHeight=8731
 LRDockWidth=2000
 Dockable=1
