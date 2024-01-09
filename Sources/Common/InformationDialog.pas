@@ -25,6 +25,7 @@ type
     procedure aSaveExecute(Sender: TObject);
     procedure wbMessageBeforeNavigate2(ASender: TObject; const pDisp: IDispatch; const URL, Flags, TargetFrameName, PostData, Headers: OleVariant; var Cancel: WordBool);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormShow(Sender: TObject);
   private const
     C_ERROR_ACTION_RECOMMENDATION = 'Recommendation';
     C_IDENTITY_NAME = 'InformationDialog';
@@ -144,6 +145,12 @@ end;
 procedure TInformationDialog.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Deinitialize;
+end;
+
+procedure TInformationDialog.FormShow(Sender: TObject);
+begin
+  inherited;
+  wbMessage.SetFocus;
 end;
 
 procedure TInformationDialog.wbMessageBeforeNavigate2(ASender: TObject; const pDisp: IDispatch; const URL, Flags, TargetFrameName, PostData, Headers: OleVariant; var Cancel: WordBool);

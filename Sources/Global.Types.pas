@@ -62,6 +62,7 @@ type
     OwnerNode   : PVirtualNode;
     FromZip     : Boolean;
     FromDB      : Boolean;
+    Size        : Integer;
     procedure Clear;
     procedure LengthAlignment;
     class operator Initialize(out aDest: TAttachment);

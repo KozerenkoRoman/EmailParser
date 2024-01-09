@@ -16,6 +16,7 @@ uses
 
 type
   TframeAllAttachments = class(TframeSource, IProgress, IConfig)
+    aDeleteFile          : TAction;
     aFileBreak           : TAction;
     aFileSearch          : TAction;
     aFilter              : TAction;
@@ -36,15 +37,18 @@ type
     dlgFileSearch        : TFileOpenDialog;
     edtPath              : TButtonedEdit;
     lblPath              : TLabel;
+    miDeleteFile         : TMenuItem;
     miOpenAttachFile     : TMenuItem;
     miOpenEmail          : TMenuItem;
     miOpenLocation       : TMenuItem;
     miOpenParsedText     : TMenuItem;
-    miSep                : TMenuItem;
+    miSep01              : TMenuItem;
+    miSep02              : TMenuItem;
     pnlFileSearch        : TPanel;
     SaveDialogAttachment : TSaveDialog;
     tbFileSearch         : TToolBar;
     procedure aAddUpdate(Sender: TObject);
+    procedure aDeleteFileExecute(Sender: TObject);
     procedure aExpandAllUpdate(Sender: TObject);
     procedure aFileBreakExecute(Sender: TObject);
     procedure aFileSearchExecute(Sender: TObject);
@@ -71,7 +75,9 @@ type
     COL_FILE_NAME    = 3;
     COL_CONTENT_TYPE = 4;
     COL_PARSED_TEXT  = 5;
-    C_FIXED_COLUMNS  = 6;
+    COL_FILE_SIZE    = 6;
+    C_FIXED_COLUMNS  = 7;
+
 
     C_IDENTITY_NAME = 'frameAllAttachment';
   private
@@ -156,6 +162,8 @@ end;
 procedure TframeAllAttachments.Translate;
 begin
   inherited;
+  aDeleteFile.Caption     := TLang.Lang.Translate('DeleteFile');
+  aDeleteFile.Hint        := TLang.Lang.Translate('DeleteFile');
   aFileBreak.Hint         := TLang.Lang.Translate('Break');
   aFileSearch.Hint        := TLang.Lang.Translate('StartSearch');
   aFilter.Hint            := TLang.Lang.Translate('Filter');
@@ -163,17 +171,18 @@ begin
   aOpenAttachFile.Hint    := TLang.Lang.Translate('OpenFile');
   aOpenEmail.Caption      := TLang.Lang.Translate('OpenEmail');
   aOpenEmail.Hint         := TLang.Lang.Translate('OpenEmail');
+  aOpenLocation.Caption   := TLang.Lang.Translate('OpenLocation');
+  aOpenLocation.Hint      := TLang.Lang.Translate('OpenLocation');
   aOpenParsedText.Caption := TLang.Lang.Translate('OpenParsedText');
   aOpenParsedText.Hint    := TLang.Lang.Translate('OpenParsedText');
   aShowSearchBar.Hint     := TLang.Lang.Translate('ShowSearchBar');
-  aOpenLocation.Caption   := TLang.Lang.Translate('OpenLocation');
-  aOpenLocation.Hint      := TLang.Lang.Translate('OpenLocation');
   lblPath.Caption         := TLang.Lang.Translate('Path');
   vstTree.Header.Columns[COL_SHORT_NAME].Text   := TLang.Lang.Translate('FileName');
   vstTree.Header.Columns[COL_EMAIL_NAME].Text   := TLang.Lang.Translate('Email');
   vstTree.Header.Columns[COL_FILE_NAME].Text    := TLang.Lang.Translate('Path');
   vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
   vstTree.Header.Columns[COL_PARSED_TEXT].Text  := TLang.Lang.Translate('Text');
+  vstTree.Header.Columns[COL_FILE_SIZE].Text    := TLang.Lang.Translate('Size');
 end;
 
 procedure TframeAllAttachments.SaveToXML;
@@ -436,6 +445,8 @@ begin
         Result := CompareText(Data1^.ContentType, Data2^.ContentType);
       COL_PARSED_TEXT:
         Result := CompareText(Data1^.ParsedText, Data2^.ParsedText);
+      COL_FILE_SIZE:
+        Result := CompareValue(Data1^.Size, Data2^.Size);
     end;
   end;
 end;
@@ -486,6 +497,9 @@ begin
           CellText := Data^.ContentType;
         COL_PARSED_TEXT:
           CellText := Data^.ParsedText;
+        COL_FILE_SIZE:
+          if (Data^.Size > 0) then
+            CellText := Data^.Size.ToString;
       end;
   end;
 end;
@@ -494,6 +508,36 @@ procedure TframeAllAttachments.aAddUpdate(Sender: TObject);
 begin
   inherited;
   TAction(Sender).Visible := False;
+end;
+
+procedure TframeAllAttachments.aDeleteFileExecute(Sender: TObject);
+var
+  Data: PAttachment;
+  Node : PVirtualNode;
+begin
+  inherited;
+  if not vstTree.IsEmpty and Assigned(vstTree.FocusedNode) then
+  begin
+    Data := TGeneral.AttachmentList.GetItem(PAttachData(vstTree.FocusedNode^.GetData).Hash);
+    if Assigned(Data) then
+      if not Data^.FileName.IsEmpty and
+        (TMessageDialog.ShowQuestion(Format(TLang.Lang.Translate('DeleteFilePrompt'), [Data^.FileName])) = mrYes) then
+      begin
+        if TFile.Exists(Data^.FileName) then
+          TFile.Delete(Data^.FileName);
+        Node := vstTree.FocusedNode;
+        if (Node.Parent <> vstTree.RootNode) then
+          Node := Node.Parent;
+
+        vstTree.DeleteNode(Node);
+        if FIsFiltered then
+          vstTree.FocusedNode := vstTree.GetFirstVisible;
+
+        vstTree.Selected[vstTree.FocusedNode] := True;
+        vstTree.SetFocus;
+        Self.SetFocus;
+      end;
+  end;
 end;
 
 procedure TframeAllAttachments.aExpandAllUpdate(Sender: TObject);

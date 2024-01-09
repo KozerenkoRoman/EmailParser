@@ -363,6 +363,7 @@ begin
             Inc(FFromDBCount);
           end;
           Attachment^.Matches.Count := TGeneral.PatternList.Count;
+          Attachment^.Size       := TFile.GetSize(FileList[i]);
           Attachment^.Hash       := Hash;
           Attachment^.ParentHash := '';
           Attachment^.ParentName := '';

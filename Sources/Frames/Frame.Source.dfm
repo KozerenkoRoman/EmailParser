@@ -60,9 +60,9 @@ inherited frameSource: TframeSource
   end
   object vstTree: TVirtualStringTree [1]
     Left = 0
-    Top = 59
+    Top = 39
     Width = 677
-    Height = 259
+    Height = 279
     Margins.Left = 5
     Margins.Top = 5
     Margins.Right = 5
@@ -100,6 +100,7 @@ inherited frameSource: TframeSource
     OnMeasureItem = vstTreeMeasureItem
     Touch.InteractiveGestures = [igPan, igPressAndTap]
     Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
+    ExplicitTop = 59
     ExplicitWidth = 551
     ExplicitHeight = 225
     Columns = <>
