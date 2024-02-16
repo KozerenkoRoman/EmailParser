@@ -48,7 +48,7 @@ type
   private const
     COL_NAME          = 0;
     COL_INFO          = 1;
-    COL_HASH          = 2;
+    COL_PROJECT_ID    = 2;
     COL_PATH_ATTACH   = 3;
     COL_OPEN_DIALOG   = 4;
     COL_USE_OCR       = 5;
@@ -113,7 +113,7 @@ begin
   aLoadProject.Hint := TLang.Lang.Translate('LoadProject');
   aSetCurrent.Hint  := TLang.Lang.Translate('SetCurrent');
   vstTree.Header.Columns[COL_DELETE_ATTACH].Text := TLang.Lang.Translate('DeleteAttachments');
-  vstTree.Header.Columns[COL_HASH].Text          := TLang.Lang.Translate('Hash');
+  vstTree.Header.Columns[COL_PROJECT_ID].Text    := TLang.Lang.Translate('Id');
   vstTree.Header.Columns[COL_INFO].Text          := TLang.Lang.Translate('Info');
   vstTree.Header.Columns[COL_LANGUAGE_OCR].Text  := TLang.Lang.Translate('LanguageOCR');
   vstTree.Header.Columns[COL_NAME].Text          := TLang.Lang.Translate('Name');
@@ -130,9 +130,9 @@ procedure TframeProject.LoadFromXML;
 
  procedure LoadNode;
   var
-    Data    : PProject;
-    Hash    : string;
-    NewNode : PVirtualNode;
+    Data      : PProject;
+    NewNode   : PVirtualNode;
+    ProjectId : string;
   begin
     TGeneral.XMLParams.CurrentSection := 'Project';
     try
@@ -140,12 +140,12 @@ procedure TframeProject.LoadFromXML;
       begin
         if TGeneral.XMLParams.ReadAttributes then
         begin
-          Hash := TGeneral.XMLParams.Attributes.GetAttributeValue('Hash', '');
-          if not Hash.IsEmpty then
+          ProjectId := TGeneral.XMLParams.Attributes.GetAttributeValue('ProjectId', '');
+          if not ProjectId.IsEmpty then
           begin
             NewNode := vstTree.AddChild(nil);
             Data := NewNode.GetData;
-            Data^.Hash               := Hash;
+            Data^.ProjectId          := ProjectId;
             Data^.Name               := TGeneral.XMLParams.Attributes.GetAttributeValue('Name', '');
             Data^.Info               := TGeneral.XMLParams.Attributes.GetAttributeValue('Info', '');
             Data^.Current            := TGeneral.XMLParams.Attributes.GetAttributeValue('Current', False);
@@ -186,7 +186,7 @@ procedure TframeProject.SaveToXML;
     TGeneral.XMLParams.Attributes.AddNode;
     TGeneral.XMLParams.Attributes.SetAttributeValue('Name', Data^.Name);
     TGeneral.XMLParams.Attributes.SetAttributeValue('Current', Data^.Current);
-    TGeneral.XMLParams.Attributes.SetAttributeValue('Hash', Data^.Hash);
+    TGeneral.XMLParams.Attributes.SetAttributeValue('ProjectId', Data^.ProjectId);
     TGeneral.XMLParams.Attributes.SetAttributeValue('Info', Data^.Info);
     TGeneral.XMLParams.Attributes.SetAttributeValue('PathForAttachments', Data^.PathForAttachments);
     TGeneral.XMLParams.Attributes.SetAttributeValue('DeleteAttachments', Data^.DeleteAttachments);
@@ -228,7 +228,7 @@ begin
   Data := NewNode^.GetData;
   vstTree.Selected[NewNode] := True;
 
-  Data^.Hash := TFileUtils.GetHashString(TPath.GetRandomFileName);
+  Data^.ProjectId := TFileUtils.GetGuid;
   Data^.Name := '';
 end;
 
@@ -242,8 +242,8 @@ begin
     Data := vstTree.FocusedNode^.GetData;
     if Data^.Current then
       TGeneral.CurrentProject := Default(TProject);
-    TGeneral.XMLParams.DeleteKey(TGeneral.XMLParams.GetXPath('Sorter.' + Data^.Hash));
-    TGeneral.XMLParams.DeleteKey(TGeneral.XMLParams.GetXPath('Path.' + Data^.Hash));
+    TGeneral.XMLParams.DeleteKey(TGeneral.XMLParams.GetXPath('Sorter.' + Data^.ProjectId));
+    TGeneral.XMLParams.DeleteKey(TGeneral.XMLParams.GetXPath('Path.' + Data^.ProjectId));
     SaveToXML;
     vstTree.DeleteNode(vstTree.FocusedNode);
     TPublishers.ConfigPublisher.UpdateProject;
@@ -285,7 +285,7 @@ procedure TframeProject.aLoadProjectUpdate(Sender: TObject);
 begin
   inherited;
   TAction(Sender).Enabled := not vstTree.IsEmpty and
-                             not TGeneral.CurrentProject.Hash.IsEmpty;
+                             not TGeneral.CurrentProject.ProjectId.IsEmpty;
 end;
 
 procedure TframeProject.aRefreshExecute(Sender: TObject);
@@ -379,8 +379,8 @@ begin
   Data1 := Node1^.GetData;
   Data2 := Node2^.GetData;
   case Column of
-    COL_HASH:
-      Result := CompareText(Data1^.Hash, Data2^.Hash);
+    COL_PROJECT_ID:
+      Result := CompareText(Data1^.ProjectId, Data2^.ProjectId);
     COL_INFO:
       Result := CompareText(Data1^.Info, Data2^.Info);
     COL_NAME:
@@ -405,7 +405,7 @@ end;
 procedure TframeProject.vstTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
 begin
   inherited;
-  Allowed := (Column in [COL_NAME, COL_INFO, COL_HASH, COL_PATH_ATTACH]);
+  Allowed := (Column in [COL_NAME, COL_INFO, COL_PROJECT_ID, COL_PATH_ATTACH]);
 end;
 
 procedure TframeProject.vstTreeGetImageIndexEx(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: System.UITypes.TImageIndex; var ImageList: TCustomImageList);
@@ -448,8 +448,8 @@ begin
   CellText := '';
   Data := Node^.GetData;
   case Column of
-    COL_HASH:
-      CellText := Data^.Hash;
+    COL_PROJECT_ID:
+      CellText := Data^.ProjectId;
     COL_INFO:
       CellText := Data^.Info;
     COL_NAME:
@@ -472,8 +472,8 @@ begin
       Data^.Info := NewText;
     COL_NAME:
       Data^.Name := NewText;
-    COL_HASH:
-      Data^.Hash := NewText;
+    COL_PROJECT_ID:
+      Data^.ProjectId := NewText;
     COL_PATH_ATTACH:
       Data^.PathForAttachments := NewText;
   end;

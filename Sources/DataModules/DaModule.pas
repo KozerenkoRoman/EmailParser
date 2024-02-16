@@ -23,8 +23,8 @@ type
     qAttachments       : TFDQuery;
     qEmail             : TFDQuery;
     qEmailBodyAndText  : TFDQuery;
-    qInsProject: TFDQuery;
-    qEmails: TFDQuery;
+    qEmails            : TFDQuery;
+    qInsProject        : TFDQuery;
   private
     FThreadEmails: TThreadEmails;
 
@@ -210,7 +210,7 @@ var
   Attachment : PAttachment;
   ResultData : PResultData;
 begin
-  if TGeneral.CurrentProject.Hash.IsEmpty then
+  if TGeneral.CurrentProject.ProjectId.IsEmpty then
   begin
     LogWriter.Write(ddWarning, Self, 'FillAllEmailsRecord', 'Current project is empty');
     Exit;
@@ -220,11 +220,11 @@ begin
 
   LogWriter.Write(ddEnterMethod, Self, 'FillAllEmailsRecord');
   try
-    qEmails.ParamByName('PROJECT_ID').AsString := TGeneral.CurrentProject.Hash;
+    qEmails.ParamByName('PROJECT_ID').AsString := TGeneral.CurrentProject.ProjectId;
     qEmails.Open;
     qEmails.FetchAll;
 
-    qAttachments.ParamByName('PROJECT_ID').AsString := TGeneral.CurrentProject.Hash;
+    qAttachments.ParamByName('PROJECT_ID').AsString := TGeneral.CurrentProject.ProjectId;
     qAttachments.Open;
     qAttachments.FetchAll;
     TPublishers.ProgressPublisher.StartProgress(qEmails.RecordCount + qAttachments.RecordCount);
@@ -235,6 +235,7 @@ begin
       begin
         New(ResultData);
         ResultData.Clear;
+        ResultData.Id          := qEmails.FieldByName('ID').AsString;
         ResultData.Hash        := qEmails.FieldByName('HASH').AsString;
         ResultData.FileName    := qEmails.FieldByName('FILE_NAME').AsString;
         ResultData.ShortName   := qEmails.FieldByName('SHORT_NAME').AsString;
@@ -264,6 +265,7 @@ begin
       while not qAttachments.Eof do
       begin
         New(Attachment);
+        Attachment.ID            := qAttachments.FieldByName('ID').AsString;
         Attachment.ContentID     := qAttachments.FieldByName('CONTENT_ID').AsString;
         Attachment.ContentType   := qAttachments.FieldByName('CONTENT_TYPE').AsString;
         Attachment.FileName      := qAttachments.FieldByName('FILE_NAME').AsString;
@@ -331,10 +333,10 @@ end;
 
 procedure TDaMod.UpdateProject;
 begin
-  if not TGeneral.CurrentProject.Hash.IsEmpty then
+  if not TGeneral.CurrentProject.ProjectId.IsEmpty then
     try
+      qInsProject.ParamByName('ID').AsString   := TGeneral.CurrentProject.ProjectId;
       qInsProject.ParamByName('NAME').AsString := TGeneral.CurrentProject.Name;
-      qInsProject.ParamByName('HASH').AsString := TGeneral.CurrentProject.Hash;
       qInsProject.ParamByName('INFO').AsString := TGeneral.CurrentProject.Info;
       qInsProject.ExecSQL;
     except

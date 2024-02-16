@@ -19,7 +19,7 @@ type
   PProject = ^TProject;
   TProject = record
     Current            : Boolean;
-    Hash               : string;
+    ProjectId          : string;
     Name               : string;
     Info               : string;
     PathForAttachments : string;
@@ -49,6 +49,7 @@ type
 
   PAttachment = ^TAttachment;
   TAttachment = record
+    Id          : string;
     Hash        : string;
     ParentHash  : string;
     ParentName  : string;
@@ -70,6 +71,7 @@ type
 
   PResultData = ^TResultData;
   TResultData = record
+    Id          : string;
     Attachments : TArrayRecord<string>;
     Body        : string;
     FileName    : TFileName;
@@ -212,9 +214,9 @@ type
   end;
 
 const
-  C_ICON_SIZE = 40;
-  C_TOP_COLOR = $001E4DFF;
-  C_PROGRESS_STEP = 50;
+  C_ICON_SIZE     = 40;
+  C_TOP_COLOR     = $001E4DFF;
+  C_PROGRESS_STEP = 10;
   MaxCardinal: Cardinal = $FFFFFFFF;
 
 var
@@ -257,8 +259,8 @@ var
   i: Integer;
   Section: string;
 begin
-  if not CurrentProject.Hash.IsEmpty then
-    Section := 'Path.' + CurrentProject.Hash
+  if not CurrentProject.ProjectId.IsEmpty then
+    Section := 'Path.' + CurrentProject.ProjectId
   else
     Section := 'Path';
   XMLParams.Open;
@@ -289,8 +291,8 @@ var
   i: Integer;
   Section: string;
 begin
-  if not CurrentProject.Hash.IsEmpty then
-    Section := 'Sorter.' + CurrentProject.Hash
+  if not CurrentProject.ProjectId.IsEmpty then
+    Section := 'Sorter.' + CurrentProject.ProjectId
   else
     Section := 'Sorter';
   XMLParams.Open;
@@ -376,8 +378,8 @@ end;
 class operator TAttachment.Initialize(out aDest: TAttachment);
 begin
   aDest.OwnerNode := nil;
-  aDest.FromZip    := False;
-  aDest.FromDB     := False;
+  aDest.FromZip   := False;
+  aDest.FromDB    := False;
 end;
 
 procedure TAttachment.LengthAlignment;

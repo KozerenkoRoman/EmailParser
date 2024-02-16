@@ -10,7 +10,7 @@ uses
   FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
   FireDAC.DApt.Intf, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, System.Generics.Collections,
   System.Threading, System.Types, FireDAC.Stan.Param, FireDAC.Phys.SQLiteWrapper, DaModule.Resources, FireDAC.Phys.SQLite,
-  Utils.Zip;
+  Utils.Zip, Files.Utils;
 {$ENDREGION}
 
 type
@@ -122,9 +122,14 @@ begin
     if IsStartTransaction then
       Commit;
   except
-    if IsStartTransaction then
-      RollBack;
+    on E: Exception do
+    begin
+      LogWriter.Write(ddError, Self, 'CreateTables', E.Message);
+      if IsStartTransaction then
+        RollBack;
+    end;
   end;
+
   FQueryEmail := TFDQuery.Create(nil);
   FQueryEmail.Connection := FConnection;
   FQueryEmail.SQL.Text := rsSQLInsertEmail;
@@ -189,12 +194,15 @@ begin
 
   IsStartTransaction := StartTransaction;
   try
+    if aResultData^.Id.IsEmpty then
+      aResultData^.Id := TFileUtils.GetGuid;
     FQueryEmail.ParamByName('BODY').DataType := ftBlob;
     FQueryEmail.ParamByName('BODY').AsStream := TZipPack.GetCompressStr(aResultData^.Body);
 
     FQueryEmail.ParamByName('PARSED_TEXT').DataType := ftBlob;
     FQueryEmail.ParamByName('PARSED_TEXT').AsStream := TZipPack.GetCompressStr(aResultData^.ParsedText);
 
+    FQueryEmail.ParamByName('ID').AsString           := aResultData^.Id;
     FQueryEmail.ParamByName('HASH').AsString         := aResultData^.Hash;
     FQueryEmail.ParamByName('MESSAGE_ID').AsString   := aResultData^.MessageId;
     FQueryEmail.ParamByName('FILE_NAME').AsString    := aResultData^.FileName;
@@ -206,8 +214,8 @@ begin
     FQueryEmail.ParamByName('ATTACH').AsString       := string.Join(';', aResultData^.Attachments.Items);
     FQueryEmail.ExecSQL;
 
-    FQueryProjEmail.ParamByName('PROJECT_ID').AsString := TGeneral.CurrentProject.Hash;
-    FQueryProjEmail.ParamByName('EMAIL_ID').AsString := aResultData^.Hash;
+    FQueryProjEmail.ParamByName('PROJECT_ID').AsString := TGeneral.CurrentProject.ProjectId;
+    FQueryProjEmail.ParamByName('EMAIL_ID').AsString := aResultData^.Id;
     FQueryProjEmail.ExecSQL;
     if IsStartTransaction then
       Commit;
@@ -238,9 +246,12 @@ begin
   begin
     IsStartTransaction := StartTransaction;
     try
+      if aAttachment^.Id.IsEmpty then
+        aAttachment^.Id := TFileUtils.GetGuid;
+
       FQueryAttachment.ParamByName('PARSED_TEXT').DataType := ftBlob;
       FQueryAttachment.ParamByName('PARSED_TEXT').AsStream := TZipPack.GetCompressStr(aAttachment^.ParsedText);
-
+      FQueryAttachment.ParamByName('ID').AsString           := aAttachment^.Id;
       FQueryAttachment.ParamByName('HASH').AsString         := aAttachment^.Hash;
       FQueryAttachment.ParamByName('PARENT_HASH').AsString  := aParentHash;
       FQueryAttachment.ParamByName('CONTENT_ID').AsString   := aAttachment^.ContentID;
@@ -251,8 +262,8 @@ begin
       FQueryAttachment.ParamByName('IMAGE_INDEX').AsInteger := aAttachment^.ImageIndex;
       FQueryAttachment.ExecSQL;
 
-      FQueryProjAttach.ParamByName('PROJECT_ID').AsString := TGeneral.CurrentProject.Hash;
-      FQueryProjAttach.ParamByName('ATTACHMENT_ID').AsString := aAttachment^.Hash;
+      FQueryProjAttach.ParamByName('PROJECT_ID').AsString    := TGeneral.CurrentProject.ProjectId;
+      FQueryProjAttach.ParamByName('ATTACHMENT_ID').AsString := aAttachment^.Id;
       FQueryProjAttach.ExecSQL;
       if IsStartTransaction then
         Commit;

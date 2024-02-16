@@ -93,7 +93,7 @@ inherited frameProject: TframeProject
         MinWidth = 100
         Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 2
-        Text = 'Hash'
+        Text = 'Project Id'
         Width = 182
       end
       item

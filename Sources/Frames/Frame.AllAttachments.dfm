@@ -221,6 +221,20 @@ inherited frameAllAttachments: TframeAllAttachments
       Action = aFileBreak
       ImageIndex = 12
     end
+    object btnSep06: TToolButton
+      Left = 617
+      Top = 0
+      Width = 8
+      Caption = 'btnSep06'
+      ImageIndex = 63
+      ImageName = 'ExportToHTML_32x32'
+      Style = tbsSeparator
+    end
+    object btnDeleteFile: TToolButton
+      Left = 625
+      Top = 0
+      Action = aDeleteFile
+    end
   end
   inherited alFrame: TActionList
     Left = 100
@@ -311,6 +325,7 @@ inherited frameAllAttachments: TframeAllAttachments
       ImageName = 'DeleteList2_32x32'
       ShortCut = 46
       OnExecute = aDeleteFileExecute
+      OnUpdate = aOpenAttachFileUpdate
     end
   end
   inherited pmFrame: TPopupMenu

@@ -12,13 +12,13 @@ uses
 resourcestring
   rsSQLCreateTables =
                      'create table if not exists PROJECT('                             + sLineBreak +
-                     '  HASH text primary key,'                                        + sLineBreak +
+                     '  ID   varchar(36) primary key,'                                 + sLineBreak +
                      '  NAME text,'                                                    + sLineBreak +
                      '  INFO text);'                                                   + sLineBreak +
-                     'create unique index if not exists UI_PROJECT on PROJECT(HASH);'  + sLineBreak +
 
                      'create table if not exists EMAILS('                              + sLineBreak +
-                     '  HASH         text primary key,'                                + sLineBreak +
+                     '  ID           varchar(36) primary key,'                         + sLineBreak +
+                     '  HASH         text,'                                            + sLineBreak +
                      '  MESSAGE_ID   text,'                                            + sLineBreak +
                      '  FILE_NAME    text,'                                            + sLineBreak +
                      '  SHORT_NAME   text,'                                            + sLineBreak +
@@ -31,13 +31,14 @@ resourcestring
                      '  TIME_STAMP   datetime);'                                       + sLineBreak +
                      'create unique index if not exists UI_EMAILS on EMAILS(HASH);'    + sLineBreak +
 
-                     'create table if not exists PROJECTS_EMAILS('                                         + sLineBreak +
-                     '  PROJECT_ID   text,'                                                                + sLineBreak +
-                     '  EMAIL_ID     text);'                                                               + sLineBreak +
+                     'create table if not exists PROJECTS_EMAILS('                     + sLineBreak +
+                     '  PROJECT_ID   varchar(36),'                                     + sLineBreak +
+                     '  EMAIL_ID     varchar(36));'                                    + sLineBreak +
                      'create unique index if not exists UI_PE on PROJECTS_EMAILS(PROJECT_ID, EMAIL_ID);'   + sLineBreak +
 
                      'create table if not exists ATTACHMENTS('                         + sLineBreak +
-                     '  HASH         text primary key,'                                + sLineBreak +
+                     '  ID           varchar(36) primary key,'                         + sLineBreak +
+                     '  HASH         text,'                                            + sLineBreak +
                      '  PARENT_HASH  text references EMAILS(HASH) on delete cascade,'  + sLineBreak +
                      '  CONTENT_ID   text,'                                            + sLineBreak +
                      '  FILE_NAME    text,'                                            + sLineBreak +
@@ -50,15 +51,15 @@ resourcestring
                      'create index if not exists IDX_PARENT_HASH on ATTACHMENTS(PARENT_HASH ASC);' + sLineBreak +
 
                      'create table if not exists PROJECTS_ATTACHMENTS('                            + sLineBreak +
-                     '  PROJECT_ID    text,'                                                       + sLineBreak +
-                     '  ATTACHMENT_ID text);'                                                      + sLineBreak +
+                     '  PROJECT_ID    varchar(36),'                                                + sLineBreak +
+                     '  ATTACHMENT_ID varchar(36));'                                               + sLineBreak +
                      'create unique index if not exists UI_PA on PROJECTS_ATTACHMENTS(PROJECT_ID, ATTACHMENT_ID);';
 
-  rsSQLInsertEmail = 'insert or ignore into EMAILS(HASH, MESSAGE_ID, FILE_NAME, SHORT_NAME, ATTACH, SUBJECT, BODY, PARSED_TEXT, ADDRESS_FROM, CONTENT_TYPE, TIME_STAMP) ' + sLineBreak +
-                                           'values(:HASH, :MESSAGE_ID, :FILE_NAME, :SHORT_NAME, :ATTACH, :SUBJECT, :BODY, :PARSED_TEXT, :ADDRESS_FROM, :CONTENT_TYPE, :TIME_STAMP)';
+  rsSQLInsertEmail = 'insert or ignore into EMAILS(ID, HASH, MESSAGE_ID, FILE_NAME, SHORT_NAME, ATTACH, SUBJECT, BODY, PARSED_TEXT, ADDRESS_FROM, CONTENT_TYPE, TIME_STAMP) ' + sLineBreak +
+                                           'values(:ID, :HASH, :MESSAGE_ID, :FILE_NAME, :SHORT_NAME, :ATTACH, :SUBJECT, :BODY, :PARSED_TEXT, :ADDRESS_FROM, :CONTENT_TYPE, :TIME_STAMP)';
 
-  rsSQLInsertProject = 'insert or ignore into PROJECT(HASH, NAME, INFO) ' + sLineBreak +
-                     '                        values(:HASH, :NAME, :INFO)';
+  rsSQLInsertProject = 'insert or ignore into PROJECT(ID, NAME, INFO) ' + sLineBreak +
+                     '                        values(:ID, :NAME, :INFO)';
 
   rsSQLInsertProjectsEmails = 'insert or ignore into PROJECTS_EMAILS(PROJECT_ID, EMAIL_ID) ' + sLineBreak +
                                                              'values(:PROJECT_ID, :EMAIL_ID)';
@@ -66,8 +67,8 @@ resourcestring
   rsSQLInsertProjectAttachments ='insert or ignore into PROJECTS_ATTACHMENTS(PROJECT_ID, ATTACHMENT_ID) ' + sLineBreak +
                                                                      'values(:PROJECT_ID, :ATTACHMENT_ID)';
 
-  rsSQLInsertAttachment = 'insert or ignore into ATTACHMENTS(HASH, PARENT_HASH, CONTENT_ID, FILE_NAME, SHORT_NAME, CONTENT_TYPE, PARSED_TEXT, FROM_ZIP, IMAGE_INDEX) ' + sLineBreak +
-                                                     'values(:HASH, :PARENT_HASH, :CONTENT_ID, :FILE_NAME, :SHORT_NAME, :CONTENT_TYPE, :PARSED_TEXT, :FROM_ZIP, :IMAGE_INDEX)';
+  rsSQLInsertAttachment = 'insert or ignore into ATTACHMENTS(ID, HASH, PARENT_HASH, CONTENT_ID, FILE_NAME, SHORT_NAME, CONTENT_TYPE, PARSED_TEXT, FROM_ZIP, IMAGE_INDEX) ' + sLineBreak +
+                                                     'values(:ID, :HASH, :PARENT_HASH, :CONTENT_ID, :FILE_NAME, :SHORT_NAME, :CONTENT_TYPE, :PARSED_TEXT, :FROM_ZIP, :IMAGE_INDEX)';
 
   rsSQLSelectBodyAsParsedText        = 'select PARSED_TEXT from EMAILS where HASH = :HASH';
   rsSQLSelectBodyAsRawText           = 'select BODY from EMAILS where HASH = :HASH';

@@ -23,13 +23,13 @@ type
     cbLanguageOCR         : TComboBox;
     cbUseOCR              : TCheckBox;
     dlgAttachmments       : TFileOpenDialog;
-    edtHash               : TEdit;
+    edtProjectId: TEdit;
     edtInfo               : TEdit;
     edtName               : TEdit;
     edtPath               : TButtonedEdit;
     grdCommonParams       : TGridPanel;
     lblDeleteAttachments  : TLabel;
-    lblHash               : TLabel;
+    lblProjectId: TLabel;
     lblInfo               : TLabel;
     lblLanguageOCR        : TLabel;
     lblName               : TLabel;
@@ -52,18 +52,18 @@ type
     procedure SaveToXML;
 
     function GetDeleteAttachments: Boolean;
-    function GetHash: string;
     function GetInfo: string;
     function GetLanguageOCR: TOCRLanguage;
     function GetName: string;
     function GetPathForAttachments: string;
+    function GetProjectId: string;
     function GetUseOCR: Boolean;
     procedure SetDeleteAttachments(const Value: Boolean);
-    procedure SetHash(const Value: string);
     procedure SetInfo(const Value: string);
     procedure SetLanguageOCR(const Value: TOCRLanguage);
     procedure SetName_(const Value: string);
     procedure SetPathForAttachments(const Value: string);
+    procedure SetProjectId(const Value: string);
     procedure SetUseOCR(const Value: Boolean);
   protected
     function GetIdentityName: string; override;
@@ -75,11 +75,11 @@ type
     procedure Translate; override;
 
     property DeleteAttachments  : Boolean      read GetDeleteAttachments  write SetDeleteAttachments;
-    property Hash               : string       read GetHash               write SetHash;
     property Info               : string       read GetInfo               write SetInfo;
     property LanguageOCR        : TOCRLanguage read GetLanguageOCR        write SetLanguageOCR;
     property Name               : string       read GetName               write SetName_;
     property PathForAttachments : string       read GetPathForAttachments write SetPathForAttachments;
+    property ProjectId          : string       read GetProjectId          write SetProjectId;
     property UseOCR             : Boolean      read GetUseOCR             write SetUseOCR;
   end;
 
@@ -94,7 +94,7 @@ begin
     try
       Initialize;
       DeleteAttachments  := aData^.DeleteAttachments;
-      Hash               := aData^.Hash;
+      ProjectId          := aData^.ProjectId;
       Info               := aData^.Info;
       LanguageOCR        := aData^.LanguageOCR;
       Name               := aData^.Name;
@@ -103,7 +103,7 @@ begin
       if (ShowModal = mrOk) then
       begin
         aData^.DeleteAttachments  := DeleteAttachments;
-        aData^.Hash               := Hash;
+        aData^.ProjectId          := ProjectId;
         aData^.Info               := Info;
         aData^.LanguageOCR        := LanguageOCR;
         aData^.Name               := Name;
@@ -174,7 +174,7 @@ procedure TfrmProjectEditor.Translate;
 begin
   inherited;
   lblDeleteAttachments.Caption  := TLang.Lang.Translate('DeleteAttachments');
-  lblHash.Caption               := TLang.Lang.Translate('Hash');
+  lblProjectId.Caption          := TLang.Lang.Translate('Id');
   lblInfo.Caption               := TLang.Lang.Translate('Info');
   lblLanguageOCR.Caption        := TLang.Lang.Translate('LanguageOCR');
   lblName.Caption               := TLang.Lang.Translate('Name');
@@ -226,9 +226,9 @@ begin
   cbDeleteAttachments.Checked := Value;
 end;
 
-procedure TfrmProjectEditor.SetHash(const Value: string);
+procedure TfrmProjectEditor.SetProjectId(const Value: string);
 begin
-  edtHash.Text := Value;
+  edtProjectId.Text := Value;
 end;
 
 procedure TfrmProjectEditor.SetInfo(const Value: string);
@@ -256,9 +256,9 @@ begin
   Result := cbDeleteAttachments.Checked;
 end;
 
-function TfrmProjectEditor.GetHash: string;
+function TfrmProjectEditor.GetProjectId: string;
 begin
-  Result := edtHash.Text;
+  Result := edtProjectId.Text;
 end;
 
 function TfrmProjectEditor.GetInfo: string;

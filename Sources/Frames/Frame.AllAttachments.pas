@@ -16,7 +16,7 @@ uses
 
 type
   TframeAllAttachments = class(TframeSource, IProgress, IConfig)
-    aDeleteFile          : TAction;
+    aDeleteFile           : TAction;
     aFileBreak           : TAction;
     aFileSearch          : TAction;
     aFilter              : TAction;
@@ -25,6 +25,7 @@ type
     aOpenLocation        : TAction;
     aOpenParsedText      : TAction;
     aShowSearchBar       : TAction;
+    btnDeleteFile        : TToolButton;
     btnFileBreak         : TToolButton;
     btnFileSearch        : TToolButton;
     btnFilter            : TToolButton;
@@ -33,6 +34,7 @@ type
     btnOpenParsedText    : TToolButton;
     btnSep04             : TToolButton;
     btnSep05             : TToolButton;
+    btnSep06             : TToolButton;
     cbExt                : TComboBox;
     dlgFileSearch        : TFileOpenDialog;
     edtPath              : TButtonedEdit;

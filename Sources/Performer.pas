@@ -536,7 +536,7 @@ begin
   Hash := TFileUtils.GetHash(aFileName);
   if not TGeneral.EmailList.ContainsKey(Hash) then
   begin
-    LogWriter.Write(ddText, Self, 'ParseFile', 'File from disk - ' + aFileName);
+    LogWriter.Write(ddText, Self, 'ParseFile', 'File Name - ' + aFileName);
     New(Data);
     Data^.Clear;
     Data^.Hash          := Hash;
@@ -736,7 +736,14 @@ begin
   i := 0;
   while (i <= High(aData.Attachments.Items)) do
   begin
-    if TGeneral.AttachmentList.TryGetValue(aData.Attachments[i], Attachment) then
+    var IsValue : Boolean;
+    FCriticalSection.Enter;
+    try
+      IsValue := TGeneral.AttachmentList.TryGetValue(aData.Attachments[i], Attachment);
+    finally
+      FCriticalSection.Leave;
+    end;
+    if IsValue then
       try
         Attachment.Matches.Count := TGeneral.PatternList.Count;
         Ext := TPath.GetExtension(Attachment.FileName).ToLower;
@@ -921,7 +928,12 @@ begin
       Attachment^.ContentID   := Body.ContentID;
       Attachment^.ContentType := Body.ContentType;
       Attachment^.Matches.Count := TGeneral.PatternList.Count;
-      TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+      FCriticalSection.Enter;
+      try
+        TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+      finally
+        FCriticalSection.Leave;
+      end;
       aData^.Attachments.AddUnique(Attachment^.Hash);
     end;
   end;
@@ -1215,7 +1227,12 @@ begin
         Attachment^.FromZip       := True;
         Attachment^.ContentType   := 'text/sheet';
         Attachment^.ImageIndex    := TExtIcon.eiXls.ToByte;
-        TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+        FCriticalSection.Enter;
+        try
+          TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+        finally
+          FCriticalSection.Leave;
+        end;
         aData^.Attachments.AddUnique(Attachment^.Hash);
         Result := Concat(Result, (i + 1).ToString, '. ', Sheets[i].Title, '<br>');
       end;
@@ -1264,7 +1281,13 @@ begin
           Attachment^.ParentName    := aData^.ShortName;
           Attachment^.Matches.Count := TGeneral.PatternList.Count;
           Attachment^.FromZip       := True;
-          TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+
+          FCriticalSection.Enter;
+          try
+            TGeneral.AttachmentList.AddOrSetValue(Attachment^.Hash, Attachment);
+          finally
+            FCriticalSection.Leave;
+          end;
           aData^.Attachments.AddUnique(Attachment^.Hash);
 
           Result := Concat(Result, (i + 1).ToString, '. ', FileName, '<br>');
@@ -1357,7 +1380,12 @@ begin
             Attachment^.ParentName    := aData^.ShortName;
             Attachment^.Matches.Count := TGeneral.PatternList.Count;
             Attachment^.FromZip       := True;
-            TGeneral.AttachmentList.TryAdd(Attachment^.Hash, Attachment);
+            FCriticalSection.Enter;
+            try
+              TGeneral.AttachmentList.TryAdd(Attachment^.Hash, Attachment);
+            finally
+              FCriticalSection.Leave;
+            end;
             aData^.Attachments.AddUnique(Attachment^.Hash);
             Result := Concat(Result, (i + 1).ToString, '. ', FileName, '<br>');
           end;
