@@ -149,8 +149,8 @@ var
   Section: string;
 begin
   inherited;
-  if not TGeneral.CurrentProject.Hash.IsEmpty then
-    Section := 'Sorter.' + TGeneral.CurrentProject.Hash
+  if not TGeneral.CurrentProject.ProjectId.IsEmpty then
+    Section := 'Sorter.' + TGeneral.CurrentProject.ProjectId
   else
     Section := 'Sorter';
   TGeneral.XMLParams.EraseSection(Section);

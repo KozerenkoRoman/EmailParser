@@ -11,6 +11,26 @@ inherited frameEmails: TframeEmails
   inherited tbMain: TToolBar
     Width = 752
     ExplicitWidth = 752
+    inherited btnExportToExcel: TToolButton
+      Left = 211
+      ExplicitLeft = 211
+    end
+    inherited btnExportToCSV: TToolButton
+      Left = 250
+      ExplicitLeft = 250
+    end
+    inherited btnPrint: TToolButton
+      Left = 289
+      ExplicitLeft = 289
+    end
+    inherited btnSep03: TToolButton
+      Left = 328
+      ExplicitLeft = 328
+    end
+    inherited btnColumnSettings: TToolButton
+      Left = 336
+      ExplicitLeft = 336
+    end
     object btnSep04: TToolButton
       Left = 375
       Top = 0
@@ -67,6 +87,7 @@ inherited frameEmails: TframeEmails
     OnEditing = vstTreeEditing
     OnFocusChanging = vstTreeFocusChanging
     OnPaintText = vstTreePaintText
+    ExplicitTop = 39
     ExplicitWidth = 752
     ExplicitHeight = 307
     Columns = <
@@ -146,6 +167,24 @@ inherited frameEmails: TframeEmails
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 8
         Text = 'Content Type'
+      end
+      item
+        CaptionAlignment = taCenter
+        MaxWidth = 500
+        MinWidth = 100
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 9
+        Text = 'Id'
+        Width = 100
+      end
+      item
+        CaptionAlignment = taCenter
+        MaxWidth = 600
+        MinWidth = 100
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 10
+        Text = 'Hash'
+        Width = 100
       end>
     DefaultText = ''
   end

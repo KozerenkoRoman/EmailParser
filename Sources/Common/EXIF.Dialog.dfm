@@ -26,7 +26,7 @@ object EXIFDialog: TEXIFDialog
       474
       42)
     object btnSave: TBitBtn
-      Left = 247
+      Left = 243
       Top = 1
       Width = 110
       Height = 40
@@ -42,9 +42,10 @@ object EXIFDialog: TEXIFDialog
       Images = DMImage.vil32
       ParentFont = False
       TabOrder = 0
+      ExplicitLeft = 239
     end
     object btnOk: TBitBtn
-      Left = 360
+      Left = 356
       Top = 1
       Width = 110
       Height = 40
@@ -59,6 +60,7 @@ object EXIFDialog: TEXIFDialog
       Images = DMImage.vil32
       ParentFont = False
       TabOrder = 1
+      ExplicitLeft = 352
     end
   end
   object PageControl1: TPageControl
@@ -69,8 +71,6 @@ object EXIFDialog: TEXIFDialog
     ActivePage = tsMain
     Align = alClient
     TabOrder = 1
-    ExplicitWidth = 470
-    ExplicitHeight = 434
     object tsMain: TTabSheet
       Caption = 'Main'
       object ValueListEditor: TValueListEditor
@@ -94,8 +94,8 @@ object EXIFDialog: TEXIFDialog
         ExplicitWidth = 462
         ExplicitHeight = 406
         ColWidths = (
-          208
-          252)
+          230
+          230)
       end
     end
     object tsPhoto: TTabSheet

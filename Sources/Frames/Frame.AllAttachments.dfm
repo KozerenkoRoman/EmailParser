@@ -7,46 +7,51 @@ inherited frameAllAttachments: TframeAllAttachments
   inherited tbMain: TToolBar
     Width = 797
     ExplicitWidth = 797
-    object btnSep04: TToolButton [7]
+    inherited btnExportToExcel: TToolButton
       Left = 211
+      ExplicitLeft = 211
+    end
+    inherited btnExportToCSV: TToolButton
+      Left = 250
+      ExplicitLeft = 250
+    end
+    inherited btnPrint: TToolButton
+      Left = 289
+      ExplicitLeft = 289
+    end
+    inherited btnSep03: TToolButton
+      Left = 328
+      ExplicitLeft = 328
+    end
+    inherited btnColumnSettings: TToolButton
+      Left = 336
+      ExplicitLeft = 336
+    end
+    object btnSep04: TToolButton
+      Left = 375
       Top = 0
       Width = 8
       Style = tbsSeparator
     end
-    object btnFilter: TToolButton [8]
-      Left = 219
+    object btnFilter: TToolButton
+      Left = 383
       Top = 0
       Action = aFilter
     end
-    object btnOpenEmail: TToolButton [9]
-      Left = 258
+    object btnOpenEmail: TToolButton
+      Left = 422
       Top = 0
       Action = aOpenEmail
     end
-    inherited btnExportToExcel: TToolButton
-      Left = 297
-    end
-    object btnOpenAttachFile: TToolButton [11]
-      Left = 336
+    object btnOpenAttachFile: TToolButton
+      Left = 461
       Top = 0
       Action = aOpenAttachFile
     end
-    inherited btnExportToCSV: TToolButton
-      Left = 375
-    end
-    inherited btnPrint: TToolButton
-      Left = 414
-    end
-    object btnOpenParsedText: TToolButton [14]
-      Left = 453
+    object btnOpenParsedText: TToolButton
+      Left = 500
       Top = 0
       Action = aOpenParsedText
-    end
-    inherited btnSep03: TToolButton
-      Left = 492
-    end
-    inherited btnColumnSettings: TToolButton
-      Left = 500
     end
     object btnSep05: TToolButton
       Left = 539
@@ -123,6 +128,42 @@ inherited frameAllAttachments: TframeAllAttachments
         Position = 5
         Text = 'Text'
         Width = 172
+      end
+      item
+        Alignment = taRightJustify
+        CaptionAlignment = taCenter
+        MaxWidth = 500
+        MinWidth = 50
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 6
+        Text = 'Size'
+      end
+      item
+        CaptionAlignment = taCenter
+        MaxWidth = 300
+        MinWidth = 100
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 7
+        Text = 'Id'
+        Width = 100
+      end
+      item
+        CaptionAlignment = taCenter
+        MaxWidth = 300
+        MinWidth = 100
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 8
+        Text = 'Parent Id'
+        Width = 100
+      end
+      item
+        CaptionAlignment = taCenter
+        MaxWidth = 600
+        MinWidth = 100
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 9
+        Text = 'Hash'
+        Width = 100
       end>
     DefaultText = ''
   end
@@ -207,6 +248,20 @@ inherited frameAllAttachments: TframeAllAttachments
       Action = aFileBreak
       ImageIndex = 12
     end
+    object btnSep06: TToolButton
+      Left = 617
+      Top = 0
+      Width = 8
+      Caption = 'btnSep06'
+      ImageIndex = 63
+      ImageName = 'ExportToHTML_32x32'
+      Style = tbsSeparator
+    end
+    object btnDeleteFile: TToolButton
+      Left = 625
+      Top = 0
+      Action = aDeleteFile
+    end
   end
   inherited alFrame: TActionList
     Left = 100
@@ -241,6 +296,7 @@ inherited frameAllAttachments: TframeAllAttachments
       Hint = 'Open Parsed Text'
       ImageIndex = 72
       ImageName = 'email_open'
+      ShortCut = 13
       OnExecute = aOpenParsedTextExecute
       OnUpdate = aOpenAttachFileUpdate
     end
@@ -289,9 +345,18 @@ inherited frameAllAttachments: TframeAllAttachments
       ImageName = 'Open_32x32'
       OnExecute = aOpenLocationExecute
     end
+    object aDeleteFile: TAction
+      Caption = 'Delete File'
+      Hint = 'Delete File'
+      ImageIndex = 62
+      ImageName = 'DeleteList2_32x32'
+      ShortCut = 46
+      OnExecute = aDeleteFileExecute
+      OnUpdate = aOpenAttachFileUpdate
+    end
   end
   inherited pmFrame: TPopupMenu
-    object miSep: TMenuItem
+    object miSep01: TMenuItem
       Caption = '-'
     end
     object miOpenEmail: TMenuItem
@@ -306,6 +371,12 @@ inherited frameAllAttachments: TframeAllAttachments
     end
     object miOpenLocation: TMenuItem
       Action = aOpenLocation
+    end
+    object miSep02: TMenuItem
+      Caption = '-'
+    end
+    object miDeleteFile: TMenuItem
+      Action = aDeleteFile
     end
   end
   object SaveDialogAttachment: TSaveDialog

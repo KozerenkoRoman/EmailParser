@@ -10,6 +10,7 @@ object InformationDialog: TInformationDialog
   Font.Name = 'Tahoma'
   Font.Style = []
   OnClose = FormClose
+  OnShow = FormShow
   TextHeight = 13
   object pnlMain: TPanel
     Left = 0
@@ -54,8 +55,7 @@ object InformationDialog: TInformationDialog
       BevelOuter = bvNone
       ParentBackground = False
       TabOrder = 1
-      ExplicitTop = 434
-      ExplicitWidth = 470
+      ExplicitTop = 438
       DesignSize = (
         474
         42)

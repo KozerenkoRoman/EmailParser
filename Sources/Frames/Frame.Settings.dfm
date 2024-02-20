@@ -1,18 +1,20 @@
 inherited frameSettings: TframeSettings
   Width = 646
-  Height = 412
+  Height = 516
+  Font.Height = -13
+  ParentFont = False
   ExplicitWidth = 646
-  ExplicitHeight = 412
+  ExplicitHeight = 516
   PixelsPerInch = 144
   inherited tbMain: TToolBar
     Width = 646
-    ExplicitWidth = 909
+    ExplicitWidth = 646
   end
   object grdCommonParams: TGridPanel [1]
     Left = 0
     Top = 39
     Width = 646
-    Height = 373
+    Height = 477
     Margins.Top = 6
     Align = alClient
     BevelOuter = bvNone
@@ -47,7 +49,7 @@ inherited frameSettings: TframeSettings
       end
       item
         Column = 0
-        Control = ShapeDividingLine
+        Control = ShapeDividingLine01
         Row = 3
       end
       item
@@ -89,6 +91,51 @@ inherited frameSettings: TframeSettings
         Column = 1
         Control = cbStyle
         Row = 1
+      end
+      item
+        Column = 0
+        Control = ShapeDividingLine02
+        Row = 7
+      end
+      item
+        Column = 0
+        Control = lblHTTPClientActive
+        Row = 8
+      end
+      item
+        Column = 1
+        Control = cbHTTPClientActive
+        Row = 8
+      end
+      item
+        Column = 0
+        Control = lblHost
+        Row = 9
+      end
+      item
+        Column = 0
+        Control = lblPassword
+        Row = 11
+      end
+      item
+        Column = 0
+        Control = lblUser
+        Row = 10
+      end
+      item
+        Column = 1
+        Control = edtHost
+        Row = 9
+      end
+      item
+        Column = 1
+        Control = edtUser
+        Row = 10
+      end
+      item
+        Column = 1
+        Control = edtPassword
+        Row = 11
       end>
     ParentColor = True
     RowCollection = <
@@ -133,14 +180,20 @@ inherited frameSettings: TframeSettings
         Value = 35.000000000000000000
       end
       item
+        SizeStyle = ssAbsolute
+        Value = 35.000000000000000000
+      end
+      item
+        SizeStyle = ssAbsolute
+        Value = 35.000000000000000000
+      end
+      item
         Value = 100.000000000000000000
       end>
     TabOrder = 1
-    ExplicitWidth = 909
-    ExplicitHeight = 386
     DesignSize = (
       646
-      373)
+      477)
     object lblLanguage: TLabel
       AlignWithMargins = True
       Left = 3
@@ -151,9 +204,9 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'Language'
       Layout = tlCenter
-      ExplicitLeft = 265
-      ExplicitWidth = 52
-      ExplicitHeight = 15
+      ExplicitLeft = 260
+      ExplicitWidth = 57
+      ExplicitHeight = 17
     end
     object lblExtensions: TLabel
       AlignWithMargins = True
@@ -165,17 +218,16 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'File extensions to search'
       Layout = tlCenter
-      ExplicitLeft = 189
-      ExplicitTop = 38
-      ExplicitWidth = 128
-      ExplicitHeight = 15
+      ExplicitLeft = 175
+      ExplicitWidth = 142
+      ExplicitHeight = 17
     end
     object cbLanguage: TComboBox
       AlignWithMargins = True
       Left = 330
       Top = 6
-      Width = 140
-      Height = 23
+      Width = 145
+      Height = 25
       Margins.Left = 10
       Margins.Top = 6
       Margins.Bottom = 6
@@ -195,9 +247,9 @@ inherited frameSettings: TframeSettings
       Align = alLeft
       TabOrder = 1
       Text = '*.eml'
-      ExplicitTop = 41
+      ExplicitHeight = 25
     end
-    object ShapeDividingLine: TShape
+    object ShapeDividingLine01: TShape
       Left = 1
       Top = 122
       Width = 318
@@ -215,10 +267,9 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'Max size of log file (Mb)'
       Layout = tlCenter
-      ExplicitLeft = 190
-      ExplicitTop = 248
-      ExplicitWidth = 127
-      ExplicitHeight = 15
+      ExplicitLeft = 174
+      ExplicitWidth = 143
+      ExplicitHeight = 17
     end
     object lblLogWriteActive: TLabel
       AlignWithMargins = True
@@ -230,10 +281,9 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'Is loggin write active'
       Layout = tlCenter
-      ExplicitLeft = 209
-      ExplicitTop = 213
-      ExplicitWidth = 108
-      ExplicitHeight = 15
+      ExplicitLeft = 198
+      ExplicitWidth = 119
+      ExplicitHeight = 17
     end
     object lblNumberOfDays: TLabel
       AlignWithMargins = True
@@ -245,10 +295,9 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'Number of days during which logs are stored'
       Layout = tlCenter
-      ExplicitLeft = 79
-      ExplicitTop = 283
-      ExplicitWidth = 238
-      ExplicitHeight = 15
+      ExplicitLeft = 50
+      ExplicitWidth = 267
+      ExplicitHeight = 17
     end
     object cbLogWriteActive: TCheckBox
       AlignWithMargins = True
@@ -259,7 +308,6 @@ inherited frameSettings: TframeSettings
       Margins.Left = 10
       Align = alLeft
       TabOrder = 2
-      ExplicitTop = 213
     end
     object edtMaxSize: TNumberBox
       AlignWithMargins = True
@@ -277,7 +325,7 @@ inherited frameSettings: TframeSettings
       TabOrder = 3
       SpinButtonOptions.Placement = nbspCompact
       UseMouseWheel = True
-      ExplicitTop = 251
+      ExplicitHeight = 25
     end
     object edtNumberOfDays: TNumberBox
       AlignWithMargins = True
@@ -295,7 +343,7 @@ inherited frameSettings: TframeSettings
       TabOrder = 4
       SpinButtonOptions.Placement = nbspCompact
       UseMouseWheel = True
-      ExplicitTop = 286
+      ExplicitHeight = 25
     end
     object lblStyle: TLabel
       AlignWithMargins = True
@@ -307,24 +355,142 @@ inherited frameSettings: TframeSettings
       Alignment = taRightJustify
       Caption = 'Style'
       Layout = tlCenter
-      ExplicitLeft = 292
-      ExplicitTop = 143
-      ExplicitWidth = 25
-      ExplicitHeight = 15
+      ExplicitLeft = 290
+      ExplicitWidth = 27
+      ExplicitHeight = 17
     end
     object cbStyle: TComboBox
       AlignWithMargins = True
       Left = 330
       Top = 41
       Width = 145
-      Height = 23
+      Height = 25
       Margins.Left = 10
       Margins.Top = 6
       Margins.Bottom = 6
       Align = alLeft
       Style = csDropDownList
       TabOrder = 5
-      ExplicitTop = 146
+      ExplicitTop = 39
+    end
+    object ShapeDividingLine02: TShape
+      Left = 1
+      Top = 262
+      Width = 318
+      Height = 1
+      Anchors = []
+      Pen.Color = clBtnShadow
+      ExplicitLeft = 127
+    end
+    object lblHTTPClientActive: TLabel
+      AlignWithMargins = True
+      Left = 3
+      Top = 283
+      Width = 314
+      Height = 29
+      Align = alClient
+      Alignment = taRightJustify
+      Caption = 'Is HTTP-client active?'
+      Layout = tlCenter
+      ExplicitLeft = 196
+      ExplicitWidth = 121
+      ExplicitHeight = 17
+    end
+    object cbHTTPClientActive: TCheckBox
+      AlignWithMargins = True
+      Left = 330
+      Top = 283
+      Width = 97
+      Height = 29
+      Margins.Left = 10
+      Align = alLeft
+      TabOrder = 6
+      ExplicitLeft = 434
+      ExplicitTop = 114
+      ExplicitHeight = 17
+    end
+    object lblHost: TLabel
+      AlignWithMargins = True
+      Left = 3
+      Top = 318
+      Width = 314
+      Height = 29
+      Align = alClient
+      Alignment = taRightJustify
+      Caption = 'Host'
+      Layout = tlCenter
+      ExplicitLeft = 290
+      ExplicitWidth = 27
+      ExplicitHeight = 17
+    end
+    object lblPassword: TLabel
+      AlignWithMargins = True
+      Left = 3
+      Top = 388
+      Width = 314
+      Height = 29
+      Align = alClient
+      Alignment = taRightJustify
+      Caption = 'Password'
+      Layout = tlCenter
+      ExplicitLeft = 261
+      ExplicitWidth = 56
+      ExplicitHeight = 17
+    end
+    object lblUser: TLabel
+      AlignWithMargins = True
+      Left = 3
+      Top = 353
+      Width = 314
+      Height = 29
+      Align = alClient
+      Alignment = taRightJustify
+      Caption = 'User'
+      Layout = tlCenter
+      ExplicitLeft = 290
+      ExplicitWidth = 27
+      ExplicitHeight = 17
+    end
+    object edtHost: TEdit
+      AlignWithMargins = True
+      Left = 330
+      Top = 321
+      Width = 207
+      Height = 23
+      Margins.Left = 10
+      Margins.Top = 6
+      Margins.Bottom = 6
+      Align = alLeft
+      TabOrder = 7
+    end
+    object edtUser: TEdit
+      AlignWithMargins = True
+      Left = 330
+      Top = 356
+      Width = 121
+      Height = 23
+      Margins.Left = 10
+      Margins.Top = 6
+      Margins.Bottom = 6
+      Align = alLeft
+      TabOrder = 8
+      ExplicitLeft = 422
+      ExplicitTop = 110
+      ExplicitHeight = 25
+    end
+    object edtPassword: TEdit
+      AlignWithMargins = True
+      Left = 330
+      Top = 391
+      Width = 121
+      Height = 23
+      Margins.Left = 10
+      Margins.Top = 6
+      Margins.Bottom = 6
+      Align = alLeft
+      PasswordChar = '*'
+      TabOrder = 9
+      ExplicitHeight = 25
     end
   end
   inherited alFrame: TActionList

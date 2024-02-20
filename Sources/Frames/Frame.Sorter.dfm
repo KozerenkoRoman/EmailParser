@@ -10,7 +10,7 @@ inherited frameSorter: TframeSorter
   end
   inherited vstTree: TVirtualStringTree
     Width = 656
-    Height = 250
+    Height = 270
     Header.MainColumn = 0
     Images = DMImage.vil16
     OnCompareNodes = vstTreeCompareNodes

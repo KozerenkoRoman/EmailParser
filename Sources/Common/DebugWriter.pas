@@ -25,7 +25,7 @@ type
   private const
     C_FOLDER_LOG : string = 'log\';
     C_TAG_LINK   : string = '<br><a href="%s">Next log file</a>';
-  private
+  strict private
     FCountFiles   : Integer;
     FBaseFileName : string;
     FFileName     : TFileName;
@@ -48,10 +48,7 @@ type
   end;
 
   TLogWriter = class
-  private const
-    C_CHAR_ENTER     : Char = #13;
-    C_CHAR_LINE_FEED : Char = #10;
-  private
+  strict private
     FActive      : Boolean;
     FCountOfDays : Integer;
     FFileWriter  : TFileWriter;
@@ -66,22 +63,18 @@ type
 
     property LineCount: Integer read GetLineCount write FLineCount;
   private const
+    C_CHAR_ENTER     : Char = #13;
+    C_CHAR_LINE_FEED : Char = #10;
+    C_DATE_FORMAT      = 'DD.MM.YYYY hh:mm:ss.zzz';
+    C_IMG_ENTER_HTM    = 'img-enter';
+    C_IMG_ERROR_HTM    = 'img-err';
+    C_IMG_EXIT_HTM     = 'img-exit';
     C_TABLE_TD_TAG     = '<TD class="%s"></TD><TD>%s</TD><TD>%s</TD><TD>%s</TD><TD>%s</TD><TD>%s</TD><TD>%s</TD></TR>';
     C_TABLE_ERROR_TAG  = '<TR class="err">' + C_TABLE_TD_TAG;
     C_TABLE_METHOD_TAG = '<TR class="met">' + C_TABLE_TD_TAG;
     C_TABLE_OBJECT_TAG = '<TR class="obj">' + C_TABLE_TD_TAG;
     C_TABLE_TEXT_TAG   = '<TR class="txt">' + C_TABLE_TD_TAG;
     C_TABLE_WARN_TAG   = '<TR class="warn">' + C_TABLE_TD_TAG;
-  public const
-    C_IMG_ENTER_HTM = 'img-enter';
-    C_IMG_ERROR_HTM = 'img-err';
-    C_IMG_EXIT_HTM  = 'img-exit';
-    C_DATE_FORMAT   = 'DD.MM.YYYY hh:mm:ss.zzz';
-
-//    C_KEY_COUNT_OF_DAYS = 'CountOfDays';
-//    C_KEY_IS_ACTIVE     = 'IsActive';
-//    C_KEY_MAX_SIZE      = 'MaxSizeOfLogFile';
-//    C_SECTION_DEBUG     = 'Debug';
   public
     constructor Create;
     destructor Destroy; override;

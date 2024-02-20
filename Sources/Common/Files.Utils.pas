@@ -28,6 +28,7 @@ type
     class function CheckSignature(const aFileName: string; const aSignature: TFileSignature): Boolean;
     class function GetCmdLineValue(aCmdLine, aArg: string; aSwitch, aSeparator: Char): string;
     class function GetCorrectFileName(const aPath, aFileName: string): string;
+    class function GetGuid: string; inline;
     class function GetHash(const aFileName: string): string;
     class function GetHashString(const aParsedText: string): string;
     class function GetShortPath(const aFileName: string): string; inline;
@@ -119,14 +120,19 @@ begin
   end;
 end;
 
+class function TFileUtils.GetGuid: string;
+begin
+  Result := TGUID.NewGuid.ToString().Replace('{', '').Replace('}', '').ToLower;
+end;
+
 class function TFileUtils.GetHash(const aFileName: string): string;
 begin
-  Result := THashSHA1.GetHashStringFromFile(aFileName);
+  Result := THashSHA2.Create(SHA256).GetHashStringFromFile(aFileName);
 end;
 
 class function TFileUtils.GetHashString(const aParsedText: string): string;
 begin
-  Result := THashSHA1.GetHashString(aParsedText);
+  Result := THashSHA2.Create(SHA256).GetHashString(aParsedText);
 end;
 
 class procedure TFileUtils.ShellOpen(const aUrl: string; const aParams: string = '');

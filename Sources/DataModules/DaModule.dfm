@@ -61,7 +61,8 @@ object DaMod: TDaMod
   object qAttachments: TFDQuery
     Connection = Connection
     SQL.Strings = (
-      'select a.HASH, '
+      'select a.ID,'
+      '       a.HASH, '
       '       a.PARENT_HASH, '
       '       e.SHORT_NAME as PARENT_NAME,'
       '       a.CONTENT_ID, '
@@ -72,7 +73,7 @@ object DaMod: TDaMod
       '       a.IMAGE_INDEX'
       'from projects_attachments p,'
       '     attachments a left join emails e on a.PARENT_HASH = e.HASH'
-      'where  a.HASH = p.ATTACHMENT_ID and'
+      'where  a.ID = p.ATTACHMENT_ID and'
       '       p.PROJECT_ID = :PROJECT_ID')
     Left = 320
     Top = 88
@@ -87,13 +88,13 @@ object DaMod: TDaMod
   object qInsProject: TFDQuery
     Connection = Connection
     SQL.Strings = (
-      'insert or ignore into PROJECT(HASH, NAME, INFO)'
-      '                       values(:HASH, :NAME, :INFO)')
+      'insert or ignore into PROJECT(ID, NAME, INFO)'
+      '                       values(:ID, :NAME, :INFO)')
     Left = 320
     Top = 160
     ParamData = <
       item
-        Name = 'HASH'
+        Name = 'ID'
         DataType = ftString
         ParamType = ptInput
         Value = Null
@@ -114,7 +115,8 @@ object DaMod: TDaMod
   object qEmails: TFDQuery
     Connection = Connection
     SQL.Strings = (
-      'select HASH,'
+      'select ID,'
+      '       HASH,'
       '       MESSAGE_ID,'
       '       FILE_NAME,'
       '       SHORT_NAME,'
@@ -125,7 +127,7 @@ object DaMod: TDaMod
       '       TIME_STAMP'
       'from EMAILS e,'
       '     PROJECTS_EMAILS p '
-      'where e.HASH = p.EMAIL_ID'
+      'where e.ID = p.EMAIL_ID'
       '  and p.PROJECT_ID = :PROJECT_ID')
     Left = 320
     Top = 16

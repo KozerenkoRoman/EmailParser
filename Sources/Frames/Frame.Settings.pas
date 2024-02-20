@@ -14,20 +14,29 @@ uses
 
 type
   TframeSettings = class(TFrameCustom)
-    cbLanguage        : TComboBox;
-    cbLogWriteActive  : TCheckBox;
-    cbStyle           : TComboBox;
-    edtExtensions     : TEdit;
-    edtMaxSize        : TNumberBox;
-    edtNumberOfDays   : TNumberBox;
-    grdCommonParams   : TGridPanel;
-    lblExtensions     : TLabel;
-    lblLanguage       : TLabel;
-    lblLogWriteActive : TLabel;
-    lblMaxSize        : TLabel;
-    lblNumberOfDays   : TLabel;
-    lblStyle          : TLabel;
-    ShapeDividingLine : TShape;
+    cbHTTPClientActive  : TCheckBox;
+    cbLanguage          : TComboBox;
+    cbLogWriteActive    : TCheckBox;
+    cbStyle             : TComboBox;
+    edtExtensions       : TEdit;
+    edtHost             : TEdit;
+    edtMaxSize          : TNumberBox;
+    edtNumberOfDays     : TNumberBox;
+    edtPassword         : TEdit;
+    edtUser             : TEdit;
+    grdCommonParams     : TGridPanel;
+    lblExtensions       : TLabel;
+    lblHost             : TLabel;
+    lblHTTPClientActive : TLabel;
+    lblLanguage         : TLabel;
+    lblLogWriteActive   : TLabel;
+    lblMaxSize          : TLabel;
+    lblNumberOfDays     : TLabel;
+    lblPassword         : TLabel;
+    lblStyle            : TLabel;
+    lblUser             : TLabel;
+    ShapeDividingLine01 : TShape;
+    ShapeDividingLine02 : TShape;
     procedure aRefreshExecute(Sender: TObject);
     procedure aSaveExecute(Sender: TObject);
   private const
@@ -80,6 +89,7 @@ begin
   lblMaxSize.Caption        := TLang.Lang.Translate('MaxSizeLogFile');
   lblNumberOfDays.Caption   := TLang.Lang.Translate('NumberOfDays');
   lblStyle.Caption          := TLang.Lang.Translate('Style');
+  lblHTTPClientActive.Caption := TLang.Lang.Translate('IsHTTPClientActive');
 end;
 
 function TframeSettings.GetIdentityName: string;
@@ -90,23 +100,36 @@ end;
 procedure TframeSettings.LoadFromXML;
 begin
   inherited;
-  cbLanguage.ItemIndex     := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0);
-  cbLogWriteActive.Checked := TGeneral.XMLParams.ReadBool(C_SECTION_DEBUG, C_KEY_IS_ACTIVE, True);
-  edtExtensions.Text       := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
-  edtMaxSize.ValueInt      := TGeneral.XMLParams.ReadInteger(C_SECTION_DEBUG, C_KEY_MAX_SIZE, 1);
-  edtNumberOfDays.ValueInt := TGeneral.XMLParams.ReadInteger(C_SECTION_DEBUG, C_KEY_COUNT_OF_DAYS, 30);
-  cbStyle.ItemIndex        := cbStyle.Items.IndexOf(TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Style', TStyleManager.cSystemStyleName));
+
+  cbLanguage.ItemIndex       := TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0);
+  cbLogWriteActive.Checked   := TGeneral.XMLParams.ReadBool(C_SECTION_DEBUG, C_KEY_IS_ACTIVE, True);
+  cbStyle.ItemIndex          := cbStyle.Items.IndexOf(TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Style', TStyleManager.cSystemStyleName));
+  edtExtensions.Text         := TGeneral.XMLParams.ReadString(C_SECTION_MAIN, 'Extensions', '*.eml');
+  edtMaxSize.ValueInt        := TGeneral.XMLParams.ReadInteger(C_SECTION_DEBUG, C_KEY_MAX_SIZE, 1);
+  edtNumberOfDays.ValueInt   := TGeneral.XMLParams.ReadInteger(C_SECTION_DEBUG, C_KEY_COUNT_OF_DAYS, 30);
+
+  cbHTTPClientActive.Checked := TGeneral.XMLParams.ReadBool(C_SECTION_HTTP, C_KEY_IS_ACTIVE, False);
+  edtHost.Text               := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_HOST, '');
+  edtUser.Text               := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_USER, '');
+  edtPassword.Text           := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_PASSWORD, '');
 end;
 
 procedure TframeSettings.SaveToXML;
 begin
   inherited;
-  TGeneral.XMLParams.WriteBool(C_SECTION_DEBUG, C_KEY_IS_ACTIVE, cbLogWriteActive.Checked, lblLogWriteActive.Caption);
-  TGeneral.XMLParams.WriteInteger(C_SECTION_DEBUG, C_KEY_MAX_SIZE, edtMaxSize.ValueInt, lblMaxSize.Caption);
-  TGeneral.XMLParams.WriteInteger(C_SECTION_DEBUG, C_KEY_COUNT_OF_DAYS, edtNumberOfDays.ValueInt, lblNumberOfDays.Caption);
   TGeneral.XMLParams.WriteInteger(C_SECTION_MAIN, 'Language', cbLanguage.ItemIndex, cbLanguage.Text);
   TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'Extensions', edtExtensions.Text, lblExtensions.Caption);
   TGeneral.XMLParams.WriteString(C_SECTION_MAIN, 'Style', cbStyle.Text, lblStyle.Caption);
+
+  TGeneral.XMLParams.WriteBool(C_SECTION_DEBUG, C_KEY_IS_ACTIVE, cbLogWriteActive.Checked, lblLogWriteActive.Caption);
+  TGeneral.XMLParams.WriteInteger(C_SECTION_DEBUG, C_KEY_MAX_SIZE, edtMaxSize.ValueInt, lblMaxSize.Caption);
+  TGeneral.XMLParams.WriteInteger(C_SECTION_DEBUG, C_KEY_COUNT_OF_DAYS, edtNumberOfDays.ValueInt, lblNumberOfDays.Caption);
+
+  TGeneral.XMLParams.WriteBool(C_SECTION_HTTP, C_KEY_IS_ACTIVE, cbHTTPClientActive.Checked, lblHTTPClientActive.Caption);
+  TGeneral.XMLParams.WriteString(C_SECTION_HTTP, C_KEY_HOST,  edtHost.Text);
+  TGeneral.XMLParams.WriteString(C_SECTION_HTTP, C_KEY_USER, edtUser.Text);
+  TGeneral.XMLParams.WriteString(C_SECTION_HTTP, C_KEY_PASSWORD, edtPassword.Text);
+
   TGeneral.XMLParams.Save;
 end;
 

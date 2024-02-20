@@ -58,7 +58,9 @@ type
     COL_ATTACH        = 6;
     COL_FROM          = 7;
     COL_CONTENT_TYPE  = 8;
-    C_FIXED_COLUMNS   = 9;
+    COL_ID            = 9;
+    COL_HASH          = 10;
+    C_FIXED_COLUMNS   = 11;
 
     C_IDENTITY_NAME = 'frameResultView';
   private
@@ -145,6 +147,7 @@ begin
   vstTree.Header.Columns[COL_ATTACH].Text       := TLang.Lang.Translate('Attachment');
   vstTree.Header.Columns[COL_FROM].Text         := TLang.Lang.Translate('From');
   vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
+  vstTree.Header.Columns[COL_HASH].Text         := TLang.Lang.Translate('Hash');
 
   aBreak.Hint           := TLang.Lang.Translate('Break');
   aFilter.Hint          := TLang.Lang.Translate('Filter');
@@ -316,6 +319,10 @@ begin
         Result := CompareText(Data1^.From, Data2^.From);
       COL_CONTENT_TYPE:
         Result := CompareText(Data1^.ContentType, Data2^.ContentType);
+      COL_ID:
+        Result := CompareText(Data1^.Id, Data2^.Id);
+      COL_HASH:
+        Result := CompareText(Data1^.Hash, Data2^.Hash);
     end;
 end;
 
@@ -428,6 +435,10 @@ begin
           CellText := Data^.From;
         COL_CONTENT_TYPE:
           CellText := Data^.ContentType;
+        COL_ID:
+          CellText := Data^.Id;
+        COL_HASH:
+          CellText := Data^.Hash;
       end;
   end;
 end;

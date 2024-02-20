@@ -82,8 +82,8 @@ end;
 
 procedure TEXIFDialog.Initialize;
 var
-  html: string;
-  arrMessage: TArray<string>;
+  arrMessage : TArray<string>;
+  html       : string;
 begin
   inherited;
   Translate;
@@ -101,13 +101,14 @@ begin
       DoVerb(OLEIVERB_UIACTIVATE, nil, wbMessage, 0, Handle, GetClientRect);
 
   arrMessage := FMessageText.Split([sLineBreak]);
-  TArray.Sort<string>(arrMessage, TStringComparer.Ordinal);
-  ValueListEditor.Strings.Add('File name=' + FImageFile);
   for var item in arrMessage do
     if item.Contains(C_OCR_SEPARATOR) then
       Break
     else if item.Contains('=') then
       ValueListEditor.Strings.Add(item);
+
+  TValueListStrings(ValueListEditor.Strings).Sort;
+  ValueListEditor.Strings.Insert(0, 'File name=' + FImageFile);
 
   if TFile.Exists(FImageFile) then
   begin

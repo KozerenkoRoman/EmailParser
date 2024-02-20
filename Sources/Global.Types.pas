@@ -7,7 +7,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} System.IOUtils, Vcl.Forms,
   ArrayHelper, VirtualTrees, System.RegularExpressions, System.Math, Vcl.Graphics, Files.Utils, XmlFiles,
-  TesseractOCR.Types;
+  TesseractOCR.Types, System.JSON;
 {$ENDREGION}
 
 type
@@ -19,7 +19,7 @@ type
   PProject = ^TProject;
   TProject = record
     Current            : Boolean;
-    Hash               : string;
+    ProjectId          : string;
     Name               : string;
     Info               : string;
     PathForAttachments : string;
@@ -39,9 +39,9 @@ type
 
   PSorterPath = ^TSorterPath;
   TSorterPath = record
-    Mask       : string;
-    Path       : string;
-    Info       : string;
+    Mask : string;
+    Path : string;
+    Info : string;
     procedure Clear;
   end;
   TSorterPathArray = TArrayRecord<TSorterPath>;
@@ -49,12 +49,14 @@ type
 
   PAttachment = ^TAttachment;
   TAttachment = record
+    Id          : string;
+    ParentId    : string;
     Hash        : string;
     ParentHash  : string;
     ParentName  : string;
     ShortName   : string;
     FileName    : string;
-    ContentID   : string;
+    ContentId   : string;
     ContentType : string;
     ParsedText  : string;
     ImageIndex  : Byte;
@@ -62,6 +64,8 @@ type
     OwnerNode   : PVirtualNode;
     FromZip     : Boolean;
     FromDB      : Boolean;
+    Size        : Integer;
+    function ToJSON: string;
     procedure Clear;
     procedure LengthAlignment;
     class operator Initialize(out aDest: TAttachment);
@@ -69,6 +73,7 @@ type
 
   PResultData = ^TResultData;
   TResultData = record
+    Id          : string;
     Attachments : TArrayRecord<string>;
     Body        : string;
     FileName    : TFileName;
@@ -82,6 +87,7 @@ type
     ParsedText  : string;
     Matches     : TArrayRecord<TStringArray>;
     OwnerNode   : PVirtualNode;
+    function ToJSON: string;
     procedure Clear;
     procedure LengthAlignment;
     class operator Initialize(out aDest: TResultData);
@@ -211,9 +217,9 @@ type
   end;
 
 const
-  C_ICON_SIZE = 40;
-  C_TOP_COLOR = $001E4DFF;
-  C_PROGRESS_STEP = 50;
+  C_ICON_SIZE     = 40;
+  C_TOP_COLOR     = $001E4DFF;
+  C_PROGRESS_STEP = 10;
   MaxCardinal: Cardinal = $FFFFFFFF;
 
 var
@@ -256,8 +262,8 @@ var
   i: Integer;
   Section: string;
 begin
-  if not CurrentProject.Hash.IsEmpty then
-    Section := 'Path.' + CurrentProject.Hash
+  if not CurrentProject.ProjectId.IsEmpty then
+    Section := 'Path.' + CurrentProject.ProjectId
   else
     Section := 'Path';
   XMLParams.Open;
@@ -288,8 +294,8 @@ var
   i: Integer;
   Section: string;
 begin
-  if not CurrentProject.Hash.IsEmpty then
-    Section := 'Sorter.' + CurrentProject.Hash
+  if not CurrentProject.ProjectId.IsEmpty then
+    Section := 'Sorter.' + CurrentProject.ProjectId
   else
     Section := 'Sorter';
   XMLParams.Open;
@@ -350,6 +356,7 @@ end;
 class operator TResultData.Initialize(out aDest: TResultData);
 begin
   aDest.OwnerNode := nil;
+  aDest.Id        := TFileUtils.GetGuid;
 end;
 
 procedure TResultData.LengthAlignment;
@@ -364,6 +371,46 @@ begin
     Matches[i].Count := MaxLen;
 end;
 
+function TResultData.ToJSON: string;
+var
+  MailJSON: TJSONObject;
+  ResultJSON: TJSONObject;
+  //TagsJson: TJSONObject;
+begin
+  ResultJSON := TJSONObject.Create;
+  try
+    ResultJSON.AddPair('id', Self.Id);
+    // ResultJSON.AddPair('parentId', '');
+    ResultJSON.AddPair('projectId', TGeneral.CurrentProject.ProjectId);
+    ResultJSON.AddPair('hash', Self.Hash);
+    ResultJSON.AddPair('filePath', TPath.GetDirectoryName(Self.FileName));
+    ResultJSON.AddPair('fileName', Self.ShortName);
+    ResultJSON.AddPair('contentType', Self.ContentType);
+    ResultJSON.AddPair('rawText', Self.Body);
+    ResultJSON.AddPair('plainText', Self.ParsedText);
+    // ResultJSON.AddPair('comment', '');
+    ResultJSON.AddPair('rank', 0);
+    ResultJSON.AddPair('isChecked', False);
+
+    MailJSON := TJSONObject.Create;
+    MailJSON.AddPair('from', Self.From);
+    MailJSON.AddPair('subject', Self.Subject);
+    MailJSON.AddPair('messageId', Self.MessageId);
+    MailJSON.AddPair('timeStamp', Self.TimeStamp);
+    ResultJSON.AddPair('jsonObj', MailJSON);
+
+    //TagsJson := TJSONObject.Create;
+    // TagsJson.AddPair('from', Self.From);
+    // TagsJson.AddPair('subject', Self.Subject);
+    // TagsJson.AddPair('messageId', Self.MessageId);
+    // TagsJson.AddPair('timeStamp', Self.TimeStamp);
+    // ResultJSON.AddPair('tags', TagsJson);
+    Result := ResultJSON.ToJSON;
+  finally
+    FreeAndNil(ResultJSON);
+  end;
+end;
+
 { TAttachment }
 
 procedure TAttachment.Clear;
@@ -375,8 +422,9 @@ end;
 class operator TAttachment.Initialize(out aDest: TAttachment);
 begin
   aDest.OwnerNode := nil;
-  aDest.FromZip    := False;
-  aDest.FromDB     := False;
+  aDest.FromZip   := False;
+  aDest.FromDB    := False;
+  aDest.Id        := TFileUtils.GetGuid;
 end;
 
 procedure TAttachment.LengthAlignment;
@@ -389,6 +437,38 @@ begin
     MaxLen := Max(MaxLen, Matches[i].Count);
   for i := Low(Matches.Items) to High(Matches.Items) do
     Matches[i].Count := MaxLen;
+end;
+
+function TAttachment.ToJSON: string;
+var
+  ResultJSON: TJSONObject;
+  //TagsJson: TJSONObject;
+begin
+  ResultJSON := TJSONObject.Create;
+  try
+    ResultJSON.AddPair('id', Self.Id);
+    if not Self.ParentId.IsEmpty then
+      ResultJSON.AddPair('parentId', Self.ParentId);
+    ResultJSON.AddPair('projectId', TGeneral.CurrentProject.ProjectId);
+    ResultJSON.AddPair('hash', Self.Hash);
+    ResultJSON.AddPair('filePath', TPath.GetDirectoryName(Self.FileName));
+    ResultJSON.AddPair('fileName', Self.ShortName);
+    ResultJSON.AddPair('contentType', Self.ContentType);
+    ResultJSON.AddPair('rawText', '');
+    ResultJSON.AddPair('plainText', Self.ParsedText);
+    ResultJSON.AddPair('rank', 0);
+    ResultJSON.AddPair('isChecked', False);
+
+    // TagsJson := TJSONObject.Create;
+    // TagsJson.AddPair('from', Self.From);
+    // TagsJson.AddPair('subject', Self.Subject);
+    // TagsJson.AddPair('messageId', Self.MessageId);
+    // TagsJson.AddPair('timeStamp', Self.TimeStamp);
+    // ResultJSON.AddPair('tags', TagsJson);
+    Result := ResultJSON.ToJSON;
+  finally
+    FreeAndNil(ResultJSON);
+  end;
 end;
 
 { TAttachmentDirHelper }

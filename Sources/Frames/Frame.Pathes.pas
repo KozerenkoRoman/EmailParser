@@ -121,8 +121,8 @@ var
   Section: string;
 begin
   inherited;
-  if not TGeneral.CurrentProject.Hash.IsEmpty then
-    Section := 'Path.' + TGeneral.CurrentProject.Hash
+  if not TGeneral.CurrentProject.ProjectId.IsEmpty then
+    Section := 'Path.' + TGeneral.CurrentProject.ProjectId
   else
     Section := 'Path';
   TGeneral.XMLParams.EraseSection(Section);

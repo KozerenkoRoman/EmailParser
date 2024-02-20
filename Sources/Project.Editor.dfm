@@ -1,7 +1,7 @@
 inherited frmProjectEditor: TfrmProjectEditor
   BorderStyle = bsDialog
-  ClientHeight = 292
-  ClientWidth = 772
+  ClientHeight = 291
+  ClientWidth = 768
   Constraints.MinHeight = 290
   Constraints.MinWidth = 560
   Font.Height = -13
@@ -9,22 +9,24 @@ inherited frmProjectEditor: TfrmProjectEditor
   Position = poMainFormCenter
   ShowHint = True
   OnDestroy = FormDestroy
-  ExplicitWidth = 788
-  ExplicitHeight = 331
+  ExplicitWidth = 784
+  ExplicitHeight = 330
   TextHeight = 17
   object pnlBottom: TPanel
     Left = 0
-    Top = 250
-    Width = 772
+    Top = 249
+    Width = 768
     Height = 42
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitTop = 250
+    ExplicitWidth = 772
     DesignSize = (
-      772
+      768
       42)
     object btnCancel: TBitBtn
-      Left = 544
+      Left = 536
       Top = 1
       Width = 110
       Height = 40
@@ -41,10 +43,9 @@ inherited frmProjectEditor: TfrmProjectEditor
       ModalResult = 2
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 548
     end
     object btnOk: TBitBtn
-      Left = 656
+      Left = 648
       Top = 1
       Width = 110
       Height = 40
@@ -61,14 +62,13 @@ inherited frmProjectEditor: TfrmProjectEditor
       ModalResult = 1
       ParentFont = False
       TabOrder = 1
-      ExplicitLeft = 660
     end
   end
   object grdCommonParams: TGridPanel
     Left = 0
     Top = 0
-    Width = 772
-    Height = 250
+    Width = 768
+    Height = 249
     Margins.Top = 6
     Align = alClient
     BevelOuter = bvNone
@@ -113,7 +113,7 @@ inherited frmProjectEditor: TfrmProjectEditor
       end
       item
         Column = 0
-        Control = lblHash
+        Control = lblProjectId
         Row = 5
       end
       item
@@ -138,7 +138,7 @@ inherited frmProjectEditor: TfrmProjectEditor
       end
       item
         Column = 1
-        Control = edtHash
+        Control = edtProjectId
         Row = 5
       end
       item
@@ -185,38 +185,49 @@ inherited frmProjectEditor: TfrmProjectEditor
         Value = 100.000000000000000000
       end>
     TabOrder = 1
+    ExplicitWidth = 772
+    ExplicitHeight = 250
     object lblLanguageOCR: TLabel
       AlignWithMargins = True
-      Left = 210
+      Left = 3
       Top = 143
-      Width = 87
-      Height = 17
+      Width = 294
+      Height = 29
       Align = alClient
       Alignment = taRightJustify
       Caption = 'Language OCR'
       Layout = tlCenter
+      ExplicitLeft = 210
+      ExplicitWidth = 87
+      ExplicitHeight = 17
     end
     object lblName: TLabel
       AlignWithMargins = True
-      Left = 262
+      Left = 3
       Top = 3
-      Width = 35
-      Height = 17
+      Width = 294
+      Height = 29
       Align = alClient
       Alignment = taRightJustify
       Caption = 'Name'
       Layout = tlCenter
+      ExplicitLeft = 262
+      ExplicitWidth = 35
+      ExplicitHeight = 17
     end
     object lblDeleteAttachments: TLabel
       AlignWithMargins = True
-      Left = 106
+      Left = 3
       Top = 73
-      Width = 191
-      Height = 17
+      Width = 294
+      Height = 29
       Align = alClient
       Alignment = taRightJustify
       Caption = 'Delete attachments after analysis'
       Layout = tlCenter
+      ExplicitLeft = 106
+      ExplicitWidth = 191
+      ExplicitHeight = 17
     end
     object cbLanguageOCR: TComboBox
       AlignWithMargins = True
@@ -254,7 +265,7 @@ inherited frmProjectEditor: TfrmProjectEditor
       Align = alLeft
       TabOrder = 2
     end
-    object lblHash: TLabel
+    object lblProjectId: TLabel
       AlignWithMargins = True
       Left = 3
       Top = 178
@@ -262,10 +273,10 @@ inherited frmProjectEditor: TfrmProjectEditor
       Height = 29
       Align = alClient
       Alignment = taRightJustify
-      Caption = 'Hash'
+      Caption = 'Project Id'
       Layout = tlCenter
-      ExplicitLeft = 268
-      ExplicitWidth = 29
+      ExplicitLeft = 242
+      ExplicitWidth = 55
       ExplicitHeight = 17
     end
     object lblInfo: TLabel
@@ -319,7 +330,7 @@ inherited frmProjectEditor: TfrmProjectEditor
       ExplicitWidth = 52
       ExplicitHeight = 17
     end
-    object edtHash: TEdit
+    object edtProjectId: TEdit
       AlignWithMargins = True
       Left = 310
       Top = 181
