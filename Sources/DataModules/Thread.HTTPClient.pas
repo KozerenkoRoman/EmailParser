@@ -30,7 +30,7 @@ type
     property Host      : string                read FHost     write FHost;
     property Login     : string                read FLogin    write FLogin;
     property Password  : string                read FPassword write FPassword;
-    property Queue : TThreadedQueue<string> read FQueue;
+    property JSONQueue : TThreadedQueue<string> read FQueue;
   end;
 
 implementation

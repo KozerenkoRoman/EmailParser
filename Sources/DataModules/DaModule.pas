@@ -213,7 +213,7 @@ begin
   if FThreadEmails.Started then
     FThreadEmails.ResultDataQueue.PushItem(aResultData);
   if FThreadHTTPClient.Started then
-    FThreadHTTPClient.Queue.PushItem(aResultData.ToJSON);
+    FThreadHTTPClient.JSONQueue.PushItem(aResultData.ToJSON);
 end;
 
 procedure TDaMod.CompletedAttach(const aAttachData: PAttachment);
@@ -225,7 +225,7 @@ begin
                                   ', ParentId:' + aAttachData.ParentId +
                                   ', FileName:' + aAttachData.FileName +
                                   ', ContentType:' + aAttachData.ContentType);
-    FThreadHTTPClient.Queue.PushItem(aAttachData.ToJSON);
+    FThreadHTTPClient.JSONQueue.PushItem(aAttachData.ToJSON);
   end;
 end;
 
