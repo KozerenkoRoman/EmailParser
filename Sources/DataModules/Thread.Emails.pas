@@ -252,6 +252,7 @@ begin
       FQueryAttachment.ParamByName('PARSED_TEXT').DataType := ftBlob;
       FQueryAttachment.ParamByName('PARSED_TEXT').AsStream := TZipPack.GetCompressStr(aAttachment^.ParsedText);
       FQueryAttachment.ParamByName('ID').AsString           := aAttachment^.Id;
+      FQueryAttachment.ParamByName('PARENT_ID').AsString    := aAttachment^.ParentId;
       FQueryAttachment.ParamByName('HASH').AsString         := aAttachment^.Hash;
       FQueryAttachment.ParamByName('PARENT_HASH').AsString  := aParentHash;
       FQueryAttachment.ParamByName('CONTENT_ID').AsString   := aAttachment^.ContentID;

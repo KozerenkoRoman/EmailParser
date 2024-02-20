@@ -137,6 +137,33 @@ inherited frameAllAttachments: TframeAllAttachments
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
         Position = 6
         Text = 'Size'
+      end
+      item
+        CaptionAlignment = taCenter
+        MaxWidth = 300
+        MinWidth = 100
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 7
+        Text = 'Id'
+        Width = 100
+      end
+      item
+        CaptionAlignment = taCenter
+        MaxWidth = 300
+        MinWidth = 100
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 8
+        Text = 'Parent Id'
+        Width = 100
+      end
+      item
+        CaptionAlignment = taCenter
+        MaxWidth = 600
+        MinWidth = 100
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coUseCaptionAlignment, coEditable, coStyleColor]
+        Position = 9
+        Text = 'Hash'
+        Width = 100
       end>
     DefaultText = ''
   end

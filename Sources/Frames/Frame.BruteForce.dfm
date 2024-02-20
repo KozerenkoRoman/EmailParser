@@ -3,6 +3,7 @@ inherited frameBruteForce: TframeBruteForce
   Height = 400
   ExplicitWidth = 662
   ExplicitHeight = 400
+  PixelsPerInch = 144
   inherited tbMain: TToolBar
     Top = 41
     Width = 662

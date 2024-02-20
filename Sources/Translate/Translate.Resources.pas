@@ -84,6 +84,7 @@ resourcestring
   en_Id                   = 'Id';
   en_Import               = 'Import';
   en_Info                 = 'Info ';
+  en_IsHTTPClientActive   = 'Is HTTP-client active?';
   en_IsLogginActive       = 'Write information to the log file';
   en_Language             = 'Language';
   en_LanguageOCR          = 'Language of optical character recognition';
@@ -224,9 +225,10 @@ resourcestring
   uk_Go                   = 'Почати';
   uk_GroupIndex           = 'Індекс групи';
   uk_Hash                 = 'Хеш';
+  uk_Id                   = 'Id';
   uk_Import               = 'Імпорт';
   uk_Info                 = 'Опис ';
-  uk_Id                   = 'Id';
+  uk_IsHTTPClientActive   = 'Активувати HTTP-клієнта?';
   uk_IsLogginActive       = 'Записувати інформацію в лог-файл';
   uk_Language             = 'Мова';
   uk_LanguageOCR          = 'Мова системи розпізнавання текстів';
@@ -307,7 +309,7 @@ resourcestring
   uk_WithSubdir           = 'З підкаталогами';
 
 const
-   ArrayMessages: array[1 .. 139] of TMessageItem = (
+   ArrayMessages: array[1 .. 140] of TMessageItem = (
     (Key: 'Add'                  ; En: en_Add;                  Uk: uk_Add),
     (Key: 'AhoCorasick'          ; En: en_AhoCorasick;          Uk: uk_AhoCorasick),
     (Key: 'AllAttachments'       ; En: en_AllAttachments;       Uk: uk_AllAttachments),
@@ -371,6 +373,7 @@ const
     (Key: 'Id'                   ; En: en_Id;                   Uk: uk_Id),
     (Key: 'Import'               ; En: en_Import;               Uk: uk_Import),
     (Key: 'Info'                 ; En: en_Info;                 Uk: uk_Info),
+    (Key: 'IsHTTPClientActive'   ; En: en_IsHTTPClientActive;   Uk: uk_IsHTTPClientActive),
     (Key: 'IsLogginActive'       ; En: en_IsLogginActive;       Uk: uk_IsLogginActive),
     (Key: 'Language'             ; En: en_Language;             Uk: uk_Language),
     (Key: 'LanguageOCR'          ; En: en_LanguageOCR;          Uk: uk_LanguageOCR),

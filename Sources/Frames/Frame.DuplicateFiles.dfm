@@ -14,23 +14,25 @@ inherited frameDuplicateFiles: TframeDuplicateFiles
     inherited btnSep01: TToolButton
       Visible = False
     end
-    inherited btnColumnSettings: TToolButton [7]
-      Left = 211
-      ExplicitLeft = 211
+    inherited btnExportToExcel: TToolButton
+      Left = 297
+      ExplicitLeft = 297
     end
-    inherited btnSep03: TToolButton [8]
-      Left = 250
-      ExplicitLeft = 250
+    inherited btnExportToCSV: TToolButton
+      Left = 336
+      ExplicitLeft = 336
     end
     inherited btnPrint: TToolButton
       Left = 258
       ExplicitLeft = 258
     end
-    inherited btnExportToExcel: TToolButton [10]
-      Left = 297
+    inherited btnSep03: TToolButton
+      Left = 250
+      ExplicitLeft = 250
     end
-    inherited btnExportToCSV: TToolButton [11]
-      Left = 336
+    inherited btnColumnSettings: TToolButton
+      Left = 211
+      ExplicitLeft = 211
     end
   end
   inherited vstTree: TVirtualStringTree

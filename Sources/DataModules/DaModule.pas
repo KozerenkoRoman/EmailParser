@@ -13,7 +13,7 @@ uses
   DaModule.Resources, Utils.Zip, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
   FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.SQLite,
   FireDAC.Phys.SQLiteDef, FireDAC.Stan.ExprFuncs, FireDAC.VCLUI.Wait, FireDAC.Stan.Param, FireDAC.DatS,
-  FireDAC.Phys.SQLiteWrapper.Stat;
+  FireDAC.Phys.SQLiteWrapper.Stat, Thread.HTTPClient;
 {$ENDREGION}
 
 type
@@ -26,7 +26,8 @@ type
     qEmails            : TFDQuery;
     qInsProject        : TFDQuery;
   private
-    FThreadEmails: TThreadEmails;
+    FThreadEmails     : TThreadEmails;
+    FThreadHTTPClient : TThreadHTTPClient;
 
     //IConfig
     procedure UpdateRegExp;
@@ -43,7 +44,6 @@ type
     procedure CompletedAttach(const aAttachData: PAttachment);
 
     class function GetDecompressStr(const aSQLText, aHash: string): string;
-//    procedure FillAllEmailsRecord(const aWithAttachments: Boolean); overload;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -74,6 +74,7 @@ begin
   TPublishers.ProgressPublisher.Subscribe(Self);
   TPublishers.ConfigPublisher.Subscribe(Self);
   FThreadEmails := TThreadEmails.Create;
+  FThreadHTTPClient := TThreadHTTPClient.Create;
 end;
 
 destructor TDaMod.Destroy;
@@ -81,6 +82,7 @@ begin
   TPublishers.ProgressPublisher.Unsubscribe(Self);
   TPublishers.ConfigPublisher.Unsubscribe(Self);
   FreeAndNil(FThreadEmails);
+  FreeAndNil(FThreadHTTPClient);
   inherited;
 end;
 
@@ -90,6 +92,13 @@ var
 begin
   if not FThreadEmails.Started then
     FThreadEmails.Start;
+  if TGeneral.XMLParams.ReadBool(C_SECTION_HTTP, C_KEY_IS_ACTIVE, False) and not FThreadHTTPClient.Started then
+  begin
+    FThreadHTTPClient.Host     := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_HOST, '');
+    FThreadHTTPClient.Login    := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_USER, '');
+    FThreadHTTPClient.Password := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_PASSWORD, '');
+    FThreadHTTPClient.Start;
+  end;
 
   DBFile := TPath.Combine(TDirectory.GetCurrentDirectory, C_SQLITE_DB_FILE);
   with Connection do
@@ -121,6 +130,7 @@ end;
 procedure TDaMod.Deinitialize;
 begin
   FThreadEmails.Terminate;
+  FThreadHTTPClient.Terminate;
   qEmail.Unprepare;
   qEmailBodyAndText.Unprepare;
   Connection.Connected := False;
@@ -202,6 +212,21 @@ procedure TDaMod.CompletedItem(const aResultData: PResultData);
 begin
   if FThreadEmails.Started then
     FThreadEmails.ResultDataQueue.PushItem(aResultData);
+  if FThreadHTTPClient.Started then
+    FThreadHTTPClient.Queue.PushItem(aResultData.ToJSON);
+end;
+
+procedure TDaMod.CompletedAttach(const aAttachData: PAttachment);
+begin
+  if FThreadHTTPClient.Started then
+  begin
+    LogWriter.Write(ddText, Self, 'CompletedAttach',
+                                  'Id: ' + aAttachData.Id +
+                                  ', ParentId:' + aAttachData.ParentId +
+                                  ', FileName:' + aAttachData.FileName +
+                                  ', ContentType:' + aAttachData.ContentType);
+    FThreadHTTPClient.Queue.PushItem(aAttachData.ToJSON);
+  end;
 end;
 
 procedure TDaMod.FillAllEmailsRecord;
@@ -309,11 +334,6 @@ begin
   finally
     qEmailBodyAndText.Close;
   end;
-end;
-
-procedure TDaMod.CompletedAttach(const aAttachData: PAttachment);
-begin
-  // nothing
 end;
 
 procedure TDaMod.StartProgress(const aMaxPosition: Integer);

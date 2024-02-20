@@ -18,6 +18,12 @@ resourcestring
   C_KEY_MAX_SIZE      = 'MaxSizeOfLogFile';
   C_SECTION_DEBUG     = 'Debug';
 
+  //HTTP client
+  C_SECTION_HTTP      = 'HTTP';
+  C_KEY_HOST          = 'Host';
+  C_KEY_USER          = 'User';
+  C_KEY_PASSWORD      = 'Password';
+
   //Files
   C_SQLITE_DB_FILE    = 'EmailParser.db';
   C_XML_PARAMS_FILE   = 'EmailParser.xml';

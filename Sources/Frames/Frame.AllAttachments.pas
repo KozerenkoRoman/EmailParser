@@ -78,8 +78,10 @@ type
     COL_CONTENT_TYPE = 4;
     COL_PARSED_TEXT  = 5;
     COL_FILE_SIZE    = 6;
-    C_FIXED_COLUMNS  = 7;
-
+    COL_ID           = 7;
+    COL_PARENT_ID    = 8;
+    COL_HASH         = 9;
+    C_FIXED_COLUMNS  = 10;
 
     C_IDENTITY_NAME = 'frameAllAttachment';
   private
@@ -185,6 +187,7 @@ begin
   vstTree.Header.Columns[COL_CONTENT_TYPE].Text := TLang.Lang.Translate('ContentType');
   vstTree.Header.Columns[COL_PARSED_TEXT].Text  := TLang.Lang.Translate('Text');
   vstTree.Header.Columns[COL_FILE_SIZE].Text    := TLang.Lang.Translate('Size');
+  vstTree.Header.Columns[COL_HASH].Text         := TLang.Lang.Translate('Hash');
 end;
 
 procedure TframeAllAttachments.SaveToXML;
@@ -435,21 +438,27 @@ begin
     Data2 := TGeneral.AttachmentList.GetItem(PAttachData(Node2^.GetData).Hash);
     if Assigned(Data1) and Assigned(Data2) then
       case Column of
-      COL_POSITION:
-        Result := CompareValue(vstTree.AbsoluteIndex(Node1), vstTree.AbsoluteIndex(Node2));
-      COL_SHORT_NAME:
-        Result := CompareText(Data1^.ShortName, Data2^.ShortName);
-      COL_EMAIL_NAME:
-        Result := CompareText(Data1^.ParentName, Data2^.ParentName);
-      COL_FILE_NAME:
-        Result := CompareText(Data1^.FileName, Data2^.FileName);
-      COL_CONTENT_TYPE:
-        Result := CompareText(Data1^.ContentType, Data2^.ContentType);
-      COL_PARSED_TEXT:
-        Result := CompareText(Data1^.ParsedText, Data2^.ParsedText);
-      COL_FILE_SIZE:
-        Result := CompareValue(Data1^.Size, Data2^.Size);
-    end;
+        COL_POSITION:
+          Result := CompareValue(vstTree.AbsoluteIndex(Node1), vstTree.AbsoluteIndex(Node2));
+        COL_SHORT_NAME:
+          Result := CompareText(Data1^.ShortName, Data2^.ShortName);
+        COL_EMAIL_NAME:
+          Result := CompareText(Data1^.ParentName, Data2^.ParentName);
+        COL_FILE_NAME:
+          Result := CompareText(Data1^.FileName, Data2^.FileName);
+        COL_CONTENT_TYPE:
+          Result := CompareText(Data1^.ContentType, Data2^.ContentType);
+        COL_PARSED_TEXT:
+          Result := CompareText(Data1^.ParsedText, Data2^.ParsedText);
+        COL_FILE_SIZE:
+          Result := CompareValue(Data1^.Size, Data2^.Size);
+        COL_ID:
+          Result := CompareText(Data1^.Id, Data2^.Id);
+        COL_PARENT_ID:
+          Result := CompareText(Data1^.ParentId, Data2^.ParentId);
+        COL_HASH:
+          Result := CompareText(Data1^.Hash, Data2^.Hash);
+      end;
   end;
 end;
 
@@ -501,7 +510,13 @@ begin
           CellText := Data^.ParsedText;
         COL_FILE_SIZE:
           if (Data^.Size > 0) then
-            CellText := Data^.Size.ToString;
+            CellText := Format('%.0n', [Data^.Size + 0.0]);
+        COL_ID:
+          CellText := Data^.Id;
+        COL_PARENT_ID:
+          CellText := Data^.ParentId;
+        COL_HASH:
+          CellText := Data^.Hash;
       end;
   end;
 end;

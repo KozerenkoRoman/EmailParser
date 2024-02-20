@@ -38,6 +38,7 @@ resourcestring
 
                      'create table if not exists ATTACHMENTS('                         + sLineBreak +
                      '  ID           varchar(36) primary key,'                         + sLineBreak +
+                     '  PARENT_ID    varchar(36),'                                     + sLineBreak +
                      '  HASH         text,'                                            + sLineBreak +
                      '  PARENT_HASH  text references EMAILS(HASH) on delete cascade,'  + sLineBreak +
                      '  CONTENT_ID   text,'                                            + sLineBreak +
@@ -67,8 +68,8 @@ resourcestring
   rsSQLInsertProjectAttachments ='insert or ignore into PROJECTS_ATTACHMENTS(PROJECT_ID, ATTACHMENT_ID) ' + sLineBreak +
                                                                      'values(:PROJECT_ID, :ATTACHMENT_ID)';
 
-  rsSQLInsertAttachment = 'insert or ignore into ATTACHMENTS(ID, HASH, PARENT_HASH, CONTENT_ID, FILE_NAME, SHORT_NAME, CONTENT_TYPE, PARSED_TEXT, FROM_ZIP, IMAGE_INDEX) ' + sLineBreak +
-                                                     'values(:ID, :HASH, :PARENT_HASH, :CONTENT_ID, :FILE_NAME, :SHORT_NAME, :CONTENT_TYPE, :PARSED_TEXT, :FROM_ZIP, :IMAGE_INDEX)';
+  rsSQLInsertAttachment = 'insert or ignore into ATTACHMENTS(ID, PARENT_ID, HASH, PARENT_HASH, CONTENT_ID, FILE_NAME, SHORT_NAME, CONTENT_TYPE, PARSED_TEXT, FROM_ZIP, IMAGE_INDEX) ' + sLineBreak +
+                                                     'values(:ID, :PARENT_ID, :HASH, :PARENT_HASH, :CONTENT_ID, :FILE_NAME, :SHORT_NAME, :CONTENT_TYPE, :PARSED_TEXT, :FROM_ZIP, :IMAGE_INDEX)';
 
   rsSQLSelectBodyAsParsedText        = 'select PARSED_TEXT from EMAILS where HASH = :HASH';
   rsSQLSelectBodyAsRawText           = 'select BODY from EMAILS where HASH = :HASH';

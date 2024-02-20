@@ -4,6 +4,7 @@ inherited frameMatchesFilter: TframeMatchesFilter
   Align = alClient
   ExplicitWidth = 606
   ExplicitHeight = 265
+  PixelsPerInch = 144
   inherited tbMain: TToolBar
     Width = 606
     Height = 22
