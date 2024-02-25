@@ -74,7 +74,7 @@ type
     procedure CreateProgressBar;
 
     //IConfig
-    procedure IConfig.UpdateLanguage = Translate;
+    procedure IConfig.UpdateSettings = Translate;
     procedure UpdateRegExp;
     procedure UpdateFilter(const aOperation: TFilterOperation);
     procedure UpdateProject;

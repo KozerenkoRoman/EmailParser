@@ -23,7 +23,7 @@ type
   public
     procedure UpdateRegExp;
     procedure UpdateFilter(const aOperation: TFilterOperation);
-    procedure UpdateLanguage;
+    procedure UpdateSettings;
     procedure UpdateProject;
   end;
 
@@ -108,7 +108,7 @@ begin
       end;
 end;
 
-procedure TConfigPublisher.UpdateLanguage;
+procedure TConfigPublisher.UpdateSettings;
 var
   Item: TObject;
 begin
@@ -123,7 +123,7 @@ begin
               obj: IConfig;
             begin
               if Supports(Item, IConfig, obj) then
-                obj.UpdateLanguage;
+                obj.UpdateSettings;
             end);
       finally
         Self.UnlockList;

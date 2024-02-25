@@ -560,7 +560,10 @@ begin
         Data^.Subject     := MailMessage.Subject;
         Data^.TimeStamp   := MailMessage.Date;
         Data^.From        := MailMessage.From.FullAddress;
+        Data^.To_         := MailMessage.ToList.EmailAddresses;
+        Data^.CC          := MailMessage.CCList.EmailAddresses;
         Data^.ContentType := MailMessage.ContentType;
+
         DoFillAttachments(Data, MailMessage);
 
         if (MailMessage.ContentType = 'text/calendar') then
@@ -1218,10 +1221,10 @@ begin
     for var i := 0 to Sheets.Count - 1 do
       if not Sheets[i].Text.IsEmpty then
       begin
-        FileName := Concat(TPath.GetFileNameWithoutExtension(aFileName), '\', Sheets[i].Title);
+        FileName := Concat(TPath.GetFileNameWithoutExtension(aFileName), '\', Sheets[i].Title, TPath.GetExtension(aFileName));
         New(Attachment);
         Attachment^.ParsedText    := Sheets[i].Text;
-        Attachment^.FileName      := FileName;
+        Attachment^.FileName      := aFileName;
         Attachment^.ShortName     := FileName;
         Attachment^.ParentId      := aParentId;
         Attachment^.Hash          := TFileUtils.GetHashString(Sheets[i].Text);
@@ -1420,11 +1423,11 @@ function TPerformer.GetMatchCollection(const aText: string; const aPatternData: 
     begin
       if (aPatternData^.GroupIndex <= 0) then
         GroupIndex := 0
-      else if (aPatternData^.GroupIndex > Matches.item[i].Groups.Count - 1) then
-        GroupIndex := Matches.item[i].Groups.Count - 1
+      else if (aPatternData^.GroupIndex > Matches.Item[i].Groups.Count - 1) then
+        GroupIndex := Matches.Item[i].Groups.Count - 1
       else
         GroupIndex := aPatternData^.GroupIndex;
-      Result[i] := Matches.item[i].Groups[GroupIndex].Value;
+      Result[i] := Matches.Item[i].Groups[GroupIndex].Value;
     end;
   end;
 

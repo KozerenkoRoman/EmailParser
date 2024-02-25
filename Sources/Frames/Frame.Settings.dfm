@@ -371,7 +371,6 @@ inherited frameSettings: TframeSettings
       Align = alLeft
       Style = csDropDownList
       TabOrder = 5
-      ExplicitTop = 39
     end
     object ShapeDividingLine02: TShape
       Left = 1
@@ -405,9 +404,6 @@ inherited frameSettings: TframeSettings
       Margins.Left = 10
       Align = alLeft
       TabOrder = 6
-      ExplicitLeft = 434
-      ExplicitTop = 114
-      ExplicitHeight = 17
     end
     object lblHost: TLabel
       AlignWithMargins = True
@@ -462,6 +458,8 @@ inherited frameSettings: TframeSettings
       Margins.Bottom = 6
       Align = alLeft
       TabOrder = 7
+      Text = 'http://127.0.0.1:8080/api/'
+      ExplicitHeight = 25
     end
     object edtUser: TEdit
       AlignWithMargins = True
@@ -474,8 +472,6 @@ inherited frameSettings: TframeSettings
       Margins.Bottom = 6
       Align = alLeft
       TabOrder = 8
-      ExplicitLeft = 422
-      ExplicitTop = 110
       ExplicitHeight = 25
     end
     object edtPassword: TEdit

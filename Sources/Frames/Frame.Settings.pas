@@ -109,7 +109,7 @@ begin
   edtNumberOfDays.ValueInt   := TGeneral.XMLParams.ReadInteger(C_SECTION_DEBUG, C_KEY_COUNT_OF_DAYS, 30);
 
   cbHTTPClientActive.Checked := TGeneral.XMLParams.ReadBool(C_SECTION_HTTP, C_KEY_IS_ACTIVE, False);
-  edtHost.Text               := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_HOST, '');
+  edtHost.Text               := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_HOST, 'http://127.0.0.1:8080/api/');
   edtUser.Text               := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_USER, '');
   edtPassword.Text           := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_PASSWORD, '');
 end;
@@ -139,7 +139,7 @@ begin
   SaveToXML;
   TLang.Lang.Language := TLanguage(TGeneral.XMLParams.ReadInteger(C_SECTION_MAIN, 'Language', 0));
   TStyleManager.TrySetStyle(cbStyle.Text);
-  TPublishers.ConfigPublisher.UpdateLanguage;
+  TPublishers.ConfigPublisher.UpdateSettings;
 end;
 
 procedure TframeSettings.aRefreshExecute(Sender: TObject);

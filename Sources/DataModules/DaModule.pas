@@ -32,7 +32,7 @@ type
     //IConfig
     procedure UpdateRegExp;
     procedure UpdateFilter(const aOperation: TFilterOperation);
-    procedure UpdateLanguage;
+    procedure UpdateSettings;
     procedure UpdateProject;
 
     // IProgress
@@ -92,14 +92,6 @@ var
 begin
   if not FThreadEmails.Started then
     FThreadEmails.Start;
-  if TGeneral.XMLParams.ReadBool(C_SECTION_HTTP, C_KEY_IS_ACTIVE, False) and not FThreadHTTPClient.Started then
-  begin
-    FThreadHTTPClient.Host     := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_HOST, '');
-    FThreadHTTPClient.Login    := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_USER, '');
-    FThreadHTTPClient.Password := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_PASSWORD, '');
-    FThreadHTTPClient.Start;
-  end;
-
   DBFile := TPath.Combine(TDirectory.GetCurrentDirectory, C_SQLITE_DB_FILE);
   with Connection do
   begin
@@ -125,6 +117,7 @@ begin
     on E: Exception do
       LogWriter.Write(ddError, Self, 'Initialize', E.Message);
   end;
+  UpdateSettings;
 end;
 
 procedure TDaMod.Deinitialize;
@@ -219,14 +212,7 @@ end;
 procedure TDaMod.CompletedAttach(const aAttachData: PAttachment);
 begin
   if FThreadHTTPClient.Started then
-  begin
-    LogWriter.Write(ddText, Self, 'CompletedAttach',
-                                  'Id: ' + aAttachData.Id +
-                                  ', ParentId:' + aAttachData.ParentId +
-                                  ', FileName:' + aAttachData.FileName +
-                                  ', ContentType:' + aAttachData.ContentType);
     FThreadHTTPClient.JSONQueue.PushItem(aAttachData.ToJSON);
-  end;
 end;
 
 procedure TDaMod.FillAllEmailsRecord;
@@ -346,9 +332,41 @@ begin
   // nothing
 end;
 
-procedure TDaMod.UpdateLanguage;
+procedure TDaMod.UpdateSettings;
+const
+  C_ACTIVE: array [Boolean] of string = ('not active', 'started');
+var
+  Host     : string;
+  IsActive : Boolean;
+  Login    : string;
+  Password : string;
 begin
-  // nothing
+  Host     := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_HOST, '');
+  Login    := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_USER, '');
+  Password := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_PASSWORD, '');
+  IsActive := TGeneral.XMLParams.ReadBool(C_SECTION_HTTP, C_KEY_IS_ACTIVE, False);
+
+  if not FThreadHTTPClient.Host.Equals(Host) or
+     not FThreadHTTPClient.Login.Equals(Login) or
+     not FThreadHTTPClient.Password.Equals(Password) or
+     (IsActive <> FThreadHTTPClient.Started) then
+  begin
+    if FThreadHTTPClient.Started then
+    begin
+      FThreadHTTPClient.Terminate;
+      Sleep(50);
+      FreeAndNil(FThreadHTTPClient);
+      FThreadHTTPClient := TThreadHTTPClient.Create;
+    end;
+    FThreadHTTPClient.Host     := Host;
+    FThreadHTTPClient.Login    := Login;
+    FThreadHTTPClient.Password := Password;
+    if IsActive then
+      FThreadHTTPClient.Start;
+    LogWriter.Write(ddText, Self, 'UpdateSettings', 'HTTP Client is <b>' + C_ACTIVE[IsActive] +
+                                                    '</b>, Host: ' + Host +
+                                                    ', Login: ' + Login);
+  end;
 end;
 
 procedure TDaMod.UpdateProject;

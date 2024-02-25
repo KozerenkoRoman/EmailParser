@@ -510,7 +510,7 @@ begin
           CellText := Data^.ParsedText;
         COL_FILE_SIZE:
           if (Data^.Size > 0) then
-            CellText := Format('%.0n', [Data^.Size + 0.0]);
+            CellText := Data^.Size.ToString;
         COL_ID:
           CellText := Data^.Id;
         COL_PARENT_ID:
