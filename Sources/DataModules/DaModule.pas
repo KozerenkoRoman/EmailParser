@@ -8,12 +8,12 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, DebugWriter,
   Global.Types, Vcl.ComCtrls, System.Generics.Defaults, Translate.Lang, Global.Resources,
   Common.Types, System.RegularExpressions, System.IOUtils, ArrayHelper, Utils, XmlFiles,
-  Publishers, Publishers.Interfaces, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Vcl.Forms,
-  FireDAC.DApt.Intf, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Thread.Emails,
-  DaModule.Resources, Utils.Zip, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
-  FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.SQLite,
+  Publishers, Publishers.Interfaces, Vcl.Forms, FireDAC.DApt.Intf, FireDAC.DApt, Data.DB,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Thread.Emails, DaModule.Resources, Utils.Zip,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf,
+  FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.SQLite,
   FireDAC.Phys.SQLiteDef, FireDAC.Stan.ExprFuncs, FireDAC.VCLUI.Wait, FireDAC.Stan.Param, FireDAC.DatS,
-  FireDAC.Phys.SQLiteWrapper.Stat, Thread.HTTPClient;
+  FireDAC.Phys.SQLiteWrapper.Stat, Thread.HTTPClient, Utils.Files;
 {$ENDREGION}
 
 type
@@ -343,7 +343,7 @@ var
 begin
   Host     := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_HOST, '');
   Login    := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_USER, '');
-  Password := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_PASSWORD, '');
+  Password := TFileUtils.DecryptStr(TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_PASSWORD, ''), C_PASS_PHRASE);
   IsActive := TGeneral.XMLParams.ReadBool(C_SECTION_HTTP, C_KEY_IS_ACTIVE, False);
 
   if not FThreadHTTPClient.Host.Equals(Host) or

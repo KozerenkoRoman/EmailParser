@@ -23,6 +23,7 @@ resourcestring
   C_KEY_HOST          = 'Host';
   C_KEY_USER          = 'User';
   C_KEY_PASSWORD      = 'Password';
+  C_PASS_PHRASE       = '585D729r44A3x45F8j97FFpD26A84AEDD52';
 
   //Files
   C_SQLITE_DB_FILE    = 'EmailParser.db';

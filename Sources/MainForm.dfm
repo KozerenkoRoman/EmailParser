@@ -28,7 +28,6 @@ inherited frmMain: TfrmMain
     TabOrder = 0
     OnClosed = splViewClosed
     OnOpened = splViewOpened
-    ExplicitHeight = 606
     object splExtendedFilter: TSplitter
       Left = 0
       Top = 350
@@ -127,7 +126,6 @@ inherited frmMain: TfrmMain
       ParentColor = False
       TabOrder = 1
       Visible = False
-      ExplicitTop = 356
       inline frameMatchesFilter: TframeMatchesFilter
         Left = 2
         Top = 17
@@ -324,8 +322,8 @@ inherited frmMain: TfrmMain
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitWidth = 796
-        ExplicitHeight = 348
+        ExplicitWidth = 792
+        ExplicitHeight = 347
         inherited tbMain: TToolBar
           Width = 792
           ExplicitWidth = 794
@@ -367,7 +365,7 @@ inherited frmMain: TfrmMain
             Font.Style = []
             ParentFont = False
             TabOrder = 0
-            ExplicitWidth = 788
+            ExplicitWidth = 784
             ExplicitHeight = 220
             inherited tbMain: TToolBar
               Width = 784
@@ -423,7 +421,7 @@ inherited frmMain: TfrmMain
             Font.Style = []
             ParentFont = False
             TabOrder = 0
-            ExplicitWidth = 788
+            ExplicitWidth = 784
             ExplicitHeight = 220
             inherited tbMain: TToolBar
               Width = 784
@@ -473,8 +471,8 @@ inherited frmMain: TfrmMain
       Caption = 'crdRegExpParameters'
       CardIndex = 1
       TabOrder = 1
-      ExplicitWidth = 796
-      ExplicitHeight = 604
+      ExplicitWidth = 372
+      ExplicitHeight = 378
       inline frameRegExp: TframeRegExp
         Left = 0
         Top = 0
@@ -492,8 +490,8 @@ inherited frmMain: TfrmMain
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitWidth = 796
-        ExplicitHeight = 604
+        ExplicitWidth = 372
+        ExplicitHeight = 378
         inherited tbMain: TToolBar
           Width = 792
           ExplicitWidth = 794
@@ -555,8 +553,8 @@ inherited frmMain: TfrmMain
       Caption = 'crdCommonParams'
       CardIndex = 2
       TabOrder = 2
-      ExplicitWidth = 796
-      ExplicitHeight = 604
+      ExplicitWidth = 372
+      ExplicitHeight = 378
       inline frameSettings: TframeSettings
         Left = 0
         Top = 0
@@ -570,8 +568,8 @@ inherited frmMain: TfrmMain
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitWidth = 796
-        ExplicitHeight = 604
+        ExplicitWidth = 372
+        ExplicitHeight = 378
         inherited tbMain: TToolBar
           Width = 792
           ExplicitWidth = 790
@@ -692,9 +690,6 @@ inherited frmMain: TfrmMain
             end>
           ExplicitWidth = 372
           ExplicitHeight = 339
-          inherited cbStyle: TComboBox
-            Height = 23
-          end
         end
       end
     end
@@ -710,8 +705,8 @@ inherited frmMain: TfrmMain
       Caption = 'crdResultView'
       CardIndex = 3
       TabOrder = 3
-      ExplicitWidth = 796
-      ExplicitHeight = 604
+      ExplicitWidth = 372
+      ExplicitHeight = 378
       inline frameResultView: TframeResultView
         Left = 0
         Top = 0
@@ -729,8 +724,8 @@ inherited frmMain: TfrmMain
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitWidth = 796
-        ExplicitHeight = 604
+        ExplicitWidth = 372
+        ExplicitHeight = 378
         inherited tbMain: TToolBar
           Width = 792
           ExplicitWidth = 794
@@ -738,8 +733,8 @@ inherited frmMain: TfrmMain
         inherited pcMain: TPageControl
           Width = 792
           Height = 603
-          ExplicitWidth = 796
-          ExplicitHeight = 604
+          ExplicitWidth = 372
+          ExplicitHeight = 378
           inherited tsEmail: TTabSheet
             ExplicitWidth = 784
             ExplicitHeight = 573
@@ -752,8 +747,8 @@ inherited frmMain: TfrmMain
             inherited pcInfo: TPageControl
               Top = 293
               Width = 784
-              ExplicitTop = 294
-              ExplicitWidth = 788
+              ExplicitTop = 293
+              ExplicitWidth = 784
               inherited tsHtmlText: TTabSheet
                 ExplicitWidth = 776
                 inherited wbBody: TWebBrowser
@@ -815,8 +810,8 @@ inherited frmMain: TfrmMain
               Width = 784
               Height = 288
               ParentFont = False
-              ExplicitWidth = 788
-              ExplicitHeight = 289
+              ExplicitWidth = 784
+              ExplicitHeight = 288
               inherited tbMain: TToolBar
                 Width = 784
                 ExplicitWidth = 786
@@ -828,29 +823,29 @@ inherited frmMain: TfrmMain
                   Left = 250
                   ExplicitLeft = 250
                 end
-                inherited btnColumnSettings: TToolButton [10]
-                  Left = 469
-                  ExplicitLeft = 469
-                end
-                inherited btnSep03: TToolButton [11]
-                  Left = 453
-                  ExplicitLeft = 453
-                end
-                inherited btnPrint: TToolButton [12]
+                inherited btnPrint: TToolButton [10]
                   Left = 375
                   ExplicitLeft = 375
                 end
-                inherited btnSearch: TToolButton
+                inherited btnSearch: TToolButton [11]
                   Left = 297
                   ExplicitLeft = 297
                 end
-                inherited btnBreak: TToolButton
+                inherited btnBreak: TToolButton [12]
                   Left = 336
                   ExplicitLeft = 336
                 end
-                inherited btnFilter: TToolButton
+                inherited btnSep03: TToolButton [13]
+                  Left = 453
+                  ExplicitLeft = 453
+                end
+                inherited btnFilter: TToolButton [14]
                   Left = 414
                   ExplicitLeft = 414
+                end
+                inherited btnColumnSettings: TToolButton [15]
+                  Left = 469
+                  ExplicitLeft = 469
                 end
                 inherited btnSep05: TToolButton
                   Left = 461
@@ -870,13 +865,13 @@ inherited frmMain: TfrmMain
             inherited frameAllAttachments: TframeAllAttachments
               ParentFont = False
               inherited tbMain: TToolBar
-                inherited btnPrint: TToolButton [8]
-                  Left = 250
-                  ExplicitLeft = 250
-                end
-                inherited btnExportToCSV: TToolButton [9]
+                inherited btnExportToCSV: TToolButton
                   Left = 289
                   ExplicitLeft = 289
+                end
+                inherited btnPrint: TToolButton
+                  Left = 250
+                  ExplicitLeft = 250
                 end
               end
               inherited vstTree: TVirtualStringTree
@@ -899,8 +894,8 @@ inherited frmMain: TfrmMain
       Caption = 'crdSearchDuplicateFiles'
       CardIndex = 4
       TabOrder = 4
-      ExplicitWidth = 796
-      ExplicitHeight = 604
+      ExplicitWidth = 372
+      ExplicitHeight = 378
       inline frameDuplicateFiles: TframeDuplicateFiles
         Left = 0
         Top = 0
@@ -918,8 +913,8 @@ inherited frmMain: TfrmMain
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitWidth = 796
-        ExplicitHeight = 604
+        ExplicitWidth = 372
+        ExplicitHeight = 378
         inherited tbMain: TToolBar
           Width = 792
           ExplicitWidth = 794
@@ -963,8 +958,6 @@ inherited frmMain: TfrmMain
       Caption = 'crdBruteForce'
       CardIndex = 5
       TabOrder = 5
-      ExplicitWidth = 796
-      ExplicitHeight = 604
       inline frameBruteForce: TframeBruteForce
         Left = 0
         Top = 0
@@ -982,8 +975,8 @@ inherited frmMain: TfrmMain
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitWidth = 796
-        ExplicitHeight = 604
+        ExplicitWidth = 792
+        ExplicitHeight = 603
         inherited tbMain: TToolBar
           Width = 792
           ExplicitWidth = 794

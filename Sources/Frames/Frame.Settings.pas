@@ -7,9 +7,9 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Frame.Source, Vcl.Menus, System.Actions, Vcl.ActnList, Vcl.ComCtrls,
   Vcl.ToolWin, VirtualTrees, Vcl.StdCtrls, Vcl.ExtCtrls, System.Generics.Defaults,Translate.Lang, System.Math,
-  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Common.Types, DaImages, System.RegularExpressions,
-  System.IOUtils, ArrayHelper, Utils, InformationDialog, Html.Lib, Html.Consts, XmlFiles, Global.Types, Vcl.FileCtrl,
-  Global.Resources, Vcl.WinXPanels, Frame.Custom, Publishers, Vcl.NumberBox, Vcl.Themes;
+  Common.Types, DaImages, System.RegularExpressions, System.IOUtils, ArrayHelper, Utils, InformationDialog,
+  Html.Lib, Html.Consts, XmlFiles, Global.Types, Vcl.FileCtrl, Global.Resources, Vcl.WinXPanels, Frame.Custom,
+  Publishers, Vcl.NumberBox, Vcl.Themes, Utils.Files;
 {$ENDREGION}
 
 type
@@ -111,7 +111,7 @@ begin
   cbHTTPClientActive.Checked := TGeneral.XMLParams.ReadBool(C_SECTION_HTTP, C_KEY_IS_ACTIVE, False);
   edtHost.Text               := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_HOST, 'http://127.0.0.1:8080/api/');
   edtUser.Text               := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_USER, '');
-  edtPassword.Text           := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_PASSWORD, '');
+  edtPassword.Text           := TFileUtils.DecryptStr(TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_PASSWORD, ''), C_PASS_PHRASE);
 end;
 
 procedure TframeSettings.SaveToXML;
@@ -128,7 +128,7 @@ begin
   TGeneral.XMLParams.WriteBool(C_SECTION_HTTP, C_KEY_IS_ACTIVE, cbHTTPClientActive.Checked, lblHTTPClientActive.Caption);
   TGeneral.XMLParams.WriteString(C_SECTION_HTTP, C_KEY_HOST,  edtHost.Text);
   TGeneral.XMLParams.WriteString(C_SECTION_HTTP, C_KEY_USER, edtUser.Text);
-  TGeneral.XMLParams.WriteString(C_SECTION_HTTP, C_KEY_PASSWORD, edtPassword.Text);
+  TGeneral.XMLParams.WriteString(C_SECTION_HTTP, C_KEY_PASSWORD, TFileUtils.EncryptStr(edtPassword.Text, C_PASS_PHRASE));
 
   TGeneral.XMLParams.Save;
 end;

@@ -1,4 +1,4 @@
-﻿unit Files.Utils;
+﻿unit Utils.Files;
 
 interface
 
@@ -6,7 +6,7 @@ interface
 
 uses
   System.SysUtils, System.Variants, System.Classes, System.Generics.Defaults, System.Generics.Collections,
-  {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Winapi.Windows, System.DateUtils, System.IniFiles,
+  {$IFDEF EXTENDED_COMPONENTS}DCPrc4, DCPsha1,{$ENDIF} Winapi.Windows, System.DateUtils, System.IniFiles,
   Vcl.Controls, Winapi.ShellAPI, System.IOUtils, Vcl.Forms, System.Hash, System.Math;
 {$ENDREGION}
 
@@ -37,6 +37,8 @@ type
     class function MakePath(const aParts: TArray<string>; const aCreate: Boolean): string; overload;
     class function MakePath(const aParts: TArray<string>; const aFileName: string; const aCreatePath: Boolean): string; overload;
     class function ShellExecuteAndWait(const aFileName, aParams: string): Boolean; inline;
+    class function EncryptStr(const aText, aKey: string): string;
+    class function DecryptStr(const aText, aKey: string): string;
     class procedure ShellOpen(const aUrl: string; const aParams: string = '');
   end;
 
@@ -279,5 +281,49 @@ class function TFileUtils.MakePath(const aParts: TArray<string>; const aFileName
 begin
   Result := MakePath(aParts, aCreatePath) + '\' + aFileName;
 end;
+
+{$IFDEF EXTENDED_COMPONENTS}
+
+class function TFileUtils.EncryptStr(const aText, aKey: string): string;
+var
+  Cipher: TDCP_rc4;
+begin
+  Cipher := TDCP_rc4.Create(nil);
+  try
+    Cipher.InitUnicodeStr(aKey, TDCP_sha1);
+    Result := Cipher.EncryptUnicodeString(aText);
+    Cipher.Burn;
+  finally
+    FreeAndNil(Cipher)
+  end;
+end;
+
+class function TFileUtils.DecryptStr(const aText, aKey: string): string;
+var
+  Cipher: TDCP_rc4;
+begin
+  Cipher := TDCP_rc4.Create(nil);
+  try
+    Cipher.InitUnicodeStr(aKey, TDCP_sha1);
+    Result := Cipher.DecryptUnicodeString(aText);
+    Cipher.Burn;
+  finally
+    FreeAndNil(Cipher)
+  end;
+end;
+
+{$ELSE}
+
+class function TFileUtils.EncryptStr(const aText, aKey: string): string;
+begin
+  Result := aText;
+end;
+
+class function TFileUtils.DecryptStr(const aText, aKey: string): string;
+begin
+  Result := aText;
+end;
+
+{$ENDIF}
 
 end.

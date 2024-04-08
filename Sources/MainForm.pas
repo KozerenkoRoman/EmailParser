@@ -11,7 +11,7 @@ uses
   Vcl.CategoryButtons, Frame.Custom, Frame.RegExp, Frame.ResultView, Frame.Pathes, Vcl.ComCtrls, Vcl.Menus,
   Vcl.Buttons, Vcl.ToolWin, Vcl.AppEvnts, SplashScreen, Frame.Settings, Global.Types, Vcl.Samples.Gauges,
   Publishers.Interfaces, Publishers, CommonForms, Frame.Source, DaModule, Frame.Sorter, Frame.DuplicateFiles,
-  Files.Utils, Vcl.CheckLst, ArrayHelper, System.Types, Frame.MatchesFilter, Frame.BruteForce, Frame.Project,
+  Utils.Files, Vcl.CheckLst, ArrayHelper, System.Types, Frame.MatchesFilter, Frame.BruteForce, Frame.Project,
   System.Notification, System.Win.TaskbarCore, Vcl.Taskbar, Vcl.Themes;
 {$ENDREGION}
 

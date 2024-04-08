@@ -7,7 +7,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, DebugWriter, Global.Types,
   Vcl.ComCtrls, System.Generics.Defaults, Translate.Lang, Global.Resources, Common.Types, System.IOUtils,
   ArrayHelper, Utils, XmlFiles, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Vcl.Forms,
-  System.Generics.Collections, System.Threading, System.Types, Files.Utils, System.Net.URLClient,
+  System.Generics.Collections, System.Threading, System.Types, Utils.Files, System.Net.URLClient,
   System.Net.HTTPClient, System.Net.HttpClientComponent, System.JSON, System.NetConsts;
 {$ENDREGION}
 
