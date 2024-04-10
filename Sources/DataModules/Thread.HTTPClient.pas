@@ -14,12 +14,12 @@ uses
 type
   TThreadHTTPClient = class(TThread)
   private
-    FHost: string;
-    FHTTP: TNetHTTPClient;
-    FIsConnected: Boolean;
-    FLogin: string;
-    FPassword: string;
-    FQueue: TThreadedQueue<string>;
+    FHost        : string;
+    FHTTP        : TNetHTTPClient;
+    FIsConnected : Boolean;
+    FLogin       : string;
+    FPassword    : string;
+    FQueue       : TThreadedQueue<string>;
     function Connected: Boolean;
     procedure Post(const aJSON: string);
     procedure PostDictionaryTag(const aJSONObject: TJSONObject);

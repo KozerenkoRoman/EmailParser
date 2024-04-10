@@ -262,10 +262,11 @@ begin
           arrAttach := qEmails.FieldByName('ATTACH').AsString.Split([';']);
           ResultData.Attachments.AddRange(arrAttach);
         end;
-        qEmails.Next;
+
         TGeneral.EmailList.Add(ResultData.Hash, ResultData);
         TPublishers.ProgressPublisher.CompletedItem(ResultData);
         TPublishers.ProgressPublisher.Progress;
+        qEmails.Next;
       end;
     finally
       qEmails.Close;
@@ -276,7 +277,7 @@ begin
       while not qAttachments.Eof do
       begin
         New(Attachment);
-        Attachment.ID            := qAttachments.FieldByName('ID').AsString;
+        Attachment.Id            := qAttachments.FieldByName('ID').AsString;
         Attachment.ContentID     := qAttachments.FieldByName('CONTENT_ID').AsString;
         Attachment.ContentType   := qAttachments.FieldByName('CONTENT_TYPE').AsString;
         Attachment.FileName      := qAttachments.FieldByName('FILE_NAME').AsString;
@@ -286,8 +287,11 @@ begin
         Attachment.ImageIndex    := qAttachments.FieldByName('IMAGE_INDEX').AsInteger;
         Attachment.ParentHash    := qAttachments.FieldByName('PARENT_HASH').AsString;
         Attachment.ParentName    := qAttachments.FieldByName('PARENT_NAME').AsString;
+        Attachment.ParentId      := qAttachments.FieldByName('PARENT_ID').AsString;
+
         Attachment.FromDB        := True;
         Attachment.Matches.Count := TGeneral.PatternList.Count;
+
         TGeneral.AttachmentList.Add(Attachment.Hash, Attachment);
         TPublishers.ProgressPublisher.CompletedAttach(Attachment);
         TPublishers.ProgressPublisher.Progress;

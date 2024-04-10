@@ -386,7 +386,6 @@ begin
     ResultJSON.AddPair('projectId', TGeneral.CurrentProject.ProjectId);
     ResultJSON.AddPair('hash', Self.Hash);
     ResultJSON.AddPair('filePath', TPath.GetDirectoryName(Self.FileName));
-    ResultJSON.AddPair('filePath', TPath.GetDirectoryName(Self.FileName));
     ResultJSON.AddPair('fileName', TPath.GetFileName(Self.FileName));
     ResultJSON.AddPair('contentType', 'multipart/mixed');
     ResultJSON.AddPair('rawText', Self.Body);

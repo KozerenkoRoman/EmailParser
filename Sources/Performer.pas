@@ -1221,15 +1221,15 @@ begin
     for var i := 0 to Sheets.Count - 1 do
       if not Sheets[i].Text.IsEmpty then
       begin
-        FileName := Concat(TPath.GetFileNameWithoutExtension(aFileName), '\', Sheets[i].Title, TPath.GetExtension(aFileName));
+        FileName := Concat(TPath.GetFileNameWithoutExtension(aFileName), '\', Sheets[i].Title);
         New(Attachment);
         Attachment^.ParsedText    := Sheets[i].Text;
-        Attachment^.FileName      := aFileName;
+        Attachment^.FileName      := FileName;
         Attachment^.ShortName     := FileName;
         Attachment^.ParentId      := aParentId;
         Attachment^.Hash          := TFileUtils.GetHashString(Sheets[i].Text);
         Attachment^.ParentHash    := aData^.Hash;
-        Attachment^.ParentName    := aData^.ShortName;
+        Attachment^.ParentName    := aFileName;
         Attachment^.Matches.Count := TGeneral.PatternList.Count;
         Attachment^.FromZip       := True;
         Attachment^.ContentType   := 'text/sheet';
