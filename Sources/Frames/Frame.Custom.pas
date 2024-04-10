@@ -34,7 +34,7 @@ type
     C_IDENTITY_NAME = 'frameCustom';
   private
     //IConfig
-    procedure IConfig.UpdateLanguage = Translate;
+    procedure IConfig.UpdateSettings = Translate;
     procedure UpdateRegExp;
     procedure UpdateFilter(const aOperation: TFilterOperation);
   protected

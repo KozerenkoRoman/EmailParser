@@ -7,30 +7,33 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, DebugWriter, Global.Types,
   Vcl.ComCtrls, System.Generics.Defaults, Translate.Lang, Global.Resources, Common.Types, System.IOUtils,
   ArrayHelper, Utils, XmlFiles, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Vcl.Forms,
-  System.Generics.Collections, System.Threading, System.Types, Files.Utils, System.Net.URLClient,
-  System.Net.HTTPClient, System.Net.HttpClientComponent, System.JSON;
+  System.Generics.Collections, System.Threading, System.Types, Utils.Files, System.Net.URLClient,
+  System.Net.HTTPClient, System.Net.HttpClientComponent, System.JSON, System.NetConsts;
 {$ENDREGION}
 
 type
   TThreadHTTPClient = class(TThread)
   private
-    FHost: string;
-    FHTTP: TNetHTTPClient;
-    FIsConnected: Boolean;
-    FLogin: string;
-    FPassword: string;
-    FQueue: TThreadedQueue<string>;
+    FHost        : string;
+    FHTTP        : TNetHTTPClient;
+    FIsConnected : Boolean;
+    FLogin       : string;
+    FPassword    : string;
+    FQueue       : TThreadedQueue<string>;
     function Connected: Boolean;
+    procedure Post(const aJSON: string);
+    procedure PostDictionaryTag(const aJSONObject: TJSONObject);
+  const
+    C_LOG_TYPE: array [Boolean] of TLogDetailType = (ddError, ddText);
   protected
     procedure Execute; override;
-    procedure Post(const aJSON: string);
   public
     constructor Create;
     destructor Destroy; override;
     property Host      : string                read FHost     write FHost;
     property Login     : string                read FLogin    write FLogin;
     property Password  : string                read FPassword write FPassword;
-    property Queue : TThreadedQueue<string> read FQueue;
+    property JSONQueue : TThreadedQueue<string> read FQueue;
   end;
 
 implementation
@@ -78,7 +81,7 @@ end;
 function TThreadHTTPClient.Connected: Boolean;
 var
   Params: TStringList;
-  Response:  IHTTPResponse;
+  Response: IHTTPResponse;
 begin
   if FIsConnected then
     Exit(True);
@@ -89,10 +92,10 @@ begin
     Params.AddPair('login', FLogin);
     Params.AddPair('password', FPassword);
     Response :=  FHTTP.Post(FHost + 'session', Params);
-    if (Response.StatusCode <> 200) then
-      LogWriter.Write(ddError, Self, 'Connected',
-                                     'StatusCode: ' + Response.StatusCode.ToString +
-                                     ', StatusText: ' + Response.StatusText);
+    LogWriter.Write(C_LOG_TYPE[Response.StatusCode = 200], Self,
+                                   'Connected',
+                                   'StatusCode: ' + Response.StatusCode.ToString +
+                                   ', StatusText: ' + Response.StatusText);
     FIsConnected := Response.StatusCode = 200;
   finally
     FreeAndNil(Params);
@@ -102,20 +105,62 @@ end;
 
 procedure TThreadHTTPClient.Post(const aJSON: string);
 var
-  Response: IHTTPResponse;
-  Params: TStringStream;
+  JSONObject : TJSONObject;
+  JSONValue  : TJSONValue;
+  Params     : TStringStream;
+  Response   : IHTTPResponse;
 begin
-  FHTTP.ContentType := 'application/json';
+  FHTTP.ContentType    := 'application/json';
   FHTTP.AcceptEncoding := 'UTF-8';
-  FHTTP.AllowCookies := True;
+  FHTTP.AllowCookies   := True;
 
   Params := TStringStream.Create(aJSON, TEncoding.UTF8);
   try
     Response := FHTTP.Post(FHost + 'barns', Params);
-    if (Response.StatusCode <> 200) then
-      LogWriter.Write(ddError, Self, 'Send',
-                                     'StatusCode: ' + Response.StatusCode.ToString +
-                                     ', StatusText: ' + Response.StatusText);
+//    LogWriter.Write(C_LOG_TYPE[Response.StatusCode = 200], Self,
+//                                   'Post',
+//                                   'StatusCode: ' + Response.StatusCode.ToString +
+//                                   ', StatusText: ' + Response.StatusText);
+
+    JSONObject := TJSONObject.Create;
+    try
+      JSONValue := JSONObject.ParseJSONValue(aJSON);
+      if (not Assigned(JSONValue)) or (not(JSONValue is TJSONObject)) then
+        Exit;
+      JSONValue := JSONValue.FindValue('tags');
+
+      if Assigned(JSONValue) and (JSONValue is TJSONArray) then
+        for var i := 0 to TJSONObject(JSONValue).Count - 1 do
+          PostDictionaryTag((JSONValue as TJSONArray).Items[i] as TJSONObject);
+    finally
+      FreeAndNil(JSONObject);
+    end;
+
+  finally
+    FreeAndNil(Params);
+  end;
+end;
+
+procedure TThreadHTTPClient.PostDictionaryTag(const aJSONObject: TJSONObject);
+var
+  Params   : TStringStream;
+  Response : IHTTPResponse;
+  Headers  : TNetHeaders;
+begin
+  SetLength(Headers, 2);
+  Headers[0].Name  := sContentType;
+  Headers[0].Value := 'application/json';
+  Headers[1].Name  := sAcceptEncoding;
+  Headers[1].Value := 'UTF-8';
+
+  FHTTP.AllowCookies := True;
+  Params := TStringStream.Create(aJSONObject.ToJSON);
+  try
+    Response := FHTTP.Post(FHost + 'projects/' + TGeneral.CurrentProject.ProjectId + '/tags', Params, nil, Headers);
+//    LogWriter.Write(C_LOG_TYPE[Response.StatusCode = 200], Self,
+//                                   'PostDictionaryTag',
+//                                   'StatusCode: ' + Response.StatusCode.ToString +
+//                                   ', StatusText: ' + Response.StatusText);
   finally
     FreeAndNil(Params);
   end;

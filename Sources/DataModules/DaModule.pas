@@ -8,12 +8,12 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, DebugWriter,
   Global.Types, Vcl.ComCtrls, System.Generics.Defaults, Translate.Lang, Global.Resources,
   Common.Types, System.RegularExpressions, System.IOUtils, ArrayHelper, Utils, XmlFiles,
-  Publishers, Publishers.Interfaces, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} Vcl.Forms,
-  FireDAC.DApt.Intf, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Thread.Emails,
-  DaModule.Resources, Utils.Zip, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
-  FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.SQLite,
+  Publishers, Publishers.Interfaces, Vcl.Forms, FireDAC.DApt.Intf, FireDAC.DApt, Data.DB,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Thread.Emails, DaModule.Resources, Utils.Zip,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf,
+  FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.SQLite,
   FireDAC.Phys.SQLiteDef, FireDAC.Stan.ExprFuncs, FireDAC.VCLUI.Wait, FireDAC.Stan.Param, FireDAC.DatS,
-  FireDAC.Phys.SQLiteWrapper.Stat, Thread.HTTPClient;
+  FireDAC.Phys.SQLiteWrapper.Stat, Thread.HTTPClient, Utils.Files;
 {$ENDREGION}
 
 type
@@ -32,7 +32,7 @@ type
     //IConfig
     procedure UpdateRegExp;
     procedure UpdateFilter(const aOperation: TFilterOperation);
-    procedure UpdateLanguage;
+    procedure UpdateSettings;
     procedure UpdateProject;
 
     // IProgress
@@ -92,14 +92,6 @@ var
 begin
   if not FThreadEmails.Started then
     FThreadEmails.Start;
-  if TGeneral.XMLParams.ReadBool(C_SECTION_HTTP, C_KEY_IS_ACTIVE, False) and not FThreadHTTPClient.Started then
-  begin
-    FThreadHTTPClient.Host     := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_HOST, '');
-    FThreadHTTPClient.Login    := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_USER, '');
-    FThreadHTTPClient.Password := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_PASSWORD, '');
-    FThreadHTTPClient.Start;
-  end;
-
   DBFile := TPath.Combine(TDirectory.GetCurrentDirectory, C_SQLITE_DB_FILE);
   with Connection do
   begin
@@ -125,6 +117,7 @@ begin
     on E: Exception do
       LogWriter.Write(ddError, Self, 'Initialize', E.Message);
   end;
+  UpdateSettings;
 end;
 
 procedure TDaMod.Deinitialize;
@@ -213,20 +206,13 @@ begin
   if FThreadEmails.Started then
     FThreadEmails.ResultDataQueue.PushItem(aResultData);
   if FThreadHTTPClient.Started then
-    FThreadHTTPClient.Queue.PushItem(aResultData.ToJSON);
+    FThreadHTTPClient.JSONQueue.PushItem(aResultData.ToJSON);
 end;
 
 procedure TDaMod.CompletedAttach(const aAttachData: PAttachment);
 begin
   if FThreadHTTPClient.Started then
-  begin
-    LogWriter.Write(ddText, Self, 'CompletedAttach',
-                                  'Id: ' + aAttachData.Id +
-                                  ', ParentId:' + aAttachData.ParentId +
-                                  ', FileName:' + aAttachData.FileName +
-                                  ', ContentType:' + aAttachData.ContentType);
-    FThreadHTTPClient.Queue.PushItem(aAttachData.ToJSON);
-  end;
+    FThreadHTTPClient.JSONQueue.PushItem(aAttachData.ToJSON);
 end;
 
 procedure TDaMod.FillAllEmailsRecord;
@@ -276,10 +262,11 @@ begin
           arrAttach := qEmails.FieldByName('ATTACH').AsString.Split([';']);
           ResultData.Attachments.AddRange(arrAttach);
         end;
-        qEmails.Next;
+
         TGeneral.EmailList.Add(ResultData.Hash, ResultData);
         TPublishers.ProgressPublisher.CompletedItem(ResultData);
         TPublishers.ProgressPublisher.Progress;
+        qEmails.Next;
       end;
     finally
       qEmails.Close;
@@ -290,7 +277,7 @@ begin
       while not qAttachments.Eof do
       begin
         New(Attachment);
-        Attachment.ID            := qAttachments.FieldByName('ID').AsString;
+        Attachment.Id            := qAttachments.FieldByName('ID').AsString;
         Attachment.ContentID     := qAttachments.FieldByName('CONTENT_ID').AsString;
         Attachment.ContentType   := qAttachments.FieldByName('CONTENT_TYPE').AsString;
         Attachment.FileName      := qAttachments.FieldByName('FILE_NAME').AsString;
@@ -300,8 +287,11 @@ begin
         Attachment.ImageIndex    := qAttachments.FieldByName('IMAGE_INDEX').AsInteger;
         Attachment.ParentHash    := qAttachments.FieldByName('PARENT_HASH').AsString;
         Attachment.ParentName    := qAttachments.FieldByName('PARENT_NAME').AsString;
+        Attachment.ParentId      := qAttachments.FieldByName('PARENT_ID').AsString;
+
         Attachment.FromDB        := True;
         Attachment.Matches.Count := TGeneral.PatternList.Count;
+
         TGeneral.AttachmentList.Add(Attachment.Hash, Attachment);
         TPublishers.ProgressPublisher.CompletedAttach(Attachment);
         TPublishers.ProgressPublisher.Progress;
@@ -346,9 +336,41 @@ begin
   // nothing
 end;
 
-procedure TDaMod.UpdateLanguage;
+procedure TDaMod.UpdateSettings;
+const
+  C_ACTIVE: array [Boolean] of string = ('not active', 'started');
+var
+  Host     : string;
+  IsActive : Boolean;
+  Login    : string;
+  Password : string;
 begin
-  // nothing
+  Host     := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_HOST, '');
+  Login    := TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_USER, '');
+  Password := TFileUtils.DecryptStr(TGeneral.XMLParams.ReadString(C_SECTION_HTTP, C_KEY_PASSWORD, ''), C_PASS_PHRASE);
+  IsActive := TGeneral.XMLParams.ReadBool(C_SECTION_HTTP, C_KEY_IS_ACTIVE, False);
+
+  if not FThreadHTTPClient.Host.Equals(Host) or
+     not FThreadHTTPClient.Login.Equals(Login) or
+     not FThreadHTTPClient.Password.Equals(Password) or
+     (IsActive <> FThreadHTTPClient.Started) then
+  begin
+    if FThreadHTTPClient.Started then
+    begin
+      FThreadHTTPClient.Terminate;
+      Sleep(50);
+      FreeAndNil(FThreadHTTPClient);
+      FThreadHTTPClient := TThreadHTTPClient.Create;
+    end;
+    FThreadHTTPClient.Host     := Host;
+    FThreadHTTPClient.Login    := Login;
+    FThreadHTTPClient.Password := Password;
+    if IsActive then
+      FThreadHTTPClient.Start;
+    LogWriter.Write(ddText, Self, 'UpdateSettings', 'HTTP Client is <b>' + C_ACTIVE[IsActive] +
+                                                    '</b>, Host: ' + Host +
+                                                    ', Login: ' + Login);
+  end;
 end;
 
 procedure TDaMod.UpdateProject;

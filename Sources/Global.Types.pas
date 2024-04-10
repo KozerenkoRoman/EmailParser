@@ -6,8 +6,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Global.Resources,
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} System.IOUtils, Vcl.Forms,
-  ArrayHelper, VirtualTrees, System.RegularExpressions, System.Math, Vcl.Graphics, Files.Utils, XmlFiles,
-  TesseractOCR.Types, System.JSON;
+  ArrayHelper, VirtualTrees, System.RegularExpressions, System.Math, Vcl.Graphics, Utils.Files, XmlFiles,
+  TesseractOCR.Types, System.JSON, System.IniFiles;
 {$ENDREGION}
 
 type
@@ -79,6 +79,8 @@ type
     FileName    : TFileName;
     Hash        : string;
     From        : string;
+    To_         : string;
+    CC          : string;
     MessageId   : string;
     ShortName   : string;
     Subject     : string;
@@ -375,7 +377,7 @@ function TResultData.ToJSON: string;
 var
   MailJSON: TJSONObject;
   ResultJSON: TJSONObject;
-  //TagsJson: TJSONObject;
+  TagsArray: TJSONArray;
 begin
   ResultJSON := TJSONObject.Create;
   try
@@ -384,8 +386,8 @@ begin
     ResultJSON.AddPair('projectId', TGeneral.CurrentProject.ProjectId);
     ResultJSON.AddPair('hash', Self.Hash);
     ResultJSON.AddPair('filePath', TPath.GetDirectoryName(Self.FileName));
-    ResultJSON.AddPair('fileName', Self.ShortName);
-    ResultJSON.AddPair('contentType', Self.ContentType);
+    ResultJSON.AddPair('fileName', TPath.GetFileName(Self.FileName));
+    ResultJSON.AddPair('contentType', 'multipart/mixed');
     ResultJSON.AddPair('rawText', Self.Body);
     ResultJSON.AddPair('plainText', Self.ParsedText);
     // ResultJSON.AddPair('comment', '');
@@ -394,17 +396,40 @@ begin
 
     MailJSON := TJSONObject.Create;
     MailJSON.AddPair('from', Self.From);
-    MailJSON.AddPair('subject', Self.Subject);
+    MailJSON.AddPair('to', Self.To_);
+    MailJSON.AddPair('cc', Self.cc);
     MailJSON.AddPair('messageId', Self.MessageId);
     MailJSON.AddPair('timeStamp', Self.TimeStamp);
     ResultJSON.AddPair('jsonObj', MailJSON);
 
-    //TagsJson := TJSONObject.Create;
-    // TagsJson.AddPair('from', Self.From);
-    // TagsJson.AddPair('subject', Self.Subject);
-    // TagsJson.AddPair('messageId', Self.MessageId);
-    // TagsJson.AddPair('timeStamp', Self.TimeStamp);
-    // ResultJSON.AddPair('tags', TagsJson);
+    if Self.Matches.Count > 0 then
+    begin
+      var
+        st: THashedStringList;
+      st := THashedStringList.Create;
+      st.Duplicates := TDuplicates.dupIgnore;
+      try
+        for var i := 0 to Self.Matches.Count - 1 do
+          for var j := 0 to Self.Matches[i].Count - 1 do
+            st.AddPair(TGeneral.PatternList[i].ParameterName, Self.Matches[i][j]);
+
+        TagsArray := TJSONArray.Create;
+        for var i := 0 to st.Count - 1 do
+        begin
+          var
+          TagsJson := TJSONObject.Create;
+          TagsJson.AddPair('name', st.Names[i]);
+          TagsJson.AddPair('value', st.ValueFromIndex[i]);
+          TagsJson.AddPair('barnId', Self.Id);
+          TagsArray.Add(TagsJson);
+        end;
+      finally
+        FreeAndNil(st);
+      end;
+      if (TagsArray.Count > 0) then
+        ResultJSON.AddPair('tags', TagsArray);
+    end;
+
     Result := ResultJSON.ToJSON;
   finally
     FreeAndNil(ResultJSON);
@@ -442,7 +467,7 @@ end;
 function TAttachment.ToJSON: string;
 var
   ResultJSON: TJSONObject;
-  //TagsJson: TJSONObject;
+  TagsArray: TJSONArray;
 begin
   ResultJSON := TJSONObject.Create;
   try
@@ -459,12 +484,34 @@ begin
     ResultJSON.AddPair('rank', 0);
     ResultJSON.AddPair('isChecked', False);
 
-    // TagsJson := TJSONObject.Create;
-    // TagsJson.AddPair('from', Self.From);
-    // TagsJson.AddPair('subject', Self.Subject);
-    // TagsJson.AddPair('messageId', Self.MessageId);
-    // TagsJson.AddPair('timeStamp', Self.TimeStamp);
-    // ResultJSON.AddPair('tags', TagsJson);
+    if Self.Matches.Count > 0 then
+    begin
+      var
+        st: THashedStringList;
+      st := THashedStringList.Create;
+      st.Duplicates := TDuplicates.dupIgnore;
+      try
+        for var i := 0 to Self.Matches.Count - 1 do
+          for var j := 0 to Self.Matches[i].Count - 1 do
+            st.AddPair(TGeneral.PatternList[i].ParameterName, Self.Matches[i][j]);
+
+        TagsArray := TJSONArray.Create;
+        for var i := 0 to st.Count - 1 do
+        begin
+          var
+          TagsJson := TJSONObject.Create;
+          TagsJson.AddPair('name', st.Names[i]);
+          TagsJson.AddPair('value', st.ValueFromIndex[i]);
+          TagsJson.AddPair('barnId', Self.Id);
+          TagsArray.Add(TagsJson);
+        end;
+      finally
+        FreeAndNil(st);
+      end;
+      if (TagsArray.Count > 0) then
+        ResultJSON.AddPair('tags', TagsArray);
+    end;
+
     Result := ResultJSON.ToJSON;
   finally
     FreeAndNil(ResultJSON);

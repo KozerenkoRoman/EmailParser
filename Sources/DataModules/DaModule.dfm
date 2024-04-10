@@ -63,7 +63,8 @@ object DaMod: TDaMod
     SQL.Strings = (
       'select a.ID,'
       '       a.HASH, '
-      '       a.PARENT_HASH, '
+      '       a.PARENT_HASH,'
+      '       a.PARENT_ID, '
       '       e.SHORT_NAME as PARENT_NAME,'
       '       a.CONTENT_ID, '
       '       a.FILE_NAME, '

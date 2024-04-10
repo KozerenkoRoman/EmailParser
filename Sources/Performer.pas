@@ -8,7 +8,7 @@ uses
   System.Generics.Collections, {$IFDEF USE_CODE_SITE}CodeSiteLogging, {$ENDIF} DebugWriter, XmlFiles,
   System.IOUtils, Vcl.Forms, ArrayHelper, Common.Types, Translate.Lang, System.IniFiles, Global.Types,
   System.Generics.Defaults, System.Types, System.RegularExpressions, System.Threading, MessageDialog,
-  clHtmlParser, clMailMessage, MailMessage.Helper, Utils, Files.Utils, System.SyncObjs, UHTMLParse,
+  clHtmlParser, clMailMessage, MailMessage.Helper, Utils, Utils.Files, System.SyncObjs, UHTMLParse,
   Publishers.Interfaces, Publishers, dEXIF.Helper, DaModule, Global.Utils, System.Math, System.ZLib,
   System.Zip, System.Masks, System.StrUtils, InformationDialog, Html.Lib, Vcl.Graphics, UnRAR.Helper,
   System.Hash, AhoCorasick, Vcl.ComCtrls, ExcelReader.Helper, Vcl.Imaging.jpeg, Process.Utils,
@@ -560,7 +560,10 @@ begin
         Data^.Subject     := MailMessage.Subject;
         Data^.TimeStamp   := MailMessage.Date;
         Data^.From        := MailMessage.From.FullAddress;
+        Data^.To_         := MailMessage.ToList.EmailAddresses;
+        Data^.CC          := MailMessage.CCList.EmailAddresses;
         Data^.ContentType := MailMessage.ContentType;
+
         DoFillAttachments(Data, MailMessage);
 
         if (MailMessage.ContentType = 'text/calendar') then
@@ -1226,7 +1229,7 @@ begin
         Attachment^.ParentId      := aParentId;
         Attachment^.Hash          := TFileUtils.GetHashString(Sheets[i].Text);
         Attachment^.ParentHash    := aData^.Hash;
-        Attachment^.ParentName    := aData^.ShortName;
+        Attachment^.ParentName    := aFileName;
         Attachment^.Matches.Count := TGeneral.PatternList.Count;
         Attachment^.FromZip       := True;
         Attachment^.ContentType   := 'text/sheet';
@@ -1420,11 +1423,11 @@ function TPerformer.GetMatchCollection(const aText: string; const aPatternData: 
     begin
       if (aPatternData^.GroupIndex <= 0) then
         GroupIndex := 0
-      else if (aPatternData^.GroupIndex > Matches.item[i].Groups.Count - 1) then
-        GroupIndex := Matches.item[i].Groups.Count - 1
+      else if (aPatternData^.GroupIndex > Matches.Item[i].Groups.Count - 1) then
+        GroupIndex := Matches.Item[i].Groups.Count - 1
       else
         GroupIndex := aPatternData^.GroupIndex;
-      Result[i] := Matches.item[i].Groups[GroupIndex].Value;
+      Result[i] := Matches.Item[i].Groups[GroupIndex].Value;
     end;
   end;
 
