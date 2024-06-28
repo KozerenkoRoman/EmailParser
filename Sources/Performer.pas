@@ -858,6 +858,7 @@ begin
           fsUnknown:
             begin
               if Ext.Contains('.txt') or
+                 Ext.Contains('.log') or
                  Ext.Contains('.opt') or
                  Ext.Contains('.ini') or
                  Ext.Contains('.csv') or

@@ -410,16 +410,14 @@ begin
       st.Duplicates := TDuplicates.dupIgnore;
       try
         for var i := 0 to Self.Matches.Count - 1 do
-          for var j := 0 to Self.Matches[i].Count - 1 do
-            st.AddPair(TGeneral.PatternList[i].ParameterName, Self.Matches[i][j]);
+          st.Add(TGeneral.PatternList[i].ParameterName);
 
         TagsArray := TJSONArray.Create;
         for var i := 0 to st.Count - 1 do
         begin
           var
           TagsJson := TJSONObject.Create;
-          TagsJson.AddPair('name', st.Names[i]);
-          TagsJson.AddPair('value', st.ValueFromIndex[i]);
+          TagsJson.AddPair('name', st[i]);
           TagsJson.AddPair('barnId', Self.Id);
           TagsArray.Add(TagsJson);
         end;
@@ -492,16 +490,14 @@ begin
       st.Duplicates := TDuplicates.dupIgnore;
       try
         for var i := 0 to Self.Matches.Count - 1 do
-          for var j := 0 to Self.Matches[i].Count - 1 do
-            st.AddPair(TGeneral.PatternList[i].ParameterName, Self.Matches[i][j]);
+          st.Add(TGeneral.PatternList[i].ParameterName);
 
         TagsArray := TJSONArray.Create;
         for var i := 0 to st.Count - 1 do
         begin
           var
           TagsJson := TJSONObject.Create;
-          TagsJson.AddPair('name', st.Names[i]);
-          TagsJson.AddPair('value', st.ValueFromIndex[i]);
+          TagsJson.AddPair('name', st[i]);
           TagsJson.AddPair('barnId', Self.Id);
           TagsArray.Add(TagsJson);
         end;
